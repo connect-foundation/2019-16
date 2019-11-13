@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run a one-line script                 # step1 이름
-      run: actions/checkout@master                # 소스코드 체크아웃
+      run: actions/checkout@develop                # 소스코드 체크아웃
     - name: Run a multi-line script               # step2 이름
       run: echo "hello world"                     # linux command 실행
