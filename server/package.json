@@ -6,6 +6,7 @@
   "main": "./index.js",
   "dependencies": {
     "apollo-server-koa": "^2.9.7",
+    "bcrypt": "^3.0.6",
     "eslint-config-naver": "^2.1.0",
     "eslint-config-prettier": "^6.5.0",
     "koa": "^2.11.0",
