@@ -1,19 +1,19 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true
-    },
-    "extends": "naver/es5",
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
-    "rules": {
-      "no-console": 0,
-      "object-curly-spacing": 0
-    }
+  "extends": ["naver/es5", "prettier"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": 0,
+    "object-curly-spacing": 0
+  }
 }
