@@ -1,9 +1,9 @@
 const Router = require("koa-router");
 const partnersRouter = new Router();
-const passport = require("../passport/forPartners");
+const passportForPartners = require("../passport/partners");
 
 partnersRouter.post("/login",
-	passport.authenticate('local', { // 리액트 라우터에 따라서 변경
+	passportForPartners.authenticate('local', { // 리액트 라우터에 따라서 변경
 		failureRedirect: "/auth/partners/fail"
 	}), (ctx, next) => {
 		// 파트너 로그인 성공

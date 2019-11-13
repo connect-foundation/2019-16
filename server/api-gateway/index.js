@@ -3,7 +3,7 @@ const Koa = require("koa");
 const KoaRouter = require("koa-router");
 const koaBody = require("koa-bodyparser");
 const { ApolloServer, gql } = require("apollo-server-koa");
-const passport = require("./passport/forPartners");
+const passportForPartners = require("./passport/partners");
 const authRouter = require("./routes");
 const { PORT } = process.env;
 
@@ -23,7 +23,7 @@ const router = new KoaRouter();
 
 router.use("/auth", authRouter.routes());
 
-app.use(passport.initialize());
+app.use(passportForPartners.initialize());
 app.use(koaBody());
 app.use(router.routes());
 app.use(router.allowedMethods());
