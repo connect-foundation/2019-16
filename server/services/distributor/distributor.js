@@ -13,7 +13,7 @@ class Distributor extends TcpServer{
   }
 
   onRead(socket, data){
-    const key = makeKey(socket.remoteAddress + socket.remotePort);
+    const key = makeKey(socket);
     const { method, query } = data;
   
     if(query !== "distribute"){
@@ -48,6 +48,12 @@ class Distributor extends TcpServer{
   broadCast(packet){
     for(let nodeKey in nodeList){
       nodeList[nodeKey].socket.write(JSON.stringify(packet));
+    }
+  }
+
+  printNodeList(){
+    for(let nodeKey in nodeList){
+      console.log(nodeList[nodeKey].info);
     }
   }
 }
