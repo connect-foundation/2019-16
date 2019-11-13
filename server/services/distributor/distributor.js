@@ -31,15 +31,24 @@ class Distributor extends TcpServer{
       nodeList[key].socket = socket;
       nodeList[key].info = data.info;
       packet = makePacket("POST", "nodes", {}, {nodeList}, this.context);
+      this.broadCast(packet);
         break;
       case "DELETE" : 
       delete nodeList[key];
       packet = makePacket("POST", "nodes",{},{nodeList},this.context);
+      this.broadCast(packet);
         break;
       default:
         break;
     }
-  
+  }
+  send(socket, packet){
+    socket.write(JSON.stringify(packet));
+  }
+  broadCast(packet){
+    for(let nodeKey in nodeList){
+      nodeList[nodeKey].socket.write(JSON.stringify(packet));
+    }
   }
 }
 
