@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Koa = require("koa");
 const KoaRouter = require("koa-router");
 const koaBody = require("koa-bodyparser");
@@ -22,6 +23,6 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 server.applyMiddleware({ app });
 
-app.listen(8000, () => {
-	console.log("8000번에서 API Gateway 실행중...")
+app.listen(8000 || PORT, () => {
+  console.log("8000번에서 API Gateway 실행중...");
 });
