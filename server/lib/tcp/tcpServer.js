@@ -14,7 +14,7 @@ class TcpServer {
 		this.isConnectToDistributor = false;
 		this.server = net.createServer(socket => {
 			socket.on("data", data => {
-				const key = socket.remoteAddress + socket.remotePort;
+				const key = makeKey(socket);
 
 				let mergedPacket = !this.dataMap[key] ? data.toString() :
 					this.dataMap[key].concat(data.toString());
