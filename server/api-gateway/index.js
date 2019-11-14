@@ -4,8 +4,33 @@ const KoaRouter = require("koa-router");
 const koaBody = require("koa-bodyparser");
 const { ApolloServer, gql } = require("apollo-server-koa");
 const passportForPartners = require("./passport/partners");
+const mongoose = require("mongoose");
 const authRouter = require("./routes");
-const { PORT } = process.env;
+
+const {
+  PORT,
+  PARTNERS_MONGO_URI,
+  PARTNERS_USER,
+  PARTNERS_PASS,
+} = process.env;
+
+
+const mongoOptions = {
+	dbName:'partners',
+  user: PARTNERS_USER,
+	pass: PARTNERS_PASS,
+	useNewUrlParser: true,
+	useFindAndModify: true
+};
+
+mongoose
+  .connect(PARTNERS_MONGO_URI, mongoOptions)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch(e => {
+    console.error(e);
+  });
 
 const typeDefs = gql`
   type Query {
@@ -13,9 +38,9 @@ const typeDefs = gql`
   }
 `;
 const resolvers = {
-	Query: {
-		hello: () => "hello world"
-	}
+  Query: {
+    hello: () => "hello world",
+  },
 };
 const server = new ApolloServer({ typeDefs, resolvers });
 const app = new Koa();
