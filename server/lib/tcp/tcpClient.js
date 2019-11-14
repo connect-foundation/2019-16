@@ -1,37 +1,8 @@
 const net = require("net");
 const PACKET_SPLITTER = "|";
 
-class TcpClient {
-	constructor(host, port, onCreate, onRead, onEnd, onError) {
-		this.options = {
-			host, port
-		};
-		this.onCreate = onCreate;
-		this.onRead = onRead;
-		this.onEnd = onEnd;
-		this.onError = onError;
-
-		
-	}
-	connect(){
-		this.client = net.connect(this.options, ()=>{
-			console.log(`connet to ${this.options.host} : ${this.options.port}`);
-		});
-		registEvent.bind(this)()
-	}
-	write(data) {
-		this.client.write(JSON.stringify(data) + PACKET_SPLITTER);
-	}
-}
-
-function registEvent(){
-
+function registEvent (){
 	this.client.on("data", (data)=>{
-		// this.data = !this.data ? data.toString() :
-		// 	this.data.concat(data.toString());
-
-		// let packet = this.data.split(PACKET_SPLITTER);
-
 		let mergedPacket = !this.data ? data.toString() :
 					this.data.concat(data.toString());
 
@@ -58,6 +29,27 @@ function registEvent(){
 	});
 }
 
-
+class TcpClient {
+	constructor(host, port, onCreate, onRead, onEnd, onError) {
+		this.options = {
+			host, port
+		};
+		this.onCreate = onCreate;
+		this.onRead = onRead;
+		this.onEnd = onEnd;
+		this.onError = onError;
+	}
+	connect(){
+		this.client = net.connect(this.options, ()=>{
+			console.log(`connet to ${this.options.host} : ${this.options.port}`);
+			this.onCreate();
+		});
+		registEvent.bind(this)()
+		
+	}
+	write(data) {
+		this.client.write(JSON.stringify(data) + PACKET_SPLITTER);
+	}
+}
 
 module.exports = TcpClient;
