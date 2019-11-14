@@ -1,24 +1,23 @@
 const passport = require("koa-passport");
 const LocalStrategy = require("passport-local").Strategy;
+const Partner = require("../models/partner");
 
 passport.use(
-  new LocalStrategy((username, password, done) => {
-    // User.findOne({ username: username }, (err, user) => {
-    //   if (err) return done(err);
-    //   if (!user) return done(null, false, { message: "사용자 없음" });
-    //   if (!user.validPassword(password))
-    //     return done(null, false, { message: "비번 틀림" });
-      return done(null, {a:"a"});
-    // });
-  }),
+  new LocalStrategy((email, password, done) => {
+    Partner.findOne({ email: email, password: password }, (err, partner) => {
+      if (err) return done(err);
+      if (!partner) return done(null, false, { message: "로그인 실패" });
+      return done(null, partner);
+    });
+  })
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser((partner, done) => {
+  done(null, partner);
 });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
+passport.deserializeUser((partner, done) => {
+  done(null, partner);
 });
 
 module.exports = passport;
