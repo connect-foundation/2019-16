@@ -13,8 +13,8 @@ class TcpServer {
 		this.dataMap = {};
 		this.isConnectToDistributor = false;
 		this.server = net.createServer(socket => {
-			socket.on("data", data => {
-				const key = makeKey(socket);
+			socket.on("data", async(data) => {
+				const key = await makeKey(socket);
 
 				let mergedPacket = !this.dataMap[key] ? data.toString() :
 					this.dataMap[key].concat(data.toString());
@@ -45,6 +45,8 @@ class TcpServer {
 	}
 
 	connectToDistributor() {
+		let intervalId;
+
 		console.log(this.isConnectToDistributor);
 		this.distributor = new TcpClient("127.0.0.1", 8100, () => {
 			this.isConnectToDistributor = true;
@@ -65,8 +67,11 @@ class TcpServer {
 			this.isConnectToDistributor = false;
 		});
 		this.distributor.connect();
-		setInterval(() => {
-			if(!this.isConnectToDistributor) this.connectToDistributor();
+		intervalId = setInterval(() => {
+			if(!this.isConnectToDistributor) {
+				clearInterval(intervalId);
+				this.connectToDistributor();
+			}
 		}, 3600);
 	}
 }
