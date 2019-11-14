@@ -2,18 +2,18 @@ const TcpServer = require("../../lib/tcp/tcpServer");
 const TcpClient = require("../../lib/tcp/tcpClient");
 const {makeKey, makePacket} = require("../../lib/tcp/util");
 
-let instance;
+let distributorInstance;
 const nodeList = {};
 
 class Distributor extends TcpServer{
   constructor(){
-    if(instance) return instance;
+    if(distributorInstance) return distributorInstance;
     super("distributor", "127.0.0.1", 8100, "distribute");
-    instance = this;
+    distributorInstance = this;
   }
 
-  onRead(socket, data){
-    const key = makeKey(socket);
+  async onRead(socket, data){
+    const key = await makeKey(socket);
     const { method, query } = data;
   
     if(query !== "distribute"){
