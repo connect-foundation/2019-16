@@ -33,7 +33,7 @@ class UserServer extends TcpServer {
       payload = { email, age };
       const options = {
         expiresIn: "7d",
-        subject: "userInfo"
+        subject: "userInfo",
       };
       const token = await generateToken(payload, "1q2w3e4r!", options);
       paylaod.jwt = token;
@@ -48,7 +48,7 @@ class UserServer extends TcpServer {
 mongoose
   .connect("mongodb://106.10.42.155:27017/test", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Connected to MongoDB");
