@@ -1,7 +1,7 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const TcpClient = require("../../lib/tcp/tcpClient");
 const {makeKey, makePacket} = require("../../lib/tcp/util");
-
+const logger = require("../logger/logger")
 let distributorInstance;
 const nodeList = {};
 
@@ -43,17 +43,17 @@ class Distributor extends TcpServer{
     }
   }
   send(socket, packet){
-    socket.write(JSON.stringify(packet));
+    socket.write(packet);
   }
   broadCast(packet){
     for(let nodeKey in nodeList){
-      nodeList[nodeKey].socket.write(JSON.stringify(packet));
+      nodeList[nodeKey].socket.write(packet);
     }
   }
 
   printNodeList(){
     for(let nodeKey in nodeList){
-      console.log(nodeList[nodeKey].info);
+      logger.info(JSON.stringify(nodeList[nodeKey].info));
     }
   }
 }
