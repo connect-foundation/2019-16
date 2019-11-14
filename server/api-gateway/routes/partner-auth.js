@@ -2,14 +2,24 @@ const Router = require("koa-router");
 const partnersRouter = new Router();
 const passportForPartners = require("../passport/partners");
 
-partnersRouter.post("/login",
-	passportForPartners.authenticate('local', { // 리액트 라우터에 따라서 변경
-		failureRedirect: "/auth/partners/fail"
-	}), (ctx, next) => {
-		// 파트너 로그인 성공
-		// JWT 생성
-		// partners 페이지로 리다이렉트
-	}
+partnersRouter.post(
+  "/login",
+  async (ctx, next) => {
+    return passportForPartners.authenticate(
+      "local",
+      (err, user, info, status) => {
+        if (err) ctx.body = { msg: "시스템 에러" };
+        if (!user) ctx.body = { msg: info.message };
+
+        // jwt 토큰 생성
+        // 파트너 페이지로 redirection
+        next();
+      }
+    )(ctx);
+  },
+  ctx => {
+    debugger;
+  }
 );
 
 module.exports = partnersRouter;

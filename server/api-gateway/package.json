@@ -1,0 +1,30 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/connect-foundation/2019-16"
+  },
+  "author": "Sejin Kim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/connect-foundation/2019-16/issues"
+  },
+  "homepage": "https://github.com/connect-foundation/2019-16#readme",
+  "dependencies": {
+    "apollo-server-koa": "^2.9.9",
+    "dotenv": "^8.2.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.7.10",
+    "passport": "^0.4.0",
+    "passport-kakao": "^1.0.0",
+    "passport-local": "^1.0.0"
+  }
+}
