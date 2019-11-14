@@ -1,5 +1,6 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const mongoose = require("mongoose");
+const { makePacket } = require("../../lib/tcp/util");
 const User = require("./models/user");
 const JWT = require("jsonwebtoken");
 
@@ -21,15 +22,14 @@ class UserServer extends TcpServer {
 
   async onRead(socket, data) {
     let payload = {};
-
+    let packet = {};
     try {
-      const { email, password } = data;
+      const { email, password } = data.params;
       const { age } = await User.findById({ email });
       if (!userInfo || userInfo.password !== password) {
         payload = null;
         return;
       }
-
       payload = { email, age };
       const options = {
         expiresIn: "7d",
@@ -37,10 +37,18 @@ class UserServer extends TcpServer {
       };
       const token = await generateToken(payload, "1q2w3e4r!", options);
       paylaod.jwt = token;
+      packet = makePacket("REPLY", "apigateway", {}, payload, this.context);
     } catch (e) {
       console.error(e);
+      packet = makePacket(
+        "ERROR",
+        "apigateway",
+        {},
+        { error: e },
+        this.context,
+      );
     } finally {
-      socket.write(JSON.stringify(payload) + PACKET_SPLITTER);
+      socket.write(JSON.stringify(packet) + PACKET_SPLITTER);
     }
   }
 }
@@ -58,3 +66,4 @@ mongoose
   });
 
 const userServer = new UserServer();
+userServer.connectToDistributor();
