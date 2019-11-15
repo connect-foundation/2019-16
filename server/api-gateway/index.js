@@ -12,6 +12,17 @@ const { makeKey, makePacket, PACKET_SPLITTER } = require("../lib/tcp/util");
 
 const { PORT, PARTNERS_MONGO_URI, PARTNERS_USER, PARTNERS_PASS } = process.env;
 
+// const tcpClient = new TcpClient(
+//   "127.0.0.1",
+//   8080,
+//   () => {},
+//   data => {
+//     return data;
+//   },
+//   () => {},
+//   () => {}
+// );
+
 const mongoOptions = {
   dbName: "partners",
   user: PARTNERS_USER,
@@ -33,10 +44,50 @@ const typeDefs = gql`
   type Query {
     hello: String
   }
+
+  type Mutation {
+    login(email: String, password: String): String
+  }
 `;
+
 const resolvers = {
   Query: {
     hello: () => "hello world"
+  },
+  Mutation: {
+    login: async (_, { email, password }) => {
+      const packet = makePacket(
+        "POST",
+        "login",
+        { email, password },
+        {},
+        {
+          name: "gateway",
+          host: "127.0.0.1",
+          port: 8000,
+          query: ""
+        }
+      );
+      let data;
+      const tcpClient = new TcpClient(
+        "127.0.0.1",
+        8080,
+        () => {},
+        payload => {
+          data = payload.payload;
+          return data;
+        },
+        () => {},
+        () => {}
+      );
+
+      tcpClient.connect();
+      tcpClient.write(packet);
+      // return data
+
+      // await tcpClient.write(packet);
+      // return await tcpClient.onRead();
+    }
   }
 };
 const server = new ApolloServer({ typeDefs, resolvers });

@@ -23,9 +23,11 @@ class UserServer extends TcpServer {
   async onRead(socket, data) {
     let payload = {};
     let packet = {};
+
     try {
       const { email, password } = data.params;
       const { age } = await User.findById({ email });
+
       if (!userInfo || userInfo.password !== password) {
         payload = null;
         return;
@@ -33,9 +35,10 @@ class UserServer extends TcpServer {
       payload = { email, age };
       const options = {
         expiresIn: "7d",
-        subject: "userInfo",
+        subject: "userInfo"
       };
       const token = await generateToken(payload, "1q2w3e4r!", options);
+
       paylaod.jwt = token;
       packet = makePacket("REPLY", "apigateway", {}, payload, this.context);
     } catch (e) {
@@ -45,7 +48,7 @@ class UserServer extends TcpServer {
         "apigateway",
         {},
         { error: e },
-        this.context,
+        this.context
       );
     } finally {
       socket.write(JSON.stringify(packet) + PACKET_SPLITTER);
@@ -56,7 +59,7 @@ class UserServer extends TcpServer {
 mongoose
   .connect("mongodb://106.10.42.155:27017/test", {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: true
   })
   .then(() => {
     console.log("Connected to MongoDB");
@@ -66,4 +69,5 @@ mongoose
   });
 
 const userServer = new UserServer();
+
 userServer.connectToDistributor();
