@@ -12,6 +12,12 @@ class TcpServer {
 		this.dataMap = {};
 		this.isConnectToDistributor = false;
 		this.server = net.createServer(socket => {
+			this.onCreate(socket);
+
+			socket.on("close", ()=>{
+				this.onClose(socket);
+			})
+
 			socket.on("data", async(data) => {
 				const key = await makeKey(socket);
 
@@ -37,7 +43,12 @@ class TcpServer {
 			logger.info(`${name} Server Listening!`)
 		});
 	}
+	onCreate(socket){
 
+	}
+	onClose(){
+
+	}
 	onRead(socket, data) {
 		logger.info(data)
 		socket.write(data);
@@ -48,9 +59,9 @@ class TcpServer {
 		this.distributor = new TcpClient("127.0.0.1", 8100, () => {
 			// this.isConnectToDistributor = true;
 			logger.info(`${this.context.host}:${this.context.port} is connected to Distributor`);
-			const packet = makePacket("POST", "distribute",{},{}, this.context);
+			// const packet = makePacket("POST", "distribute",{},{}, this.context);
 
-			this.distributor.write(packet)
+			// this.distributor.write(packet)
 		},
 		() => {
 			logger.info(`It is read function at Port:${this.context.port}`)
