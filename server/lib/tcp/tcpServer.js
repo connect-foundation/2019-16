@@ -1,8 +1,7 @@
 const net = require("net");
 const TcpClient = require('./tcpClient');
-const {makeKey, makePacket} = require("./util");
-
-const PACKET_SPLITTER = "|";
+const logger = require("../../services/logger/logger")
+const {makeKey, makePacket, PACKET_SPLITTER} = require("./util");
 
 class TcpServer {
 	constructor(name, host, port, query) {
@@ -13,6 +12,12 @@ class TcpServer {
 		this.dataMap = {};
 		this.isConnectToDistributor = false;
 		this.server = net.createServer(socket => {
+			this.onCreate(socket);
+
+			socket.on("close", ()=>{
+				this.onClose(socket);
+			})
+
 			socket.on("data", async(data) => {
 				const key = await makeKey(socket);
 
@@ -35,42 +40,47 @@ class TcpServer {
 			});
 		});
 		this.server.listen(port, host, () => {
-			console.log(`${name} Server Listening!`);
+			logger.info(`${name} Server Listening!`)
 		});
 	}
+	onCreate(socket){
 
+	}
+	onClose(){
+
+	}
 	onRead(socket, data) {
-		console.log(JSON.stringify(data));
-		socket.write(JSON.stringify(data) + PACKET_SPLITTER);
+		logger.info(data)
+		socket.write(data);
 	}
 
 	connectToDistributor() {
-		let intervalId;
 
-		console.log(this.isConnectToDistributor);
 		this.distributor = new TcpClient("127.0.0.1", 8100, () => {
-			this.isConnectToDistributor = true;
-			console.log(`${this.context.host}:${this.context.port} is connected to Distributor`);
-			const packet = makePacket("POST", "distribute",{},{}, this.context);
+			// this.isConnectToDistributor = true;
+			logger.info(`${this.context.host}:${this.context.port} is connected to Distributor`);
+			// const packet = makePacket("POST", "distribute",{},{}, this.context);
 
-			this.distributor.write(packet)
+			// this.distributor.write(packet)
 		},
 		() => {
-			console.log("It is read function at Port:", this.context.port);		
+			logger.info(`It is read function at Port:${this.context.port}`)
 		},
 		() => {
-			console.error("It is disconnect ");
+			logger.warn(`end service`)
 			this.isConnectToDistributor = false;
 		},
 		() => {
-			console.log("It is Error Situation");
+			logger.warn(`distributor server is down`);
 			this.isConnectToDistributor = false;
 		});
-		this.distributor.connect();
-		intervalId = setInterval(() => {
+		
+		setInterval(() => {
+			
 			if(!this.isConnectToDistributor) {
-				clearInterval(intervalId);
-				this.connectToDistributor();
+				this.isConnectToDistributor = true;
+				logger.info(`try connect to distributor`)
+				this.distributor.connect();
 			}
 		}, 3600);
 	}
