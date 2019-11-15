@@ -6,21 +6,18 @@ const { ApolloServer, gql } = require("apollo-server-koa");
 const passportForPartners = require("./passport/partners");
 const mongoose = require("mongoose");
 const authRouter = require("./routes");
+const TcpClient = require("../lib/tcp/tcpClient");
+const TcpServer = require("../lib/tcp/tcpServer");
+const { makeKey, makePacket, PACKET_SPLITTER } = require("../lib/tcp/util");
 
-const {
-  PORT,
-  PARTNERS_MONGO_URI,
-  PARTNERS_USER,
-  PARTNERS_PASS,
-} = process.env;
-
+const { PORT, PARTNERS_MONGO_URI, PARTNERS_USER, PARTNERS_PASS } = process.env;
 
 const mongoOptions = {
-	dbName:'partners',
+  dbName: "partners",
   user: PARTNERS_USER,
-	pass: PARTNERS_PASS,
-	useNewUrlParser: true,
-	useFindAndModify: true
+  pass: PARTNERS_PASS,
+  useNewUrlParser: true,
+  useFindAndModify: true
 };
 
 mongoose
@@ -39,8 +36,8 @@ const typeDefs = gql`
 `;
 const resolvers = {
   Query: {
-    hello: () => "hello world",
-  },
+    hello: () => "hello world"
+  }
 };
 const server = new ApolloServer({ typeDefs, resolvers });
 const app = new Koa();
@@ -56,4 +53,8 @@ server.applyMiddleware({ app });
 
 app.listen(8000 || PORT, () => {
   console.log("8000번에서 API Gateway 실행중...");
+
+  const distributor = new TcpServer("gateway", "127.0.0.1", 8000, "");
+
+  distributor.connectToDistributor();
 });
