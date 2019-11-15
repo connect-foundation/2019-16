@@ -42,6 +42,25 @@ class Distributor extends TcpServer{
         break;
     }
   }
+
+  async onCreate(socket){
+    const key = await makeKey(socket);
+    let packet;
+
+    nodeList[key] = {};
+    nodeList[key].socket = socket;
+    packet = makePacket("POST", "nodes", {}, {nodeList}, this.context);
+    this.broadCast(packet);
+  }
+  async onClose(socket){
+    const key = await makeKey(socket);
+    let packet;
+
+    delete nodeList[key];
+    packet = makePacket("POST", "nodes",{},{nodeList},this.context);
+    this.broadCast(packet);
+  }
+
   send(socket, packet){
     socket.write(packet);
   }
@@ -53,7 +72,9 @@ class Distributor extends TcpServer{
 
   printNodeList(){
     for(let nodeKey in nodeList){
-      logger.info(JSON.stringify(nodeList[nodeKey].info));
+      const { remoteAddress, remotePort } = nodeList[nodeKey].socket;
+
+      logger.info(`nodeList: ${remoteAddress} : ${ remotePort}`);
     }
   }
 }

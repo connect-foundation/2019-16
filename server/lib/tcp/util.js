@@ -1,11 +1,11 @@
-const bcrypt = require("bcrypt");
+const crypto = require('crypto');
 
 const PACKET_SPLITTER = "|";
 
 
 exports.makeKey = async(socket) => {
-  const key = socket.remoteAddress + socket.remotePort
-  const hashedKey = await bcrypt.hash(key, 1);
+  const key = socket.remoteAddress + String(socket.remotePort);
+  const hashedKey = crypto.createHash('sha512').update(key).digest('base64');
 
   return hashedKey;
 }
