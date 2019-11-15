@@ -54,6 +54,7 @@ class TcpServer {
 		socket.write(data);
 	}
 
+	
 	connectToDistributor() {
 
 		this.distributor = new TcpClient("127.0.0.1", 8100, () => {
@@ -83,6 +84,7 @@ class TcpServer {
 				this.distributor.connect();
 			}
 		}, 3600);
+		return this.distributor;
 	}
 }
 
