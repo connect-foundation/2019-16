@@ -41,12 +41,16 @@ mongoose
   });
 
 const typeDefs = gql`
+  type JwtResponse {
+    jwt: String
+  }
+
   type Query {
     hello: String
   }
 
   type Mutation {
-    login(email: String, password: String): String
+    login(email: String, password: String): JwtResponse
   }
 `;
 
@@ -73,8 +77,9 @@ const resolvers = {
         "127.0.0.1",
         8080,
         () => {},
-        payload => {
-          data = payload.payload;
+        (payload) => {
+          
+          console.log(data)
           return data;
         },
         () => {},
@@ -83,10 +88,7 @@ const resolvers = {
 
       tcpClient.connect();
       tcpClient.write(packet);
-      // return data
-
-      // await tcpClient.write(packet);
-      // return await tcpClient.onRead();
+      
     }
   }
 };

@@ -26,7 +26,8 @@ class UserServer extends TcpServer {
 
     try {
       const { email, password } = data.params;
-      const { age } = await User.findById({ email });
+      const userInfo= await User.findOne({ email });
+      const { age } = userInfo;
 
       if (!userInfo || userInfo.password !== password) {
         payload = null;
@@ -39,7 +40,7 @@ class UserServer extends TcpServer {
       };
       const token = await generateToken(payload, "1q2w3e4r!", options);
 
-      paylaod.jwt = token;
+      payload.jwt = token;
       packet = makePacket("REPLY", "apigateway", {}, payload, this.context);
     } catch (e) {
       console.error(e);
@@ -51,7 +52,7 @@ class UserServer extends TcpServer {
         this.context
       );
     } finally {
-      socket.write(JSON.stringify(packet) + PACKET_SPLITTER);
+      socket.write(packet);
     }
   }
 }
