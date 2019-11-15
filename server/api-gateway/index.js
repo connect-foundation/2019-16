@@ -7,20 +7,14 @@ const passportForPartners = require("./passport/partners");
 const mongoose = require("mongoose");
 const authRouter = require("./routes");
 
-const {
-  PORT,
-  PARTNERS_MONGO_URI,
-  PARTNERS_USER,
-  PARTNERS_PASS,
-} = process.env;
-
+const { PORT, PARTNERS_MONGO_URI, PARTNERS_USER, PARTNERS_PASS } = process.env;
 
 const mongoOptions = {
-	dbName:'partners',
+  dbName: "partners",
   user: PARTNERS_USER,
-	pass: PARTNERS_PASS,
-	useNewUrlParser: true,
-	useFindAndModify: true
+  pass: PARTNERS_PASS,
+  useNewUrlParser: true,
+  useFindAndModify: true
 };
 
 mongoose
@@ -34,13 +28,56 @@ mongoose
 
 const typeDefs = gql`
   type Query {
-    hello: String
+
   }
 `;
 const resolvers = {
-  Query: {
-    hello: () => "hello world",
-  },
+  Query: {},
+  Mutation: {
+    login: async (_, { email, password }) => {
+      let wait, data;
+      const packet = await makePacket(
+        "POST",
+        "login",
+        { email, password },
+        {},
+        {
+          name: "gateway",
+          host: "127.0.0.1",
+          port: 8000,
+          query: ""
+        }
+      );
+
+      const tcpClient = new TcpClient(
+        "127.0.0.1",
+        8081,
+        () => {},
+        payload => {
+          wait.next();
+          data = payload.body.jwt;
+        },
+        () => {},
+        () => {}
+      );
+
+      tcpClient.connect();
+      tcpClient.write(packet);
+
+      function* gen(resolve) {
+        resolve();
+        return;
+      }
+
+      await new Promise((resolve, reject) => {
+        wait = gen(resolve);
+      });
+
+      return {
+        jwt: data
+      };
+    }
+  }
 };
 const server = new ApolloServer({ typeDefs, resolvers });
 const app = new Koa();
