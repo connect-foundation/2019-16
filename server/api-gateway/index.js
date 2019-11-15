@@ -60,7 +60,8 @@ const resolvers = {
   },
   Mutation: {
     login: async (_, { email, password }) => {
-      const packet = makePacket(
+      let wait, data;
+      const packet = await makePacket(
         "POST",
         "login",
         { email, password },
@@ -72,15 +73,15 @@ const resolvers = {
           query: ""
         }
       );
-      let data;
+
       const tcpClient = new TcpClient(
         "127.0.0.1",
-        8080,
+        8081,
         () => {},
-        (payload) => {
-          
-          console.log(data)
-          return data;
+        payload => {
+          console.log("test2", payload);
+          wait.next();
+          data = payload.body.jwt;
         },
         () => {},
         () => {}
@@ -88,7 +89,22 @@ const resolvers = {
 
       tcpClient.connect();
       tcpClient.write(packet);
-      
+
+      function* gen(resolve) {
+        resolve();
+        return;
+      }
+
+      await new Promise((resolve, reject) => {
+        wait = gen(resolve);
+        console.log("hihi\n\n");
+        return wait;
+      });
+
+      console.log(`testtest: \n\n ${JSON.stringify(data)}\n\n`);
+      return {
+        jwt: data
+      };
     }
   }
 };

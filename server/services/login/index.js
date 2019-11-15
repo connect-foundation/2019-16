@@ -17,7 +17,7 @@ const generateToken = (payload, secretKey, options) => {
 
 class UserServer extends TcpServer {
   constructor() {
-    super("user", "127.0.0.1", 8080, "login");
+    super("user", "127.0.0.1", 8081, "login");
   }
 
   async onRead(socket, data) {
@@ -26,7 +26,7 @@ class UserServer extends TcpServer {
 
     try {
       const { email, password } = data.params;
-      const userInfo= await User.findOne({ email });
+      const userInfo = await User.findOne({ email });
       const { age } = userInfo;
 
       if (!userInfo || userInfo.password !== password) {
