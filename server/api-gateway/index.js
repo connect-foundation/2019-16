@@ -54,13 +54,41 @@ const typeDefs = gql`
   }
 `;
 
+function readyToSend(client, packet) {
+  return (function*() {
+    const resolve = yield;
+    client.write(packet);
+    const data = yield;
+    resolve(data);
+  })();
+}
+
+async function fetchData(packetGenerator) {
+  const data = await new Promise(resolve => {
+    packetGenerator.next();
+    packetGenerator.next(resolve);
+  });
+
+  return data;
+}
+
 const resolvers = {
   Query: {
     hello: () => "hello world"
   },
   Mutation: {
     login: async (_, { email, password }) => {
-      let wait, data;
+      const tcpClient = new TcpClient(
+        "127.0.0.1",
+        8081,
+        () => {},
+        payload => {
+          packetGenerator.next(payload.body.jwt);
+        },
+        () => {},
+        () => {}
+      );
+
       const packet = await makePacket(
         "POST",
         "login",
@@ -74,34 +102,11 @@ const resolvers = {
         }
       );
 
-      const tcpClient = new TcpClient(
-        "127.0.0.1",
-        8081,
-        () => {},
-        payload => {
-          console.log("test2", payload);
-          wait.next();
-          data = payload.body.jwt;
-        },
-        () => {},
-        () => {}
-      );
-
       tcpClient.connect();
-      tcpClient.write(packet);
 
-      function* gen(resolve) {
-        resolve();
-        return;
-      }
+      var packetGenerator = readyToSend(tcpClient, packet);
+      const data = fetchData(packetGenerator);
 
-      await new Promise((resolve, reject) => {
-        wait = gen(resolve);
-        console.log("hihi\n\n");
-        return wait;
-      });
-
-      console.log(`testtest: \n\n ${JSON.stringify(data)}\n\n`);
       return {
         jwt: data
       };
