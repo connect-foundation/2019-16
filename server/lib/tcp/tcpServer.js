@@ -1,24 +1,24 @@
 const net = require("net");
 const TcpClient = require('./tcpClient');
 const logger = require("../../services/logger/logger")
-const {makeKey, makePacket, PACKET_SPLITTER} = require("./util");
+const { makeKey, makePacket, PACKET_SPLITTER } = require("./util");
 
 class TcpServer {
 	constructor(name, host, port, query) {
 		this.context = {
 			name, host, port, query
 		};
-
+		this.nodeList = {};
 		this.dataMap = {};
 		this.isConnectToDistributor = false;
 		this.server = net.createServer(socket => {
 			this.onCreate(socket);
 
-			socket.on("close", ()=>{
+			socket.on("close", () => {
 				this.onClose(socket);
 			})
 
-			socket.on("data", async(data) => {
+			socket.on("data", async (data) => {
 				const key = await makeKey(socket);
 
 				let mergedPacket = !this.dataMap[key] ? data.toString() :
@@ -28,7 +28,7 @@ class TcpServer {
 
 				packets.forEach((packet, index) => {
 					if (mergedPacket[mergedPacket.length - 1] !== PACKET_SPLITTER &&
-                        index === packets.length - 1) {
+						index === packets.length - 1) {
 						this.dataMap[key] = packets[index];
 						return;
 					}
@@ -43,10 +43,10 @@ class TcpServer {
 			logger.info(`${name} Server Listening!`)
 		});
 	}
-	onCreate(socket){
+	onCreate(socket) {
 
 	}
-	onClose(){
+	onClose() {
 
 	}
 	onRead(socket, data) {
@@ -54,32 +54,34 @@ class TcpServer {
 		socket.write(data);
 	}
 
-	
+
 	connectToDistributor() {
 
 		this.distributor = new TcpClient("127.0.0.1", 8100, () => {
-			// this.isConnectToDistributor = true;
+			this.isConnectToDistributor = true;
 			logger.info(`${this.context.host}:${this.context.port} is connected to Distributor`);
-			// const packet = makePacket("POST", "distribute",{},{}, this.context);
+			//const packet = makePacket("POST", "distribute", {}, {}, this.context);
 
-			// this.distributor.write(packet)
+			//this.distributor.write(packet)
 		},
-		() => {
-			logger.info(`It is read function at Port:${this.context.port}`)
-		},
-		() => {
-			logger.warn(`end service`)
-			this.isConnectToDistributor = false;
-		},
-		() => {
-			logger.warn(`distributor server is down`);
-			this.isConnectToDistributor = false;
-		});
-		
+			({ method, query, body }) => {
+				logger.info(`It is read function at Port:${this.context.port}`);
+				if (method === "POST" && query === "nodes") {
+					this.nodeList = body;
+				}
+			},
+			() => {
+				logger.warn(`end service`)
+				this.isConnectToDistributor = false;
+			},
+			() => {
+				logger.warn(`distributor server is down`);
+				this.isConnectToDistributor = false;
+			});
+
 		setInterval(() => {
-			
-			if(!this.isConnectToDistributor) {
-				this.isConnectToDistributor = true;
+
+			if (!this.isConnectToDistributor) {
 				logger.info(`try connect to distributor`)
 				this.distributor.connect();
 			}
