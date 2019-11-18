@@ -6,8 +6,17 @@ const { ApolloServer, gql } = require("apollo-server-koa");
 const passportForPartners = require("./passport/partners");
 const mongoose = require("mongoose");
 const authRouter = require("./routes");
+const TcpClient = require("../lib/tcp/tcpClient");
+const TcpServer = require("../lib/tcp/tcpServer");
+const { makePacket } = require("../lib/tcp/util");
 
-const { PORT, PARTNERS_MONGO_URI, PARTNERS_USER, PARTNERS_PASS } = process.env;
+const {
+  GATE_PORT,
+  PARTNERS_MONGO_URI,
+  PARTNERS_USER,
+  PARTNERS_PASS,
+  GATE_HOST
+} = process.env;
 
 const mongoOptions = {
   dbName: "partners",
@@ -16,6 +25,8 @@ const mongoOptions = {
   useNewUrlParser: true,
   useFindAndModify: true
 };
+
+const nodeInfo = {};
 
 mongoose
   .connect(PARTNERS_MONGO_URI, mongoOptions)
@@ -26,17 +37,13 @@ mongoose
     console.error(e);
   });
 
-const typeDefs = gql`
-  type Query {
-
-  }
-`;
-
 function readyToSend(client, packet) {
   return (function*() {
     const resolve = yield;
+
     client.write(packet);
     const data = yield;
+
     resolve(data);
   })();
 }
@@ -50,45 +57,66 @@ async function fetchData(packetGenerator) {
   return data;
 }
 
-const resolvers = {
-  Query: {},
-  Mutation: {
-    login: async (_, { email, password }) => {
-      const tcpClient = new TcpClient(
-        "127.0.0.1",
-        8081,
+// packetInfo: { method, query, body }
+// packet의 params는 포함되지 않으며 2줄 아래에 있는 인자를 따로 넣어줘야함
+function resolverLogic(serviceName, packetInfo) {
+  return async function(_, params) {
+    let tcpClient = nodeInfo[serviceName].socket;
+
+    if (!tcpClient) {
+      const { serviceHost, servicePort } = nodeInfo[serviceName];
+
+      tcpClient = new TcpClient(
+        serviceHost,
+        servicePort,
         () => {},
         payload => {
-          packetGenerator.next(payload.body.jwt);
+          packetGenerator.next(payload.body);
         },
         () => {},
         () => {}
       );
 
-      const packet = await makePacket(
-        "POST",
-        "login",
-        { email, password },
-        {},
-        {
-          name: "gateway",
-          host: "127.0.0.1",
-          port: 8000,
-          query: ""
-        }
-      );
-
       tcpClient.connect();
-
-      var packetGenerator = readyToSend(tcpClient, packet);
-      const data = fetchData(packetGenerator);
-
-      return {
-        jwt: data
-      };
     }
+
+    const { method, query, body = {} } = packetInfo;
+    const packet = await makePacket(
+      method, // POST
+      query, // login
+      params,
+      body,
+      {
+        name: "gateway",
+        host: GATE_HOST,
+        port: GATE_PORT
+      }
+    );
+
+    var packetGenerator = readyToSend(tcpClient, packet);
+    const data = fetchData(packetGenerator);
+
+    return data;
+  };
+}
+
+const typeDefs = gql`
+  type Query {
+
+  }
+
+  type Mutation {
+
+  }
+`;
+
+const resolvers = {
+  Query: {},
+  Mutation: {
+    login: resolverLogic("login", { method: "POST", query: "login" })
   }
 };
+
 const server = new ApolloServer({ typeDefs, resolvers });
 const app = new Koa();
 const router = new KoaRouter();
@@ -101,6 +129,6 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 server.applyMiddleware({ app });
 
-app.listen(8000 || PORT, () => {
+app.listen(8000 || GATE_PORT, () => {
   console.log("8000번에서 API Gateway 실행중...");
 });
