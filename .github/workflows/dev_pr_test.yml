@@ -1,0 +1,19 @@
+name: PR test
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+    branches: 
+      - develop
+
+jobs:
+  RunTest:
+    name: Run Jest
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: npm install
+        run: npm install
+      - name: Run Jest
+        uses: stefanoeb/jest-action@1.0.0
