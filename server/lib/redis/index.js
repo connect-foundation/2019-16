@@ -16,8 +16,23 @@ exports.saveApp = async (appName, { host, port }) => {
     if (isAlready === 0) {
       client.hset(appName, "host", host, "port", port);
       resultBool = true;
-    } else resultBool = false;
+    }
     res(resultBool);
+  });
+};
+
+exports.deleteApp = async (appName, { host, port }) => {
+
+  return new Promise(res => {
+    client.del(appName, (err, bool) => {
+      let resultBool = false;
+
+      if (!err) {
+        client.hset(appName, "host", host, "port", port);
+        resultBool = true;
+      }
+      res(resultBool);
+    });
   });
 };
 
@@ -29,8 +44,6 @@ exports.updatdApp = (appName, { host, port }) => {
       if (!err) {
         client.hset(appName, "host", host, "port", port);
         resultBool = true;
-      } else {
-        resultBool = false;
       }
       res(resultBool);
     });
@@ -68,3 +81,4 @@ exports.getAllApps = () => {
     resolve(apps);
   });
 };
+
