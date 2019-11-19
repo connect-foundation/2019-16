@@ -12,7 +12,6 @@ class TcpServer {
     };
 
     this.dataMap = {};
-    this.isConnectToDistributor = false;
     this.server = net.createServer(socket => {
       this.onCreate(socket);
 
