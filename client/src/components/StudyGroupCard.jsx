@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import StudyThumbnail from "./StudyThumbnail";
-import CardTitle from "./CardTitle";
-import StudyLocation from "./StudyLocation";
-import StudyTime from "./StudyTime";
-import StudyPersonnel from "./StudyPersonnel";
+import Thumbnail from "./StudyThumbnail";
+import Title from "./CardTitle";
+import Location from "./StudyLocation";
+import TimeInfo from "./StudyTime";
+import Personnel from "./StudyPersonnel";
 
-const Card = styled.div`
+const StyledCard = styled.div`
   width: 15rem;
   height: 20rem;
   background-color: whitesmoke;
@@ -14,13 +14,13 @@ const Card = styled.div`
 `;
 
 const StudyGroupCard = ({ props }) => (
-  <Card>
-    <StudyThumbnail src={props.src} alt={props.alt} />
-    <CardTitle title={props.title} />
-    <StudyLocation location={props.location} />
-    <StudyTime time={props.time} />
-    <StudyPersonnel now={props.now} max={props.max} />
-  </Card>
+  <StyledCard>
+    <Thumbnail src={props.src} alt={props.alt} />
+    <Title title={props.title} />
+    <Location location={props.location} />
+    <TimeInfo time={props.time} />
+    <Personnel now={props.nowCnt} max={props.maxCnt} />
+  </StyledCard>
 );
 
 export default StudyGroupCard;
