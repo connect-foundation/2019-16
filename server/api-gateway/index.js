@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: ".env.gateway" });
 const Koa = require("koa");
 const KoaRouter = require("koa-router");
 const koaBody = require("koa-bodyparser");
@@ -18,6 +18,7 @@ const {
   GATE_HOST
 } = process.env;
 
+console.log(GATE_PORT);
 const mongoOptions = {
   dbName: "partners",
   user: PARTNERS_USER,
