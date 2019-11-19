@@ -36,3 +36,11 @@ exports.updatdApp = (appName, { host, port }) => {
     });
   });
 };
+
+exports.getApp = appName => {
+  return new Promise(resolve => {
+    client.hgetall(appName, (objErr, res) => {
+      resolve(res);
+    });
+  });
+};
