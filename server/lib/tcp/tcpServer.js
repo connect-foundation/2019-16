@@ -1,7 +1,6 @@
 const net = require("net");
-const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
-const { makeKey, makePacket, PACKET_SPLITTER } = require("./util");
+const { makeKey, PACKET_SPLITTER } = require("./util");
 
 class TcpServer {
   constructor(name, host, port, query) {
@@ -38,9 +37,7 @@ class TcpServer {
             this.dataMap[key] = packets[index];
             return;
           }
-          if (packet === "") {
-            return;
-          }
+          if (packet === "") return;
           this.onRead(socket, JSON.parse(packet));
         });
       });
@@ -54,42 +51,6 @@ class TcpServer {
   onRead(socket, data) {
     logger.info(data);
     socket.write(data);
-  }
-
-  connectToDistributor() {
-    this.distributor = new TcpClient(
-      "127.0.0.1",
-      8100,
-      () => {
-        // this.isConnectToDistributor = true;
-        logger.info(
-          `${this.context.host}:${this.context.port} is connected to Distributor`
-        );
-        // const packet = makePacket("POST", "distribute",{},{}, this.context);
-
-        // this.distributor.write(packet)
-      },
-      () => {
-        logger.info(`It is read function at Port:${this.context.port}`);
-      },
-      () => {
-        logger.warn(`end service`);
-        this.isConnectToDistributor = false;
-      },
-      () => {
-        logger.warn(`distributor server is down`);
-        this.isConnectToDistributor = false;
-      }
-    );
-
-    setInterval(() => {
-      if (!this.isConnectToDistributor) {
-        this.isConnectToDistributor = true;
-        logger.info(`try connect to distributor`);
-        this.distributor.connect();
-      }
-    }, 3600);
-    return this.distributor;
   }
 }
 
