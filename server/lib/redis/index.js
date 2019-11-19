@@ -44,3 +44,27 @@ exports.getApp = appName => {
     });
   });
 };
+
+exports.getAllApps = () => {
+  let apps;
+
+  return new Promise(async resolve => {
+    await new Promise(res => {
+      client.keys("*", async (keyErr, keys) => {
+        apps = await keys.reduce(async (promise, cur) => {
+          let appList = await promise.then();
+
+          await new Promise(r => {
+            client.hgetall(cur, (objErr, app) => {
+              if (!objErr) appList.push(app);
+              r();
+            });
+          });
+          return Promise.resolve(appList);
+        }, Promise.resolve([]));
+        res();
+      });
+    });
+    resolve(apps);
+  });
+};
