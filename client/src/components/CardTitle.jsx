@@ -16,10 +16,11 @@ const Title = styled.h3`
   }
   font-family: "NanumBarunGothic", sans-serif;
   font-weight: bold;
-  line-height: 2.2rem;
-  font-size: 1.6rem;
+  line-height: 2rem;
+  font-size: 1.5rem;
 
-  margin: 1rem 0rem;
+  padding: 0 0.4rem;
+  height: 3.5rem;
 `;
 
 const CardTitle = ({ title }) => <Title>{title}</Title>;
