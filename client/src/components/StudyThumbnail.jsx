@@ -4,9 +4,9 @@ import styled from "styled-components";
 const Thumbnail = styled.div`
   img {
     width: 100%;
-    border-top-left-radius: 0.55rem;
-    border-top-right-radius: 0.55rem;
     height: 12rem;
+    border-top-left-radius: 0.2rem;
+    border-top-right-radius: 0.2rem;
   }
 `;
 

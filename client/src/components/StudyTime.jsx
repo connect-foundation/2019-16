@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Time = styled.div`
-  margin: 0.5rem;
-`;
+const Time = styled.div``;
 
 const StudyTime = ({ time }) => <Time>{time}</Time>;
 

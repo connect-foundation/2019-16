@@ -7,7 +7,8 @@ const StyledCard = styled.div`
   width: 17rem;
   height: 30rem;
   background-color: whitesmoke;
-  border-radius: 0.55rem;
+  border-radius: 0.2rem;
+  padding-bottom: 1rem;
 `;
 
 const StudyGroupCard = ({ groupData }) => (

@@ -2,7 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledCardSubtitle = styled.div`
-  /* margin: 1rem 0.5rem; */
+  @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+  @import url(http://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+  @import url(http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
+  @import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
+  @import url(http://fonts.googleapis.com/earlyaccess/nanumpenscript.css);
+  @import url(http://cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css);
+
+  font-family: "Nanum Gothic", sans-serif;
+  line-height: 1.4rem;
   color: gray;
 `;
 
