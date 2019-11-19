@@ -4,16 +4,17 @@ import Location from "./StudyLocation";
 import TimeInfo from "./StudyTime";
 import Personnel from "./StudyPersonnel";
 
-const StyledCardBody = styled.div`
-  margin-top: 1.5rem;
+const StyledCardFooter = styled.div`
+  margin-top: 1rem;
+  padding: 0 1rem;
 `;
 
-const CardDetails = ({ detailInfo: { location, time, nowCnt, maxCnt } }) => (
-  <StyledCardBody>
+const CardFooter = ({ footerData: { location, time, nowCnt, maxCnt } }) => (
+  <StyledCardFooter>
     <Location location={location} />
     <TimeInfo time={time} />
     <Personnel nowCnt={nowCnt} maxCnt={maxCnt} />
-  </StyledCardBody>
+  </StyledCardFooter>
 );
 
-export default CardDetails;
+export default CardFooter;
