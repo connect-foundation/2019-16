@@ -5,7 +5,7 @@ import CardBody from "./CardBody";
 
 const StyledCard = styled.div`
   width: 17rem;
-  height: 24rem;
+  height: 30rem;
   background-color: whitesmoke;
   border-radius: 0.55rem;
 `;
