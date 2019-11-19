@@ -1,26 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import StudyGroupCard from "./components/StudyGroupCard";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <div className="App">{/* <StudyGroupCard props={data} /> */}</div>;
 }
 
 export default App;
+
+// const data = {
+//   src:
+//     "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
+//   alt: "img",
+//   title: "자바스크립트 기초 공부해요",
+//   location: "강남",
+//   time: "월수 | 20:00 ~ | 2시간",
+//   now: 8,
+//   max: 10
+// };
