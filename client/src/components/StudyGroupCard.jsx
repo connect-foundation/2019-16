@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Thumbnail from "./StudyThumbnail";
-import Title from "./CardTitle";
-import Location from "./StudyLocation";
-import TimeInfo from "./StudyTime";
-import Personnel from "./StudyPersonnel";
+import CardBody from "./CardBody";
 
 const StyledCard = styled.div`
   width: 17rem;
@@ -13,13 +10,10 @@ const StyledCard = styled.div`
   border-radius: 0.55rem;
 `;
 
-const StudyGroupCard = ({ props }) => (
+const StudyGroupCard = ({ groupData }) => (
   <StyledCard>
-    <Thumbnail src={props.src} alt={props.alt} />
-    <Title title={props.title} />
-    <Location location={props.location} />
-    <TimeInfo time={props.time} />
-    <Personnel now={props.nowCnt} max={props.maxCnt} />
+    <Thumbnail src={groupData.src} alt={groupData.alt} />
+    <CardBody bodyData={{ ...groupData }} />
   </StyledCard>
 );
 
