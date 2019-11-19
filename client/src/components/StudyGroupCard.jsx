@@ -7,10 +7,10 @@ import TimeInfo from "./StudyTime";
 import Personnel from "./StudyPersonnel";
 
 const StyledCard = styled.div`
-  width: 15rem;
-  height: 20rem;
+  width: 17rem;
+  height: 24rem;
   background-color: whitesmoke;
-  border-radius: 0.5rem;
+  border-radius: 0.55rem;
 `;
 
 const StudyGroupCard = ({ props }) => (
