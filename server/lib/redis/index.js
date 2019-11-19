@@ -20,3 +20,19 @@ exports.saveApp = async (appName, { host, port }) => {
     res(resultBool);
   });
 };
+
+exports.updatdApp = (appName, { host, port }) => {
+  let resultBool = false;
+
+  return new Promise(res => {
+    client.del(appName, (err, bool) => {
+      if (!err) {
+        client.hset(appName, "host", host, "port", port);
+        resultBool = true;
+      } else {
+        resultBool = false;
+      }
+      res(resultBool);
+    });
+  });
+};
