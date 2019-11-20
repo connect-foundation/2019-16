@@ -24,8 +24,8 @@ jobs:
           cd ./gateway
           npm install
           npm test
-      - name: test [client]
-        run: |
-          cd ../../client
-          npm install
-          npm test
+      # - name: test [client]
+      #   run: |
+      #     cd ../../client
+      #     npm install
+      #     npm test

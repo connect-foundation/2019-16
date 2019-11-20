@@ -2,12 +2,12 @@ name: PR Test
 
 on:
   pull_request:
-    types: [opened, reopened, labeled]
+    types: [opened, reopened]
     branches:
       #     - master
       #     - develop
       - service/*
-      - app/log
+      # - app/log
 
 jobs:
   RunTest:
