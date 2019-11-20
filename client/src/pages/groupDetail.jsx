@@ -7,7 +7,9 @@ import Intro from "../components/groupDetailIntro";
 const StyledGroupDetail = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+
+  width: 54rem;
+  margin: auto auto;
 `;
 
 const GroupDetail = () => {
