@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const Time = styled.div``;
+const StyledStudyTime = styled.div``;
 
-const StudyTime = ({ time }) => <Time>{time}</Time>;
+const StudyTime = ({ time }) => <StyledStudyTime>{time}</StyledStudyTime>;
 
 export default StudyTime;
