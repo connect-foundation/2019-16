@@ -1,0 +1,15 @@
+{
+  "name": "log",
+  "version": "1.0.0",
+  "description": "스터디 컴바인 로그 수집 서비스",
+  "main": "index.js",
+  "dependencies": {
+    "jest": "^24.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  },
+  "author": "",
+  "license": "ISC"
+}
