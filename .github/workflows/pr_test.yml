@@ -1,0 +1,51 @@
+name: PR Test
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches: 
+#     - master
+#     - develop
+      - service/*
+      - app/log
+
+jobs:
+  RunTest:
+    name: Run Jest
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: run service test
+        run: |
+          echo current branch is " ${GITHUB_REF#refs/heads/} "
+          if [  ${GITHUB_REF#refs/heads/} == "service/log" ];
+          then
+            cd server/log
+            npm install
+            npm test
+          elif [  ${GITHUB_REF#refs/heads/} == "payment" ];
+          then
+            cd server/payment
+            npm intall
+            npm test
+          else;
+            return 0
+          fi
+      - name: GitHub Script create issue
+        uses: actions/github-script@0.3.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+              github.issues.create({
+              ...context.repo,
+              title: 'Failed merge PR ${{github.sha}}',
+              body: '테스트가 실패하였습니다. '
+              })
+          if: failure()
+      - name: automerge
+        uses: "pascalgn/automerge-action@733fcc62d711705eae9cd66fcf49c93c1d1a98c6"
+        env:
+          GITHUB_TOKEN: "${{ secrets.TOKEN }}"
+          MERGE_LABELS: "automerge"
+          MERGE_COMMIT_MESSAGE: "automatic"
