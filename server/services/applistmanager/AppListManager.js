@@ -12,6 +12,23 @@ class AppListManager extends TcpServer {
     this.query = query;
     appManagerInstance = this;
   }
+  send(socket, packet) {
+    socket.write(packet);
+  }
+  async onCreate(socket) {
+    logger.info(`create App: ${socket.remoteAddress} : ${socket.remotePort}`);
+  }
+  async onClose(socket) {
+    const key = await makeKey(socket)
+
+    try {
+      await deletebypName(key);
+    } catch (e) {
+      console.log(e)
+    }
+
+  }
+
   async onRead(socket, data) {
 
     const { method, query, info } = data;
