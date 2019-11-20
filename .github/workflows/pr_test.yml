@@ -22,17 +22,17 @@ jobs:
           echo base_ref is ${{github.base_ref}}
           echo head_ref is ${{github.head_ref}}
           echo current branch is " ${GITHUB_REF#refs/heads/} "
-          if [  ${{github.base_ref}} == "service/log" ];
+          if [  ${{github.base_ref}} == "service/log" ]
           then
             cd server/log
             npm install
             npm test
-          elif [  ${{github.base_ref}} == "service/payment" ];
+          elif [  ${{github.base_ref}} == "service/payment" ]
           then
             cd server/payment
             npm intall
             npm test
-          else;
+          else
             return 0
           fi
       #       - name: GitHub Script create issue
