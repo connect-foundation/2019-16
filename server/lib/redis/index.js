@@ -11,28 +11,28 @@ function returnRedisPromise(command, ...params) {
   })
 }
 
-exports.setAppbypName = async (appName, { host, port }) => {
+exports.setAppbyKey = async (key, { name, host, port }) => {
 
-  const isAlreadyExist = await returnRedisPromise("exists", appName);
+  const isAlreadyExist = await returnRedisPromise("exists", key);
 
-  if (isAlreadyExist === 0) return returnRedisPromise("hset", appName, "host", host, "port", port);
+  if (isAlreadyExist === 0) return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
 
   return new Promise(res => {
     res(0);
   })
 };
 
-exports.deletebypName = async (appName, { host, port }) => {
+exports.deletebyKey = async (key) => {
 
-  return returnRedisPromise("hset", appName, "host", host, "port", port);
+  return returnRedisPromise("del", key);
 };
 
-exports.updatdAppbypName = (appName, { host, port }) => {
-  return returnRedisPromise("hset", appName, "host", host, "port", port);
+exports.updatdAppbyKey = (key, { name, host, port }) => {
+  return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
 };
 
-exports.getAppbypName = appName => {
-  return returnRedisPromise("hgetall", appName);
+exports.getAppbyKey = (key) => {
+  return returnRedisPromise("hgetall", key);
 };
 
 exports.getAllApps = async () => {
@@ -48,3 +48,4 @@ exports.getAllApps = async () => {
 
   return apps;
 };
+
