@@ -1,7 +1,7 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
 const logger = require("../logger/logger");
-const { setAppbypName, deletebypName, updatdAppbypName, getAppbypName, getAllApps } = require("../../lib/redis")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
 
 let appManagerInstance;
 
@@ -22,7 +22,7 @@ class AppListManager extends TcpServer {
     const key = await makeKey(socket)
 
     try {
-      await deletebypName(key);
+      await deletebyKey(key);
     } catch (e) {
       console.log(e)
     }
@@ -39,13 +39,13 @@ class AppListManager extends TcpServer {
       if (method === "POST") {
         switch (query) {
           case "add":
-            result = await setAppbypName(key, info);
+            result = await setAppbyKey(key, info);
             break;
           case "delete":
-            result = await deletebypName(key, info);
+            result = await deletebyKey(key, info);
             break;
           case "update":
-            result = await updatdAppbypName(key, info);
+            result = await updateAppbyKey(key, info);
             break;
           default:
             break;
@@ -54,7 +54,7 @@ class AppListManager extends TcpServer {
       if (method === "GET") {
         switch (query) {
           case "get":
-            result = await getAppbypName(key);
+            result = await getAppbyKey(key);
             break;
           case "getAll":
             result = await getAllApps();
