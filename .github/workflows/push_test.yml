@@ -1,12 +1,12 @@
 name: On Push Test
-on: 
+on:
   push:
-    branches: 
+    branches:
       - service/*
-      - develop
+      # - develop
 #     - master
-      - client/*
-      - app/log
+# - client/*
+# - app/log
 jobs:
   test:
     name: Run test
