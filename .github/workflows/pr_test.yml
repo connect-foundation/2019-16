@@ -19,6 +19,8 @@ jobs:
       - name: run service test
         run: |
           echo sha is ${{github.sha}}
+          echo base_ref is ${{github.base_ref}}
+          echo head_ref is ${{github.head_ref}}
           echo current branch is " ${GITHUB_REF#refs/heads/} "
           if [  ${GITHUB_REF#refs/heads/} == "service/log" ];
           then
