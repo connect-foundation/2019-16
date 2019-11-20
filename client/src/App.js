@@ -1,7 +1,7 @@
 import React from "react";
 import StudyGroupCard from "./components/StudyGroupCard";
 import { createGlobalStyle } from "styled-components";
-import { directive } from "@babel/types";
+import "bulma/css/bulma.css";
 
 const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
@@ -10,6 +10,7 @@ const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
   @import url(http://fonts.googleapis.com/earlyaccess/nanumpenscript.css);
   @import url(http://cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css);
+
 `;
 
 // const data = {
