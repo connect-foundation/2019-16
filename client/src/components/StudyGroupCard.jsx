@@ -8,7 +8,8 @@ const StyledCard = styled.div`
   display: flex;
   flex-direction: column;
 
-  width: 17rem;
+  width: 16rem;
+  height: 29rem;
   background-color: whitesmoke;
   border-radius: 0.2rem;
   padding-bottom: 1.3rem;

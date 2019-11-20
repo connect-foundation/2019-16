@@ -10,8 +10,9 @@ const Location = styled.div`
   align-items: center;
 
   .imageWrapper {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0.3em 0 0.2em 0;
   }
 
   img {
