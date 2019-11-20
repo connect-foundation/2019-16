@@ -1,27 +1,63 @@
 import React from "react";
 import styled from "styled-components";
+import Location from "./StudyLocation";
+import Time from "./StudyTime";
 
 const StyledGroupDetailMain = styled.div`
   width: 100%;
-  height: 18rem;
+  height: 23rem;
   background-color: whitesmoke;
 
-  imageWrapper {
+  .imageDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 15rem;
+      height: 14rem;
+    }
   }
 
-  img {
-    width: 3rem;
-    height: 3rem;
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    p {
+      margin: 0;
+    }
   }
-  margin-left: 0;
+
+  margin: 0;
+  padding: 1.2rem;
 `;
 
-const groupDetailMain = props => {
-  const { studyThumbnail, location, time, no } = props;
+const groupDetailMain = ({ data }) => {
+  const { studyThumbnail, location, time, tags, minCnt, nowCnt, maxCnt } = data;
   return (
     <StyledGroupDetailMain className="columns">
-      <div className="imgWrapper"></div>
-      <div></div>
+      <div className="column imageDiv is-two-fifths">
+        <img src={studyThumbnail} alt="img" />
+      </div>
+      <div className="column content">
+        <Location location={location} />
+        <h4>
+          <Time time={time} />
+        </h4>
+        <p> 최소 인원: {minCnt} </p>
+        <p> 현재 인원: {nowCnt} </p>
+        <p> 최대 인원: {maxCnt} </p>
+        <div className="buttons">
+          {tags.map(tag => (
+            <button className="button is-info is-small"> # {tag} </button>
+          ))}
+        </div>
+        <div className="buttons">
+          <button className="button is-danger"> 마감하기 </button>
+          <button className="button is-warning"> 예약하기 </button>
+        </div>
+      </div>
     </StyledGroupDetailMain>
   );
 };

@@ -7,17 +7,14 @@ const StyledGroupDetailHeader = styled.div`
   }
 `;
 
-const groupDetailHeader = () => {
+const groupDetailHeader = ({ data }) => {
+  const { title, category } = data;
   return (
     <StyledGroupDetailHeader className="hero is-full">
       <div className="hero-body">
-        <h2 className="title has-text-danger is-size-2">
-          {" "}
-          자바스크립트 기초 공부해요{" "}
-        </h2>
+        <h2 className="title has-text-danger is-size-2">{title}</h2>
         <div className="buttons">
-          <button className="button is-primary is-small"> 프로그래밍 </button>{" "}
-          <button className="button is-primary is-small"> 교육 </button>
+          <button className="button is-primary is-small"> {category} </button>{" "}
         </div>
       </div>
     </StyledGroupDetailHeader>

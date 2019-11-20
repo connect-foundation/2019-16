@@ -12,11 +12,25 @@ const StyledGroupDetail = styled.div`
   margin: auto auto;
 `;
 
-const GroupDetail = () => {
+const GroupDetail = ({ data }) => {
+  const {
+    title,
+    category,
+    studyThumbnail,
+    location,
+    time,
+    minCnt,
+    nowCnt,
+    maxCnt,
+    tags
+  } = data;
+
   return (
     <StyledGroupDetail>
-      <Header></Header>
-      <Main></Main>
+      <Header data={{ title, category }}></Header>
+      <Main
+        data={{ studyThumbnail, location, time, minCnt, nowCnt, maxCnt, tags }}
+      ></Main>
       <Intro></Intro>
     </StyledGroupDetail>
   );
