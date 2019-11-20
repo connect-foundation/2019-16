@@ -1,5 +1,5 @@
 import React from "react";
-import StudyGroupCard from "./components/StudyGroupCard";
+import GroupDetail from "./pages/groupDetail";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -29,6 +29,7 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
+      <GroupDetail />
     </div>
   );
 }
