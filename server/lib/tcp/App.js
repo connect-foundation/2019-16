@@ -13,13 +13,10 @@ class App extends TcpServer {
       "127.0.0.1",
       8100,
       () => {
-        // this.isConnectToDistributor = true;
+        this.isConnectToDistributor = true;
         logger.info(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
-        // const packet = makePacket("POST", "distribute",{},{}, this.context);
-
-        // this.distributor.write(packet)
       },
       () => {
         logger.info(`It is read function at Port:${this.context.port}`);
@@ -36,7 +33,6 @@ class App extends TcpServer {
 
     setInterval(() => {
       if (!this.isConnectToAppListManager) {
-        this.isConnectToAppListManager = true;
         logger.info(`try connect to app list manager`);
         this.appListManager.connect();
       }
