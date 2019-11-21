@@ -14,7 +14,7 @@ const StyledGroupDetailMain = styled.div`
     justify-content: center;
     align-items: center;
     img {
-      width: 15rem;
+      width: 19rem;
       height: 14rem;
     }
   }
@@ -23,6 +23,12 @@ const StyledGroupDetailMain = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+
+    font-weight: bold;
+
+    button {
+      font-weight: bold;
+    }
 
     p {
       margin: 0;
@@ -35,9 +41,10 @@ const StyledGroupDetailMain = styled.div`
 
 const groupDetailMain = ({ data }) => {
   const { studyThumbnail, location, time, tags, minCnt, nowCnt, maxCnt } = data;
+
   return (
     <StyledGroupDetailMain className="columns">
-      <div className="column imageDiv is-two-fifths">
+      <div className="column imageDiv is-half">
         <img src={studyThumbnail} alt="img" />
       </div>
       <div className="column content">
@@ -56,6 +63,7 @@ const groupDetailMain = ({ data }) => {
         <div className="buttons">
           <button className="button is-danger"> 마감하기 </button>
           <button className="button is-warning"> 예약하기 </button>
+          )}
         </div>
       </div>
     </StyledGroupDetailMain>
