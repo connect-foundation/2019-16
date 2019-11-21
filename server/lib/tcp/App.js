@@ -17,6 +17,7 @@ class App extends TcpServer {
     const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
 
     this.appClients[name] = client;
+    return client;
   }
 
   connectToAppListManager() {
