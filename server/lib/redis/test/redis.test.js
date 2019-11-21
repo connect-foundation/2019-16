@@ -1,14 +1,27 @@
+const redis = require("redis");
+const redisClient = redis.createClient();
+
 const { makePacket, makeKey } = require("../../tcp/util");
 const TcpServer = require("../../tcp/tcpServer");
 const TcpClient = require("../../tcp/tcpClient");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../index")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAppbyName, getAllApps } = require("../index")
 
+function returnRedisPromise(command, ...params) {
+  return new Promise((res, rej) => {
+    redisClient[command](...params, (err, reply) => {
+      if (err) rej(err);
+      res(reply);
+    })
+  })
+}
 
 
 /**
  * setAppbyKey deleteAppbyKey getAppbyKey test
  */
 test("setAppbyKey deleteAppbyKey getAppbyKey test", async () => {
+  await returnRedisPromise("flushall");
+
   const socket = {
     remoteAddress: '127.0.0.1',
     remotePort: 9000
@@ -27,6 +40,30 @@ test("setAppbyKey deleteAppbyKey getAppbyKey test", async () => {
 
   await deletebyKey(key);
   expect(info).toEqual(expectApp);
+})
+
+/**
+ * getAppbyName test
+ */
+test("getAppbyName test", async () => {
+  await returnRedisPromise("flushall");
+  const socket = {
+    remoteAddress: '127.0.0.1',
+    remotePort: 9000
+  }
+  const info = {
+    name: 'test',
+    host: '127.0.0.1',
+    port: '9000'
+  }
+  const key = await makeKey(socket)
+
+  await setAppbyKey(key, info);
+
+  const expectApp = await getAppbyName(info.name)
+
+  expect(expectApp).toEqual(info);
+  await returnRedisPromise("flushall");
 })
 
 
@@ -65,5 +102,6 @@ test("getAllApp test", async () => {
 
   const expectApps = await getAllApps()
 
-  expect([info1, info2]).toEqual(expect.arrayContaining(expectApps));
+  expect([info2, info1]).toEqual(expectApps);
+  await returnRedisPromise("flushall");
 })
