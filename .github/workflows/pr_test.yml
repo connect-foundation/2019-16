@@ -1,0 +1,64 @@
+# develop, master 브랜치에 PR을 보낼 경우 모든 노드에 대해 test를 실행한다.
+name: PR Test [dev, master]
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - develop
+      - master
+
+jobs:
+  RunTest:
+    name: Run Jest
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: test [tcp util]
+        run: |
+          cd server
+          npm install
+          npm test
+      - name: test [api-gateway]
+        run: |
+          cd server/api-gateway
+          npm install
+          npm test
+      - name: test [log]
+        run: |
+          cd server/log
+          npm install
+          npm test
+      - name: test [analytics]
+        run: |
+          cd server/analytics
+          npm install
+          npm test
+      - name: test [reservation]
+        run: |
+          cd server/reservation
+          npm install
+          npm test
+      - name: test [search]
+        run: |
+          cd server/search
+          npm install
+          npm test
+      - name: test [study_room]
+        run: |
+          cd server/study_room
+          npm install
+          npm test
+      - name: test [study_group]
+        run: |
+          cd server/study_group
+          npm install
+          npm test
