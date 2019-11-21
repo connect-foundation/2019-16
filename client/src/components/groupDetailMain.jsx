@@ -90,10 +90,9 @@ const groupDetailMain = ({ data }) => {
           ))}
         </div>
         <div className="buttons">
-          {isMaster ||
-            (!isMember && (
-              <butto className={isMemberClass}> {isMemberText} </butto>
-            ))}
+          {isMaster || (
+            <butto className={isMemberClass}> {isMemberText} </butto>
+          )}
 
           {isMaster && (
             <>
