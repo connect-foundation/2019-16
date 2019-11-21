@@ -7,11 +7,11 @@ const {
 const App = require("../../lib/tcp/App");
 const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` })
-const { makePacket, makeKey } = require("../../lib/tcp/util");
+const { makePacket } = require("../../lib/tcp/util");
 
 
 async function searchStudyGroup(info) {
-  const { searchWord, category, status, tags } = info;
+  const { searchWord, category, isRecruit, tags } = info;
 
 
   const { body } = await client.search({
@@ -26,7 +26,31 @@ async function searchStudyGroup(info) {
           }],
           filter: {
             term: {
-              isRecruit: true
+              isRecruit: isRecruit
+            }
+          }
+        }
+      }
+    }
+  })
+
+  return body.hits.hits;
+}
+async function searchAllStudyGroupWithFiltering(info) {
+  const { category, isRecruit, tags } = info;
+
+
+  const { body } = await client.search({
+    index: 'studygroup',
+    body: {
+      query: {
+        bool: {
+          must: [{
+            match_all: {}
+          }],
+          filter: {
+            term: {
+              isRecruit: isRecruit
             }
           }
         }
@@ -38,6 +62,7 @@ async function searchStudyGroup(info) {
 }
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
+  searchAllStudyGroupWithFiltering: searchAllStudyGroupWithFiltering,
 }
 
 class Search extends App {
@@ -49,13 +74,16 @@ class Search extends App {
     let result;
 
     switch (query) {
+      case "searchAllStudyGroupWithFiltering":
+        result = queryMap.searchAllStudyGroupWithFiltering(params);
+        break;
       case "searchStudyGroup":
         result = queryMap.searchStudyGroup(params);
         break;
       default:
         break;
     }
-    const packet = makePacket("REPLY", "searchedGroups", {}, { studygroups: result }, this.context);
+    const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, this.context);
 
     this.send(socket, packet);
   }
