@@ -16,7 +16,7 @@ exports.setAppbyKey = async (key, { name, host, port }) => {
   const isAlreadyExist = await returnRedisPromise("exists", key);
 
 
-  if (isAlreadyExist === 0) return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
+  if (isAlreadyExist === 0) return returnRedisPromise("hmset", key, "name", name, "host", host, "port", port);
 
   return new Promise(res => {
     res(0);
@@ -29,7 +29,7 @@ exports.deletebyKey = async (key) => {
 };
 
 exports.updatdAppbyKey = (key, { name, host, port }) => {
-  return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
+  return returnRedisPromise("hmset", key, "name", name, "host", host, "port", port);
 };
 
 exports.getAppbyKey = (key) => {
