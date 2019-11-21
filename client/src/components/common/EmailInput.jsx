@@ -22,21 +22,19 @@ const EmailInput = ({ emailWarning, warnMsg }) => {
           <p className="help is-danger">{warnMsg}</p>
         </>
       ) : (
-        <>
-          <div className="control has-icons-left has-icons-right">
-            <input
-              className="input"
-              type="email"
-              placeholder="example@example.com"
-            />
-            <span className="icon is-small is-left">
-              <i className="fas fa-envelope"></i>
-            </span>
-            <span className="icon is-small is-right">
-              <i className="fas fa-check"></i>
-            </span>
-          </div>
-        </>
+        <div className="control has-icons-left has-icons-right">
+          <input
+            className="input"
+            type="email"
+            placeholder="example@example.com"
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-envelope"></i>
+          </span>
+          <span className="icon is-small is-right">
+            <i className="fas fa-check"></i>
+          </span>
+        </div>
       )}
     </div>
   );
