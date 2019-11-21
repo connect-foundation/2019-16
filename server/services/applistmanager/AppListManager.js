@@ -32,7 +32,7 @@ class AppListManager extends TcpServer {
   async onRead(socket, data) {
 
     const { method, query, info } = data;
-    const key = makeKey(socket);
+    const key = await makeKey(socket);
     let result;
 
     try {
