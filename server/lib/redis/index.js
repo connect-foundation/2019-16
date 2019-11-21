@@ -15,6 +15,7 @@ exports.setAppbyKey = async (key, { name, host, port }) => {
 
   const isAlreadyExist = await returnRedisPromise("exists", key);
 
+
   if (isAlreadyExist === 0) return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
 
   return new Promise(res => {
@@ -34,6 +35,16 @@ exports.updatdAppbyKey = (key, { name, host, port }) => {
 exports.getAppbyKey = (key) => {
   return returnRedisPromise("hgetall", key);
 };
+
+exports.getAppbyName = async (name) => {
+  const apps = await this.getAllApps();
+
+  return new Promise((res) => {
+    const result = apps.filter(app => app.name === name);
+
+    res(result[0]);
+  })
+}
 
 exports.getAllApps = async () => {
 
