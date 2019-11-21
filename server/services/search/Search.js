@@ -7,6 +7,7 @@ const {
 const App = require("../../lib/tcp/App");
 const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` })
+const { makePacket, makeKey } = require("../../lib/tcp/util");
 
 
 async function searchStudyGroup(info) {
@@ -45,14 +46,22 @@ class Search extends App {
   }
   async onRead(socket, data) {
     const { params, query } = data;
+    let result;
 
     switch (query) {
       case "searchStudyGroup":
-        queryMap.searchStudyGroup(params);
+        result = queryMap.searchStudyGroup(params);
         break;
       default:
         break;
     }
-  }
+    const packet = makePacket("REPLY", "searchedGroups", {}, { studygroups: result }, this.context);
 
+    this.send(socket, packet);
+  }
+  send(socket, packet) {
+    socket.write(packet);
+  }
 }
+
+module.exports = Search;
