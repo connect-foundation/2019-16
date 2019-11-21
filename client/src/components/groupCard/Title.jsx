@@ -4,10 +4,10 @@ import styled from "styled-components";
 const Title = styled.h3`
   font-family: "Nanum Gothic", sans-serif;
   font-weight: bold;
-  line-height: 2rem;
-  font-size: 1.5rem;
+  line-height: 1.5rem;
+  font-size: 1rem;
 
-  height: 3.5rem;
+  margin: 1rem 0;
   color: #1d6de4;
 `;
 

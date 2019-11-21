@@ -3,7 +3,9 @@ import styled from "styled-components";
 
 const StyledCardSubtitle = styled.div`
   font-family: "Nanum Gothic", sans-serif;
-  line-height: 1.4rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+  line-height: 1.3rem;
   color: gray;
 `;
 
