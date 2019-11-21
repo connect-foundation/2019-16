@@ -4,6 +4,7 @@ import classnames from "classnames";
 import Location from "./StudyLocation";
 import Time from "./StudyTime";
 import TagButtons from "./tagButtons";
+import { REGISTER } from "../reducer/groupDetail";
 
 const StyledGroupDetailMain = styled.div`
   width: 100%;
@@ -74,7 +75,7 @@ const GroupDetailMain = ({ state, dispatch }) => {
   const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
 
   const registerEvent = useCallback(() => {
-    dispatch({ type: "register" });
+    dispatch({ type: REGISTER });
   }, [dispatch]);
 
   return (
