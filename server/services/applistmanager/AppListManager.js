@@ -1,7 +1,7 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
 const logger = require("../logger/logger");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps, setIsChange } = require("../../lib/redis")
 
 let appManagerInstance;
 
@@ -40,12 +40,15 @@ class AppListManager extends TcpServer {
         switch (query) {
           case "add":
             result = await setAppbyKey(key, info);
+            setIsChange(1);
             break;
           case "delete":
             result = await deletebyKey(key, info);
+            setIsChange(1);
             break;
           case "update":
             result = await updateAppbyKey(key, info);
+            setIsChange(1);
             break;
           default:
             break;
