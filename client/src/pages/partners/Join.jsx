@@ -1,13 +1,24 @@
 import React, { useReducer } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import SubmitButton from "../../components/common/SubmitButton";
 
 const JoinForm = styled.div`
   width: 50%;
   margin: 5rem auto;
 `;
 
+const reducer = () => {};
+
 const PartnersJoinPage = () => {
+  const [state, dispatch] = useReducer(reducer, {
+    name: "",
+    email: "",
+    password: "",
+    CID: "",
+    isLoading: false
+  });
+
   return (
     <JoinForm>
       <h1 class="title is-1">Partner Join</h1>
@@ -68,9 +79,8 @@ const PartnersJoinPage = () => {
         </div>
       </div>
 
-      <button class="button is-danger is-medium is-rounded is-fullwidth">
-        가입하기
-      </button>
+      <SubmitButton isLoading={state.isLoading} content="가입하기" />
+
       <Link to="/partners/login">
         <button class="button is-text is-small">로그인으로 돌아가기</button>
       </Link>
