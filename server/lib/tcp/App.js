@@ -1,6 +1,7 @@
 const TcpServer = require("./TcpServer");
 const TcpClient = require("./TcpClient");
 const logger = require("../../services/logger/logger");
+const { makePacket } = require("../tcp/util");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
@@ -15,6 +16,9 @@ class App extends TcpServer {
       8100,
       () => {
         this.isConnectToAppListManager = true;
+        const packet = makePacket("POST", "add", {}, {}, this.context);
+
+        this.appListManager.write(packet)
         logger.info(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
