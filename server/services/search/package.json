@@ -1,0 +1,11 @@
+{
+  "name": "search",
+  "version": "1.0.0",
+  "description": "스터디그룹 검색을 담당하는 서비스",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soob",
+  "license": "ISC"
+}
