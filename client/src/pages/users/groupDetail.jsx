@@ -1,9 +1,12 @@
-import React, { useReducer } from "react";
+import React, { memo, useReducer } from "react";
 import styled from "styled-components";
 import Header from "../../components/groupDetail/Header";
 import Main from "../../components/groupDetail/Main";
 import Intro from "../../components/groupDetail/Intro";
-import { groupDetail as groupDetailReducer } from "../../reducer/groupDetail";
+import {
+  groupDetail as groupDetailReducer,
+  initialState
+} from "../../reducer/groupDetail";
 
 const StyledGroupDetail = styled.div`
   display: flex;
@@ -14,7 +17,7 @@ const StyledGroupDetail = styled.div`
 `;
 
 const GroupDetail = () => {
-  const [state, dispatch] = useReducer(groupDetailReducer, {});
+  const [state, dispatch] = useReducer(groupDetailReducer, initialState);
 
   return (
     <StyledGroupDetail>
