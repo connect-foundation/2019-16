@@ -3,6 +3,7 @@ import styled from "styled-components";
 import classnames from "classnames";
 import Location from "./StudyLocation";
 import Time from "./StudyTime";
+import TagButtons from "./tagButtons";
 
 const StyledGroupDetailMain = styled.div`
   width: 100%;
@@ -76,19 +77,20 @@ const groupDetailMain = ({ data }) => {
       <div className="column imageDiv is-half">
         <img src={studyThumbnail} alt="img" />
       </div>
+
       <div className="column content">
         <Location location={location} />
+
         <h4>
           <Time time={time} />
         </h4>
+
         <p> 최소 인원: {minCnt} </p>
         <p> 현재 인원: {nowCnt} </p>
         <p> 최대 인원: {maxCnt} </p>
-        <div className="buttons">
-          {tags.map(tag => (
-            <button className="button is-info is-small"> # {tag} </button>
-          ))}
-        </div>
+
+        <TagButtons tags={tags} />
+
         <div className="buttons">
           {isMaster || (
             <butto className={isMemberClass}> {isMemberText} </butto>
@@ -99,6 +101,7 @@ const groupDetailMain = ({ data }) => {
               <button className={`button is-danger ${!isRecruitingClass}`}>
                 {isRecruitingText}
               </button>
+
               <button className={`button is-warning ${isRecruitingClass}`}>
                 {" "}
                 예약하기{" "}
