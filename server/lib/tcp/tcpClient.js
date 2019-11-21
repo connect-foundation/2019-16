@@ -2,7 +2,7 @@ const net = require("net");
 const logger = require("../../services/logger/logger");
 const { PACKET_SPLITTER } = require("./util");
 
-const registEvent = () => {
+function registEvent() {
   this.client.on("data", data => {
     let mergedPacket = !this.data
       ? data.toString()
