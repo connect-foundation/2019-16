@@ -67,7 +67,7 @@ const PartnersJoinPage = () => {
             type="text"
             placeholder="가맹점 코드(10자)"
             maxLength="10"
-            style={{ "text-transform": "uppercase" }}
+            style={{ textTransform: "uppercase" }}
           />
         </div>
       </div>
