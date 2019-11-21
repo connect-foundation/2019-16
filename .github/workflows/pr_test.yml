@@ -24,7 +24,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: test [tcp util]
         run: |
-          cd server
+          cd server/services/logger
+          npm install
+          cd ../../
           npm install
           npm test
       - name: test [api-gateway]
