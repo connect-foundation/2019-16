@@ -7,6 +7,7 @@ const HeaderBox = styled.div`
   justify-content: space-between;
   padding-left: 5%;
   padding-right: 5%;
+  padding-top: 3%;
   .logo {
     width: 64px;
     height: 64px;
@@ -35,13 +36,13 @@ const Header = ({ uri }) => (
       </a>
       <div className={`account-box`}>
         <div className={`signin-btn accountbox-btn `}>
-          <a>로그인</a>
+          <span>로그인</span>
         </div>
         <div className={`signout-btn accountbox-btn`}>
-          <a>회원가입</a>
+          <span>회원가입</span>
         </div>
         <div className={`user-account-btn accountbox-btn`}>
-          <a>Soob님</a>
+          <span>{"Soob"} 님</span>
         </div>
       </div>
     </HeaderBox>
