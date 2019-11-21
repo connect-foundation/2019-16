@@ -43,6 +43,16 @@ class Search extends App {
   constructor(name, host, port) {
     super(name, host, port);
   }
+  async onRead(socket, data) {
+    const { params, query } = data;
 
+    switch (query) {
+      case "searchStudyGroup":
+        queryMap.searchStudyGroup(params);
+        break;
+      default:
+        break;
+    }
+  }
 
 }
