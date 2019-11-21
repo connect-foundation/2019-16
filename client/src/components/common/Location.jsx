@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Location = styled.div`
+const StyledLocation = styled.div`
   width: 100%;
   height: 2rem;
 
@@ -28,13 +28,13 @@ const Location = styled.div`
   }
 `;
 
-const StudyLocation = ({ location }) => (
-  <Location>
+const Location = ({ location }) => (
+  <StyledLocation>
     <div className="imageWrapper">
       <img src="/image/location-icon.png" alt="location-icon" />
     </div>
     <div className="locationName">&nbsp;{location}</div>
-  </Location>
+  </StyledLocation>
 );
 
-export default StudyLocation;
+export default Location;

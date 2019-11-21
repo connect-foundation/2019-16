@@ -5,6 +5,7 @@ const StyledTagButtons = styled.div``;
 
 const TagButtons = props => {
   const { tags } = props;
+
   return (
     <StyledTagButtons className="buttons">
       {tags.map(tag => (

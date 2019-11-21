@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
-import Location from "./StudyLocation";
-import Time from "./StudyTime";
-import TagButtons from "./tagButtons";
-import { REGISTER } from "../reducer/groupDetail";
+import Location from "../common/Location";
+import Time from "../groupCard/Time";
+import TagButtons from "../common/TagButtons";
+import { REGISTER } from "../../reducer/groupDetail";
 
-const StyledGroupDetailMain = styled.div`
+const StyledMain = styled.div`
   width: 100%;
   height: 23rem;
   background-color: whitesmoke;
@@ -16,6 +16,7 @@ const StyledGroupDetailMain = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
+
     img {
       width: 19rem;
       height: 14rem;
@@ -47,7 +48,8 @@ const StyledGroupDetailMain = styled.div`
   padding: 1.2rem;
 `;
 
-const GroupDetailMain = ({ state, dispatch }) => {
+const Main = ({ state, dispatch }) => {
+  const { groupInfo } = state;
   const {
     studyThumbnail,
     location,
@@ -59,9 +61,8 @@ const GroupDetailMain = ({ state, dispatch }) => {
     isMember,
     isMaster,
     status
-  } = state;
+  } = groupInfo;
 
-  console.log(`isMaster: ${isMaster} isMember: ${isMember}`);
   const isMemberClass = classnames("button", {
     "is-primary": !isMember,
     "is-success": isMember
@@ -79,7 +80,7 @@ const GroupDetailMain = ({ state, dispatch }) => {
   }, [dispatch]);
 
   return (
-    <StyledGroupDetailMain className="columns">
+    <StyledMain className="columns">
       <div className="column imageDiv is-half">
         <img src={studyThumbnail} alt="img" />
       </div>
@@ -119,8 +120,8 @@ const GroupDetailMain = ({ state, dispatch }) => {
           )}
         </div>
       </div>
-    </StyledGroupDetailMain>
+    </StyledMain>
   );
 };
 
-export default GroupDetailMain;
+export default Main;

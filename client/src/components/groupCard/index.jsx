@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import Thumbnail from "./StudyThumbnail";
-import CardBody from "./CardBody";
-import CardFooter from "./CardFooter";
+import Thumbnail from "./Thumbnail";
+import Body from "./Body";
+import Footer from "./Footer";
 
 const StyledCard = styled.div`
   display: flex;
@@ -18,8 +18,8 @@ const StyledCard = styled.div`
 const StudyGroupCard = ({ groupData }) => (
   <StyledCard>
     <Thumbnail src={groupData.src} alt={groupData.alt} />
-    <CardBody bodyData={{ ...groupData }} />
-    <CardFooter footerData={{ ...groupData }} />
+    <Body bodyData={{ ...groupData }} />
+    <Footer footerData={{ ...groupData }} />
   </StyledCard>
 );
 

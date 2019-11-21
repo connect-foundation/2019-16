@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledGroupDetailIntro = styled.div`
+const StyledIntro = styled.div`
   margin: 0.3rem 0;
 
   h3 {
@@ -18,13 +18,13 @@ const StyledGroupDetailIntro = styled.div`
   }
 `;
 
-const groupDetailIntro = () => {
+const Intro = () => {
   return (
-    <StyledGroupDetailIntro>
+    <StyledIntro>
       <h3> 스터디 소개 </h3>
       <div className="description">블라블라...</div>
-    </StyledGroupDetailIntro>
+    </StyledIntro>
   );
 };
 
-export default groupDetailIntro;
+export default Intro;
