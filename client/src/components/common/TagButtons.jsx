@@ -9,7 +9,9 @@ const TagButtons = props => {
   return (
     <StyledTagButtons className="buttons">
       {tags.map(tag => (
-        <button className="button is-info is-small"> # {tag} </button>
+        <button key={tag} className="button is-info is-small">
+          # {tag}
+        </button>
       ))}
     </StyledTagButtons>
   );
