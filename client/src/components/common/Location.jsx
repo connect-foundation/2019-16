@@ -1,7 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 
-const Location = styled.div`
+const StyledLocation = styled.div`
   width: 100%;
   height: 2rem;
 
@@ -10,8 +10,9 @@ const Location = styled.div`
   align-items: center;
 
   .imageWrapper {
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0.3em 0 0.2em 0;
   }
 
   img {
@@ -27,13 +28,13 @@ const Location = styled.div`
   }
 `;
 
-const StudyLocation = ({ location }) => (
-  <Location>
+const Location = ({ location }) => (
+  <StyledLocation>
     <div className="imageWrapper">
       <img src="/image/location-icon.png" alt="location-icon" />
     </div>
     <div className="locationName">&nbsp;{location}</div>
-  </Location>
+  </StyledLocation>
 );
 
-export default StudyLocation;
+export default memo(Location);
