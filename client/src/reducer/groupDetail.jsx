@@ -8,7 +8,7 @@ export const initialState = {
     category: "프로그래밍",
     studyThumbnail:
       "https://secure.meetupstatic.com/photos/event/c/6/d/c/600_482150908.jpeg",
-    location: "강남",
+    location: "서울시 서초구 서초1동",
     time: "월,수 | 20:00~ | 2시간",
     minCnt: 1,
     nowCnt: 2,
@@ -16,7 +16,7 @@ export const initialState = {
     tags: ["Java", "C++", "Python"],
     isMaster: false,
     isMember: false,
-    status: "마감"
+    isRecruiting: true
   }
 };
 

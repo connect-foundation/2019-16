@@ -60,7 +60,7 @@ const Main = ({ state, dispatch }) => {
     maxCnt,
     isMember,
     isMaster,
-    status
+    isRecruiting
   } = groupInfo;
 
   const isMemberClass = classnames("button", {
@@ -69,7 +69,6 @@ const Main = ({ state, dispatch }) => {
   });
   const isMemberText = isMember ? "취소하기" : "신청하기";
 
-  const isRecruiting = status === "모집중";
   const isRecruitingClass = classnames({
     disable: isRecruiting || nowCnt > maxCnt || nowCnt < minCnt
   });
