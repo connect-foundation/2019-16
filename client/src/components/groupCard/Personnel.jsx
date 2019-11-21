@@ -1,13 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-const Personnel = styled.div`
-  margin: 0.5rem;
-`;
+const Personnel = styled.div``;
 
-const StudyPersonnel = ({ now, max }) => (
+const StudyPersonnel = ({ nowCnt, maxCnt }) => (
   <Personnel>
-    {now}/{max}명
+    {nowCnt}/{maxCnt}명
   </Personnel>
 );
 
