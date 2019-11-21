@@ -9,7 +9,7 @@ const StyledGroupDetail = styled.div`
   flex-direction: column;
 
   width: 54rem;
-  margin: auto auto;
+  margin: 3rem auto;
 `;
 
 const GroupDetail = ({ data }) => {
