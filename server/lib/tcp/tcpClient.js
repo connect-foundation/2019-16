@@ -51,9 +51,15 @@ class TcpClient {
     });
     registEvent.bind(this)();
   }
+
   write(data) {
     this.client.write(data);
   }
+
+  end() {
+    this.client.end();
+  }
 }
+
 
 module.exports = TcpClient;
