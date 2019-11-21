@@ -60,3 +60,10 @@ exports.getAllApps = async () => {
   return apps;
 };
 
+exports.getIsChange = () => {
+  return returnRedisPromise("get", "isChange");
+}
+
+exports.setIsChange = (isChange) => {
+  return returnRedisPromise("set", "isChange", isChange);
+}
