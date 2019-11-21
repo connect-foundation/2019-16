@@ -14,7 +14,6 @@ const StyledGroupDetailIntro = styled.div`
     line-height: 1.5rem;
     padding: 3rem;
     width: 100%;
-    height: 30rem;
     background-color: whitesmoke;
   }
 `;
