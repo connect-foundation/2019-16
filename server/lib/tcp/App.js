@@ -1,5 +1,5 @@
-const TcpServer = require("./TcpServer");
-const TcpClient = require("./TcpClient");
+const TcpServer = require("./tcpServer");
+const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
 
