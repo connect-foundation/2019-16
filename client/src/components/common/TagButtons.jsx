@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 
 const StyledTagButtons = styled.div``;
@@ -15,4 +15,4 @@ const TagButtons = props => {
   );
 };
 
-export default TagButtons;
+export default memo(TagButtons);

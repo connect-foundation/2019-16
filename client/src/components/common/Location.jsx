@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 
 const StyledLocation = styled.div`
@@ -37,4 +37,4 @@ const Location = ({ location }) => (
   </StyledLocation>
 );
 
-export default Location;
+export default memo(Location);

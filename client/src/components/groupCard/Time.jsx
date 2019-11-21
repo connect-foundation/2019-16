@@ -1,8 +1,8 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 
 const StyledStudyTime = styled.div``;
 
 const StudyTime = ({ time }) => <StyledStudyTime>{time}</StyledStudyTime>;
 
-export default StudyTime;
+export default memo(StudyTime);
