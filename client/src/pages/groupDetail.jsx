@@ -22,14 +22,26 @@ const GroupDetail = ({ data }) => {
     minCnt,
     nowCnt,
     maxCnt,
-    tags
+    tags,
+    isMaster,
+    isMember
   } = data;
 
   return (
     <StyledGroupDetail>
       <Header data={{ title, category }}></Header>
       <Main
-        data={{ studyThumbnail, location, time, minCnt, nowCnt, maxCnt, tags }}
+        data={{
+          studyThumbnail,
+          location,
+          time,
+          minCnt,
+          nowCnt,
+          maxCnt,
+          tags,
+          isMaster,
+          isMember
+        }}
       ></Main>
       <Intro></Intro>
     </StyledGroupDetail>

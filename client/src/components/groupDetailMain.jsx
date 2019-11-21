@@ -28,6 +28,11 @@ const StyledGroupDetailMain = styled.div`
 
     button {
       font-weight: bold;
+
+      &.disable {
+        cursor: default;
+        opacity: 0.3;
+      }
     }
 
     p {
@@ -40,7 +45,17 @@ const StyledGroupDetailMain = styled.div`
 `;
 
 const groupDetailMain = ({ data }) => {
-  const { studyThumbnail, location, time, tags, minCnt, nowCnt, maxCnt } = data;
+  const {
+    studyThumbnail,
+    location,
+    time,
+    tags,
+    minCnt,
+    nowCnt,
+    maxCnt,
+    isMember,
+    isMaster
+  } = data;
 
   return (
     <StyledGroupDetailMain className="columns">
@@ -61,8 +76,16 @@ const groupDetailMain = ({ data }) => {
           ))}
         </div>
         <div className="buttons">
-          <button className="button is-danger"> 마감하기 </button>
-          <button className="button is-warning"> 예약하기 </button>
+          {isMaster ||
+            (!isMember && (
+              <butto className="button is-primary"> 신청하기 </butto>
+            )) || <butto className="button is-success"> 취소하기 </butto>}
+
+          {isMaster && (
+            <>
+              <button className="button is-danger"> 마감하기 </button>
+              <button className="button is-warning disable"> 예약하기 </button>
+            </>
           )}
         </div>
       </div>
