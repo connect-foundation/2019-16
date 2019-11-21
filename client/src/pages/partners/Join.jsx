@@ -25,41 +25,45 @@ const PartnersJoinPage = () => {
 
   return (
     <JoinForm>
-      <h1 class="title is-1">Partner Join</h1>
+      <h1 className="title is-1">Partner Join</h1>
 
-      <div class="field">
-        <label class="label">Name</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="이름" />
+      <div className="field">
+        <label className="label">Name</label>
+        <div className="control">
+          <input className="input" type="text" placeholder="이름" />
         </div>
       </div>
 
       <EmailInput emailWarning={state.emailWarning} warnMsg={EMAIL_WARN_MSG} />
 
-      <div class="field">
-        <label class="label">Password</label>
-        <p class="control has-icons-left">
-          <input class="input" type="password" placeholder="비밀번호" />
-          <span class="icon is-small is-left">
-            <i class="fas fa-lock"></i>
+      <div className="field">
+        <label className="label">Password</label>
+        <p className="control has-icons-left">
+          <input className="input" type="password" placeholder="비밀번호" />
+          <span className="icon is-small is-left">
+            <i className="fas fa-lock"></i>
           </span>
         </p>
       </div>
 
-      <div class="field">
-        <p class="control has-icons-left">
-          <input class="input" type="password" placeholder="비밀번호 확인" />
-          <span class="icon is-small is-left">
-            <i class="fas fa-lock"></i>
-          </span>
-        </p>
-      </div>
-
-      <div class="field">
-        <label class="label">CID</label>
-        <div class="control">
+      <div className="field">
+        <p className="control has-icons-left">
           <input
-            class="input"
+            className="input"
+            type="password"
+            placeholder="비밀번호 확인"
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-lock"></i>
+          </span>
+        </p>
+      </div>
+
+      <div className="field">
+        <label className="label">CID</label>
+        <div className="control">
+          <input
+            className="input"
             type="text"
             placeholder="가맹점 코드(10자)"
             maxLength="10"
@@ -71,7 +75,7 @@ const PartnersJoinPage = () => {
       <SubmitButton isLoading={state.isLoading} content="가입하기" />
       <br />
       <Link to="/partners/login">
-        <button class="button is-text is-small">로그인으로 돌아가기</button>
+        <button className="button is-text is-small">로그인으로 돌아가기</button>
       </Link>
     </JoinForm>
   );

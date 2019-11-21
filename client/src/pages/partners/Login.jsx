@@ -27,7 +27,7 @@ const PartnersLoginPage = () => {
 
       <EmailInput emailWarning={state.emailWarning} warnMsg={EMAIL_WARN_MSG} />
       <div className="field">
-        <label class="label">Password</label>
+        <label className="label">Password</label>
         <p className="control has-icons-left">
           <input className="input" type="password" placeholder="비밀번호" />
           <span className="icon is-small is-left">
@@ -39,7 +39,7 @@ const PartnersLoginPage = () => {
       <SubmitButton isLoading={state.isLoading} content="로그인" />
       <br />
       <Link to="/partners/join">
-        <button class="button is-text is-small">파트너 등록하기</button>
+        <button className="button is-text is-small">파트너 등록하기</button>
       </Link>
     </LoginForm>
   );
