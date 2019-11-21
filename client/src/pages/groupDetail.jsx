@@ -24,7 +24,8 @@ const GroupDetail = ({ data }) => {
     maxCnt,
     tags,
     isMaster,
-    isMember
+    isMember,
+    status
   } = data;
 
   return (
@@ -40,7 +41,8 @@ const GroupDetail = ({ data }) => {
           maxCnt,
           tags,
           isMaster,
-          isMember
+          isMember,
+          status
         }}
       ></Main>
       <Intro></Intro>

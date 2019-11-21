@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import classnames from "classnames";
 import Location from "./StudyLocation";
 import Time from "./StudyTime";
 
@@ -54,8 +55,21 @@ const groupDetailMain = ({ data }) => {
     nowCnt,
     maxCnt,
     isMember,
-    isMaster
+    isMaster,
+    status
   } = data;
+
+  const isMemberClass = classnames("button", {
+    "is-primary": !isMember,
+    "is-success": isMember
+  });
+  const isMemberText = isMember ? "취소하기" : "신청하기";
+
+  const isRecruiting = status === "모집중";
+  const isRecruitingClass = classnames({
+    disable: isRecruiting || nowCnt > maxCnt || nowCnt < minCnt
+  });
+  const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
 
   return (
     <StyledGroupDetailMain className="columns">
@@ -78,13 +92,18 @@ const groupDetailMain = ({ data }) => {
         <div className="buttons">
           {isMaster ||
             (!isMember && (
-              <butto className="button is-primary"> 신청하기 </butto>
-            )) || <butto className="button is-success"> 취소하기 </butto>}
+              <butto className={isMemberClass}> {isMemberText} </butto>
+            ))}
 
           {isMaster && (
             <>
-              <button className="button is-danger"> 마감하기 </button>
-              <button className="button is-warning disable"> 예약하기 </button>
+              <button className={`button is-danger ${!isRecruitingClass}`}>
+                {isRecruitingText}
+              </button>
+              <button className={`button is-warning ${isRecruitingClass}`}>
+                {" "}
+                예약하기{" "}
+              </button>
             </>
           )}
         </div>
