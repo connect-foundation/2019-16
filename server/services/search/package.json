@@ -9,6 +9,7 @@
   "author": "soob",
   "license": "ISC",
   "dependencies": {
-    "@elastic/elasticsearch": "^7.4.0"
+    "@elastic/elasticsearch": "^7.4.0",
+    "dotenv": "^8.2.0"
   }
 }
