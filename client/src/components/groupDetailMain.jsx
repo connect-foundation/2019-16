@@ -94,7 +94,7 @@ const groupDetailMain = ({ data }) => {
             <butto className={isMemberClass}> {isMemberText} </butto>
           )}
 
-          {isMaster && (
+          {isMaster && isMember && (
             <>
               <button className={`button is-danger ${!isRecruitingClass}`}>
                 {isRecruitingText}
