@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const JoinForm = styled.div`
   width: 50%;
-  margin: 10rem auto;
+  margin: 5rem auto;
 `;
 
 const PartnersJoinPage = () => {

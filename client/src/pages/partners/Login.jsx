@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useReducer } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const LoginForm = styled.div`
   width: 50%;
-  margin: 10rem auto;
+  margin: 5rem auto;
 `;
 
 const PartnersLoginPage = () => (
