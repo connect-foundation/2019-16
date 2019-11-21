@@ -1,7 +1,7 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import PartnersPage from "./pages/partners/index";
+import PartnersRouter from "./pages/partners/Router";
 
 const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
@@ -16,7 +16,17 @@ function App() {
   return (
     <div className="App">
       <GlobalStyle />
-      <Route path="/partners" component={PartnersPage} />
+      <Switch>
+        <Route path="/partners" component={PartnersRouter} />
+        <Route
+          render={({ location }) => (
+            <div>
+              <h1>존재하지 않는 페이지입니다.</h1>
+              <p>{location.pathname}</p>
+            </div>
+          )}
+        />
+      </Switch>
     </div>
   );
 }
