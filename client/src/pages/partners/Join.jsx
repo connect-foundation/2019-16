@@ -1,12 +1,15 @@
 import React, { useReducer } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import EmailInput from "../../components/common/EmailInput";
 import SubmitButton from "../../components/common/SubmitButton";
 
 const JoinForm = styled.div`
   width: 50%;
   margin: 10rem auto;
 `;
+
+const EMAIL_WARN_MSG = "이미 존재하는 이메일입니다.";
 
 const reducer = () => {};
 
@@ -16,12 +19,14 @@ const PartnersJoinPage = () => {
     email: "",
     password: "",
     CID: "",
-    isLoading: false
+    isLoading: false,
+    emailWarning: false
   });
 
   return (
     <JoinForm>
       <h1 class="title is-1">Partner Join</h1>
+
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
@@ -29,23 +34,7 @@ const PartnersJoinPage = () => {
         </div>
       </div>
 
-      <div class="field">
-        <label class="label">Email</label>
-        <div class="control has-icons-left has-icons-right">
-          <input
-            class="input is-danger"
-            type="email"
-            placeholder="example@example.com"
-          />
-          <span class="icon is-small is-left">
-            <i class="fas fa-envelope"></i>
-          </span>
-          <span class="icon is-small is-right">
-            <i class="fas fa-exclamation-triangle"></i>
-          </span>
-        </div>
-        <p class="help is-danger">This email is invalid</p>
-      </div>
+      <EmailInput emailWarning={state.emailWarning} warnMsg={EMAIL_WARN_MSG} />
 
       <div class="field">
         <label class="label">Password</label>
@@ -80,7 +69,7 @@ const PartnersJoinPage = () => {
       </div>
 
       <SubmitButton isLoading={state.isLoading} content="가입하기" />
-
+      <br />
       <Link to="/partners/login">
         <button class="button is-text is-small">로그인으로 돌아가기</button>
       </Link>
