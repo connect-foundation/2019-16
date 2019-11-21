@@ -7,8 +7,8 @@ const StyledGroupDetailHeader = styled.div`
   }
 `;
 
-const groupDetailHeader = ({ data }) => {
-  const { title, category } = data;
+const GroupDetailHeader = ({ state }) => {
+  const { title, category } = state;
   return (
     <StyledGroupDetailHeader className="hero is-full">
       <div className="hero-body">
@@ -21,4 +21,4 @@ const groupDetailHeader = ({ data }) => {
   );
 };
 
-export default groupDetailHeader;
+export default GroupDetailHeader;

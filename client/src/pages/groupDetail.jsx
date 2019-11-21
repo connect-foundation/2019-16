@@ -12,39 +12,11 @@ const StyledGroupDetail = styled.div`
   margin: 3rem auto;
 `;
 
-const GroupDetail = ({ data }) => {
-  const {
-    title,
-    category,
-    studyThumbnail,
-    location,
-    time,
-    minCnt,
-    nowCnt,
-    maxCnt,
-    tags,
-    isMaster,
-    isMember,
-    status
-  } = data;
-
+const GroupDetail = ({ state, dispatch }) => {
   return (
     <StyledGroupDetail>
-      <Header data={{ title, category }}></Header>
-      <Main
-        data={{
-          studyThumbnail,
-          location,
-          time,
-          minCnt,
-          nowCnt,
-          maxCnt,
-          tags,
-          isMaster,
-          isMember,
-          status
-        }}
-      ></Main>
+      <Header state={state}></Header>
+      <Main state={state} dispatch={dispatch}></Main>
       <Intro></Intro>
     </StyledGroupDetail>
   );

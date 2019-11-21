@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
 import Location from "./StudyLocation";
@@ -46,7 +46,7 @@ const StyledGroupDetailMain = styled.div`
   padding: 1.2rem;
 `;
 
-const groupDetailMain = ({ data }) => {
+const GroupDetailMain = ({ state, dispatch }) => {
   const {
     studyThumbnail,
     location,
@@ -58,8 +58,9 @@ const groupDetailMain = ({ data }) => {
     isMember,
     isMaster,
     status
-  } = data;
+  } = state;
 
+  console.log(`isMaster: ${isMaster} isMember: ${isMember}`);
   const isMemberClass = classnames("button", {
     "is-primary": !isMember,
     "is-success": isMember
@@ -71,6 +72,10 @@ const groupDetailMain = ({ data }) => {
     disable: isRecruiting || nowCnt > maxCnt || nowCnt < minCnt
   });
   const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
+
+  const registerEvent = useCallback(() => {
+    dispatch({ type: "register" });
+  }, [dispatch]);
 
   return (
     <StyledGroupDetailMain className="columns">
@@ -93,7 +98,10 @@ const groupDetailMain = ({ data }) => {
 
         <div className="buttons">
           {isMaster || (
-            <butto className={isMemberClass}> {isMemberText} </butto>
+            <button className={isMemberClass} onClick={registerEvent}>
+              {" "}
+              {isMemberText}{" "}
+            </button>
           )}
 
           {isMaster && isMember && (
@@ -114,4 +122,4 @@ const groupDetailMain = ({ data }) => {
   );
 };
 
-export default groupDetailMain;
+export default GroupDetailMain;
