@@ -7,6 +7,8 @@ import Footer from "./Footer";
 const StyledCard = styled.div`
   display: flex;
   flex-direction: column;
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: bold;
 
   width: 16rem;
   height: 29rem;

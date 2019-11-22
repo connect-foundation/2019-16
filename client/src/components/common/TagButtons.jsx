@@ -1,7 +1,11 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 
-const StyledTagButtons = styled.div``;
+const StyledTagButtons = styled.div`
+  .button {
+    font-family: "Nanum Gothic", sans-serif;
+  }
+`;
 
 const TagButtons = props => {
   const { tags } = props;
