@@ -3,12 +3,8 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
-  @import url(http://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
-  @import url(http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
-  @import url(http://fonts.googleapis.com/earlyaccess/nanumbrushscript.css);
-  @import url(http://fonts.googleapis.com/earlyaccess/nanumpenscript.css);
-  @import url(http://cdn.jsdelivr.net/font-nanum/1.0/nanumbarungothic/nanumbarungothic.css);
-
+  @import url('https://fonts.googleapis.com/css?family=Black+Han+Sans&display=swap');
+  font-family: "Nanum Gothic", sans-serif;
 `;
 
 // const data = {
