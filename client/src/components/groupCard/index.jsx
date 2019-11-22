@@ -6,12 +6,13 @@ import Footer from "./Footer";
 
 const StyledCard = styled.div`
   display: flex;
+  margin: 4em 0 0;
   flex-direction: column;
   font-family: "Nanum Gothic", sans-serif;
   font-weight: bold;
 
-  width: 16rem;
-  height: 29rem;
+  width: 19rem;
+  height: 32rem;
   background-color: whitesmoke;
   border-radius: 0.2rem;
   padding-bottom: 1.3rem;
