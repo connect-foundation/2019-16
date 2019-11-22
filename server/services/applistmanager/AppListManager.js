@@ -1,7 +1,7 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
 const logger = require("../logger/logger");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps, setIsChange } = require("../../lib/redis")
 
 let appManagerInstance;
 

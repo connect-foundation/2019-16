@@ -2,12 +2,22 @@ const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
+const { getAppbyName } = require("../redis");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
     super(name, host, port);
     this.query = query;
     this.isConnectToAppListManager = false;
+    this.appClients = {};
+  }
+
+  async connectToApp(name, onCreate, onRead, onEnd, onError) {
+    const clientInfo = await getAppbyName(name);
+    const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+
+    this.appClients[name] = client;
+    return client;
   }
 
   connectToAppListManager() {
