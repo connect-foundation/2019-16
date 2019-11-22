@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import StudySearchNavbar from "../../components/StudySearchNavbar";
-import StudyGroupCard from "../../components/StudyGroupCard";
+import StudyGroupCard from "../../components/groupCard";
 
 const Main = styled.div`
   display: flex;
@@ -34,11 +34,12 @@ const Main = styled.div`
   }
 
   .study-group-list{
+    align-self:center;
       background-color: #f8f0ee;
-      width: 100%;
+      width: 70%;
       display: flex;
       flex-wrap: wrap;
-      padding: 5em 3em;
+      padding: 4em;
       justify-content: space-between;
       .study-group-card{
           margin: 2em;
