@@ -40,15 +40,12 @@ class AppListManager extends TcpServer {
         switch (query) {
           case "add":
             result = await setAppbyKey(key, info);
-            setIsChange(1);
             break;
           case "delete":
             result = await deletebyKey(key, info);
-            setIsChange(1);
             break;
           case "update":
             result = await updateAppbyKey(key, info);
-            setIsChange(1);
             break;
           default:
             break;
