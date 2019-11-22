@@ -1,18 +1,17 @@
 const redis = require("redis");
 const client = redis.createClient();
 
-exports.saveApp = async (appName, { host, port }) => {
-  let isAlready = 0;
+function returnRedisPromise(command, ...params) {
 
-  await new Promise(res => {
-    client.exists(appName, (err, bool) => {
-      isAlready = bool;
-      res();
-    });
-  });
-  return new Promise(res => {
-    let resultBool = false;
+  return new Promise((res, rej) => {
+    client[command](...params, (err, reply) => {
+      if (err) rej(err);
+      res(reply);
+    })
+  })
+}
 
+<<<<<<< HEAD
     if (isAlready === 0) {
       client.hset(appName, "host", host, "port", port);
       resultBool = true;
@@ -35,25 +34,40 @@ exports.updatdApp = (appName, { host, port }) => {
       res(resultBool);
     });
   });
+=======
+exports.setAppbypName = async (appName, { host, port }) => {
+
+  const isAlreadyExist = await returnRedisPromise("exists", appName);
+
+  if (isAlreadyExist === 0) return returnRedisPromise("hset", appName, "host", host, "port", port);
+
+  return new Promise(res => {
+    res(0);
+  })
 };
 
-exports.getApp = appName => {
-  return new Promise(resolve => {
-    client.hgetall(appName, (objErr, res) => {
-      resolve(res);
-    });
-  });
+exports.deletebypName = async (appName, { host, port }) => {
+
+  return returnRedisPromise("hset", appName, "host", host, "port", port);
 };
 
-exports.getAllApps = () => {
-  let apps;
+exports.updatdAppbypName = (appName, { host, port }) => {
+  return returnRedisPromise("hset", appName, "host", host, "port", port);
+>>>>>>> b8c70b5... fix(lib/redis): returnRedisPromise 함수 생성 및 사용
+};
 
-  return new Promise(async resolve => {
-    await new Promise(res => {
-      client.keys("*", async (keyErr, keys) => {
-        apps = await keys.reduce(async (promise, cur) => {
-          let appList = await promise.then();
+exports.getAppbypName = appName => {
+  return returnRedisPromise("hgetall", appName);
+};
 
+exports.getAllApps = async () => {
+
+  const keys = await returnRedisPromise("keys", "*");
+  const apps = keys.reduce(async (promise, key) => {
+    let appList = await promise.then();
+    const app = await returnRedisPromise("hgetall", key);
+
+<<<<<<< HEAD
           await new Promise(r => {
             client.hgetall(cur, (objErr, app) => {
               if (!objErr) appList.push(app);
@@ -67,4 +81,11 @@ exports.getAllApps = () => {
     });
     resolve(apps);
   });
+=======
+    appList.push(app);
+    return Promise.resolve(appList);
+  }, Promise.resolve([]))
+
+  return apps;
+>>>>>>> b8c70b5... fix(lib/redis): returnRedisPromise 함수 생성 및 사용
 };
