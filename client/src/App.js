@@ -1,5 +1,4 @@
-import React from "react";
-import GroupDetail from "./pages/groupDetail";
+import GroupDetail from "./pages/users/groupDetail";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
