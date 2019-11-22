@@ -50,7 +50,7 @@ const MainPage = ({ props }) => {
   const [cardListData, setCardListData] = useState([]);
 
   const cardList = cardListData.map(data => {
-    return <StudyGroupCard props={data}></StudyGroupCard>;
+    return <StudyGroupCard groupData={data}></StudyGroupCard>;
   });
   return (
     <Main>
