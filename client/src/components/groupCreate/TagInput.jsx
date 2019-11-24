@@ -39,6 +39,17 @@ const TagInput = props => {
     [tags]
   );
 
+  const onKeyDown = useCallback(
+    e => {
+      if (e.keyCode === 8 && inputTag === "" && tags.length) {
+        setInputTag(tags[tags.length - 1]);
+        setTags(tags.slice(0, tags.length - 1));
+        console.log(tags);
+      }
+    },
+    [tags, inputTag]
+  );
+
   return (
     <StyledTagInput className="input tagDiv">
       {tags.map((tag, idx) => (
@@ -50,7 +61,9 @@ const TagInput = props => {
         type="text"
         className="tagInput input"
         onChange={tagEvent}
+        onKeyDown={onKeyDown}
         value={inputTag}
+        placeholder="tag"
       />
     </StyledTagInput>
   );
