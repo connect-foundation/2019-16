@@ -43,7 +43,7 @@ const GroupCreate = props => {
   // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
     <StyledGroupCreate>
-      <div className="breadcrumb is-centered" aria-label="breadcrumbs">
+      <div className="is-centered">
         <Category
           categories={primaryCategories}
           type="primary"

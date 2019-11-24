@@ -1,35 +1,32 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import classnames from "classnames";
 import { category_click } from "../../reducer/groupCreate";
 
 const StyledCategory = styled.ul`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
   li {
     cursor: pointer;
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin: 0.2rem 1rem;
   }
 `;
 
 const Category = props => {
   const { categories, dispatch, type } = props;
-  const categoryColor = classnames({
-    "has-text-primary": type === "primary",
-    "has-text-info": type === "secondary"
-  });
 
   const categoryEvent = useCallback(e => {
     const categoryName = e.target.textContent.trim();
-
     dispatch(category_click({ categoryType: type, categoryName }));
   }, []);
 
   return (
     <StyledCategory>
       {categories.map(category => (
-        <li
-          key={category}
-          onClick={categoryEvent}
-          className={`is-size-4 ${categoryColor}`}
-        >
+        <li key={category} onClick={categoryEvent}>
           {category}
         </li>
       ))}
