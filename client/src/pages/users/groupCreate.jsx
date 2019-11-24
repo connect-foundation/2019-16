@@ -7,6 +7,7 @@ const StyledGroupCreate = styled.div`
     cursor: pointer;
   }
 `;
+
 const primaryCategories = ["프로그래밍", "자격증", "외국어", "면접", "지역"];
 const secondaryCategories = {
   프로그래밍: ["C++", "Java", "JavaScript"],
@@ -25,26 +26,48 @@ const secondaryCategories = {
 
 const GroupCreate = props => {
   const [primaryCategory, setPrimaryCategory] = useState(null);
-  const primaryCategoryEvent = useCallback(e => {
-    const categoryName = e.target.getAttribute("name");
-    setPrimaryCategory(categoryName);
+  const [secondaryCategory, setSecondaryCategory] = useState(null);
+
+  const categoryEvent = useCallback(e => {
+    const categoryName = e.target.textContent.trim();
+    const categoryType = e.target.getAttribute("name");
+
+    if (categoryType === "primary") {
+      setPrimaryCategory(categoryName);
+      setSecondaryCategory(null);
+    }
+    if (categoryType === "secondary") setSecondaryCategory(categoryName);
   }, []);
 
   return (
     <StyledGroupCreate>
-      <div class="breadcrumb is-centered" aria-label="breadcrumbs">
+      <div className="breadcrumb is-centered" aria-label="breadcrumbs">
         <ul>
           {primaryCategories.map(category => (
             <li
               key={category}
-              name={category}
+              name="primary"
               className="category has-text-primary is-size-5"
-              onClick={primaryCategoryEvent}
+              onClick={categoryEvent}
             >
               {category}
             </li>
           ))}
         </ul>
+
+        {primaryCategory && (
+          <ul>
+            {secondaryCategories[primaryCategory].map(category => (
+              <li
+                key={category}
+                name="secondary"
+                className="category has-text-info is-size-6"
+                onClick={categoryEvent}
+              >
+                {category}
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </StyledGroupCreate>
