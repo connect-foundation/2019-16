@@ -1,5 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useReducer } from "react";
 import styled from "styled-components";
+import Category from "../../components/GroupCreate/Category";
+import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
   margin: 2rem 0;
@@ -18,49 +20,22 @@ const secondaryCategories = {
 };
 
 const GroupCreate = props => {
-  const [primaryCategory, setPrimaryCategory] = useState(null);
-  const [secondaryCategory, setSecondaryCategory] = useState(null);
-
-  const categoryEvent = useCallback(e => {
-    const categoryName = e.target.textContent.trim();
-    const categoryType = e.target.getAttribute("name");
-
-    if (categoryType === "primary") {
-      setPrimaryCategory(categoryName);
-      setSecondaryCategory(null);
-    }
-    if (categoryType === "secondary") setSecondaryCategory(categoryName);
-  }, []);
+  const [state, dispatch] = useReducer(groupCreateReducer, initialState);
 
   return (
     <StyledGroupCreate>
       <div className="breadcrumb is-centered" aria-label="breadcrumbs">
-        <ul>
-          {primaryCategories.map(category => (
-            <li
-              key={category}
-              name="primary"
-              className="category has-text-primary is-size-4"
-              onClick={categoryEvent}
-            >
-              {category}
-            </li>
-          ))}
-        </ul>
-
-        {primaryCategory && (
-          <ul>
-            {secondaryCategories[primaryCategory].map(category => (
-              <li
-                key={category}
-                name="secondary"
-                className="category has-text-info is-size-4"
-                onClick={categoryEvent}
-              >
-                {category}
-              </li>
-            ))}
-          </ul>
+        <Category
+          categories={primaryCategories}
+          type="primary"
+          dispatch={dispatch}
+        />
+        {state.secondary && (
+          <Category
+            categories={secondaryCategories}
+            type="secondary"
+            dispatch={dispatch}
+          />
         )}
       </div>
     </StyledGroupCreate>
