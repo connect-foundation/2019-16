@@ -3,7 +3,11 @@ import styled from "styled-components";
 import classnames from "classnames";
 import { category_click } from "../../reducer/groupCreate";
 
-const StyledCategory = styled.ul``;
+const StyledCategory = styled.ul`
+  li {
+    cursor: pointer;
+  }
+`;
 
 const Category = props => {
   const { categories, dispatch, type } = props;
@@ -11,6 +15,7 @@ const Category = props => {
     "has-text-primary": type === "primary",
     "has-text-info": type === "secondary"
   });
+
   const categoryEvent = useCallback(e => {
     const categoryName = e.target.textContent.trim();
 
