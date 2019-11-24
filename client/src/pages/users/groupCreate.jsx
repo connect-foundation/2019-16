@@ -13,7 +13,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primary, secondary, primaryCategories, secondaryCategories } = state;
-  console.log(secondaryCategories, primary);
+  // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
     <StyledGroupCreate>
       <div className="breadcrumb is-centered" aria-label="breadcrumbs">
@@ -31,7 +31,15 @@ const GroupCreate = props => {
           />
         )}
       </div>
-    </StyledGroupCreate>
+
+      <input placeholder="title" />
+      <input placeholder="subtitle" />
+      <textarea> 그룹 소개 </textarea>
+      {/*<p> 그룹 사진 </p>
+      <p> 위치 </p>
+      <p> 태그 </p>
+      <p> 날짜 </p>
+      </StyledGroupCreate>*/}
   );
 };
 
