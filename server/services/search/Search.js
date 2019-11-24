@@ -13,7 +13,6 @@ const { makePacket } = require("../../lib/tcp/util");
 async function searchStudyGroup(info) {
   const { searchWord, category, isRecruit, tags } = info;
 
-
   const { body } = await client.search({
     index: 'studygroup',
     body: {
@@ -34,7 +33,11 @@ async function searchStudyGroup(info) {
     }
   })
 
-  return body.hits.hits;
+  const result = body.hits.hits.map((hit) => {
+    return hit._source;
+  })
+
+  return result;
 }
 async function searchAllStudyGroupWithFiltering(info) {
   const { category, isRecruit, tags } = info;
@@ -57,8 +60,11 @@ async function searchAllStudyGroupWithFiltering(info) {
       }
     }
   })
+  const result = body.hits.hits.map((hit) => {
+    return hit._source;
+  })
 
-  return body.hits.hits;
+  return result;
 }
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
@@ -70,20 +76,29 @@ class Search extends App {
     super(name, host, port);
   }
   async onRead(socket, data) {
-    const { params, query } = data;
+    const { params, query, key } = data;
     let result;
 
     switch (query) {
       case "searchAllStudyGroupWithFiltering":
-        result = queryMap.searchAllStudyGroupWithFiltering(params);
+        result = await queryMap.searchAllStudyGroupWithFiltering(params);
+        break;
+      case "searchAllStudyGroupWithFiltering2":
+        await new Promise((res) => {
+          setTimeout(() => {
+            res()
+          }, 3000)
+        })
+        result = { search2: "search2" }
         break;
       case "searchStudyGroup":
-        result = queryMap.searchStudyGroup(params);
+        result = await queryMap.searchStudyGroup(params);
         break;
       default:
         break;
     }
-    const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, this.context);
+    console.log(result)
+    const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
 
     this.send(socket, packet);
   }
