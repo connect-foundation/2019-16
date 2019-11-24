@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import styled from "styled-components";
 
 const StyledImageUploader = styled.div`
@@ -6,7 +6,11 @@ const StyledImageUploader = styled.div`
     width: 16rem;
     height: 12rem;
     border: 1px solid gray;
-    margin-bottom: 1rem;
+  }
+
+  input[type="file"] {
+    display: none;
+    height: 0;
   }
 `;
 
@@ -15,6 +19,12 @@ const ImageUploader = () => {
     file: null,
     imagePreviewUrl: null
   });
+
+  const uploaderBtn = useRef();
+
+  const onClick = useCallback(e => {
+    uploaderBtn.current.click();
+  }, []);
 
   const onChange = useCallback(e => {
     e.preventDefault();
@@ -36,9 +46,9 @@ const ImageUploader = () => {
   return (
     <StyledImageUploader>
       {(imageInfo.file && <img src={imagePreviewUrl} className="image" />) || (
-        <img className="image" />
+        <img className="image" onClick={onClick} />
       )}
-      <input type="file" onChange={onChange} />
+      <input type="file" onChange={onChange} ref={uploaderBtn} />
     </StyledImageUploader>
   );
 };
