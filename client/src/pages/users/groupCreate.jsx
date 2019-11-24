@@ -4,9 +4,18 @@ import Category from "../../components/groupCreate/Category";
 import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
-  margin: 2rem 0;
+  width: 50%;
+  margin: 2rem auto;
   .category {
     cursor: pointer;
+  }
+
+  & > * {
+    margin: 0.6rem;
+  }
+
+  .breadcrumb {
+    height: 4rem;
   }
 `;
 
@@ -32,14 +41,14 @@ const GroupCreate = props => {
         )}
       </div>
 
-      <input placeholder="title" />
-      <input placeholder="subtitle" />
-      <textarea> 그룹 소개 </textarea>
+      <input className="input" placeholder="title" />
+      <input className="input" placeholder="subtitle" />
+      <textarea className="textarea"> 그룹 소개 </textarea>
       {/*<p> 그룹 사진 </p>
       <p> 위치 </p>
       <p> 태그 </p>
-      <p> 날짜 </p>
-      </StyledGroupCreate>*/}
+      <p> 날짜 </p> */}
+    </StyledGroupCreate>
   );
 };
 
