@@ -5,11 +5,11 @@ const StyledTagInput = styled.div`
   display: flex;
   flex-direction: row;
   flex-flow: wrap;
-  padding: 0.2rem;
+  padding: 0rem;
   height: auto;
 
   .tag {
-    margin: 0.5rem 0.5rem;
+    margin: 0.5rem;
   }
 
   .tagInput {
@@ -18,6 +18,10 @@ const StyledTagInput = styled.div`
     padding: 0 0.5rem;
     box-shadow: none;
     border: none;
+
+    &:focus {
+      border: 1px solid blueviolet;
+    }
   }
 `;
 
@@ -44,7 +48,6 @@ const TagInput = props => {
       if (e.keyCode === 8 && inputTag === "" && tags.length) {
         setInputTag(tags[tags.length - 1]);
         setTags(tags.slice(0, tags.length - 1));
-        console.log(tags);
       }
     },
     [tags, inputTag]
