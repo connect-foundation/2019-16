@@ -10,14 +10,25 @@ class App extends TcpServer {
     this.query = query;
     this.isConnectToAppListManager = false;
     this.appClients = {};
+
   }
 
   async connectToApp(name, onCreate, onRead, onEnd, onError) {
-    const clientInfo = await getAppbyName(name);
-    const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+    if (this.appClients[name] !== undefined) return this.appClients[name];
 
-    this.appClients[name] = client;
-    return client;
+    try {
+      const clientInfo = await getAppbyName(name);
+      if (clientInfo === null) throw new Error(`${name} server is not running`)
+      const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+
+
+      this.appClients[name] = client;
+
+
+      return client;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   connectToAppListManager() {
@@ -26,7 +37,7 @@ class App extends TcpServer {
       8100,
       () => {
         this.isConnectToAppListManager = true;
-        const packet = makePacket("POST", "add", {}, {}, this.context);
+        const packet = makePacket("POST", "add", {}, {}, "", this.context);
 
         this.appListManager.write(packet)
         logger.info(
@@ -51,7 +62,7 @@ class App extends TcpServer {
         logger.info(`try connect to app list manager`);
         this.appListManager.connect();
       }
-    }, 3600);
+    }, 1000);
     return this.appListManager;
   }
 }
