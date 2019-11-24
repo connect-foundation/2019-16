@@ -22,9 +22,6 @@ const StyledGroupCreate = styled.div`
     margin: 0.9rem 0.6rem;
   }
 
-  .breadcrumb {
-  }
-
   .introduction {
     display: flex;
     flex-direction: row;
@@ -41,6 +38,22 @@ const StyledGroupCreate = styled.div`
 
   .button:focus {
     background-color: white;
+  }
+
+  .schedule {
+    display: flex;
+    flex-direction: row;
+
+    .day-buttons {
+      margin-right: 1.5rem;
+    }
+
+    .time-select > * {
+      height: 2.4rem;
+      margin: 0 1rem;
+      width: 5rem;
+      border-radius: 0.3rem;
+    }
   }
 `;
 
@@ -99,20 +112,48 @@ const GroupCreate = props => {
       </div>
       <TagInput tags={tags} setTags={setTags} />
 
-      <div className="field has-addons">
-        {days.map((day, idx) => {
-          return (
-            <p className="control" key={idx}>
-              <button
-                className={`button is-info is-outlined ${dayCondition[idx] &&
-                  dayCondition[idx].class}`}
-                onClick={onClickDay(idx)}
-              >
-                {day}
-              </button>
-            </p>
-          );
-        })}
+      <div className="schedule">
+        <div className="field has-addons day-buttons">
+          {days.map((day, idx) => {
+            return (
+              <p className="control" key={idx}>
+                <button
+                  className={`button is-info is-outlined ${dayCondition[idx] &&
+                    dayCondition[idx].class}`}
+                  onClick={onClickDay(idx)}
+                >
+                  {day}
+                </button>
+              </p>
+            );
+          })}
+        </div>
+        <div className="time-select">
+          <select className="select">
+            <option value="am">오전</option>
+            <option value="pm">오후</option>
+          </select>
+
+          <select className="select">
+            <option value="1">1시</option>
+            <option value="2">2시</option>
+            <option value="3">3시</option>
+            <option value="4">4시</option>
+            <option value="5">5시</option>
+            <option value="6">6시</option>
+            <option value="7">7시</option>
+            <option value="8">8시</option>
+            <option value="9">9시</option>
+            <option value="10">10시</option>
+            <option value="11">11시</option>
+            <option value="12">12시</option>
+          </select>
+
+          <button type="submit" className="button">
+            {" "}
+            등록하기{" "}
+          </button>
+        </div>
       </div>
     </StyledGroupCreate>
   );
