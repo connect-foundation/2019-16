@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useReducer, useEffect } from "react";
+import React, { useCallback, useState, useReducer, useRef } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
 import Category from "../../components/groupCreate/Category";
@@ -65,11 +65,14 @@ for (let i = 0; i < 7; i++) {
     class: classnames({ "is-focused": false })
   };
 }
+
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primary, secondary, primaryCategories, secondaryCategories } = state;
   const [tags, setTags] = useState([]);
   const [dayCondition, setDayCondition] = useState(conditions);
+  const [time, setTime] = useState(null);
+  const timezone = useRef();
 
   const onClickDay = i => {
     return e => {
@@ -84,6 +87,14 @@ const GroupCreate = props => {
       setDayCondition(copyConditions);
     };
   };
+
+  const onTimeChange = useCallback(e => {
+    const timezoneValue = timezone.current.value;
+    let timeValue = Number.parseInt(e.target.value, 10);
+    if (timezoneValue === "pm") timeValue += 12;
+
+    setTime(timeValue);
+  }, []);
 
   // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
@@ -128,13 +139,14 @@ const GroupCreate = props => {
             );
           })}
         </div>
+
         <div className="time-select">
-          <select className="select">
+          <select className="select" ref={timezone}>
             <option value="am">오전</option>
             <option value="pm">오후</option>
           </select>
 
-          <select className="select">
+          <select className="select" onChange={onTimeChange}>
             <option value="1">1시</option>
             <option value="2">2시</option>
             <option value="3">3시</option>
