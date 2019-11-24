@@ -22,6 +22,38 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.listen(port, async () => {
 
-
+    makeAppClient("search");
+    makeAppClient("search2");
 
 })
+
+async function makeAppClient(name) {
+    const client = await apigateway.connectToApp(name,
+        () => {
+            apigateway.appClientMap[name] = client;
+            apigateway.icConnectMap[name] = true;
+            console.log(`${name} service connect`)
+        },
+        (data) => {
+            apigateway.resMap[data.key].json(data.body.studygroups);
+            delete apigateway.resMap[data.key];
+        },
+        () => {
+            apigateway.icConnectMap[name] = false;
+            console.log(`${name} service end`)
+        },
+        () => {
+            apigateway.icConnectMap[name] = false;
+            console.log(`${name} service error`)
+        }
+    );
+
+    setInterval(() => {
+        if (!apigateway.icConnectMap[name]) {
+            console.log(`try connect to search2`);
+            client.connect();
+        }
+    }, 2000);
+
+    return client;
+}
