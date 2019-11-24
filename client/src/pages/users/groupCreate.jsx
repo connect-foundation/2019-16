@@ -35,6 +35,8 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
+const days = ["일", "월", "화", "수", "목", "금", "토", "일"];
+
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primary, secondary, primaryCategories, secondaryCategories } = state;
@@ -66,8 +68,14 @@ const GroupCreate = props => {
         <textarea className="textarea"> 그룹 소개 </textarea>
       </div>
       <TagInput tags={tags} setTags={setTags} />
-      {/*<p> 위치 </p>
-      <p> 날짜 </p> */}
+
+      <div className="field has-addons">
+        {days.map(day => (
+          <p className="control">
+            <button className="button is-info is-outlined">{day}</button>
+          </p>
+        ))}
+      </div>
     </StyledGroupCreate>
   );
 };
