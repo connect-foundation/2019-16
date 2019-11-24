@@ -9,6 +9,11 @@ import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
 const StyledGroupCreate = styled.div`
   width: 60%;
   margin: 2rem auto;
+
+  .categories {
+    height: 5rem;
+  }
+
   .category {
     cursor: pointer;
   }
@@ -18,7 +23,6 @@ const StyledGroupCreate = styled.div`
   }
 
   .breadcrumb {
-    height: 4rem;
   }
 
   .introduction {
@@ -71,7 +75,7 @@ const GroupCreate = props => {
   // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
     <StyledGroupCreate>
-      <div className="is-centered">
+      <div className="is-centered categories">
         <Category
           categories={primaryCategories}
           type="primary"
