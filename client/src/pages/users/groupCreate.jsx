@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useReducer } from "react";
 import styled from "styled-components";
 import Category from "../../components/groupCreate/Category";
+import ImageUploader from "../../components/groupCreate/ImageUploader";
 import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -41,6 +42,7 @@ const GroupCreate = props => {
         )}
       </div>
 
+      {/* <ImageUploader /> */}
       <input className="input" placeholder="title" />
       <input className="input" placeholder="subtitle" />
       <textarea className="textarea"> 그룹 소개 </textarea>
