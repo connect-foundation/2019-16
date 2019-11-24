@@ -1,5 +1,3 @@
-import React, { useReducer } from "react";
-
 export const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
 
 export const category_click = ({ categoryType, categoryName }) => ({
@@ -22,8 +20,10 @@ export const groupCreateReducer = (state, action) => {
           primary: categoryName,
           secondary: null
         };
+
       if (categoryType === "secondary")
         return {
+          ...state,
           secondary: categoryName
         };
       break;
