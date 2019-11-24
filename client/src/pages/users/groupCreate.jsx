@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useReducer } from "react";
 import styled from "styled-components";
-import Category from "../../components/GroupCreate/Category";
+import Category from "../../components/groupCreate/Category";
 import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -21,7 +21,7 @@ const secondaryCategories = {
 
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
-
+  const { primary, secondary } = state;
   return (
     <StyledGroupCreate>
       <div className="breadcrumb is-centered" aria-label="breadcrumbs">
@@ -30,9 +30,10 @@ const GroupCreate = props => {
           type="primary"
           dispatch={dispatch}
         />
-        {state.secondary && (
+
+        {state.primary && (
           <Category
-            categories={secondaryCategories}
+            categories={secondaryCategories[primary]}
             type="secondary"
             dispatch={dispatch}
           />
