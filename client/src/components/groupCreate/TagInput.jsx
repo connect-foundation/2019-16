@@ -21,8 +21,8 @@ const StyledTagInput = styled.div`
   }
 `;
 
-const TagInput = () => {
-  const [tags, setTags] = useState([]);
+const TagInput = props => {
+  const { tags, setTags } = props;
   const [inputTag, setInputTag] = useState("");
 
   const tagEvent = useCallback(

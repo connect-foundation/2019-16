@@ -24,6 +24,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primary, secondary, primaryCategories, secondaryCategories } = state;
+  const [tags, setTags] = useState([]);
 
   // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
@@ -48,7 +49,7 @@ const GroupCreate = props => {
       <input className="input" placeholder="title" />
       <input className="input" placeholder="subtitle" />
       <textarea className="textarea"> 그룹 소개 </textarea>
-      <TagInput />
+      <TagInput tags={tags} setTags={setTags} />
       {/*<p> 위치 </p>
       <p> 날짜 </p> */}
     </StyledGroupCreate>
