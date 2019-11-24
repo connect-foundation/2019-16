@@ -18,7 +18,11 @@ class ApiGateWay extends App {
 }
 const apigateway = new ApiGateWay();
 
+let searchRouter = require("./routes/search")(apigateway)
+
 app.get('/', (req, res) => res.send('Hello World!'));
+
+app.use('/search', searchRouter);
 
 app.listen(port, async () => {
 
