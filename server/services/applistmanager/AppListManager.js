@@ -26,9 +26,16 @@ class AppListManager extends TcpServer {
     } catch (e) {
       console.log(e)
     }
-
   }
+  async onError(socket) {
+    const key = await makeKey(socket)
 
+    try {
+      await deletebyKey(key);
+    } catch (e) {
+      console.log(e)
+    }
+  }
   async onRead(socket, data) {
 
     const { method, query, info } = data;
@@ -62,7 +69,7 @@ class AppListManager extends TcpServer {
           default:
             break;
         }
-        const packet = makePacket("REPLY", "apps", {}, { apps: result }, this.context);
+        const packet = makePacket("REPLY", "apps", {}, { apps: result }, "", this.context);
 
         this.send(socket, packet)
       }
