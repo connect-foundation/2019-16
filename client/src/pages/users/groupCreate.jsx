@@ -14,14 +14,7 @@ const secondaryCategories = {
   자격증: ["IT", "운전", "보건", "식품"],
   외국어: ["영어", "중국어", "불어", "스페인어"],
   면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"],
-  지역: [
-    "경기도",
-    "서울",
-    "울산광역시",
-    "인천광역시",
-    "광주광역시",
-    "부산광역시"
-  ]
+  지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
 };
 
 const GroupCreate = props => {
@@ -47,7 +40,7 @@ const GroupCreate = props => {
             <li
               key={category}
               name="primary"
-              className="category has-text-primary is-size-5"
+              className="category has-text-primary is-size-4"
               onClick={categoryEvent}
             >
               {category}
@@ -61,7 +54,7 @@ const GroupCreate = props => {
               <li
                 key={category}
                 name="secondary"
-                className="category has-text-info is-size-6"
+                className="category has-text-info is-size-4"
                 onClick={categoryEvent}
               >
                 {category}
