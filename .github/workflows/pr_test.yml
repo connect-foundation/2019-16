@@ -31,7 +31,7 @@ jobs:
           npm test
       - name: test [api-gateway]
         run: |
-          if [ -d server/search ]
+          if [ -d server/api-gateway ]
           then
             cd server/api-gateway
             npm install
@@ -39,49 +39,49 @@ jobs:
           fi
       - name: test [log]
         run: |
-          if [ -d server/log ]
+          if [ -d server/services/log ]
           then
-            cd server/log
+            cd server/services/log
             npm install
             npm test
           fi
       - name: test [analytics]
         run: |
-          if [ -d server/analytics ]
+          if [ -d server/services/analytics ]
           then
-            cd server/analytics
+            cd server/services/analytics
             npm install
             npm test
           fi
       - name: test [reservation]
         run: |
-          if [ -d server/reservation ]
+          if [ -d server/services/reservation ]
           then
-            cd server/reservation
+            cd server/services/reservation
             npm install
             npm test
           fi
       - name: test [search]
         run: |
-          if [ -d server/search ]
+          if [ -d server/services/search ]
           then
-            cd server/search
+            cd server/services/search
             npm install
             npm test
           fi
       - name: test [study_room]
         run: |
-          if [ -d server/study_room ]
+          if [ -d server/services/study_room ]
           then
-            cd server/study_room
+            cd server/services/study_room
             npm install
             npm test
           fi
       - name: test [study_group]
         run: |
-          if [ -d server/study_group ]
+          if [ -d server/services/study_group ]
           then
-            cd server/study_group
+            cd server/services/study_group
             npm install
             npm test
           fi
