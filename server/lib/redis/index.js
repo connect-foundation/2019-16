@@ -1,6 +1,6 @@
 const redis = require("redis");
-//const client = redis.createClient(6379, "106.10.57.60");
-const client = redis.createClient();
+const client = redis.createClient(6379, "106.10.57.60");
+// const client = redis.createClient();
 
 function returnRedisPromise(command, ...params) {
 
@@ -13,7 +13,7 @@ function returnRedisPromise(command, ...params) {
 }
 
 exports.setAppbyKey = async (key, { name, host, port }) => {
-  console.log(name)
+
   const isAlreadyExist = await returnRedisPromise("exists", `name:${name}`);
 
 
@@ -51,9 +51,10 @@ exports.getAppbyName = async (name) => {
 
 exports.getAllApps = async () => {
 
-  const keys = await returnRedisPromise("keys", "*");
-  const apps = keys.reduce(async (promise, key) => {
+  const keys = await returnRedisPromise("keys", "*name*");
+  const apps = keys.reduce(async (promise, appKey) => {
     let appList = await promise.then();
+    const key = await returnRedisPromise("get", appKey);
     const app = await returnRedisPromise("hgetall", key);
 
     appList.push(app);
