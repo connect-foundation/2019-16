@@ -10,15 +10,15 @@ const Main = styled.div`
   padding-right: 5%;
 
   .main-jumbotron{
-    padding-top: 7%;
-    padding-bottom: 7%;
-    padding-left:5%;
+    padding: 2% 7% 1%;
+    display:flex;
+    flex-direction:column;
   }
 
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
     color: #000000;
-
+    padding: 5%;
     .main-title {
         font-size: 6em;
       }
@@ -34,11 +34,11 @@ const Main = styled.div`
   .study-group-list{
     align-self:center;
       background-color: #f8f0ee;
-      width: 70%;
       display: flex;
       flex-wrap: wrap;
       padding: 4em;
-      justify-content: space-between;
+      margin:0 10%;
+      justify-content: center;
       .study-group-card{
           margin: 2em;
       }
