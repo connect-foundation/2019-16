@@ -53,14 +53,7 @@ server.use('/api/search', searchRouter);
 server.use(writePacket)
 
 server.listen(GATE_EXPRESS_PORT, async () => {
-
-    const apps = await apigateway.getAllApps();
-
-    const appNames = apps.map(app => app.name);
-
-    appNames.forEach((appName) => {
-        makeAppClient(appName);
-    })
+    connectToAllApps();
 })
 
 async function makeAppClient(name) {
@@ -98,3 +91,15 @@ async function makeAppClient(name) {
         console.log(e)
     }
 }
+
+async function connectToAllApps() {
+    const apps = await apigateway.getAllApps();
+
+    const appNames = apps.map(app => app.name);
+
+    appNames.forEach((appName) => {
+        makeAppClient(appName);
+    })
+}
+
+
