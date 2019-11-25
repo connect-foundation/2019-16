@@ -1,5 +1,5 @@
 const redis = require("redis");
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(6379, "106.10.57.60");
 
 const { makePacket, makeKey } = require("../../tcp/util");
 const TcpServer = require("../../tcp/tcpServer");
@@ -33,13 +33,13 @@ test("setAppbyKey deleteAppbyKey getAppbyKey test", async () => {
   }
   const key = await makeKey(socket)
 
-  await deletebyKey(key);
+  await returnRedisPromise("flushall");
   await setAppbyKey(key, info);
 
   const expectApp = await getAppbyKey(key)
 
-  await deletebyKey(key);
   expect(info).toEqual(expectApp);
+  await returnRedisPromise("flushall");
 })
 
 /**
@@ -91,11 +91,10 @@ test("getAllApp test", async () => {
     port: '9001'
   }
 
-  const key1 = await makeKey(socket1)
-  const key2 = await makeKey(socket2)
+  const key1 = await makeKey(socket1);
+  const key2 = await makeKey(socket2);
 
-  await deletebyKey(key1);
-  await deletebyKey(key2);
+  await returnRedisPromise("flushall");
 
   await setAppbyKey(key1, info1);
   await setAppbyKey(key2, info2);

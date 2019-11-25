@@ -1,4 +1,5 @@
 const { makeKey, makePacket } = require('../util')
+
 /**
  * makeKey test
  */
@@ -16,7 +17,8 @@ test("same hash key", () => {
  * makePacket test
  */
 test("return string packet", () => {
-    const packet = makePacket("POST", "distribute", { id: "test", password: "pwd" }, {}, { host: "127.0.0.1", port: 1234, name: "test" })
-    const expect_packet = `{"method":"POST","query":"distribute","params":{"id":"test","password":"pwd"},"body":{},"info":{"host":"127.0.0.1","port":1234,"name":"test"}}|`
+    const packet = makePacket("POST", "distribute", { id: "test", password: "pwd" }, {}, 'key', { host: "127.0.0.1", port: 1234, name: "test" })
+    const expect_packet = `{"method":"POST","query":"distribute","params":{"id":"test","password":"pwd"},"body":{},"key":"key","info":{"host":"127.0.0.1","port":1234,"name":"test"}}|`
+
     expect(packet).toEqual(expect_packet);
 })

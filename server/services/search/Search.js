@@ -97,7 +97,6 @@ class Search extends App {
       default:
         break;
     }
-    console.log(result)
     const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
 
     this.send(socket, packet);
