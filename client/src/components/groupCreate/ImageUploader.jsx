@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useRef } from "react";
 import styled from "styled-components";
+import { attach_image } from "../../reducer/groupCreate";
 
 const StyledImageUploader = styled.div`
   .image {
@@ -14,11 +15,9 @@ const StyledImageUploader = styled.div`
   }
 `;
 
-const ImageUploader = () => {
-  const [imageInfo, setImageInfo] = useState({
-    file: null,
-    imagePreviewUrl: null
-  });
+const ImageUploader = props => {
+  const { dispatch } = props;
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const uploaderBtn = useRef();
 
@@ -33,21 +32,16 @@ const ImageUploader = () => {
     const file = e.target.files[0];
 
     reader.onloadend = () => {
-      setImageInfo({
-        file: file,
-        imagePreviewUrl: reader.result
-      });
+      setImagePreviewUrl(reader.result);
+      dispatch(attach_image(file));
     };
 
     reader.readAsDataURL(file);
   }, []);
 
-  const { imagePreviewUrl } = imageInfo;
   return (
     <StyledImageUploader>
-      {(imageInfo.file && <img src={imagePreviewUrl} className="image" />) || (
-        <img className="image" onClick={onClick} />
-      )}
+      <img src={imagePreviewUrl} className="image" onClick={onClick} />
       <input type="file" onChange={onChange} ref={uploaderBtn} />
     </StyledImageUploader>
   );

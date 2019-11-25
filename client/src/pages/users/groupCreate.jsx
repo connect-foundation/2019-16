@@ -1,6 +1,5 @@
-import React, { useCallback, useState, useReducer, useRef } from "react";
+import React, { useCallback, useReducer, useRef } from "react";
 import styled from "styled-components";
-import classnames from "classnames";
 import Category from "../../components/groupCreate/Category";
 import ImageUploader from "../../components/groupCreate/ImageUploader";
 import TagInput from "../../components/groupCreate/TagInput";
@@ -66,7 +65,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
-  const { category, tags } = state.data;
+  const { category, tags, title, subtitle, intro } = state.data;
   const TimeSlot = useRef();
 
   const onClickDay = i => {
@@ -114,16 +113,23 @@ const GroupCreate = props => {
         name="title"
         placeholder="title"
         onChange={onChangeContent}
+        value={title}
       />
       <input
         className="input"
         name="subtitle"
         placeholder="subtitle"
         onChange={onChangeContent}
+        value={subtitle}
       />
       <div className="introduction">
-        <ImageUploader />
-        <textarea className="textarea" name="intro" onChange={onChangeContent}>
+        <ImageUploader dispatch={dispatch} />
+        <textarea
+          className="textarea"
+          name="intro"
+          onChange={onChangeContent}
+          value={intro}
+        >
           그룹 소개
         </textarea>
       </div>

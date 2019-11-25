@@ -5,6 +5,7 @@ export const ADD_TAG = "groupCreate/ADD_TAG";
 export const CLICK_DAY = "groupCreate/CLICK_DAY";
 export const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
 export const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
+export const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
 
 export const category_click = ({ categoryType, categoryName }) => ({
   type: CATEGORY_CLICK,
@@ -31,6 +32,11 @@ export const input_content = (contentType, description) => ({
   type: INPUT_CONTENT,
   contentType,
   description
+});
+
+export const attach_image = file => ({
+  type: ATTACH_IMAGE,
+  file
 });
 
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
@@ -62,7 +68,8 @@ export const initialState = {
     isRecruiting: true,
     thumbnail: "",
     min_personnel: 0,
-    max_personnel: 0
+    max_personnel: 0,
+    thumbnail: null
   }
 };
 
@@ -113,6 +120,11 @@ export const groupCreateReducer = (state, action) => {
     case INPUT_CONTENT:
       const { contentType, description } = action;
       data[contentType] = description;
+
+      return { ...state, data };
+
+    case ATTACH_IMAGE:
+      data.thumbnail = action.file;
 
       return { ...state, data };
 
