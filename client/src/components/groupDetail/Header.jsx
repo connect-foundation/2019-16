@@ -4,6 +4,7 @@ import styled from "styled-components";
 const StyledHeader = styled.div`
   .hero-body {
     padding-left: 0;
+    font-family: "Nanum Gothic", sans-serif;
   }
 `;
 

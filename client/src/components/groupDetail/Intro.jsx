@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 const StyledIntro = styled.div`
   margin: 0.3rem 0;
+  font-family: "Nanum Gothic", sans-serif;
 
   h3 {
     margin: 2rem 0;
