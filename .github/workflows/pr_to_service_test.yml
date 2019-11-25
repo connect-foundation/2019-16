@@ -49,6 +49,11 @@ jobs:
             cd server/study_group
             npm intall
             npm test
+          elif  [  ${{github.base_ref}} == "service/rest_api" ]
+          then 
+            cd server/api-gateway
+            npm install
+            npm test
           else
             return 0
           fi
