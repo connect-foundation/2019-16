@@ -1,8 +1,12 @@
+require("dotenv").config({ path: ".env.search" });
+const {
+  APP_NAME,
+  SERVER_HOST,
+  SERVER_PORT
+} = process.env;
+
 const Search = require("./Search");
 
-const search = new Search("search", "127.0.0.1", 8002);
+const search = new Search(APP_NAME, SERVER_HOST, SERVER_PORT);
+
 search.connectToAppListManager();
-
-
-const search2 = new Search("search2", "127.0.0.1", 8003);
-search2.connectToAppListManager();
