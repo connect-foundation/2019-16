@@ -2,7 +2,7 @@ const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
-const { getAppbyName } = require("../redis");
+const { getAppbyName, getAllApps } = require("../redis");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
@@ -18,16 +18,25 @@ class App extends TcpServer {
 
     try {
       const clientInfo = await getAppbyName(name);
+
       if (clientInfo === null) throw new Error(`${name} server is not running`)
+
       const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
 
-
       this.appClients[name] = client;
-
-
       return client;
     } catch (e) {
-      console.log(e);
+      return e;
+    }
+  }
+
+  async getAllApps() {
+    try {
+      const apps = await getAllApps();
+
+      return apps;
+    } catch (e) {
+      return e;
     }
   }
 
