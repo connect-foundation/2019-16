@@ -3,11 +3,10 @@ import styled from "styled-components";
 import Category from "../../components/groupCreate/Category";
 import ImageUploader from "../../components/groupCreate/ImageUploader";
 import TagInput from "../../components/groupCreate/TagInput";
+import ScheduleInput from "../../components/groupCreate/ScheduleInput";
 import {
   groupCreateReducer,
   initialState,
-  click_day,
-  change_hour,
   input_content
 } from "../../reducer/groupCreate";
 
@@ -44,44 +43,12 @@ const StyledGroupCreate = styled.div`
   .button:focus {
     background-color: white;
   }
-
-  .schedule {
-    display: flex;
-    flex-direction: row;
-
-    .day-buttons {
-      margin-right: 1.5rem;
-    }
-
-    .time-select > * {
-      height: 2.4rem;
-      margin: 0 1rem;
-      width: 5rem;
-      border-radius: 0.3rem;
-    }
-  }
 `;
 
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
   const { category, tags, title, subtitle, intro } = state.data;
-  const TimeSlot = useRef();
-
-  const onClickDay = i => {
-    return e => {
-      e.target.blur();
-      dispatch(click_day(i));
-    };
-  };
-
-  const onTimeChange = useCallback(e => {
-    const timeSlot = TimeSlot.current.value;
-    let time = Number.parseInt(e.target.value, 10);
-    if (timeSlot === "pm") time += 12;
-
-    dispatch(change_hour(time));
-  }, []);
 
   const onChangeContent = useCallback(e => {
     const contentType = e.target.name;
@@ -115,6 +82,7 @@ const GroupCreate = props => {
         onChange={onChangeContent}
         value={title}
       />
+
       <input
         className="input"
         name="subtitle"
@@ -122,6 +90,7 @@ const GroupCreate = props => {
         onChange={onChangeContent}
         value={subtitle}
       />
+
       <div className="introduction">
         <ImageUploader dispatch={dispatch} />
         <textarea
@@ -133,51 +102,15 @@ const GroupCreate = props => {
           그룹 소개
         </textarea>
       </div>
+
       <TagInput tags={tags} dispatch={dispatch} />
 
-      <div className="schedule">
-        <div className="field has-addons day-buttons">
-          {daysInfo.map((day, idx) => {
-            return (
-              <p className="control" key={idx}>
-                <button
-                  className={`button is-info is-outlined ${day && day.class}`}
-                  onClick={onClickDay(idx)}
-                >
-                  {day.str}
-                </button>
-              </p>
-            );
-          })}
-        </div>
+      <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
 
-        <div className="time-select">
-          <select className="select" ref={TimeSlot}>
-            <option value="am">오전</option>
-            <option value="pm">오후</option>
-          </select>
-
-          <select className="select" onChange={onTimeChange}>
-            <option value="1">1시</option>
-            <option value="2">2시</option>
-            <option value="3">3시</option>
-            <option value="4">4시</option>
-            <option value="5">5시</option>
-            <option value="6">6시</option>
-            <option value="7">7시</option>
-            <option value="8">8시</option>
-            <option value="9">9시</option>
-            <option value="10">10시</option>
-            <option value="11">11시</option>
-            <option value="12">12시</option>
-          </select>
-
-          <button type="submit" className="button">
-            {" "}
-            등록하기{" "}
-          </button>
-        </div>
-      </div>
+      <button type="submit" className="button">
+        {" "}
+        등록하기{" "}
+      </button>
     </StyledGroupCreate>
   );
 };
