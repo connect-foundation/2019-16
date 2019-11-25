@@ -13,8 +13,6 @@ export const add_tag = tags => ({
 });
 
 export const initialState = {
-  primary: null,
-  secondary: null,
   primaryCategories: ["프로그래밍", "자격증", "외국어", "면접", "지역"],
   secondaryCategories: {
     프로그래밍: ["C++", "Java", "JavaScript"],
@@ -23,7 +21,20 @@ export const initialState = {
     면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"],
     지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
   },
-  tags: []
+  data: {
+    category: [],
+    tags: [],
+    title: "",
+    subtitle: "",
+    intro: "",
+    days: [],
+    startTime: 0,
+    during: 0,
+    isRecruiting: true,
+    thumbnail: "",
+    min_personnel: 0,
+    max_personnel: 0
+  }
 };
 
 export const groupCreateReducer = (state, action) => {
