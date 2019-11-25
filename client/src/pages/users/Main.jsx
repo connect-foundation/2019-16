@@ -6,8 +6,6 @@ import StudyGroupCard from "../../components/groupCard";
 const Main = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: space-between;
   padding-left: 5%;
   padding-right: 5%;
 
@@ -50,13 +48,11 @@ const Main = styled.div`
 const MainPage = ({ props }) => {
   const [cardListData, setCardListData] = useState([]);
 
-  const cardList = cardListData.map(data => {
-    return <StudyGroupCard groupData={data}></StudyGroupCard>;
-  });
   return (
     <Main>
-      <div className={`main-jumbotron`}>
-        <div className={`main-page-title`}>
+      <div className="main-jumbotron">
+        <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
+        <div className="main-page-title">
           <div className={`main-title`}>스터디,</div>
           <div className={`main-subtitle`}>
             <span className={`highlight`}>모집</span>부터{" "}
@@ -65,7 +61,11 @@ const MainPage = ({ props }) => {
         </div>
       </div>
       <StudySearchNavbar></StudySearchNavbar>
-      <div className={`study-group-list`}>{cardList}</div>
+      <div className={`study-group-list`}>
+        {cardListData.map(data => {
+          return <StudyGroupCard groupData={data}></StudyGroupCard>;
+        })}
+      </div>
     </Main>
   );
 };
