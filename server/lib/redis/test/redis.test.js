@@ -112,11 +112,13 @@ test("getAllApp test", async () => {
 test("pushStudyGroups test", async () => {
   await returnRedisPromise("flushall");
 
-  const groups = ["group1", "group2", "group3", "group4", "group5"];
+  const groups = [{ name: "group1" }, { name: "group1" }, { name: "group2" }, { name: "group3" }, { name: "group4" }];
 
   await pushStudyGroups(groups);
   const result = await popStudyGroups(5);
 
-  expect(groups).toEqual(result);
+  expect(result).toEqual(JSON.stringify(groups));
   await returnRedisPromise("flushall");
 })
+
+
