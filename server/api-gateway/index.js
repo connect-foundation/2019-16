@@ -1,139 +1,105 @@
 require("dotenv").config({ path: ".env.gateway" });
-const Koa = require("koa");
-const KoaRouter = require("koa-router");
-const koaBody = require("koa-bodyparser");
-const { ApolloServer, gql } = require("apollo-server-koa");
-const passportForPartners = require("./passport/partners");
-const mongoose = require("mongoose");
-const authRouter = require("./routes");
-const TcpClient = require("../lib/tcp/tcpClient");
-const TcpServer = require("../lib/tcp/tcpServer");
-const { makePacket } = require("../lib/tcp/util");
+const App = require("../lib/tcp/App");
+const { makeKey } = require("../lib/tcp/util");
+
+const express = require('express')
+const server = express();
 
 const {
-  GATE_PORT,
-  PARTNERS_MONGO_URI,
-  PARTNERS_USER,
-  PARTNERS_PASS,
-  GATE_HOST
+    GATE_EXPRESS_PORT,
+    GATE_TCP_PORT,
+    GATE_NAME,
+    PARTNERS_MONGO_URI,
+    PARTNERS_USER,
+    PARTNERS_PASS,
+    GATE_HOST
 } = process.env;
 
-console.log(GATE_PORT);
-const mongoOptions = {
-  dbName: "partners",
-  user: PARTNERS_USER,
-  pass: PARTNERS_PASS,
-  useNewUrlParser: true,
-  useFindAndModify: true
-};
-
-const nodeInfo = {};
-
-mongoose
-  .connect(PARTNERS_MONGO_URI, mongoOptions)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch(e => {
-    console.error(e);
-  });
-
-function readyToSend(client, packet) {
-  return (function*() {
-    const resolve = yield;
-
-    client.write(packet);
-    const data = yield;
-
-    resolve(data);
-  })();
-}
-
-async function fetchData(packetGenerator) {
-  const data = await new Promise(resolve => {
-    packetGenerator.next();
-    packetGenerator.next(resolve);
-  });
-
-  return data;
-}
-
-// packetInfo: { method, query, body }
-// packet의 params는 포함되지 않으며 2줄 아래에 있는 인자를 따로 넣어줘야함
-function resolverLogic(serviceName, packetInfo) {
-  return async function(_, params) {
-    let tcpClient = nodeInfo[serviceName].socket;
-
-    if (!tcpClient) {
-      const { serviceHost, servicePort } = nodeInfo[serviceName];
-
-      tcpClient = new TcpClient(
-        serviceHost,
-        servicePort,
-        () => {},
-        payload => {
-          packetGenerator.next(payload.body);
-        },
-        () => {},
-        () => {}
-      );
-
-      tcpClient.connect();
+class ApiGateway extends App {
+    constructor() {
+        super(GATE_NAME, GATE_HOST, GATE_TCP_PORT);
+        this.appClientMap = {};
+        this.icConnectMap = {};
+        this.resMap = {};
     }
+}
+const apigateway = new ApiGateway();
 
-    const { method, query, body = {} } = packetInfo;
-    const packet = await makePacket(
-      method, // POST
-      query, // login
-      params,
-      body,
-      {
-        name: "gateway",
-        host: GATE_HOST,
-        port: GATE_PORT
-      }
-    );
+async function setResponseKey(req, res, next) {
+    const key = await makeKey(req.client);
 
-    var packetGenerator = readyToSend(tcpClient, packet);
-    const data = fetchData(packetGenerator);
+    req.resKey = key;
+    apigateway.resMap[key] = res;
 
-    return data;
-  };
+    next();
 }
 
-const typeDefs = gql`
-  type Query {
+function writePacket(req, res, next) {
+    const appName = req.path.split("/")[2];
 
-  }
+    apigateway.appClientMap[appName].write(req.packet);
+}
 
-  type Mutation {
 
-  }
-`;
 
-const resolvers = {
-  Query: {},
-  Mutation: {
-    login: resolverLogic("login", { method: "POST", query: "login" })
-  }
-};
+let searchRouter = require("./routes/search")(apigateway)
 
-const server = new ApolloServer({ typeDefs, resolvers });
-const app = new Koa();
-const router = new KoaRouter();
+server.use(setResponseKey)
 
-router.use("/auth", authRouter.routes());
+server.get('/', (req, res) => res.send('Hello World!'));
 
-app.use(passportForPartners.initialize());
-app.use(koaBody());
-app.use(router.routes());
-app.use(router.allowedMethods());
-server.applyMiddleware({ app });
+server.use('/api/search', searchRouter);
 
-app.listen(8000 || GATE_PORT, () => {
-  console.log("8000번에서 API Gateway 실행중...");
+server.use(writePacket)
 
-  const distributor = new TcpServer("gateway", "127.0.0.1", 8000, "");
+server.listen(GATE_EXPRESS_PORT, async () => {
+    connectToAllApps();
+})
 
-  distributor.connectToDistributor();
-});
+async function makeAppClient(name) {
+    try {
+        const client = await apigateway.connectToApp(name,
+            () => {
+                // connect이벤트 함수
+                apigateway.appClientMap[name] = client;
+                apigateway.icConnectMap[name] = true;
+                console.log(`${name} service connect`)
+            },
+            (data) => {
+                // data이벤트 함수
+                apigateway.resMap[data.key].json(data.body.studygroups);
+                delete apigateway.resMap[data.key];
+            },
+            () => {
+                apigateway.icConnectMap[name] = false;
+                console.log(`${name} service end`)
+            },
+            () => {
+                apigateway.icConnectMap[name] = false;
+                console.log(`${name} service error`)
+            }
+        );
+
+        setInterval(() => {
+            if (!apigateway.icConnectMap[name]) {
+                console.log(`try connect to search2`);
+                client.connect();
+            }
+        }, 2000);
+        return client;
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+async function connectToAllApps() {
+    const apps = await apigateway.getAllApps();
+
+    const appNames = apps.map(app => app.name);
+
+    appNames.forEach((appName) => {
+        makeAppClient(appName);
+    })
+}
+
+

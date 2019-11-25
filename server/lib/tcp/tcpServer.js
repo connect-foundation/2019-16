@@ -17,7 +17,9 @@ class TcpServer {
 			socket.on("close", () => {
 				this.onClose(socket);
 			});
-
+			socket.on("error", () => {
+				this.onError(socket);
+			});
 			socket.on("data", async data => {
 				const key = await makeKey(socket);
 
@@ -44,8 +46,9 @@ class TcpServer {
 			logger.info(`${name} Server Listening!`);
 		});
 	}
+	onError(socket) { }
 	onCreate(socket) { }
-	onClose() { }
+	onClose(socket) { }
 	onRead(socket, data) {
 		logger.info(data);
 		socket.write(data);

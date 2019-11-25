@@ -1,5 +1,6 @@
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient(6379, "106.10.57.60");
+// const client = redis.createClient();
 
 function returnRedisPromise(command, ...params) {
 
@@ -13,23 +14,27 @@ function returnRedisPromise(command, ...params) {
 
 exports.setAppbyKey = async (key, { name, host, port }) => {
 
-  const isAlreadyExist = await returnRedisPromise("exists", key);
+  const isAlreadyExist = await returnRedisPromise("exists", `name:${name}`);
 
 
-  if (isAlreadyExist === 0) return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
-
+  if (isAlreadyExist === 0) {
+    client.set(`name:${name}`, key);
+    return returnRedisPromise("hmset", key, "name", name, "host", host, "port", port);
+  }
   return new Promise(res => {
     res(0);
   })
 };
 
 exports.deletebyKey = async (key) => {
+  const app = await this.getAppbyKey(key);
 
+  client.del(`name:${app.name}`);
   return returnRedisPromise("del", key);
 };
 
 exports.updatdAppbyKey = (key, { name, host, port }) => {
-  return returnRedisPromise("hset", key, "name", name, "host", host, "port", port);
+  return returnRedisPromise("hmset", key, "name", name, "host", host, "port", port);
 };
 
 exports.getAppbyKey = (key) => {
@@ -37,20 +42,19 @@ exports.getAppbyKey = (key) => {
 };
 
 exports.getAppbyName = async (name) => {
-  const apps = await this.getAllApps();
 
-  return new Promise((res) => {
-    const result = apps.filter(app => app.name === name);
+  const key = await returnRedisPromise("get", `name:${name}`);
 
-    res(result[0]);
-  })
+  return this.getAppbyKey(key);
+
 }
 
 exports.getAllApps = async () => {
 
-  const keys = await returnRedisPromise("keys", "*");
-  const apps = keys.reduce(async (promise, key) => {
+  const keys = await returnRedisPromise("keys", "*name*");
+  const apps = keys.reduce(async (promise, appKey) => {
     let appList = await promise.then();
+    const key = await returnRedisPromise("get", appKey);
     const app = await returnRedisPromise("hgetall", key);
 
     appList.push(app);
@@ -59,4 +63,3 @@ exports.getAllApps = async () => {
 
   return apps;
 };
-

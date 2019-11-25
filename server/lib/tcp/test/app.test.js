@@ -1,5 +1,5 @@
 const redis = require("redis");
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(6379, "106.10.57.60");
 
 const { makeKey, makePacket } = require('../util')
 
