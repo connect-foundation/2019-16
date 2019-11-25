@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import StudySearchNavbar from "../../components/StudySearchNavbar";
+import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
+import MyStudyCarousel from "../../components/MyStudyCarousel";
+import {
+  studyGroupData,
+  categoryData,
+  myStudyData
+} from "../../__test__/mainPage.dummy";
 
 const Main = styled.div`
   display: flex;
@@ -45,8 +51,27 @@ const Main = styled.div`
   }
 `;
 
-const MainPage = ({ props }) => {
-  const [cardListData, setCardListData] = useState([]);
+/**
+ * TODO: 로그인 여부에 따라서 main jumbotron에서 표시되는 정보가 다르다
+ * 미로그인시main-page-title 출력
+ * 로그인시 MyStudyCarousel 출력
+ */
+const MainPage = () => {
+  const [cardListData, setCardListData] = useState([
+    studyGroupData,
+    studyGroupData,
+    studyGroupData,
+    studyGroupData,
+    studyGroupData
+  ]);
+
+  useEffect(() => {
+    /**
+     * TODO: data 요청로직 필요
+     * cardListData
+     * myStudyData
+     */
+  }, []);
 
   return (
     <Main>
@@ -60,7 +85,7 @@ const MainPage = ({ props }) => {
           </div>
         </div>
       </div>
-      <StudySearchNavbar></StudySearchNavbar>
+      <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
       <div className={`study-group-list`}>
         {cardListData.map(data => {
           return <StudyGroupCard groupData={data}></StudyGroupCard>;
