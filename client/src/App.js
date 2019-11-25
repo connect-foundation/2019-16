@@ -1,19 +1,31 @@
 import React from "react";
-import StudyGroupCard from "./components/StudyGroupCard";
+import { Route, Switch } from "react-router-dom";
+import { createGlobalStyle } from "styled-components";
+import PartnersRouter from "./pages/partners/Router";
+
+const GlobalStyle = createGlobalStyle`
+  @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+  @import url('https://fonts.googleapis.com/css?family=Black+Han+Sans&display=swap');
+  font-family: "Nanum Gothic", sans-serif;
+`;
 
 function App() {
-  return <div className="App">{/* <StudyGroupCard props={data} /> */}</div>;
+  return (
+    <div className="App">
+      <GlobalStyle />
+      <Switch>
+        <Route path="/partners" component={PartnersRouter} />
+        <Route
+          render={({ location }) => (
+            <div>
+              <h1>존재하지 않는 페이지입니다.</h1>
+              <p>{location.pathname}</p>
+            </div>
+          )}
+        />
+      </Switch>
+    </div>
+  );
 }
 
 export default App;
-
-// const data = {
-//   src:
-//     "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
-//   alt: "img",
-//   title: "자바스크립트 기초 공부해요",
-//   location: "강남",
-//   time: "월수 | 20:00 ~ | 2시간",
-//   now: 8,
-//   max: 10
-// };
