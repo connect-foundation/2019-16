@@ -6,7 +6,7 @@ import Footer from "./Footer";
 
 const StyledCard = styled.div`
   display: flex;
-  margin: 4em 0 0;
+  margin: 3em 2em;
   flex-direction: column;
   font-family: "Nanum Gothic", sans-serif;
   font-weight: bold;
@@ -16,6 +16,10 @@ const StyledCard = styled.div`
   background-color: whitesmoke;
   border-radius: 0.2rem;
   padding-bottom: 1.3rem;
+  box-shadow: 0 17px 30px 0 rgba(0, 0, 0, 0.2);
+  &:hover {
+    box-shadow: none;
+  }
 `;
 
 const StudyGroupCard = ({ groupData }) => (
