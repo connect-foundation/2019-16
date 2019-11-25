@@ -66,10 +66,9 @@ export const initialState = {
     startTime: 0,
     during: 0,
     isRecruiting: true,
-    thumbnail: "",
+    thumbnail: null,
     min_personnel: 0,
-    max_personnel: 0,
-    thumbnail: null
+    max_personnel: 0
   }
 };
 

@@ -98,9 +98,8 @@ const GroupCreate = props => {
           name="intro"
           onChange={onChangeContent}
           value={intro}
-        >
-          그룹 소개
-        </textarea>
+          placeholder="그룹 소개"
+        ></textarea>
       </div>
 
       <TagInput tags={tags} dispatch={dispatch} />
