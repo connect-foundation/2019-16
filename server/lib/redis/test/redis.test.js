@@ -1,10 +1,11 @@
 const redis = require("redis");
 const redisClient = redis.createClient(6379, "106.10.57.60");
+//const redisClient = redis.createClient();
 
 const { makePacket, makeKey } = require("../../tcp/util");
 const TcpServer = require("../../tcp/tcpServer");
 const TcpClient = require("../../tcp/tcpClient");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAppbyName, getAllApps } = require("../index")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAppbyName, getAllApps, pushStudyGroups, popStudyGroups } = require("../index")
 
 function returnRedisPromise(command, ...params) {
   return new Promise((res, rej) => {
@@ -102,5 +103,20 @@ test("getAllApp test", async () => {
   const expectApps = await getAllApps()
 
   expect([info2, info1]).toEqual(expectApps);
+  await returnRedisPromise("flushall");
+})
+
+/**
+ * pushStudyGroups and popStudyGroups test
+ */
+test("pushStudyGroups test", async () => {
+  await returnRedisPromise("flushall");
+
+  const groups = ["group1", "group2", "group3", "group4", "group5"];
+
+  await pushStudyGroups(groups);
+  const result = await popStudyGroups(5);
+
+  expect(groups).toEqual(result);
   await returnRedisPromise("flushall");
 })

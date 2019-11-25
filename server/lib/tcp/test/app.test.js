@@ -1,6 +1,6 @@
 const redis = require("redis");
 const redisClient = redis.createClient(6379, "106.10.57.60");
-
+//const redisClient = redis.createClient();
 const { makeKey, makePacket } = require('../util')
 
 const AppListManager = require("../../../services/applistmanager/AppListManager");
