@@ -8,7 +8,8 @@ import {
   groupCreateReducer,
   initialState,
   click_day,
-  change_hour
+  change_hour,
+  input_content
 } from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -83,6 +84,13 @@ const GroupCreate = props => {
     dispatch(change_hour(time));
   }, []);
 
+  const onChangeContent = useCallback(e => {
+    const contentType = e.target.name;
+    const description = e.target.value;
+
+    dispatch(input_content(contentType, description));
+  }, []);
+
   return (
     <StyledGroupCreate>
       <div className="is-centered categories">
@@ -101,11 +109,23 @@ const GroupCreate = props => {
         )}
       </div>
 
-      <input className="input" placeholder="title" />
-      <input className="input" placeholder="subtitle" />
+      <input
+        className="input"
+        name="title"
+        placeholder="title"
+        onChange={onChangeContent}
+      />
+      <input
+        className="input"
+        name="subtitle"
+        placeholder="subtitle"
+        onChange={onChangeContent}
+      />
       <div className="introduction">
         <ImageUploader />
-        <textarea className="textarea"> 그룹 소개 </textarea>
+        <textarea className="textarea" name="intro" onChange={onChangeContent}>
+          그룹 소개
+        </textarea>
       </div>
       <TagInput tags={tags} dispatch={dispatch} />
 

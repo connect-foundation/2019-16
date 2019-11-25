@@ -4,6 +4,7 @@ export const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
 export const ADD_TAG = "groupCreate/ADD_TAG";
 export const CLICK_DAY = "groupCreate/CLICK_DAY";
 export const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
+export const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
 
 export const category_click = ({ categoryType, categoryName }) => ({
   type: CATEGORY_CLICK,
@@ -24,6 +25,12 @@ export const click_day = changedIndex => ({
 export const change_hour = startTime => ({
   type: CHANGE_HOUR,
   startTime
+});
+
+export const input_content = (contentType, description) => ({
+  type: INPUT_CONTENT,
+  contentType,
+  description
 });
 
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
@@ -101,6 +108,12 @@ export const groupCreateReducer = (state, action) => {
     case CHANGE_HOUR:
       const { startTime } = action;
       data.startTime = startTime;
+      return { ...state, data };
+
+    case INPUT_CONTENT:
+      const { contentType, description } = action;
+      data[contentType] = description;
+
       return { ...state, data };
 
     default:
