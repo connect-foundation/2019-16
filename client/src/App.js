@@ -1,7 +1,7 @@
 import React from "react";
-import GroupDetail from "./pages/users/groupDetail";
+import { Route, Switch } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import Header from "./components/Header";
+import PartnersRouter from "./pages/partners/Router";
 
 const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
@@ -9,25 +9,21 @@ const GlobalStyle = createGlobalStyle`
   font-family: "Nanum Gothic", sans-serif;
 `;
 
-// const data = {
-//   src:
-//     "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
-//   alt: "img",
-//   title: "필수 표현으로 마스터하는 비즈니스 영어",
-//   subtitle:
-//     "10여 년의 해외 근무 경험으로 쌓은 실전 비즈니스 영어 노하우를 배울 수 있는 스터디입니다.",
-//   location: "강남",
-//   time: "월수 | 20:00 ~ | 2시간",
-//   nowCnt: 8,
-//   maxCnt: 10
-// };
-
 function App() {
   return (
     <div className="App">
       <GlobalStyle />
-      <Header></Header>
-      <GroupDetail />
+      <Switch>
+        <Route path="/partners" component={PartnersRouter} />
+        <Route
+          render={({ location }) => (
+            <div>
+              <h1>존재하지 않는 페이지입니다.</h1>
+              <p>{location.pathname}</p>
+            </div>
+          )}
+        />
+      </Switch>
     </div>
   );
 }
