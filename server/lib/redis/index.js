@@ -1,6 +1,6 @@
 const redis = require("redis");
 const client = redis.createClient(6379, "106.10.57.60");
-// const client = redis.createClient();
+//const client = redis.createClient();
 
 function returnRedisPromise(command, ...params) {
 
@@ -63,3 +63,15 @@ exports.getAllApps = async () => {
 
   return apps;
 };
+
+exports.pushStudyGroups = (...studyGroups) => {
+  return returnRedisPromise("rpush", "studygroup", ...studyGroups);
+}
+
+exports.popStudyGroups = async (count) => {
+  const groups = await returnRedisPromise("lrange", "studygroup", 0, count - 1);
+  returnRedisPromise("ltrim", "studygroup", count - 1, -1);
+  return new Promise((res) => {
+    res(groups);
+  })
+}
