@@ -4,7 +4,12 @@ import classnames from "classnames";
 import Category from "../../components/groupCreate/Category";
 import ImageUploader from "../../components/groupCreate/ImageUploader";
 import TagInput from "../../components/groupCreate/TagInput";
-import { groupCreateReducer, initialState } from "../../reducer/groupCreate";
+import {
+  groupCreateReducer,
+  initialState,
+  click_day,
+  change_hour
+} from "../../reducer/groupCreate";
 
 const StyledGroupCreate = styled.div`
   width: 60%;
@@ -57,43 +62,25 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const days = ["일", "월", "화", "수", "목", "금", "토"];
-const conditions = [];
-for (let i = 0; i < 7; i++) {
-  conditions[i] = {
-    isSelected: false,
-    class: classnames({ "is-focused": false })
-  };
-}
-
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
-  const { primaryCategories, secondaryCategories } = state;
+  const { primaryCategories, secondaryCategories, daysInfo } = state;
   const { category, tags } = state.data;
-  const [dayCondition, setDayCondition] = useState(conditions);
-  const [time, setTime] = useState(null);
-  const timezone = useRef();
+  const TimeSlot = useRef();
 
   const onClickDay = i => {
     return e => {
       e.target.blur();
-      const copyConditions = [...dayCondition];
-      copyConditions[i] = {
-        isSelected: !copyConditions[i].isSelected,
-        class: classnames({
-          "is-focused": !copyConditions[i].isSelected
-        })
-      };
-      setDayCondition(copyConditions);
+      dispatch(click_day(i));
     };
   };
 
   const onTimeChange = useCallback(e => {
-    const timezoneValue = timezone.current.value;
-    let timeValue = Number.parseInt(e.target.value, 10);
-    if (timezoneValue === "pm") timeValue += 12;
+    const timeSlot = TimeSlot.current.value;
+    let time = Number.parseInt(e.target.value, 10);
+    if (timeSlot === "pm") time += 12;
 
-    setTime(timeValue);
+    dispatch(change_hour(time));
   }, []);
 
   return (
@@ -124,15 +111,14 @@ const GroupCreate = props => {
 
       <div className="schedule">
         <div className="field has-addons day-buttons">
-          {days.map((day, idx) => {
+          {daysInfo.map((day, idx) => {
             return (
               <p className="control" key={idx}>
                 <button
-                  className={`button is-info is-outlined ${dayCondition[idx] &&
-                    dayCondition[idx].class}`}
+                  className={`button is-info is-outlined ${day && day.class}`}
                   onClick={onClickDay(idx)}
                 >
-                  {day}
+                  {day.str}
                 </button>
               </p>
             );
@@ -140,7 +126,7 @@ const GroupCreate = props => {
         </div>
 
         <div className="time-select">
-          <select className="select" ref={timezone}>
+          <select className="select" ref={TimeSlot}>
             <option value="am">오전</option>
             <option value="pm">오후</option>
           </select>

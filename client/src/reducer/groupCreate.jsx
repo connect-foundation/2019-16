@@ -1,5 +1,9 @@
+import classnames from "classnames";
+
 export const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
 export const ADD_TAG = "groupCreate/ADD_TAG";
+export const CLICK_DAY = "groupCreate/CLICK_DAY";
+export const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
 
 export const category_click = ({ categoryType, categoryName }) => ({
   type: CATEGORY_CLICK,
@@ -12,6 +16,23 @@ export const add_tag = tags => ({
   tags
 });
 
+export const click_day = changedIndex => ({
+  type: CLICK_DAY,
+  changedIndex
+});
+
+export const change_hour = startTime => ({
+  type: CHANGE_HOUR,
+  startTime
+});
+
+const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
+const daysInfo = daysStr.map(str => ({
+  isSelected: false,
+  class: classnames({ "is-focused": false }),
+  str
+}));
+
 export const initialState = {
   primaryCategories: ["프로그래밍", "자격증", "외국어", "면접", "지역"],
   secondaryCategories: {
@@ -21,13 +42,14 @@ export const initialState = {
     면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"],
     지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
   },
+  daysInfo,
   data: {
     category: [null, null],
     tags: [],
     title: "",
     subtitle: "",
     intro: "",
-    days: [],
+    selectedDays: [],
     startTime: 0,
     during: 0,
     isRecruiting: true,
@@ -56,6 +78,29 @@ export const groupCreateReducer = (state, action) => {
 
     case ADD_TAG:
       data.tags = action.tags;
+      return { ...state, data };
+
+    case CLICK_DAY:
+      const idx = action.changedIndex;
+      const daysInfo = [...state.daysInfo];
+      const isSelected = daysInfo[idx].isSelected;
+
+      daysInfo[idx] = {
+        str: daysInfo[idx].str,
+        isSelected: !isSelected,
+        class: classnames({
+          "is-focused": !isSelected
+        })
+      };
+
+      if (isSelected)
+        data.selectedDays = data.selectedDays.filter(day => day !== idx);
+      else data.selectedDays.push(idx);
+      return { ...state, daysInfo: daysInfo, data };
+
+    case CHANGE_HOUR:
+      const { startTime } = action;
+      data.startTime = startTime;
       return { ...state, data };
 
     default:
