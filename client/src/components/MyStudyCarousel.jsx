@@ -10,17 +10,12 @@ const Main = styled.div`
 
   .carousel-box{
     overflow:hidden;
-    width:51em;
     padding: 3rem 1.5rem;
-    align-self:center;
-    #carousel-demo1{
-      width:100%;
-      align-self:center;
-      min-width: 238px;
-    }
+
     .carousel{
       display:flex;
       justify-content:center;
+
       .carousel-item{
         padding:0 5%;
       }
@@ -49,7 +44,10 @@ const MyStudyCarousel = ({ myStudyData }) => {
 
   return (
     <Main>
-      <div className="carousel-box" style={{ overflow: "hidden" }}>
+      <div
+        className="carousel-box"
+        style={{ overflow: "hidden", width: `${myStudyData.length * 15}em` }}
+      >
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
           {myStudyData.map(study => {
