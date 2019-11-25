@@ -23,9 +23,10 @@ export const click_day = changedIndex => ({
   changedIndex
 });
 
-export const change_hour = startTime => ({
+export const change_hour = (timeType, hour) => ({
   type: CHANGE_HOUR,
-  startTime
+  timeType,
+  hour
 });
 
 export const input_content = (contentType, description) => ({
@@ -112,8 +113,8 @@ export const groupCreateReducer = (state, action) => {
       return { ...state, daysInfo: daysInfo, data };
 
     case CHANGE_HOUR:
-      const { startTime } = action;
-      data.startTime = startTime;
+      const { timeType, hour } = action;
+      data[timeType] = hour;
       return { ...state, data };
 
     case INPUT_CONTENT:

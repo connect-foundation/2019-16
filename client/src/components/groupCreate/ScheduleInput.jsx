@@ -30,11 +30,15 @@ const ScheduleInput = props => {
   };
 
   const onTimeChange = useCallback(e => {
-    const timeSlot = TimeSlot.current.value;
     let time = Number.parseInt(e.target.value, 10);
-    if (timeSlot === "pm") time += 12;
+    const timeType = e.target.name;
 
-    dispatch(change_hour(time));
+    if (timeType === "startTime") {
+      const timeSlot = TimeSlot.current.value;
+      if (timeSlot === "pm") time += 12;
+    }
+
+    dispatch(change_hour(timeType, time));
   }, []);
 
   return (
@@ -60,7 +64,7 @@ const ScheduleInput = props => {
           <option value="pm">오후</option>
         </select>
 
-        <select className="select" onChange={onTimeChange}>
+        <select className="select" name="startTime" onChange={onTimeChange}>
           <option value="1">1시</option>
           <option value="2">2시</option>
           <option value="3">3시</option>
@@ -73,6 +77,12 @@ const ScheduleInput = props => {
           <option value="10">10시</option>
           <option value="11">11시</option>
           <option value="12">12시</option>
+        </select>
+
+        <select className="select" name="during" onChange={onTimeChange}>
+          <option value="1"> 1시간 </option>
+          <option value="2"> 2시간 </option>
+          <option value="3"> 3시간 </option>
         </select>
       </div>
     </StyledScheduleInput>
