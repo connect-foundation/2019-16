@@ -22,7 +22,7 @@ export const initialState = {
     지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
   },
   data: {
-    category: [],
+    category: [null, null],
     tags: [],
     title: "",
     subtitle: "",
@@ -38,28 +38,25 @@ export const initialState = {
 };
 
 export const groupCreateReducer = (state, action) => {
+  const data = state.data;
   switch (action.type) {
     case CATEGORY_CLICK:
       const { categoryType, categoryName } = action;
-      if (categoryType === "primary")
-        return {
-          ...state,
-          primary: categoryName,
-          secondary: null
-        };
+      if (categoryType === "primary") {
+        data.category = [categoryName, null];
+      }
 
-      if (categoryType === "secondary")
-        return {
-          ...state,
-          secondary: categoryName
-        };
-      break;
+      if (categoryType === "secondary") {
+        const category = [...data.category];
+        category[1] = categoryName;
+        data.category = category;
+      }
+
+      return { ...state, data };
 
     case ADD_TAG:
-      return {
-        ...state,
-        tags: action.tags
-      };
+      data.tags = action.tags;
+      return { ...state, data };
 
     default:
       return state;

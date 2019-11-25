@@ -68,13 +68,8 @@ for (let i = 0; i < 7; i++) {
 
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
-  const {
-    primary,
-    secondary,
-    primaryCategories,
-    secondaryCategories,
-    tags
-  } = state;
+  const { primaryCategories, secondaryCategories } = state;
+  const { category, tags } = state.data;
   const [dayCondition, setDayCondition] = useState(conditions);
   const [time, setTime] = useState(null);
   const timezone = useRef();
@@ -110,9 +105,9 @@ const GroupCreate = props => {
           dispatch={dispatch}
         />
 
-        {primary && (
+        {category[0] && (
           <Category
-            categories={secondaryCategories[primary]}
+            categories={secondaryCategories[category[0]]}
             type="secondary"
             dispatch={dispatch}
           />
@@ -125,7 +120,7 @@ const GroupCreate = props => {
         <ImageUploader />
         <textarea className="textarea"> 그룹 소개 </textarea>
       </div>
-      <TagInput tags={state.tags} dispatch={dispatch} />
+      <TagInput tags={tags} dispatch={dispatch} />
 
       <div className="schedule">
         <div className="field has-addons day-buttons">
