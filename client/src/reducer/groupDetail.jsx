@@ -30,7 +30,6 @@ export const groupDetail = (state, action) => {
         ...state,
         groupInfo
       };
-
     default:
       return state;
   }
