@@ -15,11 +15,11 @@
 
 ![](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/92eecc76-1b3c-442a-aac8-b771f628c8cf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAT73L2G45HQ6JVE4O%2F20191122%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20191122T051828Z&X-Amz-Expires=86400&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDouLjdHYnnv%2BrX8yb%2BPCY5jo5odeBxv%2FlU1bnzZPK2EwIhANyz4km0SM%2BxBnd%2BFTuFe5booUZJ%2FeDredSjFRXPVeTuKtoCCP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMMjc0NTY3MTQ5MzcwIgyEhEv5%2FBChBFpfjmAqrgIJllFjtc%2FkanEg4PXVSKb8lCrml%2F5mGQALm3Za3zxnqbtwhbgZlHSir4Fqqo8bMfnrBJWyx%2FyUd%2B7036yxEPFuLWR5TM8iXcNWrY22wAObWgy2S9eAtpZ1HFNeneHSpRuDxGulBT3k4l%2BWOtLkkVN8Zwetq6zhCknY0evsqqpeofDOPInutV7Pc5VEtotMZeDj%2BVhRuyliRKX1SwQWGNn5yp0rCNbhZ4jqb1Gc3CP82SDCSWxPznucbfXhmLrc2FcvWGd4Von7p2i46pDnl4PD9q8nbBe1zqjP2fEZxuRZPJLeVe4qMzwXzhHyapAbR2Ov%2BbsB7sQiKWYUg1dLrTccr1gQCBA%2FzVgDnIFLCmCyTk8dXepy0FWPb9sEQns7UunOhfEpBn5rNrUKobkdWzDK0t3uBTrNAokksMtH01ZW1ftG4RXBGKQekj3Pf6%2BmalzrgD4OLlsDPWbDpnToXmOOs72WMPhYKVhv7n6h%2FZEkBYdkWe70XWE6EJr6wxVeaFDNkFIWbJBFkoDSU1YpOi9jA0HYjZUINpVoBeKsopapMVPuhuRom6pMwELOMCaVwWhzyA1CVuSfmkzAL1v9nOd3CQ8eFVmgTYaPE%2FrfOe7lqHy9zS28suYNoOpHpJZGOo9ItQQSUnLwityr4LzOzTWxcOFtgTTCIu0Oyx13oKeNmji0nX%2F3JiTUO8IMVMVOe5QbRs302BWSQQgSbqNg%2BsDleG8iuJTGLwEGdeMQFim61AP3TeAB1E%2F6GtkOjrm%2BhCMIrqwc4Fo2z1veJtWBmiFtXccwgJj4SaTnpRvbrHsLoBowJRiah5UJ%2FqFBQjV4J9mfSRcc1Ac4KygG%2FgrXcSoJ9N60jA%3D%3D&X-Amz-Signature=0626b64f20a8d9345423c00a862e46d5a0a6561f71f932534e5cc4c590d99d26&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
 
-### 🏠 [Homepage](http://soob.pe.kr/) (준비중입니다.)
+### [🏠 Homepage](http://soob.pe.kr/) (준비중입니다.)
 
-### 📖 [Wiki](https://github.com/connect-foundation/2019-16/wiki)
+### [📖 Wiki](https://github.com/connect-foundation/2019-16/wiki)
 
-💾[더 많은 정보](https://www.notion.so/9f5925bc47884bf7ad0bb258a2566c9e)
+### [💾 더 많은 정보](https://www.notion.so/9f5925bc47884bf7ad0bb258a2566c9e)
 
 ## 프로젝트 소개
 
