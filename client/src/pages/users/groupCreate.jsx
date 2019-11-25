@@ -68,8 +68,13 @@ for (let i = 0; i < 7; i++) {
 
 const GroupCreate = props => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
-  const { primary, secondary, primaryCategories, secondaryCategories } = state;
-  const [tags, setTags] = useState([]);
+  const {
+    primary,
+    secondary,
+    primaryCategories,
+    secondaryCategories,
+    tags
+  } = state;
   const [dayCondition, setDayCondition] = useState(conditions);
   const [time, setTime] = useState(null);
   const timezone = useRef();
@@ -96,7 +101,6 @@ const GroupCreate = props => {
     setTime(timeValue);
   }, []);
 
-  // title subtitle 최소 인원 최대 인원 그룹 소개 썸네일 위치 태그 날짜
   return (
     <StyledGroupCreate>
       <div className="is-centered categories">
@@ -121,7 +125,7 @@ const GroupCreate = props => {
         <ImageUploader />
         <textarea className="textarea"> 그룹 소개 </textarea>
       </div>
-      <TagInput tags={tags} setTags={setTags} />
+      <TagInput tags={state.tags} dispatch={dispatch} />
 
       <div className="schedule">
         <div className="field has-addons day-buttons">

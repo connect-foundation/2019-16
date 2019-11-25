@@ -1,9 +1,15 @@
 export const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
+export const ADD_TAG = "groupCreate/ADD_TAG";
 
 export const category_click = ({ categoryType, categoryName }) => ({
   type: CATEGORY_CLICK,
   categoryType,
   categoryName
+});
+
+export const add_tag = tags => ({
+  type: ADD_TAG,
+  tags
 });
 
 export const initialState = {
@@ -16,7 +22,8 @@ export const initialState = {
     외국어: ["영어", "중국어", "불어", "스페인어"],
     면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"],
     지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
-  }
+  },
+  tags: []
 };
 
 export const groupCreateReducer = (state, action) => {
@@ -36,6 +43,12 @@ export const groupCreateReducer = (state, action) => {
           secondary: categoryName
         };
       break;
+
+    case ADD_TAG:
+      return {
+        ...state,
+        tags: action.tags
+      };
 
     default:
       return state;

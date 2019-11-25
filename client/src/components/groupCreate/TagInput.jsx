@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
+import { add_tag } from "../../reducer/groupCreate";
 
 const StyledTagInput = styled.div`
   display: flex;
@@ -26,7 +27,7 @@ const StyledTagInput = styled.div`
 `;
 
 const TagInput = props => {
-  const { tags, setTags } = props;
+  const { tags, dispatch } = props;
   const [inputTag, setInputTag] = useState("");
 
   const tagEvent = useCallback(
@@ -36,7 +37,7 @@ const TagInput = props => {
       setInputTag(inputData);
 
       if (lastChar === " ") {
-        if (inputData !== " ") setTags([...tags, inputData]);
+        if (inputData !== " ") dispatch(add_tag([...tags, inputData]));
         setInputTag("");
       }
     },
@@ -47,7 +48,7 @@ const TagInput = props => {
     e => {
       if (e.keyCode === 8 && inputTag === "" && tags.length) {
         setInputTag(tags[tags.length - 1]);
-        setTags(tags.slice(0, tags.length - 1));
+        dispatch(add_tag(tags.slice(0, tags.length - 1)));
       }
     },
     [tags, inputTag]
