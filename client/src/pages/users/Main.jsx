@@ -19,12 +19,14 @@ const Main = styled.div`
     padding: 2% 7% 1%;
     display:flex;
     flex-direction:column;
+    align-items:center;
   }
 
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
     color: #000000;
     padding: 5%;
+    align-self:start;
     .main-title {
         font-size: 6em;
       }
@@ -78,15 +80,15 @@ const MainPage = () => {
       <div className="main-jumbotron">
         <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
         <div className="main-page-title">
-          <div className={`main-title`}>스터디,</div>
-          <div className={`main-subtitle`}>
-            <span className={`highlight`}>모집</span>부터{" "}
-            <span className={`highlight`}>예약</span>까지 한번에-
+          <div className="main-title">스터디,</div>
+          <div className="main-subtitle">
+            <span className="highlight">모집</span>부터{" "}
+            <span className="highlight">예약</span>까지 한번에-
           </div>
         </div>
       </div>
       <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
-      <div className={`study-group-list`}>
+      <div className="study-group-list">
         {cardListData.map(data => {
           return <StudyGroupCard groupData={data}></StudyGroupCard>;
         })}
