@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Title from "../groupCard/Title";
+
 const StyledCard = styled.div`
   width: 15em;
   height: 15em;
@@ -41,13 +41,16 @@ const StyledCard = styled.div`
 `;
 
 const StudyGroupCardMini = ({
-  cardData: { isLeader, img, title, currentStudyCount, totalStudyCount }
+  cardData: { leader, img, title, isRecruiting },
+  user_email
 }) => {
+  const recruitingClass = isRecruiting ? "has-text-info" : "has-text-danger";
+
   return (
     <StyledCard className={`card study-mini-card`}>
       <div
         className="group-leader-bedge"
-        style={{ display: isLeader ? "block" : "none" }}
+        style={{ display: leader === user_email ? "block" : "none" }}
       >
         그룹장
       </div>
@@ -55,10 +58,9 @@ const StudyGroupCardMini = ({
         <img src={img}></img>
       </div>
       <div className={`title-small`}>{title}</div>
-      <div className={`progress-box`}>
-        <span className={`highlight`}>{currentStudyCount}</span>/
-        {totalStudyCount}회 진행중
-      </div>
+      <span className={`highlight ${recruitingClass}`}>
+        {isRecruiting ? "모집중" : "마감"}
+      </span>
     </StyledCard>
   );
 };

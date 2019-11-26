@@ -32,7 +32,7 @@ const Main = styled.div`
  
 `;
 
-const MyStudyCarousel = ({ myStudyData }) => {
+const MyStudyCarousel = ({ myStudyData, user_email }) => {
   useEffect(() => {
     if (myStudyData.length > 3)
       bulmaCarousel.attach(".carousel", {
@@ -53,7 +53,7 @@ const MyStudyCarousel = ({ myStudyData }) => {
           {myStudyData.map(study => {
             return (
               <div className="carousel-item">
-                <StudyGroupCardMini cardData={study} />
+                <StudyGroupCardMini cardData={study} user_email={user_email} />
               </div>
             );
           })}

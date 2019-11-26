@@ -20,12 +20,10 @@ const category = {
 };
 
 const miniCard = {
-  isLeader: true,
+  leader: "dlatns0201@gmail.com",
   img: "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
   title: "영화보면서 영어공부 같이해요~",
-  currentStudyCount: 3,
-  totalStudyCount: 23,
-  link: ""
+  isRecruiting: true
 };
 
 const myStudyData = [miniCard, miniCard, miniCard, miniCard];

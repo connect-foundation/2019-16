@@ -84,7 +84,10 @@ const MainPage = () => {
     <Main>
       <div className="main-jumbotron">
         {user_email ? (
-          <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
+          <MyStudyCarousel
+            myStudyData={myStudyData}
+            user_email={user_email}
+          ></MyStudyCarousel>
         ) : (
           <div className="main-page-title">
             <div className="main-title">스터디,</div>
@@ -95,6 +98,7 @@ const MainPage = () => {
           </div>
         )}
       </div>
+
       <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
       <div className="study-group-list">
         {cardListData.map(data => {
