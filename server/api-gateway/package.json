@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/connect-foundation/2019-16#readme",
   "dependencies": {
+    "bcrypt": "^3.0.7",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.10",
