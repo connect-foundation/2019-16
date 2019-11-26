@@ -18,6 +18,7 @@ const StyledCard = styled.div`
     font-size: 1.1em;
     text-align: center;
     margin: 1.3rem 1em;
+    height: 2.6rem;
     color: #1d6de4;
   }
   .progress-box {
