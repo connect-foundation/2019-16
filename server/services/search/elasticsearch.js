@@ -66,3 +66,34 @@ exports.searchAllStudyGroupWithFiltering = async (info) => {
   return result;
 }
 
+exports.bulkStudyGroups = async (groups) => {
+
+  const body = groups.flatMap((group) => {
+    const id = group.id;
+
+    delete group.id
+    return [{ index: { _index: INDEX_STUDYGROUP, _type: "_doc", _id: id } }, group]
+  })
+
+  const { body: bulkResponse } = await client.bulk({ refresh: true, body })
+
+  if (bulkResponse.errors) {
+    const erroredDocuments = []
+
+    bulkResponse.items.forEach((action, i) => {
+      const operation = Object.keys(action)[0]
+
+      if (action[operation].error) {
+        erroredDocuments.push({
+
+          status: action[operation].status,
+          error: action[operation].error,
+          operation: body[i * 2],
+          document: body[i * 2 + 1]
+        })
+      }
+    })
+    console.log(erroredDocuments)
+  }
+
+}
