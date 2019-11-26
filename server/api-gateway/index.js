@@ -1,10 +1,10 @@
 require("dotenv").config({ path: ".env.gateway" });
+const mongoose = require("mongoose");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
-
-const express = require('express')
+const express = require("express");
 const server = express();
-
+const authRouter = require("./routes/auth");
 const {
     GATE_EXPRESS_PORT,
     GATE_TCP_PORT,
@@ -15,6 +15,18 @@ const {
     GATE_HOST
 } = process.env;
 
+mongoose
+  .connect(PARTNERS_MONGO_URI, {
+    useNewUrlParser: true,
+    useFindAndModify: true
+  })
+  .then(() => {
+    console.log("Partners mongoDB is connected");
+  })
+  .catch(() => {
+    console.log("Partners mongoDB connection fail");
+  });
+
 class ApiGateway extends App {
     constructor() {
         super(GATE_NAME, GATE_HOST, GATE_TCP_PORT);
@@ -24,6 +36,7 @@ class ApiGateway extends App {
     }
 }
 const apigateway = new ApiGateway();
+const searchRouter = require("./routes/search")(apigateway);
 
 async function setResponseKey(req, res, next) {
     const key = await makeKey(req.client);
