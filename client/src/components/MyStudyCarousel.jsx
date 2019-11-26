@@ -4,12 +4,6 @@ import StudyGroupCardMini from "./groupCardMini";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";
 
 const Main = styled.div`
-// Import Bulma core
-@import 'bulma.sass'
-@import "bulmaCarousel.sass"
-//;
-
-
   .carousel-box{
     overflow:hidden;
 
