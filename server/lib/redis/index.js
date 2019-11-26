@@ -80,10 +80,22 @@ exports.pushStudyGroups = (...studyGroups) => {
 }
 
 exports.popStudyGroups = async (count) => {
+
   const groups = await returnRedisPromise("lrange", "studygroup", 0, count - 1);
+
+  if (groups.length === 0) {
+    return new Promise((res) => {
+      res([]);
+    })
+  }
 
   returnRedisPromise("ltrim", "studygroup", count - 1, -1);
   return new Promise((res) => {
     res(JSON.parse(groups[0]));
   })
+
+}
+
+exports.getStudyGroupsLength = async () => {
+  return returnRedisPromise("llen", "studygroup");
 }
