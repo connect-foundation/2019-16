@@ -10,7 +10,7 @@ const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` })
 
 
 exports.searchStudyGroup = async (info) => {
-  const { searchWord, category, isRecruit, tags } = info;
+  const { searchWord, category, isRecruit } = info;
 
   const { body } = await client.search({
     index: INDEX_STUDYGROUP,
@@ -18,15 +18,22 @@ exports.searchStudyGroup = async (info) => {
       query: {
         bool: {
           must: [{
-            match: {
-              title: searchWord
+            query_string: {
+              query: `*${searchWord}*`,
+              fields: ["title", "description"]
             }
           }],
-          filter: {
+          filter: [{
             term: {
               isRecruit: isRecruit
             }
+          },
+          {
+            term: {
+              category: category
+            }
           }
+          ]
         }
       }
     }
