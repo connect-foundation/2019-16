@@ -100,8 +100,8 @@ const MainPage = () => {
         secondaryCategories={secondaryCategories}
       ></StudySearchNavbar>
       <div className="study-group-list">
-        {cardList.map(data => {
-          return <StudyGroupCard groupData={data}></StudyGroupCard>;
+        {cardList.map(groupData => {
+          return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
         })}
       </div>
     </Main>

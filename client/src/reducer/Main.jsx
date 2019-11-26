@@ -1,6 +1,7 @@
 export const initalState = {
   myGroups: [
     {
+      id: 1,
       leader: "dlatns0201@gmail.com",
       img:
         "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
@@ -8,6 +9,7 @@ export const initalState = {
       isRecruiting: true
     },
     {
+      id: 2,
       leader: "dlatns0202@gmail.com",
       img:
         "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
@@ -16,6 +18,7 @@ export const initalState = {
       isRecruiting: false
     },
     {
+      id: 3,
       leader: "dlatns0202@gmail.com",
       img:
         "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
@@ -23,6 +26,7 @@ export const initalState = {
       isRecruiting: false
     },
     {
+      id: 4,
       leader: "dlatns0201@gmail.com",
       img:
         "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
@@ -32,6 +36,7 @@ export const initalState = {
   ],
   cardList: [
     {
+      id: 5,
       src:
         "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
       alt: "img",
@@ -44,6 +49,7 @@ export const initalState = {
       maxCnt: 10
     },
     {
+      id: 6,
       src:
         "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
       alt: "img",
@@ -56,6 +62,7 @@ export const initalState = {
       maxCnt: 10
     },
     {
+      id: 7,
       src:
         "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
       alt: "img",
@@ -68,6 +75,7 @@ export const initalState = {
       maxCnt: 10
     },
     {
+      id: 8,
       src:
         "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
       alt: "img",

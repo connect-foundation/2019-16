@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Category = styled.div`
   a {
@@ -12,21 +13,18 @@ const Category = styled.div`
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   const itemList = secondaryCategories.map(category => {
     return (
-      <a class="navbar-item" href="www.naver.com">
+      <Link class="navbar-item" to={`/category/${category}`}>
         {category}
-      </a>
+      </Link>
     );
   });
 
   return (
     <Category>
       <div class="navbar-item has-dropdown is-hoverable">
-        <a
-          class="navbar-link is-arrowless"
-          href="https://bulma.io/documentation/overview/start/"
-        >
-          {primaryCategory}
-        </a>
+        <span class="navbar-link is-arrowless is-size-3">
+          {primaryCategory}{" "}
+        </span>
         <div class="navbar-dropdown is-boxed">{itemList}</div>
       </div>
     </Category>

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const StyledCard = styled.div`
   width: 16rem;
@@ -43,22 +44,24 @@ const StyledCard = styled.div`
 `;
 
 const StudyGroupCardMini = ({
-  cardData: { leader, img, title },
+  cardData: { leader, img, title, id },
   user_email
 }) => {
   return (
-    <StyledCard className={`card study-mini-card`}>
-      <div
-        className="group-leader-bedge"
-        style={{ display: leader === user_email ? "block" : "none" }}
-      >
-        그룹장
-      </div>
-      <div className={`imgbox`}>
-        <img src={img}></img>
-      </div>
-      <div className={`title-small`}>{title}</div>
-    </StyledCard>
+    <Link to={`/group/detail/${id}`}>
+      <StyledCard className={`card study-mini-card`}>
+        <div
+          className="group-leader-bedge"
+          style={{ display: leader === user_email ? "block" : "none" }}
+        >
+          그룹장
+        </div>
+        <div className={`imgbox`}>
+          <img src={img}></img>
+        </div>
+        <div className={`title-small`}>{title}</div>
+      </StyledCard>
+    </Link>
   );
 };
 
