@@ -49,7 +49,7 @@ jobs:
             cd server/study_group
             npm intall
             npm test --detectOpenHandles --forceExit
-          elif  [  ${{github.base_ref}} == "service/rest_api" ]
+          elif  [  ${{github.base_ref}} == "service/gateway" ]
           then 
             cd server/api-gateway
             npm install
