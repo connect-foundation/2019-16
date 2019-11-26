@@ -1,5 +1,5 @@
 const App = require("../../lib/tcp/App");
-const { popStudyGroups } = require("../../lib/redis");
+const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
 const { searchAllStudyGroupWithFiltering, searchStudyGroup, bulkStudyGroups } = require("./elasticsearch")
 
@@ -10,11 +10,15 @@ const queryMap = {
 
 function emptyStudyGroupPeriodically(timer) {
   setTimeout(async () => {
+    console.log("empty studygroupqueue");
     let groups = await popStudyGroups(1000);
 
-    bulkStudyGroups(groups);
-    console.log("empty studygroupqueue");
-    emptyStudyGroupPeriodically(timer);
+    if (groups.length !== 0) bulkStudyGroups(groups);
+    const len = await getStudyGroupsLength();
+
+    if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
+    else emptyStudyGroupPeriodically(timer);
+
   }, timer);
 }
 
