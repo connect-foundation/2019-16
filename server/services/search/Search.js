@@ -28,30 +28,30 @@ class Search extends App {
     emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
+    let packet;
     const { params, query, key } = data;
-    let result;
 
-    switch (query) {
-      case "searchAllStudyGroupWithFiltering":
-        result = await queryMap.searchAllStudyGroupWithFiltering(params);
-        break;
-      case "searchAllStudyGroupWithFiltering2":
-        await new Promise((res) => {
-          setTimeout(() => {
-            res()
-          }, 3000)
-        })
-        result = { search2: "search2" }
-        break;
-      case "searchStudyGroup":
-        result = await queryMap.searchStudyGroup(params);
-        break;
-      default:
-        break;
+    try {
+      let result;
+
+      switch (query) {
+        case "searchAllStudyGroupWithFiltering":
+          result = await queryMap.searchAllStudyGroupWithFiltering(params);
+          break;
+        case "searchStudyGroup":
+          result = await queryMap.searchStudyGroup(params);
+          break;
+        default:
+          throw Error("잘못된 Query 입니다.")
+      }
+      packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
+    } catch (e) {
+      packet = makePacket("ERROR", "searchedStudyGroups", {}, { message: e }, key, this.context);
+    } finally {
+      this.send(socket, packet);
     }
-    const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
 
-    this.send(socket, packet);
+
   }
   send(socket, packet) {
     socket.write(packet);
