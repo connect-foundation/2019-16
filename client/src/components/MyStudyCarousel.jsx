@@ -7,12 +7,14 @@ const Main = styled.div`
 // Import Bulma core
 @import 'bulma.sass'
 @import "bulmaCarousel.sass"
+//;
+
 
   .carousel-box{
     overflow:hidden;
-    padding: 3rem 1.5rem;
 
     .carousel{
+      height: 20rem;
       display:flex;
       justify-content:center;
 
@@ -20,6 +22,7 @@ const Main = styled.div`
         padding:0 5%;
       }
     }
+
     .my-group-title{
       font-weight:bold;
       font-size:1.5em;

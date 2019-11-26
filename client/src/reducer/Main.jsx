@@ -11,7 +11,8 @@ export const initalState = {
       leader: "dlatns0202@gmail.com",
       img:
         "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
-      title: "HTML은 프로그래밍 언어가 아니다~",
+      title:
+        "HTML은 프로그래밍 언어가 아니다~HTML은 프로그래밍 언어가 아니다~HTML은 프로그래밍 언어가 아니다~",
       isRecruiting: false
     },
     {

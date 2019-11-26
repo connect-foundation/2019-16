@@ -2,33 +2,34 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledCard = styled.div`
-  width: 15em;
-  height: 15em;
+  width: 16rem;
+  margin: 1rem 0;
+  margin-left: 1rem;
+  height: 17em;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  padding-bottom: 0.5rem;
 
   .imgbox {
-    height: 45%;
+    max-height: 12rem;
     overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .title-small {
     font-weight: bold;
     font-size: 1.1em;
     text-align: center;
-    margin: 1.3rem 1em;
-    height: 2.6rem;
+    margin: auto 0.7em;
+    max-height: 7rem;
     color: #1d6de4;
   }
-  .progress-box {
-    font-weight: bold;
-    font-size: 0.8em;
-    .highlight {
-      color: #e41d60;
-      font-weight: bold;
-    }
-  }
+
   .group-leader-bedge {
     background-color: #e41d60;
     width: 5em;
@@ -42,11 +43,9 @@ const StyledCard = styled.div`
 `;
 
 const StudyGroupCardMini = ({
-  cardData: { leader, img, title, isRecruiting },
+  cardData: { leader, img, title },
   user_email
 }) => {
-  const recruitingClass = isRecruiting ? "has-text-info" : "has-text-danger";
-
   return (
     <StyledCard className={`card study-mini-card`}>
       <div
@@ -59,9 +58,6 @@ const StudyGroupCardMini = ({
         <img src={img}></img>
       </div>
       <div className={`title-small`}>{title}</div>
-      <span className={`highlight ${recruitingClass}`}>
-        {isRecruiting ? "모집중" : "마감"}
-      </span>
     </StyledCard>
   );
 };
