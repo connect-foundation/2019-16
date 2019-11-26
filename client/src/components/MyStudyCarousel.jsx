@@ -32,9 +32,9 @@ const Main = styled.div`
  
 `;
 
-const MyStudyCarousel = ({ myStudyData, user_email }) => {
+const MyStudyCarousel = ({ myGroups, user_email }) => {
   useEffect(() => {
-    if (myStudyData.length > 3)
+    if (myGroups.length > 3)
       bulmaCarousel.attach(".carousel", {
         slidesToScroll: 1,
         slidesToShow: 3,
@@ -46,14 +46,14 @@ const MyStudyCarousel = ({ myStudyData, user_email }) => {
     <Main>
       <div
         className="carousel-box"
-        style={{ overflow: "hidden", width: `${myStudyData.length * 15}em` }}
+        style={{ overflow: "hidden", width: `${myGroups.length * 15}em` }}
       >
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
-          {myStudyData.map(study => {
+          {myGroups.map(group => {
             return (
               <div className="carousel-item">
-                <StudyGroupCardMini cardData={study} user_email={user_email} />
+                <StudyGroupCardMini cardData={group} user_email={user_email} />
               </div>
             );
           })}

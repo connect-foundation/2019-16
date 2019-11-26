@@ -1,14 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
-import {
-  studyGroupData,
-  categoryData,
-  myStudyData
-} from "../../__test__/mainPage.dummy";
 import { AppContext } from "../../App";
+import { initalState, mainReducer } from "../../reducer/Main";
 
 const Main = styled.div`
   display: flex;
@@ -60,13 +56,13 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 const MainPage = () => {
-  const [cardListData, setCardListData] = useState([
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData
-  ]);
+  const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
+  const {
+    myGroups,
+    cardList,
+    primaryCategories,
+    secondaryCategories
+  } = mainState;
 
   const {
     appState: { user_email }
@@ -85,7 +81,7 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {user_email ? (
           <MyStudyCarousel
-            myStudyData={myStudyData}
+            myGroups={myGroups}
             user_email={user_email}
           ></MyStudyCarousel>
         ) : (
@@ -99,9 +95,12 @@ const MainPage = () => {
         )}
       </div>
 
-      <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
+      <StudySearchNavbar
+        primaryCategories={primaryCategories}
+        secondaryCategories={secondaryCategories}
+      ></StudySearchNavbar>
       <div className="study-group-list">
-        {cardListData.map(data => {
+        {cardList.map(data => {
           return <StudyGroupCard groupData={data}></StudyGroupCard>;
         })}
       </div>

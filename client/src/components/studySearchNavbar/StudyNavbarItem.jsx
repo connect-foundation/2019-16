@@ -9,11 +9,11 @@ const Category = styled.div`
   }
 `;
 
-const StudyNavbarItem = ({ data }) => {
-  const itemList = data.items.map(item => {
+const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
+  const itemList = secondaryCategories.map(category => {
     return (
-      <a class="navbar-item" href={item.href}>
-        {item.name}
+      <a class="navbar-item" href="www.naver.com">
+        {category}
       </a>
     );
   });
@@ -25,7 +25,7 @@ const StudyNavbarItem = ({ data }) => {
           class="navbar-link is-arrowless"
           href="https://bulma.io/documentation/overview/start/"
         >
-          {data.link}
+          {primaryCategory}
         </a>
         <div class="navbar-dropdown is-boxed">{itemList}</div>
       </div>
