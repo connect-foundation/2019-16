@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
@@ -8,6 +8,7 @@ import {
   categoryData,
   myStudyData
 } from "../../__test__/mainPage.dummy";
+import { AppContext } from "../../App";
 
 const Main = styled.div`
   display: flex;
@@ -67,6 +68,10 @@ const MainPage = () => {
     studyGroupData
   ]);
 
+  const {
+    appState: { user_email }
+  } = useContext(AppContext);
+
   useEffect(() => {
     /**
      * TODO: data 요청로직 필요
@@ -78,14 +83,17 @@ const MainPage = () => {
   return (
     <Main>
       <div className="main-jumbotron">
-        <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
-        <div className="main-page-title">
-          <div className="main-title">스터디,</div>
-          <div className="main-subtitle">
-            <span className="highlight">모집</span>부터{" "}
-            <span className="highlight">예약</span>까지 한번에-
+        {user_email ? (
+          <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
+        ) : (
+          <div className="main-page-title">
+            <div className="main-title">스터디,</div>
+            <div className="main-subtitle">
+              <span className="highlight">모집</span>부터{" "}
+              <span className="highlight">예약</span>까지 한번에-
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
       <div className="study-group-list">
