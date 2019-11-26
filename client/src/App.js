@@ -3,7 +3,7 @@ import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header";
 import MainPage from "./pages/users/Main";
-import { initalState, mainReducer } from "./reducer/Main";
+import { initalState, appReducer } from "./reducer/App";
 
 const GlobalStyle = createGlobalStyle`
   @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 export const AppContext = createContext();
 
 function App() {
-  const [appState, appDispatch] = useReducer(mainReducer, initalState);
+  const [appState, appDispatch] = useReducer(appReducer, initalState);
 
   return (
     <div className="App">
