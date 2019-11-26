@@ -8,6 +8,8 @@ const HeaderBox = styled.div`
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 3%;
+  margin-bottom: 2.3rem;
+
   .logo {
     width: 64px;
     height: 64px;
