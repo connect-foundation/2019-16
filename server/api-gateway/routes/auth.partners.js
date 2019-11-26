@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const localLogin = require("../auth/localLogin");
+const partnerLogin = require("../middleware/partner-login");
+const checkEmail = require("../middleware/check-email");
+const partnerJoin = require("../middleware/partner-join");
 
-router.post("/login", localLogin);
+router.post("/login", partnerLogin);
+router.post("/checkEmail", checkEmail);
+router.post("/join", partnerJoin);
 
 module.exports = router;
