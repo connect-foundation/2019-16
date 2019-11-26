@@ -42,12 +42,6 @@ const Header = () => (
         />{" "}
       </Link>
       <div className={`account-box`}>
-        <div className={`signin-btn accountbox-btn `}>
-          <Link to="/partners/login"> 로그인 </Link>
-        </div>
-        <div className={`signout-btn accountbox-btn`}>
-          <Link to="/partners/join"> 회원가입 </Link>
-        </div>
         <div className={`user-account-btn accountbox-btn`}>
           <span> 태현님 환영합니다. </span>
         </div>

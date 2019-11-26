@@ -1,7 +1,6 @@
 import React, { useReducer, createContext } from "react";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import PartnersRouter from "./pages/partners/Router";
 import Header from "./components/Header";
 import MainPage from "./pages/users/Main";
 import { initalState, mainReducer } from "./reducer/Main";
@@ -25,7 +24,6 @@ function App() {
           <Header />
           <Switch>
             <Route path="/" exact component={MainPage} />
-            <Route path="/partners" component={PartnersRouter} />
             <Route
               render={({ location }) => (
                 <div>
