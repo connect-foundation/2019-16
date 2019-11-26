@@ -82,7 +82,7 @@ async function makeAppClient(name) {
 
         setInterval(() => {
             if (!apigateway.icConnectMap[name]) {
-                console.log(`try connect to search2`);
+                console.log(`try connect to ${name}`);
                 client.connect();
             }
         }, 2000);
