@@ -31,16 +31,16 @@ const HeaderBox = styled.div`
   }
 `;
 
-const Header = ({ uri }) => (
+const Header = () => (
   <header>
     <HeaderBox>
-      <a href={uri}>
+      <Link to="/">
         <img
           src="/image/logo-mini.png"
           alt="study combined"
           className={["logo"]}
-        ></img>
-      </a>
+        />{" "}
+      </Link>
       <div className={`account-box`}>
         <div className={`signin-btn accountbox-btn `}>
           <Link to="/partners/login"> 로그인 </Link>
