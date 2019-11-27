@@ -25,8 +25,8 @@ function App() {
         <AppContext.Provider value={{ appState, appDispatch }}>
           <Header />
           <Switch>
-            <Route path="/" exact component={MainPage} />
             <Route path="/group/create" component={GroupCreatePage} />
+            <Route path="/" component={MainPage} />
             <Route
               render={({ location }) => (
                 <div>

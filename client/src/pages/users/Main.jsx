@@ -45,6 +45,7 @@ const Main = styled.div`
     align-self:center;
       background-color: #f8f0ee;
       display: flex;
+      width: 70rem;
       flex-wrap: wrap;
       padding: 4em;
       margin:0 10%;
@@ -113,12 +114,16 @@ const MainPage = () => {
           secondaryCategories={secondaryCategories}
         ></StudySearchNavbar>
         <Route
-          path="/category/:categoryName"
+          path={["/category/:categoryName", "/"]}
           render={({ match }) => {
             const selectedCategory = match.params.categoryName;
-            const groupsData = cardList.filter(
-              card => card.category[1] === selectedCategory
-            );
+            const pathName = match.path;
+            const groupsData =
+              pathName === "/"
+                ? cardList
+                : cardList.filter(
+                    card => card.category[1] === selectedCategory
+                  );
 
             return (
               <div className="study-group-list">
