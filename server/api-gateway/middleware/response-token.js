@@ -12,7 +12,7 @@ module.exports = (req, res) => {
   } catch (e) {
     jwt = "";
   } finally {
-    res.cookie("access_toekn", jwt, {
+    res.cookie("access_token", jwt, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000 // 1일
     });
