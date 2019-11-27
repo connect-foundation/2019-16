@@ -26,18 +26,29 @@ class ApiGateway extends App {
 const apigateway = new ApiGateway();
 
 async function setResponseKey(req, res, next) {
-    const key = await makeKey(req.client);
+    if (req.path !== "/favicon.ico") {
+        const key = await makeKey(req.client);
 
-    req.resKey = key;
-    apigateway.resMap[key] = res;
-
+        req.resKey = key;
+        apigateway.resMap[key] = res;
+    }
     next();
 }
 
 function writePacket(req, res, next) {
-    const appName = req.path.split("/")[2];
+    try {
+        if (req.path !== "/favicon.ico") {
+            const appName = req.path.split("/")[2];
 
-    apigateway.appClientMap[appName].write(req.packet);
+            apigateway.appClientMap[appName].write(req.packet);
+        }
+    } catch (e) {
+        let error = new Error('ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR');
+
+        apigateway.resMap[req.resKey].status(error.status || 500);
+        apigateway.resMap[req.resKey].send(error.message || 'ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!');
+        delete apigateway.resMap[req.resKey];
+    }
 }
 
 
@@ -50,7 +61,9 @@ server.get('/', (req, res) => res.send('Hello World!'));
 
 server.use('/api/search', searchRouter);
 
-server.use(writePacket)
+
+
+server.use(writePacket);
 
 server.listen(GATE_EXPRESS_PORT, async () => {
     connectToAllApps();
@@ -67,7 +80,15 @@ async function makeAppClient(name) {
             },
             (data) => {
                 // data이벤트 함수
-                apigateway.resMap[data.key].json(data.body.studygroups);
+                if (data.method === "REPLY") {
+                    apigateway.resMap[data.key].json(data.body.studygroups);
+                }
+                if (data.method === "ERROR") {
+                    let error = new Error('ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR');
+
+                    apigateway.resMap[data.key].status(error.status || 500);
+                    apigateway.resMap[data.key].send(error.message || 'ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!');
+                }
                 delete apigateway.resMap[data.key];
             },
             () => {
@@ -101,5 +122,3 @@ async function connectToAllApps() {
         makeAppClient(appName);
     })
 }
-
-
