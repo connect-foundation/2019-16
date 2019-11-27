@@ -8,7 +8,7 @@ module.exports = (req, res) => {
   let jwt;
 
   try {
-    jwt = jwtGenerator(req.user, "user");
+    jwt = jwtGenerator(req.user, req.user.role);
   } catch (e) {
     jwt = "";
   } finally {

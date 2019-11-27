@@ -14,12 +14,7 @@ function config(server) {
         // authorization 에 성공했을때의 액션
         const obj = {};
 
-        obj.email = profile._json.kakao_account.email;
-        obj.name = profile.username;
-        obj.profileImage = profile._json.properties.profile_image;
-        obj.gender = profile._json.kakao_account.gender;
-        obj.ageRange = profile._json.kakao_account.age_range;
-        obj.birthday = profile._json.kakao_account.birthday;
+        user.role = "user";
 
         return done(null, obj);
       }

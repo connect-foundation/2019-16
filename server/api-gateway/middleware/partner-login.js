@@ -10,7 +10,8 @@ module.exports = (req, res, next) => {
       if (success)
         req.user = {
           email: partner.email,
-          name: partner.name
+          name: partner.name,
+          role: "partner"
         };
       return next();
     });
