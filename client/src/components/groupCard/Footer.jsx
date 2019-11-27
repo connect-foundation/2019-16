@@ -9,11 +9,13 @@ const StyledFooter = styled.div`
   padding: 0 1rem;
 `;
 
-const Footer = ({ footerData: { location, time, nowCnt, maxCnt } }) => (
+const Footer = ({
+  footerData: { location, time, now_personnel, max_personnel }
+}) => (
   <StyledFooter>
     <Location location={location} />
     <TimeInfo time={time} />
-    <Personnel nowCnt={nowCnt} maxCnt={maxCnt} />
+    <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
   </StyledFooter>
 );
 
