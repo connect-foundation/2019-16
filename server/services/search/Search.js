@@ -1,11 +1,15 @@
 const App = require("../../lib/tcp/App");
 const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
-const { searchAllStudyGroupWithFiltering, searchStudyGroup, bulkStudyGroups } = require("./elasticsearch")
+const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
 
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
-  searchAllStudyGroupWithFiltering: searchAllStudyGroupWithFiltering,
+  searchStudyGroupWithCategory: searchStudyGroupWithCategory,
+  tagStudyGroup: tagStudyGroup,
+  tagStudyGroupWithCategory: tagStudyGroupWithCategory,
+  searchAllStudyGroup: searchAllStudyGroup,
+  searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
 }
 
 function emptyStudyGroupPeriodically(timer) {
@@ -35,11 +39,23 @@ class Search extends App {
       let result;
 
       switch (query) {
-        case "searchAllStudyGroupWithFiltering":
-          result = await queryMap.searchAllStudyGroupWithFiltering(params);
+        case "searchAllStudyGroup":
+          result = await queryMap.searchAllStudyGroup(params);
           break;
         case "searchStudyGroup":
           result = await queryMap.searchStudyGroup(params);
+          break;
+        case "tagStudyGroup":
+          result = await queryMap.tagStudyGroup(params);
+          break;
+        case "tagStudyGroupWithCategory":
+          result = await queryMap.tagStudyGroupWithCategory(params);
+          break;
+        case "searchStudyGroupWithCategory":
+          result = await queryMap.searchStudyGroupWithCategory(params);
+          break;
+        case "searchAllStudyGroupWithCategory":
+          result = await queryMap.searchAllStudyGroupWithCategory(params);
           break;
         default:
           throw Error("잘못된 Query 입니다.")
