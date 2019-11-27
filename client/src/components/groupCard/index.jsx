@@ -29,7 +29,7 @@ const StudyGroupCard = ({ groupData }) => (
   <StyledCard className="card-wrapper">
     <Link to={`/group/detail/${groupData.id}`}>
       <div className="card">
-        <Thumbnail src={groupData.src} alt={groupData.alt} />
+        <Thumbnail src={groupData.thumbnail} alt={groupData.alt} />
         <Body bodyData={{ ...groupData }} />
         <Footer footerData={{ ...groupData }} />
       </div>

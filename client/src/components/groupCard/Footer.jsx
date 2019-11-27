@@ -9,14 +9,29 @@ const StyledFooter = styled.div`
   padding: 0 1rem;
 `;
 
+const days_char = ["일", "월", "화", "수", "목", "금", "토"];
+
 const Footer = ({
-  footerData: { location, time, now_personnel, max_personnel }
-}) => (
-  <StyledFooter>
-    <Location location={location} />
-    <TimeInfo time={time} />
-    <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
-  </StyledFooter>
-);
+  footerData: {
+    location,
+    startTime,
+    during,
+    days,
+    now_personnel,
+    max_personnel
+  }
+}) => {
+  const time = `${days
+    .map(dayNumber => days_char[dayNumber])
+    .join(", ")} | ${startTime}:00 시작 | ${during}시간 }`;
+
+  return (
+    <StyledFooter>
+      <Location location={location} />
+      <TimeInfo time={time} />
+      <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
+    </StyledFooter>
+  );
+};
 
 export default Footer;
