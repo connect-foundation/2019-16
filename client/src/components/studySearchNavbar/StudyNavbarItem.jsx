@@ -11,21 +11,19 @@ const Category = styled.div`
 `;
 
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
-  const itemList = secondaryCategories.map(category => {
-    return (
-      <Link class="navbar-item" to={`/category/${category}`}>
-        {category}
-      </Link>
-    );
-  });
+  const itemList = secondaryCategories.map(category => (
+    <Link className="navbar-item" to={`/category/${category}`}>
+      {category}
+    </Link>
+  ));
 
   return (
     <Category>
-      <div class="navbar-item has-dropdown is-hoverable">
-        <span class="navbar-link is-arrowless is-size-3">
-          {primaryCategory}{" "}
+      <div className="navbar-item has-dropdown is-hoverable">
+        <span className="navbar-link is-arrowless is-size-3">
+          {primaryCategory}
         </span>
-        <div class="navbar-dropdown is-boxed">{itemList}</div>
+        <div className="navbar-dropdown is-boxed">{itemList}</div>
       </div>
     </Category>
   );
