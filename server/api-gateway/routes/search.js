@@ -5,11 +5,11 @@ const { makePacket } = require("../../lib/tcp/util");
 
 module.exports = function (apigateway) {
 
-    router.get('/query/:searchWord', async (req, res, next) => {
+    router.get('/query/:searchWord/:category/:isRecruit', async (req, res, next) => {
 
-        const searchWord = req.params.searchWord;
+        const { searchWord, category, isRecruit } = req.params;
 
-        const packet = makePacket("POST", "searchStudyGroup", { searchWord, isRecruit: true }, {}, req.resKey, apigateway.context);
+        const packet = makePacket("POST", "searchStudyGroup", { searchWord, category, isRecruit }, {}, req.resKey, apigateway.context);
 
         req.packet = packet;
         next();
