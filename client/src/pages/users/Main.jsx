@@ -141,14 +141,17 @@ const MainPage = () => {
                 : cardList.filter(
                     card => card.category[1] === selectedCategory
                   );
+            const groupsDataLength = groupsData.length;
 
             return (
               <div className="study-group-list">
-                {groupsData.map(groupData => {
-                  return (
-                    <StudyGroupCard groupData={groupData}></StudyGroupCard>
-                  );
-                })}
+                {groupsDataLength
+                  ? groupsData.map(groupData => {
+                      return (
+                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
+                      );
+                    })
+                  : "데이터가 업소용"}
               </div>
             );
           }}
