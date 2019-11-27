@@ -23,7 +23,7 @@ const Footer = ({
 }) => {
   const time = `${days
     .map(dayNumber => days_char[dayNumber])
-    .join(", ")} | ${startTime}:00 시작 | ${during}시간 }`;
+    .join(", ")} | ${startTime}:00 시작 | ${during}시간 `;
 
   return (
     <StyledFooter>
