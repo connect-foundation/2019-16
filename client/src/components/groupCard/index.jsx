@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Thumbnail from "./Thumbnail";
 import Body from "./Body";
 import Footer from "./Footer";
@@ -23,11 +24,13 @@ const StyledCard = styled.div`
 `;
 
 const StudyGroupCard = ({ groupData }) => (
-  <StyledCard>
-    <Thumbnail src={groupData.src} alt={groupData.alt} />
-    <Body bodyData={{ ...groupData }} />
-    <Footer footerData={{ ...groupData }} />
-  </StyledCard>
+  <Link to={`/group/detail/${groupData.id}`}>
+    <StyledCard>
+      <Thumbnail src={groupData.src} alt={groupData.alt} />
+      <Body bodyData={{ ...groupData }} />
+      <Footer footerData={{ ...groupData }} />
+    </StyledCard>
+  </Link>
 );
 
 export default StudyGroupCard;

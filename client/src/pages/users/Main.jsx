@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
-import {
-  studyGroupData,
-  categoryData,
-  myStudyData
-} from "../../__test__/mainPage.dummy";
+import { AppContext } from "../../App";
+import { initalState, mainReducer } from "../../reducer/Main";
 
 const Main = styled.div`
   display: flex;
@@ -59,13 +56,17 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 const MainPage = () => {
-  const [cardListData, setCardListData] = useState([
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData
-  ]);
+  const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
+  const {
+    myGroups,
+    cardList,
+    primaryCategories,
+    secondaryCategories
+  } = mainState;
+
+  const {
+    appState: { user_email }
+  } = useContext(AppContext);
 
   useEffect(() => {
     /**
@@ -78,19 +79,29 @@ const MainPage = () => {
   return (
     <Main>
       <div className="main-jumbotron">
-        <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
-        <div className="main-page-title">
-          <div className="main-title">스터디,</div>
-          <div className="main-subtitle">
-            <span className="highlight">모집</span>부터{" "}
-            <span className="highlight">예약</span>까지 한번에-
+        {user_email ? (
+          <MyStudyCarousel
+            myGroups={myGroups}
+            user_email={user_email}
+          ></MyStudyCarousel>
+        ) : (
+          <div className="main-page-title">
+            <div className="main-title">스터디,</div>
+            <div className="main-subtitle">
+              <span className="highlight">모집</span>부터{" "}
+              <span className="highlight">예약</span>까지 한번에-
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
+
+      <StudySearchNavbar
+        primaryCategories={primaryCategories}
+        secondaryCategories={secondaryCategories}
+      ></StudySearchNavbar>
       <div className="study-group-list">
-        {cardListData.map(data => {
-          return <StudyGroupCard groupData={data}></StudyGroupCard>;
+        {cardList.map(groupData => {
+          return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
         })}
       </div>
     </Main>

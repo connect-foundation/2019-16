@@ -11,7 +11,7 @@ const Navbar = styled.div`
   }
 `;
 
-const StudySearchNavbar = ({ categoryData }) => (
+const StudySearchNavbar = ({ primaryCategories, secondaryCategories }) => (
   <Navbar>
     <nav
       class="navbar is-transparent"
@@ -20,8 +20,11 @@ const StudySearchNavbar = ({ categoryData }) => (
     >
       <div id="navbarExampleTransparentExample" style={{ width: "100%" }}>
         <div class="navbar-start">
-          {categoryData.map(data => (
-            <StudyNavbarItem data={data}></StudyNavbarItem>
+          {primaryCategories.map(category => (
+            <StudyNavbarItem
+              primaryCategory={category}
+              secondaryCategories={secondaryCategories[category]}
+            ></StudyNavbarItem>
           ))}
         </div>
       </div>
