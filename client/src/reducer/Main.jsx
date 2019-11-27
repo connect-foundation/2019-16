@@ -38,7 +38,7 @@ export const initalState = {
     {
       id: 5,
       src:
-        "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
+        "https://cdn.searchenginejournal.com/wp-content/uploads/2018/07/SEO-and-JavaScript-6-Things-You-Need-to-Know.webp",
       alt: "img",
       title: "숙련된 프로그래머",
       subtitle: "자바스크립트의 풀 스택을 익히는 고오급 과정",
@@ -50,8 +50,7 @@ export const initalState = {
     },
     {
       id: 6,
-      src:
-        "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
+      src: "https://gaussian37.github.io/assets/img/cpp/cpp.png",
       alt: "img",
       title: "초보자도 하는 코딩",
       subtitle: "프로그래밍 언어의 기본인 C부터 근래에 핫한 Python 까지!",
@@ -64,7 +63,7 @@ export const initalState = {
     {
       id: 7,
       src:
-        "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
+        "https://www.tippingkorea.co.kr/data/plupload/o_1ceqams87pgg1mf99v917r1r8ua.jpg",
       alt: "img",
       title: "컴퓨터활용능력 1급",
       subtitle: "1달만에 습득하는 컴퓨터 활용 능력!",
@@ -77,7 +76,7 @@ export const initalState = {
     {
       id: 8,
       src:
-        "https://nicholashowlett.com.au/wp-content/uploads/2016/05/coding-cat-768x512.jpg",
+        "http://static.news.zumst.com/images/68/2018/01/30/b74910f08a4f46bd81c3faf04a022424.jpg",
       alt: "img",
       title: "필수 표현으로 마스터하는 비즈니스 영어",
       subtitle:
