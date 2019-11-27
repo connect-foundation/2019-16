@@ -10,22 +10,20 @@ const {
   GATE_EXPRESS_PORT,
   GATE_TCP_PORT,
   GATE_NAME,
-  PARTNERS_MONGO_URI,
-  PARTNERS_USER,
-  PARTNERS_PASS,
+  ACCOUNTS_MONGO_URI,
   GATE_HOST
 } = process.env;
 
 mongoose
-  .connect(PARTNERS_MONGO_URI, {
+  .connect(ACCOUNTS_MONGO_URI, {
     useNewUrlParser: true,
     useFindAndModify: true
   })
   .then(() => {
-    console.log("Partners mongoDB is connected");
+    console.log("Accounts mongoDB is connected");
   })
   .catch(() => {
-    console.log("Partners mongoDB connection fail");
+    console.log("Accounts mongoDB connection fail");
   });
 
 class ApiGateway extends App {

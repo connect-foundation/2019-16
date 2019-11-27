@@ -8,7 +8,9 @@ const PartnerSchema = new Schema(
     cid: String,
     name: String
   },
-  { collection: "account" }
+  {
+    collection: "partner"
+  }
 );
 
 const Partner = mongoose.model("Partner", PartnerSchema);
