@@ -14,8 +14,8 @@ module.exports = (req, res) => {
         cid: cid
       },
       mongoError => {
-        if (mongoError) return res.redirect("/partners/join");
-        else return res.redirect("/partners/login");
+        if (mongoError) return res.json({ join: "fail" });
+        else return res.json({ join: "success" });
       }
     );
   });
