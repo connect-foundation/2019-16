@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Route, BrowserRouter as Router } from "react-router-dom";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
@@ -107,15 +107,31 @@ const MainPage = () => {
         )}
       </div>
 
-      <StudySearchNavbar
-        primaryCategories={primaryCategories}
-        secondaryCategories={secondaryCategories}
-      ></StudySearchNavbar>
-      <div className="study-group-list">
-        {cardList.map(groupData => {
-          return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
-        })}
-      </div>
+      <Router>
+        <StudySearchNavbar
+          primaryCategories={primaryCategories}
+          secondaryCategories={secondaryCategories}
+        ></StudySearchNavbar>
+        <Route
+          path="/category/:categoryName"
+          render={({ match }) => {
+            const selectedCategory = match.params.categoryName;
+            const groupsData = cardList.filter(
+              card => card.category[1] === selectedCategory
+            );
+
+            return (
+              <div className="study-group-list">
+                {groupsData.map(groupData => {
+                  return (
+                    <StudyGroupCard groupData={groupData}></StudyGroupCard>
+                  );
+                })}
+              </div>
+            );
+          }}
+        />
+      </Router>
     </Main>
   );
 };
