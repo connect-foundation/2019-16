@@ -6,10 +6,13 @@ module.exports = (req, res, next) => {
 
   Partner.findOne({ email: email }, (err, partner) => {
     if (!partner) return res.json({ login: "fail" });
-    bcrypt.compare(password, partner.password, (err, success) => {
-      return success
-        ? res.json({ login: "success" })
-        : res.json({ login: "fail" });
+    bcrypt.compare(password, partner.password, (_err, success) => {
+      if (success)
+        req.user = {
+          email: partner.email,
+          name: partner.name
+        };
+      return next();
     });
   });
 };
