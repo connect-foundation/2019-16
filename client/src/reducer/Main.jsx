@@ -1,3 +1,10 @@
+export const GET_ALL_GROUPS = "main/GET_ALL_GROUPS";
+
+export const get_all_groups = cardList => ({
+  type: GET_ALL_GROUPS,
+  cardList
+});
+
 export const initalState = {
   myGroups: [
     {
@@ -97,4 +104,16 @@ export const initalState = {
   }
 };
 
-export const mainReducer = (state, action) => {};
+export const mainReducer = (state, action) => {
+  switch (action.type) {
+    case GET_ALL_GROUPS:
+      const { cardList } = action;
+      return {
+        ...state,
+        cardList
+      };
+
+    default:
+      return state;
+  }
+};

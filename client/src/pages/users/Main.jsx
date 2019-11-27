@@ -1,11 +1,12 @@
 import React, { useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
 import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+import axios from "axios";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
 import { AppContext } from "../../App";
-import { initalState, mainReducer } from "../../reducer/Main";
+import { initalState, mainReducer, get_all_groups } from "../../reducer/Main";
 
 const Main = styled.div`
   display: flex;
@@ -63,8 +64,11 @@ const Main = styled.div`
  * 미로그인시main-page-title 출력
  * 로그인시 MyStudyCarousel 출력
  */
+const searchUrl = "";
+
 const MainPage = () => {
   const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
+
   const {
     myGroups,
     cardList,
@@ -77,6 +81,9 @@ const MainPage = () => {
   } = useContext(AppContext);
 
   useEffect(() => {
+    axios.get(searchUrl).then(data => {
+      mainDispatch(get_all_groups(data.data));
+    }, []);
     // /api/search/all
     /**
      * TODO: data 요청로직 필요
