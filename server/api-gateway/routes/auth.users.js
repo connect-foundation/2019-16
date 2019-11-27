@@ -6,7 +6,7 @@ const responseWithToken = require("../middleware/response-token");
 router.get("/login", passport.authenticate("kakao"));
 router.get(
   "/callback",
-  passport.authenticate("kakao", { failureRedirect: "/" }),
+  passport.authenticate("kakao", { failureMessage: "fail" }),
   responseWithToken
 );
 
