@@ -4,6 +4,7 @@ const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
 const express = require("express");
 const server = express();
+require("./auth/passport")(server); // passport config
 const authRouter = require("./routes/auth");
 const {
   GATE_EXPRESS_PORT,
