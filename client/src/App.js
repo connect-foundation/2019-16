@@ -3,6 +3,7 @@ import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 import Header from "./components/Header";
 import MainPage from "./pages/users/Main";
+import GroupCreatePage from "./pages/users/groupCreate";
 import { initalState, appReducer } from "./reducer/App";
 
 const GlobalStyle = createGlobalStyle`
@@ -25,6 +26,7 @@ function App() {
           <Header />
           <Switch>
             <Route path="/" exact component={MainPage} />
+            <Route path="/group/create" component={GroupCreatePage} />
             <Route
               render={({ location }) => (
                 <div>

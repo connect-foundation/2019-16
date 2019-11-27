@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext, useReducer } from "react";
+import React, { useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
@@ -17,6 +18,10 @@ const Main = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
+
+    .group-create-button {
+      margin-top: 2rem;
+    }
   }
 
   .main-page-title{
@@ -69,6 +74,7 @@ const MainPage = () => {
   } = useContext(AppContext);
 
   useEffect(() => {
+    // /api/search/all
     /**
      * TODO: data 요청로직 필요
      * cardListData
@@ -80,10 +86,16 @@ const MainPage = () => {
     <Main>
       <div className="main-jumbotron">
         {user_email ? (
-          <MyStudyCarousel
-            myGroups={myGroups}
-            user_email={user_email}
-          ></MyStudyCarousel>
+          <>
+            <MyStudyCarousel
+              myGroups={myGroups}
+              user_email={user_email}
+            ></MyStudyCarousel>
+            <Link to="/group/create" className="group-create-button">
+              {" "}
+              <button className="button"> 그룹 생성 </button>
+            </Link>
+          </>
         ) : (
           <div className="main-page-title">
             <div className="main-title">스터디,</div>
