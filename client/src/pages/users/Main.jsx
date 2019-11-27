@@ -42,14 +42,16 @@ const Main = styled.div`
   }
 
   .study-group-list{
-    align-self:center;
-      background-color: #f8f0ee;
+      align-self:center;
+
       display: flex;
-      width: 70rem;
+      flex-direction: row;
+      justify-content: space-evenly;
+
+      background-color: #f8f0ee;
+      width: 75rem;
       flex-wrap: wrap;
-      padding: 4em;
       margin:0 10%;
-      justify-content: center;
       .study-group-card{
           margin: 2em;
       }
