@@ -116,7 +116,7 @@ function writePacket(req, res, next) {
 }
 
 server.use(setResponseKey);
-
+server.use(express.json());
 server.get("/", (req, res) => res.send("Hello World!"));
 server.use("/auth", authRouter);
 server.use("/api/search", searchRouter);
