@@ -1,10 +1,13 @@
 require("dotenv").config({ path: ".env.gateway" });
+const path = require("path");
 const mongoose = require("mongoose");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
+const cors = require("cors");
 const express = require("express");
 const server = express();
 require("./auth/passport")(server); // passport config
+const favicon = require("express-favicon");
 const authRouter = require("./routes/auth");
 const {
   GATE_EXPRESS_PORT,
@@ -35,7 +38,6 @@ class ApiGateway extends App {
   }
 }
 const apigateway = new ApiGateway();
-const searchRouter = require("./routes/search")(apigateway);
 
 async function setResponseKey(req, res, next) {
   const key = await makeKey(req.client);
@@ -105,6 +107,7 @@ function writePacket(req, res, next) {
   } catch (e) {
     let error = new Error("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
 
+
     apigateway.resMap[req.resKey].status(error.status || 500);
     apigateway.resMap[req.resKey].send(
       error.message || "ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!"
@@ -113,10 +116,16 @@ function writePacket(req, res, next) {
   }
 }
 
-server.use(setResponseKey);
+const searchRouter = require("./routes/search")(apigateway);
+
 server.use(express.json());
+server.use(cors());
+
+server.use(favicon(path.join(__dirname, "/favicon.ico")));
+server.use(setResponseKey);
+
 server.get("/", (req, res) => res.send("Hello World!"));
-server.use("/auth", authRouter);
+
 server.use("/api/search", searchRouter);
 
 server.use(writePacket);
@@ -162,7 +171,9 @@ async function makeAppClient(name) {
 
     setInterval(() => {
       if (!apigateway.icConnectMap[name]) {
-        console.log(`try connect to search2`);
+
+        console.log(`try connect to ${name}`);
+
         client.connect();
       }
     }, 2000);
