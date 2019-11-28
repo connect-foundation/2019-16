@@ -23,7 +23,8 @@ const {
 mongoose
   .connect(ACCOUNTS_MONGO_URI, {
     useNewUrlParser: true,
-    useFindAndModify: true
+    useFindAndModify: true,
+    useUnifiedTopology: true
   })
   .then(() => {
     console.log("Accounts mongoDB is connected");
