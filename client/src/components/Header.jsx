@@ -41,21 +41,45 @@ const HeaderBox = styled.div`
 `;
 
 const Header = ({ appContainerDispatch }) => {
-  const onKeyDown = useCallback(e => {
+  const onKeyUp = useCallback(e => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const url = `http://127.0.0.1:8000/api/search/query/${e.target.value}/true`;
-      axios.get(url).then(result => {
-        const { data } = result;
-        for (let i = 0; i < data.length; i++) {
-          data[i].id = i;
-          data[
-            i
-          ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-        }
-        appContainerDispatch(get_searched_groups_without_category(data));
-      });
+      if (e.target.value[0] === "#") {
+        //tag검색
+        console.log("tag");
+        const tag = e.target.value.substr(1);
+        const url = `http://127.0.0.1:8000/api/search/tags`;
+        axios
+          .post(url, {
+            tags: [tag],
+            isRecruit: true
+          })
+          .then(result => {
+            const { data } = result;
+            for (let i = 0; i < data.length; i++) {
+              data[i].id = i;
+              data[
+                i
+              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+            }
+            appContainerDispatch(get_searched_groups_without_category(data));
+          });
+      } else {
+        const url = `http://127.0.0.1:8000/api/search/query/${e.target.value}/true`;
+        axios.get(url).then(result => {
+          const { data } = result;
+          for (let i = 0; i < data.length; i++) {
+            data[i].id = i;
+            data[
+              i
+            ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+          }
+          appContainerDispatch(get_searched_groups_without_category(data));
+        });
+      }
     }
+
+    console.log(e.target.value);
   }, []);
 
   return (
@@ -73,7 +97,7 @@ const Header = ({ appContainerDispatch }) => {
             class="input is-rounded"
             type="text"
             placeholder="스터디그룹 검색"
-            onKeyDown={onKeyDown}
+            onKeyUp={onKeyUp}
           />
         </div>
         <div className={`account-box`}>
