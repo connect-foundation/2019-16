@@ -38,7 +38,7 @@ class Search extends App {
     try {
       const result = await queryMap[query](params);
 
-      packet = makePacket("REPLY", query, {}, { studygroups: result }, key, this.context);
+      packet = makePacket("REPLY", query, {}, result, key, this.context);
     } catch (e) {
       packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
     } finally {

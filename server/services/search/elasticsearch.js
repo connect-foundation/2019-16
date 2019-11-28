@@ -16,14 +16,14 @@ exports.searchStudyGroup = async info => {
             {
               query_string: {
                 query: `*${searchWord}*`,
-                fields: ["title", "description", "subtitle"]
+                fields: ["title", "intro", "subtitle"]
               }
             }
           ],
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ]
@@ -51,14 +51,14 @@ exports.searchStudyGroupWithCategory = async info => {
             {
               query_string: {
                 query: `*${searchWord}*`,
-                fields: ["title", "description"]
+                fields: ["title", "intro"]
               }
             }
           ],
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ],
@@ -98,7 +98,7 @@ exports.tagStudyGroup = async info => {
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ],
@@ -114,7 +114,7 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => {};
+exports.tagStudyGroupWithCategory = async () => { };
 
 exports.searchAllStudyGroup = async info => {
   const { isRecruit } = info;
@@ -131,7 +131,7 @@ exports.searchAllStudyGroup = async info => {
           ],
           filter: {
             term: {
-              isRecruit: isRecruit
+              isRecruiting: isRecruit
             }
           }
         }
@@ -161,7 +161,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
           filter: [
             {
               term: {
-                isRecruit: isRecruit
+                isRecruiting: isRecruit
               }
             },
             {

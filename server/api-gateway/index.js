@@ -56,7 +56,8 @@ server.use(setResponseKey);
 
 // server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
-server.use("/api/search", gatewayLogger, searchRouter);
+//server.use("/api/search", gatewayLogger, searchRouter);
+server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
 server.use(writePacket);

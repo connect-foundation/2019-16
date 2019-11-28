@@ -1,7 +1,7 @@
 const uuidv1 = require("uuid/v1");
 const { makePacket } = require("../../lib/tcp/util");
 
-module.exports = function(apigateway) {
+module.exports = function (apigateway) {
   const gatewayLogger = (req, res, next) => {
     const timestamp = Math.floor(Date.now() / 1);
     const traceId = uuidv1();
@@ -15,7 +15,7 @@ module.exports = function(apigateway) {
       "http.path": req.baseUrl
     };
 
-    // console.log(log);
+    //console.log(log);
     const packet = makePacket(
       "POST",
       "log",
