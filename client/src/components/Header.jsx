@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import AccountContainer from "../components/accountContainer";
 
-const HeaderBox = styled.div`
+const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,22 +33,16 @@ const HeaderBox = styled.div`
 `;
 
 const Header = () => (
-  <header>
-    <HeaderBox>
-      <Link to="/">
-        <img
-          src="/image/logo-mini.png"
-          alt="study combined"
-          className={["logo"]}
-        />{" "}
-      </Link>
-      <div className={`account-box`}>
-        <div className={`user-account-btn accountbox-btn`}>
-          <span> 태현님 환영합니다. </span>
-        </div>
-      </div>
-    </HeaderBox>
-  </header>
+  <HeaderContainer>
+    <Link to="/">
+      <img
+        src="/image/logo-mini.png"
+        alt="study combined"
+        className={["logo"]}
+      />{" "}
+    </Link>
+    <AccountContainer />
+  </HeaderContainer>
 );
 
 export default Header;
