@@ -1,9 +1,11 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+
 
 const { makePacket } = require("../../lib/tcp/util");
 
 module.exports = function(apigateway) {
+
   router.get("/query/:searchWord/:isRecruit", async (req, res, next) => {
     const { searchWord, isRecruit = true } = req.params;
 
@@ -15,7 +17,6 @@ module.exports = function(apigateway) {
       req.resKey,
       apigateway.context
     );
-
     next();
   });
 
@@ -92,6 +93,5 @@ module.exports = function(apigateway) {
 
     next();
   });
-
   return router;
 };
