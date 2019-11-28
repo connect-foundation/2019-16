@@ -3,6 +3,7 @@ const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
 const { getAppbyName, getAllApps } = require("../redis");
+const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
@@ -12,6 +13,12 @@ class App extends TcpServer {
     this.isConnectedToLogService = false;
     this.appClients = {};
 
+    /**
+     * params
+     * @param {string} query : 서비스의 쿼리
+     * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
+     */
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
   }
 
   async connectToApp(name, onCreate, onRead, onEnd, onError) {

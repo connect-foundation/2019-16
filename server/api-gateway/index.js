@@ -6,6 +6,7 @@ const { makeKey } = require("../lib/tcp/util");
 const cors = require("cors");
 const express = require("express");
 const server = express();
+const { makeLogSender } = require("../lib/tcp/logUtils");
 
 require("./auth/passport")(server); // passport config
 const favicon = require("express-favicon");
@@ -37,6 +38,7 @@ class ApiGateway extends App {
     this.appClientMap = {};
     this.icConnectMap = {};
     this.resMap = {};
+    this.httpLogSender = makeLogSender.call(this, "http");
   }
 }
 
