@@ -12,7 +12,6 @@ class StudyGroup extends App {
 
     switch (query) {
       case "addGroup":
-        params.payload.thumbnail = "testSrc";
         try {
           await StudyGroups.create(params.payload);
           packet = makePacket(
