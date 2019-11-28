@@ -8,21 +8,30 @@ class StudyGroup extends App {
   }
   async onRead(socket, data) {
     const { params, query, key } = data;
+    let packet;
 
     switch (query) {
       case "addGroup":
         params.payload.thumbnail = "testSrc";
         try {
           await StudyGroups.create(params.payload);
+          packet = makePacket(
+            "REPLY",
+            query,
+            {},
+            { href: "/" },
+            key,
+            this.context
+          );
         } catch (e) {
           console.error(e);
+          packet = makePacket("ERROR", query, {}, {}, key, this.context);
         }
         break;
 
       default:
         break;
     }
-    const packet = makePacket("REPLY", query, {}, {}, key, this.context);
 
     this.send(socket, packet);
   }

@@ -117,7 +117,7 @@ async function makeAppClient(name) {
       data => {
         // data이벤트 함수
         if (data.method === "REPLY") {
-          apigateway.resMap[data.key].json(data.body.studygroups);
+          apigateway.resMap[data.key].json(data.body);
         }
         if (data.method === "ERROR") {
           let error = new Error("서비스에서 에러가 발생했습니다.");
