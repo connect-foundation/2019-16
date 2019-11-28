@@ -52,7 +52,12 @@ const url = "";
 const GroupCreate = props => {
   const { appState: userInfo } = useContext(AppContext);
 
-  initialState.data.leader = userInfo;
+  initialState.data.leader = {
+    email: userInfo.userEmail,
+    ageRange: userInfo.userAgeRange,
+    gender: userInfo.userGender,
+    name: userInfo.userName
+  };
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -68,9 +73,15 @@ const GroupCreate = props => {
   const onSubmit = useCallback(
     e => {
       const { data } = state;
-      console.log(data);
+
       axios.post(url, data).then(result => {
-        console.log(result);
+        if (result.status === 200) {
+          const { data } = result;
+          window.location.href = data.href;
+          return;
+        }
+
+        alert("에러 발생");
       });
     },
     [state.data]
