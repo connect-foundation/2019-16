@@ -8,9 +8,9 @@ const Personnel = styled.div`
   }
 `;
 
-const StudyPersonnel = ({ nowCnt, maxCnt }) => (
+const StudyPersonnel = ({ now_personnel, max_personnel }) => (
   <Personnel>
-    <span className={`now-count`}>{nowCnt}</span>/{maxCnt}명
+    <span className={`now-count`}>{now_personnel}</span>/{max_personnel}명
   </Personnel>
 );
 

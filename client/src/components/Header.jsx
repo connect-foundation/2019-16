@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const HeaderBox = styled.div`
   display: flex;
@@ -8,6 +9,8 @@ const HeaderBox = styled.div`
   padding-left: 5%;
   padding-right: 5%;
   padding-top: 3%;
+  margin-bottom: 2.3rem;
+
   .logo {
     width: 64px;
     height: 64px;
@@ -28,21 +31,19 @@ const HeaderBox = styled.div`
   }
 `;
 
-const Header = ({ uri }) => (
+const Header = () => (
   <header>
     <HeaderBox>
-      <a href={uri}>
-        <img src="/image/logo-mini.png" className={["logo"]}></img>
-      </a>
+      <Link to="/">
+        <img
+          src="/image/logo-mini.png"
+          alt="study combined"
+          className={["logo"]}
+        />{" "}
+      </Link>
       <div className={`account-box`}>
-        <div className={`signin-btn accountbox-btn `}>
-          <span>로그인</span>
-        </div>
-        <div className={`signout-btn accountbox-btn`}>
-          <span>회원가입</span>
-        </div>
         <div className={`user-account-btn accountbox-btn`}>
-          <span>{"Soob"} 님</span>
+          <span> 태현님 환영합니다. </span>
         </div>
       </div>
     </HeaderBox>
