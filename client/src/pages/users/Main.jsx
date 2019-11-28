@@ -74,7 +74,7 @@ const MainPage = ({ appContainerState }) => {
   } = appContainerState;
 
   const {
-    appState: { user_email }
+    appState: { userEmail }
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -98,11 +98,11 @@ const MainPage = ({ appContainerState }) => {
   return (
     <Main>
       <div className="main-jumbotron">
-        {user_email ? (
+        {userEmail ? (
           <>
             <MyStudyCarousel
               myGroups={myGroups}
-              user_email={user_email}
+              user_email={userEmail}
             ></MyStudyCarousel>
             <Link to="/group/create" className="group-create-button">
               {" "}

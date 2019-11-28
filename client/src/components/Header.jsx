@@ -1,9 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { AppContext } from "../App";
 import AccountContainer from "../components/accountContainer";
 import axios from "axios";
-import { _searched_grgetoups_without_category } from "../reducer/AppContainer";
+import { get_searched_grgetoups_without_category } from "../reducer/AppContainer";
+
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -40,7 +42,6 @@ const HeaderContainer = styled.header`
     }
   }
 `;
-
 
 const Header = ({ appContainerDispatch }) => {
   const onKeyUp = useCallback(e => {
@@ -86,6 +87,7 @@ const Header = ({ appContainerDispatch }) => {
 
   return (
     <HeaderContainer>
+
         <Link to="/">
           <img
             src="/image/logo-mini.png"
@@ -93,6 +95,14 @@ const Header = ({ appContainerDispatch }) => {
             className={["logo"]}
           />{" "}
         </Link>
+
+        <div className={`account-box`}>
+          <div className={`user-account-btn accountbox-btn`}>
+            <span> {userName}님 환영합니다. </span>
+          </div>
+        </div>
+      </HeaderBox>
+    </header>
         <div className={`search-box`}>
           <input
             class="input is-rounded"
@@ -101,13 +111,7 @@ const Header = ({ appContainerDispatch }) => {
             onKeyUp={onKeyUp}
           />
         </div>
-        <div className={`account-box`}>
-          <div className={`user-account-btn accountbox-btn`}>
-            <span> 태현님 환영합니다. </span>
-          </div>
-        </div>
-      <AccountContainer />
-    </HeaderContainer>
+
   );
 };
 
