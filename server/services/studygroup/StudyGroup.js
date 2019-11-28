@@ -1,6 +1,7 @@
 const App = require("../../lib/tcp/App");
 const { makePacket } = require("../../lib/tcp/util");
 const StudyGroups = require("./models/StudyGroups");
+const { pushStudyGroups } = require("../../lib/redis");
 
 class StudyGroup extends App {
   constructor(name, host, port) {
@@ -13,7 +14,15 @@ class StudyGroup extends App {
     switch (query) {
       case "addGroup":
         try {
-          await StudyGroups.create(params.payload);
+          const result = await StudyGroups.create(params.payload);
+          result.leader = result.leader.name;
+          result["now_personnel"] = 1;
+          result.days = result.selectedDays;
+          result.isRecruit = result.isRecruiting;
+          result.description = result.intro;
+
+          pushStudyGroups(result);
+
           packet = makePacket(
             "REPLY",
             query,
