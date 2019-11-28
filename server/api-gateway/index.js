@@ -80,9 +80,10 @@ server.use(cors());
 server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 
-server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
+server.use(gatewayLogger);
+server.get("/", (req, res) => res.send("Hello World!"));
 
-server.use("/api/search", gatewayLogger, searchRouter);
+server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use(writePacket);
 
