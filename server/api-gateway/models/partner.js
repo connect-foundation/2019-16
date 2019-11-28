@@ -8,9 +8,11 @@ const PartnerSchema = new Schema(
     cid: String,
     name: String
   },
-  { collection: "info" }
+  {
+    collection: "partner"
+  }
 );
 
-const Partner = mongoose.model("partners", PartnerSchema);
+const Partner = mongoose.model("Partner", PartnerSchema);
 
 module.exports = Partner;
