@@ -81,17 +81,10 @@ const MainPage = () => {
   } = useContext(AppContext);
 
   useEffect(() => {
-    axios.get(searchUrl).then(result => {
-      const { data } = result;
-
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
-      mainDispatch(get_all_groups(data));
-    }, []);
+    // axios.get(searchUrl).then(result => {
+    //   const { data } = result;
+    //   mainDispatch(get_all_groups(data));
+    // }, []);
     // /api/search/all
     /**
      * TODO: data 요청로직 필요
