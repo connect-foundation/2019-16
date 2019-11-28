@@ -6,9 +6,11 @@ const { makeKey } = require("../lib/tcp/util");
 const cors = require("cors");
 const express = require("express");
 const server = express();
+
 require("./auth/passport")(server); // passport config
 const favicon = require("express-favicon");
 const authRouter = require("./routes/auth");
+
 const {
   GATE_EXPRESS_PORT,
   GATE_TCP_PORT,
@@ -37,6 +39,7 @@ class ApiGateway extends App {
     this.resMap = {};
   }
 }
+
 const apigateway = new ApiGateway();
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 
@@ -49,12 +52,6 @@ async function setResponseKey(req, res, next) {
 }
 
 function writePacket(req, res, next) {
-  const appName = req.path.split("/")[2];
-
-  apigateway.appClientMap[appName].write(req.packet);
-}
-
-function writePacket(req, res, next) {
   try {
     if (req.path !== "/favicon.ico") {
       const appName = req.path.split("/")[2];
@@ -62,12 +59,11 @@ function writePacket(req, res, next) {
       apigateway.appClientMap[appName].write(req.packet);
     }
   } catch (e) {
-    let error = new Error("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-
+    let error = new Error("잘못된 라우터로 요청이 들어왔습니다. ");
 
     apigateway.resMap[req.resKey].status(error.status || 500);
     apigateway.resMap[req.resKey].send(
-      error.message || "ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!"
+      error.message || "잘못된 라우터로 요청이 들어왔습니다."
     );
     delete apigateway.resMap[req.resKey];
   }
@@ -84,16 +80,23 @@ server.use(setResponseKey);
 server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
 server.use("/api/search", gatewayLogger, searchRouter);
-
-
+server.use("/auth", authRouter);
 server.use(writePacket);
 
-server.listen(GATE_EXPRESS_PORT, async () => {
-  connectToAllApps();
-});
+/**
+ * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
+ */
+async function connectToAllApps() {
+  const apps = await apigateway.getAllApps();
+
+  const appNames = apps.map(app => app.name);
+
+  appNames.forEach(appName => {
+    makeAppClient(appName);
+  });
+}
 
 async function makeAppClient(name) {
-
   try {
     const client = await apigateway.connectToApp(
       name,
@@ -109,11 +112,11 @@ async function makeAppClient(name) {
           apigateway.resMap[data.key].json(data.body.studygroups);
         }
         if (data.method === "ERROR") {
-          let error = new Error("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+          let error = new Error("서비스에서 에러가 발생했습니다.");
 
           apigateway.resMap[data.key].status(error.status || 500);
           apigateway.resMap[data.key].send(
-            error.message || "ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!"
+            error.message || "서비스에서 에러가 발생했습니다."
           );
         }
         delete apigateway.resMap[data.key];
@@ -130,7 +133,6 @@ async function makeAppClient(name) {
 
     setInterval(() => {
       if (!apigateway.icConnectMap[name]) {
-
         console.log(`try connect to ${name}`);
 
         client.connect();
@@ -142,15 +144,6 @@ async function makeAppClient(name) {
   }
 }
 
-/**
- * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
- */
-async function connectToAllApps() {
-  const apps = await apigateway.getAllApps();
-
-  const appNames = apps.map(app => app.name);
-
-  appNames.forEach(appName => {
-    makeAppClient(appName);
-  });
-}
+server.listen(GATE_EXPRESS_PORT, async () => {
+  connectToAllApps();
+});
