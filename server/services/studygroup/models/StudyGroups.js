@@ -7,6 +7,7 @@ const GroupSchema = new Schema({
   leader: { type: User, required: true },
   members: { type: [User] },
   min_personnel: { type: Number, required: true },
+  now_personnel: { type: Number },
   max_personnel: { type: Number, required: true },
   isRecruiting: { type: Boolean, default: true },
   intro: { type: String },

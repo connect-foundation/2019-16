@@ -6,7 +6,8 @@ const UserSchema = new Schema({
   ageRange: { type: Number },
   history: { type: [Types.ObjectId] },
   ownGroups: { type: [Types.ObjectId] },
-  partipatedGroups: { type: [Types.ObjectId] }
+  partipatedGroups: { type: [Types.ObjectId] },
+  name: { type: String, required: true }
 });
 
 exports.schema = UserSchema;
