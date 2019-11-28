@@ -50,11 +50,9 @@ const StyledGroupCreate = styled.div`
 const url = "";
 
 const GroupCreate = props => {
-  const {
-    appState: { userEmail }
-  } = useContext(AppContext);
+  const { appState: userInfo } = useContext(AppContext);
 
-  initialState.data.leader = userEmail;
+  initialState.data.leader = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
