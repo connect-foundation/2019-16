@@ -16,7 +16,7 @@ exports.searchStudyGroup = async info => {
             {
               query_string: {
                 query: `*${searchWord}*`,
-                fields: ["title", "description"]
+                fields: ["title", "description", "subtitle"]
               }
             }
           ],
