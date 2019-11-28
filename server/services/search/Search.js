@@ -1,105 +1,51 @@
-require("dotenv").config({ path: ".env.search" });
-const {
-  ELASTIC_HOST,
-  ELASTIC_PORT
-} = process.env;
-
 const App = require("../../lib/tcp/App");
-const { Client } = require('@elastic/elasticsearch')
-const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` })
+const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
+const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
 
-
-async function searchStudyGroup(info) {
-  const { searchWord, category, isRecruit, tags } = info;
-
-  const { body } = await client.search({
-    index: 'studygroup',
-    body: {
-      query: {
-        bool: {
-          must: [{
-            match: {
-              title: searchWord
-            }
-          }],
-          filter: {
-            term: {
-              isRecruit: isRecruit
-            }
-          }
-        }
-      }
-    }
-  })
-
-  const result = body.hits.hits.map((hit) => {
-    return hit._source;
-  })
-
-  return result;
-}
-async function searchAllStudyGroupWithFiltering(info) {
-  const { category, isRecruit, tags } = info;
-
-
-  const { body } = await client.search({
-    index: 'studygroup',
-    body: {
-      query: {
-        bool: {
-          must: [{
-            match_all: {}
-          }],
-          filter: {
-            term: {
-              isRecruit: isRecruit
-            }
-          }
-        }
-      }
-    }
-  })
-  const result = body.hits.hits.map((hit) => {
-    return hit._source;
-  })
-
-  return result;
-}
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
-  searchAllStudyGroupWithFiltering: searchAllStudyGroupWithFiltering,
+  searchStudyGroupWithCategory: searchStudyGroupWithCategory,
+  tagStudyGroup: tagStudyGroup,
+  tagStudyGroupWithCategory: tagStudyGroupWithCategory,
+  searchAllStudyGroup: searchAllStudyGroup,
+  searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
+}
+
+function emptyStudyGroupPeriodically(timer) {
+  setTimeout(async () => {
+    console.log("empty studygroupqueue");
+    let groups = await popStudyGroups(1000);
+
+    if (groups.length !== 0) bulkStudyGroups(groups);
+    const len = await getStudyGroupsLength();
+
+    if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
+    else emptyStudyGroupPeriodically(timer);
+
+  }, timer);
 }
 
 class Search extends App {
   constructor(name, host, port) {
     super(name, host, port);
+    emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
+    let packet;
     const { params, query, key } = data;
-    let result;
 
-    switch (query) {
-      case "searchAllStudyGroupWithFiltering":
-        result = await queryMap.searchAllStudyGroupWithFiltering(params);
-        break;
-      case "searchAllStudyGroupWithFiltering2":
-        await new Promise((res) => {
-          setTimeout(() => {
-            res()
-          }, 3000)
-        })
-        result = { search2: "search2" }
-        break;
-      case "searchStudyGroup":
-        result = await queryMap.searchStudyGroup(params);
-        break;
-      default:
-        break;
+    try {
+      const result = await queryMap[query](params);
+
+      packet = makePacket("REPLY", query, {}, { studygroups: result }, key, this.context);
+    } catch (e) {
+      packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
+    } finally {
+      this.send(socket, packet);
     }
-    const packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
 
-    this.send(socket, packet);
+
   }
   send(socket, packet) {
     socket.write(packet);
