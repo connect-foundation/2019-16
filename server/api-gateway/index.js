@@ -10,6 +10,7 @@ const server = express();
 require("./auth/passport")(server); // passport config
 const favicon = require("express-favicon");
 const authRouter = require("./routes/auth");
+const studyGroupRouter = require("./routes/studyGroup");
 
 const {
   GATE_EXPRESS_PORT,
@@ -80,6 +81,7 @@ server.use(setResponseKey);
 server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
 server.use("/api/search", gatewayLogger, searchRouter);
+server.use("/api/studyGroup", studyGroupRouter);
 server.use("/auth", authRouter);
 server.use(writePacket);
 
