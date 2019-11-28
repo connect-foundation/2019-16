@@ -19,16 +19,33 @@ const category = {
   ]
 };
 
-const miniCard = {
-  isLeader: true,
+const miniCard1 = {
+  leader: "dlatns0201@gmail.com",
   img: "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
   title: "영화보면서 영어공부 같이해요~",
-  currentStudyCount: 3,
-  totalStudyCount: 23,
-  link: ""
+  isRecruiting: true
+};
+const miniCard2 = {
+  leader: "dlatns0202@gmail.com",
+  img: "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
+  title: "HTML은 프로그래밍 언어가 아니다~",
+  isRecruiting: false
 };
 
-const myStudyData = [miniCard, miniCard, miniCard, miniCard];
+const miniCard3 = {
+  leader: "dlatns0202@gmail.com",
+  img: "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
+  title: "김세진도 좋아하는 Java 프로그래밍 교실",
+  isRecruiting: false
+};
+
+const miniCard4 = {
+  leader: "dlatns0201@gmail.com",
+  img: "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654",
+  title: "30대의 뚝심을 버리는 법",
+  isRecruiting: true
+};
+const myStudyData = [miniCard1, miniCard2, miniCard3, miniCard4];
 const categoryData = [category, category, category, category, category];
 
 export { myStudyData, categoryData, studyGroupData };

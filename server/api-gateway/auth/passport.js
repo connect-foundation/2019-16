@@ -22,7 +22,7 @@ function config(server) {
         user.profileImage = profile._json.properties.profile_image;
         user.birthday = profile._json.kakao_account.birthday;
         user.role = "user";
-
+        console.log(user.gender);
         return done(null, user);
       }
     )
