@@ -73,18 +73,27 @@ const GroupCreate = props => {
   const onSubmit = useCallback(
     e => {
       const { data } = state;
+      const form = new FormData();
+      form.append("image", data.thumbnail);
+      delete data.thumbnail;
+      form.append("data", JSON.stringify(data));
 
-      axios.post(url, data).then(result => {
-        if (result.status === 200) {
-          const { data } = result;
-          window.location.href = data.href;
-          return;
-        }
+      axios
+        .post(url, form, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then(({ data: href }) => {
+          if (href) {
+            window.location.href = href;
+            return;
+          }
 
-        alert("에러 발생");
-      });
+          alert("에러 발생");
+        });
     },
-    [state.data]
+    [state]
   );
 
   return (
