@@ -77,7 +77,7 @@ const GroupCreate = props => {
       form.append("image", data.thumbnail);
       delete data.thumbnail;
       form.append("data", JSON.stringify(data));
-
+      console.log(url);
       axios
         .post(url, form, {
           headers: {

@@ -23,7 +23,11 @@ const Main = styled.div`
       margin-top: 2rem;
     }
   }
-
+  .group-create-button {
+    margin-top: 2rem;
+    display:flex;
+    justify-content:center;
+  }
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
     color: #000000;
@@ -120,6 +124,10 @@ const MainPage = ({ appContainerState }) => {
         )}
       </div>
 
+      <Link to="/group/create" className="group-create-button">
+        {" "}
+        <button className="button"> 그룹 생성 </button>
+      </Link>
       <Router>
         <StudySearchNavbar
           primaryCategories={primaryCategories}
