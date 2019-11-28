@@ -35,6 +35,7 @@ class Search extends App {
     let packet;
     const { params, query, key } = data;
 
+    this.tcpLogSender(query);
     try {
       const result = await queryMap[query](params);
 
