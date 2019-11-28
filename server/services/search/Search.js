@@ -1,11 +1,15 @@
 const App = require("../../lib/tcp/App");
 const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
-const { searchAllStudyGroupWithFiltering, searchStudyGroup, bulkStudyGroups } = require("./elasticsearch")
+const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
 
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
-  searchAllStudyGroupWithFiltering: searchAllStudyGroupWithFiltering,
+  searchStudyGroupWithCategory: searchStudyGroupWithCategory,
+  tagStudyGroup: tagStudyGroup,
+  tagStudyGroupWithCategory: tagStudyGroupWithCategory,
+  searchAllStudyGroup: searchAllStudyGroup,
+  searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
 }
 
 function emptyStudyGroupPeriodically(timer) {
@@ -32,21 +36,11 @@ class Search extends App {
     const { params, query, key } = data;
 
     try {
-      let result;
+      const result = await queryMap[query](params);
 
-      switch (query) {
-        case "searchAllStudyGroupWithFiltering":
-          result = await queryMap.searchAllStudyGroupWithFiltering(params);
-          break;
-        case "searchStudyGroup":
-          result = await queryMap.searchStudyGroup(params);
-          break;
-        default:
-          throw Error("잘못된 Query 입니다.")
-      }
-      packet = makePacket("REPLY", "searchedStudyGroups", {}, { studygroups: result }, key, this.context);
+      packet = makePacket("REPLY", query, {}, { studygroups: result }, key, this.context);
     } catch (e) {
-      packet = makePacket("ERROR", "searchedStudyGroups", {}, { message: e }, key, this.context);
+      packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
     } finally {
       this.send(socket, packet);
     }

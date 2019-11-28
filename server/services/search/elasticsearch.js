@@ -8,9 +8,8 @@ const {
 const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` })
 
-
 exports.searchStudyGroup = async (info) => {
-  const { searchWord, category, isRecruit } = info;
+  const { searchWord, isRecruit } = info;
 
   const { body } = await client.search({
     index: INDEX_STUDYGROUP,
@@ -23,14 +22,9 @@ exports.searchStudyGroup = async (info) => {
               fields: ["title", "description"]
             }
           }],
-          filter: [{
+          must_not: [{
             term: {
-              isRecruit: isRecruit
-            }
-          },
-          {
-            term: {
-              category: category
+              isRecruit: !isRecruit
             }
           }
           ]
@@ -45,9 +39,85 @@ exports.searchStudyGroup = async (info) => {
 
   return result;
 }
-exports.searchAllStudyGroupWithFiltering = async (info) => {
-  const { category, isRecruit, tags } = info;
 
+exports.searchStudyGroupWithCategory = async (info) => {
+  const { searchWord, category, isRecruit } = info;
+
+  const { body } = await client.search({
+    index: INDEX_STUDYGROUP,
+    body: {
+      query: {
+        bool: {
+          must: [{
+            query_string: {
+              query: `*${searchWord}*`,
+              fields: ["title", "description"]
+            }
+          }],
+          must_not: [
+            {
+              term: {
+                isRecruit: !isRecruit
+              }
+            }
+          ],
+          filter: [
+            {
+              term: {
+                category: category
+              }
+            }
+          ]
+        }
+      }
+    }
+  })
+
+  const result = body.hits.hits.map((hit) => {
+    return hit._source;
+  })
+
+  return result;
+}
+
+exports.tagStudyGroup = async (info) => {
+
+  const { tags, isRecruit } = info;
+
+  const prefixs = tags.reduce((acc, tag) => {
+    acc.push({ prefix: { tags: { value: tag } } })
+    return acc;
+  }, []);
+
+  console.log(prefixs)
+  const { body } = await client.search({
+    index: INDEX_STUDYGROUP,
+    body: {
+      query: {
+        bool: {
+          must_not: [{
+            term: {
+              isRecruit: !isRecruit
+            }
+          }],
+          should: prefixs
+        }
+      }
+    }
+  })
+  const result = body.hits.hits.map((hit) => {
+    return hit._source;
+  })
+
+  return result;
+}
+
+exports.tagStudyGroupWithCategory = async () => {
+
+}
+
+exports.searchAllStudyGroup = async (info) => {
+  const { isRecruit } = info;
 
   const { body } = await client.search({
     index: INDEX_STUDYGROUP,
@@ -62,6 +132,39 @@ exports.searchAllStudyGroupWithFiltering = async (info) => {
               isRecruit: isRecruit
             }
           }
+        }
+      }
+    }
+  })
+  const result = body.hits.hits.map((hit) => {
+    return hit._source;
+  })
+
+  return result;
+}
+
+exports.searchAllStudyGroupWithCategory = async (info) => {
+  const { category, isRecruit } = info;
+
+
+  const { body } = await client.search({
+    index: INDEX_STUDYGROUP,
+    body: {
+      query: {
+        bool: {
+          must: [{
+            match_all: {}
+          }],
+          filter: [{
+            term: {
+              isRecruit: isRecruit
+            }
+          },
+          {
+            term: {
+              category: category
+            }
+          }]
         }
       }
     }
