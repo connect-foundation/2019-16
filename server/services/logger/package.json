@@ -1,0 +1,14 @@
+{
+  "name": "logger",
+  "version": "1.0.0",
+  "description": "loging 모듈",
+  "main": "logger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "soob",
+  "license": "ISC",
+  "dependencies": {
+    "winston": "^3.2.1"
+  }
+}

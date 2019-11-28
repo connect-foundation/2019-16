@@ -1,0 +1,87 @@
+# develop, master 브랜치에 PR을 보낼 경우 모든 노드에 대해 test를 실행한다.
+name: PR Test [dev, master]
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - develop
+      - master
+
+jobs:
+  RunTest:
+    name: Run Jest
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        node-version: ['12']
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: test [tcp util]
+        run: |
+          cd server/services/logger
+          npm install
+          cd ../../
+          npm install
+          npm test
+      - name: test [api-gateway]
+        run: |
+          if [ -d server/api-gateway ]
+          then
+            cd server/api-gateway
+            npm install
+            npm test
+          fi
+      - name: test [log]
+        run: |
+          if [ -d server/services/log ]
+          then
+            cd server/services/log
+            npm install
+            npm test
+          fi
+      - name: test [analytics]
+        run: |
+          if [ -d server/services/analytics ]
+          then
+            cd server/services/analytics
+            npm install
+            npm test
+          fi
+      - name: test [reservation]
+        run: |
+          if [ -d server/services/reservation ]
+          then
+            cd server/services/reservation
+            npm install
+            npm test
+          fi
+      - name: test [search]
+        run: |
+          if [ -d server/services/search ]
+          then
+            cd server/services/search
+            npm install
+            npm test
+          fi
+      - name: test [study_room]
+        run: |
+          if [ -d server/services/study_room ]
+          then
+            cd server/services/study_room
+            npm install
+            npm test
+          fi
+      - name: test [study_group]
+        run: |
+          if [ -d server/services/study_group ]
+          then
+            cd server/services/study_group
+            npm install
+            npm test
+          fi

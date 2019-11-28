@@ -1,0 +1,59 @@
+# PR에 라벨이 붙을 경우 검증하는 스크립트이다.
+# 해당 PR에 리뷰가 1개 이상 있는지 검증한다.
+# 리뷰가 존재할 경우 자동으로 머지를 하고 슬랙봇으로 알람을 보낸다.
+name: PR Automerge
+
+on:
+  pull_request:
+    types: [labeled]
+    branches:
+      - develop
+      - master
+      - service/*
+
+jobs:
+  RunTest:
+    name: Run Jest
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const refss = "${{github.ref}}"
+            const pr_number = Number(refss.split("/")[2])
+            const reviews = await github.pulls.listReviews({
+              ...context.repo,
+              pull_number: pr_number
+            })
+            if(reviews.data.length <= 0) throw("You need to get other's review!")
+            else return true
+  Automerge:
+    name: automerge
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: start merge
+        uses: "pascalgn/automerge-action@733fcc62d711705eae9cd66fcf49c93c1d1a98c6"
+        env:
+          GITHUB_TOKEN: "${{secrets.GITHUB_TOKENS}}"
+          MERGE_LABELS: "automerge"
+          MERGE_COMMIT_MESSAGE: "automatic"
+        # if: success()
+    needs: RunTest
+  SendSlack:
+    name: run slack bot
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@master
+        env:
+          SLACK_MESSAGE: "PR Merge 성공! :rocket:"
+          SLACK_TITLE: Message
+          SLACK_USERNAME: mergeBot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: 16team
+          SLACK_ICON: http://newsimg.hankookilbo.com/2019/09/30/201909301390722067_1.jpg
+        # if: success()
+    needs: [RunTest, Automerge]
