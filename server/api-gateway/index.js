@@ -6,28 +6,27 @@ const { makeKey } = require("../lib/tcp/util");
 const cors = require("cors");
 const express = require("express");
 const server = express();
+require("./auth/passport")(server); // passport config
 const favicon = require("express-favicon");
 const authRouter = require("./routes/auth");
 const {
   GATE_EXPRESS_PORT,
   GATE_TCP_PORT,
   GATE_NAME,
-  PARTNERS_MONGO_URI,
-  PARTNERS_USER,
-  PARTNERS_PASS,
+  ACCOUNTS_MONGO_URI,
   GATE_HOST
 } = process.env;
 
 mongoose
-  .connect(PARTNERS_MONGO_URI, {
+  .connect(ACCOUNTS_MONGO_URI, {
     useNewUrlParser: true,
     useFindAndModify: true
   })
   .then(() => {
-    console.log("Partners mongoDB is connected");
+    console.log("Accounts mongoDB is connected");
   })
   .catch(() => {
-    console.log("Partners mongoDB connection fail");
+    console.log("Accounts mongoDB connection fail");
   });
 
 class ApiGateway extends App {
@@ -108,6 +107,7 @@ function writePacket(req, res, next) {
   } catch (e) {
     let error = new Error("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRR");
 
+
     apigateway.resMap[req.resKey].status(error.status || 500);
     apigateway.resMap[req.resKey].send(
       error.message || "ErrorRRRRRRRRRRRRRRRRRRRRRRRRRRRR!!"
@@ -171,7 +171,9 @@ async function makeAppClient(name) {
 
     setInterval(() => {
       if (!apigateway.icConnectMap[name]) {
+
         console.log(`try connect to ${name}`);
+
         client.connect();
       }
     }, 2000);
