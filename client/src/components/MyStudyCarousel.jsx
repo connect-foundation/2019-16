@@ -4,15 +4,11 @@ import StudyGroupCardMini from "./groupCardMini";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";
 
 const Main = styled.div`
-// Import Bulma core
-@import 'bulma.sass'
-@import "bulmaCarousel.sass"
-
   .carousel-box{
     overflow:hidden;
-    padding: 3rem 1.5rem;
 
     .carousel{
+      height: 20rem;
       display:flex;
       justify-content:center;
 
@@ -20,6 +16,7 @@ const Main = styled.div`
         padding:0 5%;
       }
     }
+
     .my-group-title{
       font-weight:bold;
       font-size:1.5em;
@@ -32,9 +29,9 @@ const Main = styled.div`
  
 `;
 
-const MyStudyCarousel = ({ myStudyData }) => {
+const MyStudyCarousel = ({ myGroups, user_email }) => {
   useEffect(() => {
-    if (myStudyData.length > 3)
+    if (myGroups.length > 3)
       bulmaCarousel.attach(".carousel", {
         slidesToScroll: 1,
         slidesToShow: 3,
@@ -46,14 +43,14 @@ const MyStudyCarousel = ({ myStudyData }) => {
     <Main>
       <div
         className="carousel-box"
-        style={{ overflow: "hidden", width: `${myStudyData.length * 15}em` }}
+        style={{ overflow: "hidden", width: `${myGroups.length * 15}em` }}
       >
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
-          {myStudyData.map(study => {
+          {myGroups.map(group => {
             return (
               <div className="carousel-item">
-                <StudyGroupCardMini cardData={study} />
+                <StudyGroupCardMini cardData={group} user_email={user_email} />
               </div>
             );
           })}

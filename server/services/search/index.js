@@ -1,9 +1,5 @@
 require("dotenv").config({ path: ".env.search" });
-const {
-  APP_NAME,
-  SERVER_HOST,
-  SERVER_PORT
-} = process.env;
+const { APP_NAME, SERVER_HOST, SERVER_PORT } = process.env;
 
 const Search = require("./Search");
 

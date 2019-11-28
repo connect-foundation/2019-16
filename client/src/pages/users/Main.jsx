@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext, useReducer } from "react";
 import styled from "styled-components";
+import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+import axios from "axios";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
-import {
-  studyGroupData,
-  categoryData,
-  myStudyData
-} from "../../__test__/mainPage.dummy";
+import { AppContext } from "../../App";
+import { initalState, mainReducer, get_all_groups } from "../../reducer/Main";
 
 const Main = styled.div`
   display: flex;
@@ -20,6 +19,10 @@ const Main = styled.div`
     display:flex;
     flex-direction:column;
     align-items:center;
+
+    .group-create-button {
+      margin-top: 2rem;
+    }
   }
 
   .main-page-title{
@@ -40,13 +43,16 @@ const Main = styled.div`
   }
 
   .study-group-list{
-    align-self:center;
-      background-color: #f8f0ee;
+      align-self:center;
+
       display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+
+      background-color: #f8f0ee;
+      width: 75rem;
       flex-wrap: wrap;
-      padding: 4em;
       margin:0 10%;
-      justify-content: center;
       .study-group-card{
           margin: 2em;
       }
@@ -58,16 +64,35 @@ const Main = styled.div`
  * 미로그인시main-page-title 출력
  * 로그인시 MyStudyCarousel 출력
  */
+const searchUrl = "";
+
 const MainPage = () => {
-  const [cardListData, setCardListData] = useState([
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData,
-    studyGroupData
-  ]);
+  const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
+
+  const {
+    myGroups,
+    cardList,
+    primaryCategories,
+    secondaryCategories
+  } = mainState;
+
+  const {
+    appState: { user_email }
+  } = useContext(AppContext);
 
   useEffect(() => {
+    axios.get(searchUrl).then(result => {
+      const { data } = result;
+
+      for (let i = 0; i < data.length; i++) {
+        data[i].id = i;
+        data[
+          i
+        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+      }
+      mainDispatch(get_all_groups(data));
+    }, []);
+    // /api/search/all
     /**
      * TODO: data 요청로직 필요
      * cardListData
@@ -78,21 +103,60 @@ const MainPage = () => {
   return (
     <Main>
       <div className="main-jumbotron">
-        <MyStudyCarousel myStudyData={myStudyData}></MyStudyCarousel>
-        <div className="main-page-title">
-          <div className="main-title">스터디,</div>
-          <div className="main-subtitle">
-            <span className="highlight">모집</span>부터{" "}
-            <span className="highlight">예약</span>까지 한번에-
+        {user_email ? (
+          <>
+            <MyStudyCarousel
+              myGroups={myGroups}
+              user_email={user_email}
+            ></MyStudyCarousel>
+            <Link to="/group/create" className="group-create-button">
+              {" "}
+              <button className="button"> 그룹 생성 </button>
+            </Link>
+          </>
+        ) : (
+          <div className="main-page-title">
+            <div className="main-title">스터디,</div>
+            <div className="main-subtitle">
+              <span className="highlight">모집</span>부터{" "}
+              <span className="highlight">예약</span>까지 한번에-
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      <StudySearchNavbar categoryData={categoryData}></StudySearchNavbar>
-      <div className="study-group-list">
-        {cardListData.map(data => {
-          return <StudyGroupCard groupData={data}></StudyGroupCard>;
-        })}
-      </div>
+
+      <Router>
+        <StudySearchNavbar
+          primaryCategories={primaryCategories}
+          secondaryCategories={secondaryCategories}
+        ></StudySearchNavbar>
+        <Route
+          path={["/category/:categoryName", "/"]}
+          render={({ match }) => {
+            const selectedCategory = match.params.categoryName;
+            const pathName = match.path;
+            const groupsData =
+              pathName === "/"
+                ? cardList
+                : cardList.filter(
+                    card => card.category[1] === selectedCategory
+                  );
+            const groupsDataLength = groupsData.length;
+
+            return (
+              <div className="study-group-list">
+                {groupsDataLength
+                  ? groupsData.map(groupData => {
+                      return (
+                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
+                      );
+                    })
+                  : "데이터가 업소용"}
+              </div>
+            );
+          }}
+        />
+      </Router>
     </Main>
   );
 };
