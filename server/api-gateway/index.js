@@ -1,16 +1,15 @@
 require("dotenv").config({ path: ".env.gateway" });
 const path = require("path");
 const mongoose = require("mongoose");
-const App = require("../lib/tcp/App");
-const { makeKey } = require("../lib/tcp/util");
+const favicon = require("express-favicon");
 const cors = require("cors");
 const express = require("express");
+const App = require("../lib/tcp/App");
+const { makeKey } = require("../lib/tcp/util");
+
 const server = express();
 
 require("./auth/passport")(server); // passport config
-const favicon = require("express-favicon");
-const authRouter = require("./routes/auth");
-const studyGroupRouter = require("./routes/studyGroup");
 
 const {
   GATE_EXPRESS_PORT,
@@ -43,8 +42,32 @@ class ApiGateway extends App {
 }
 
 const apigateway = new ApiGateway();
-const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 
+const authRouter = require("./routes/auth");
+const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
+const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const searchRouter = require("./routes/search")(apigateway);
+
+server.use(express.json());
+server.use(cors());
+
+server.use(favicon(path.join(__dirname, "/favicon.ico")));
+server.use(setResponseKey);
+
+// server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
+
+server.use("/api/search", gatewayLogger, searchRouter);
+server.use("/auth", authRouter);
+server.use("/api/studyGroup", studyGroupRouter);
+server.use(writePacket);
+
+server.listen(GATE_EXPRESS_PORT, async () => {
+  connectToAllApps();
+});
+
+/**
+ * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
+ */
 async function setResponseKey(req, res, next) {
   const key = await makeKey(req.client);
 
@@ -71,24 +94,6 @@ function writePacket(req, res, next) {
   }
 }
 
-const searchRouter = require("./routes/search")(apigateway);
-
-server.use(express.json());
-server.use(cors());
-
-server.use(favicon(path.join(__dirname, "/favicon.ico")));
-server.use(setResponseKey);
-
-server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
-
-server.use("/api/search", gatewayLogger, searchRouter);
-server.use("/api/studyGroup", studyGroupRouter);
-server.use("/auth", authRouter);
-server.use(writePacket);
-
-/**
- * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
- */
 async function connectToAllApps() {
   const apps = await apigateway.getAllApps();
 
@@ -146,7 +151,3 @@ async function makeAppClient(name) {
     console.log(e);
   }
 }
-
-server.listen(GATE_EXPRESS_PORT, async () => {
-  connectToAllApps();
-});
