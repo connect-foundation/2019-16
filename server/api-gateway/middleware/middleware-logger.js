@@ -15,7 +15,7 @@ module.exports = function(apigateway) {
       "http.path": req.baseUrl
     };
 
-    console.log(log);
+    // console.log(log);
     const packet = makePacket(
       "POST",
       "log",

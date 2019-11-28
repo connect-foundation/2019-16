@@ -6,9 +6,9 @@ const UserSchema = new Schema(
     email: String,
     gender: String,
     ageRange: String,
-    history: { type: [mongoose.Types.ObjectId], default: [] },
-    ownGroups: { type: [mongoose.Types.ObjectId], default: [] },
-    partipatedGroups: { type: [mongoose.Types.ObjectId], default: [] }
+    history: [mongoose.Types.ObjectId],
+    ownGroups: [mongoose.Types.ObjectId],
+    partipatedGroups: [mongoose.Types.ObjectId]
   },
   {
     collection: "user"
