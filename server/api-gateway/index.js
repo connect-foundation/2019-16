@@ -44,6 +44,8 @@ class ApiGateway extends App {
 
 const apigateway = new ApiGateway();
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
+const searchRouter = require("./routes/search")(apigateway);
+
 apigateway.connectToLogService();
 
 async function setResponseKey(req, res, next) {
@@ -71,8 +73,6 @@ function writePacket(req, res, next) {
     delete apigateway.resMap[req.resKey];
   }
 }
-
-const searchRouter = require("./routes/search")(apigateway);
 
 server.use(express.json());
 server.use(cors());
