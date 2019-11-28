@@ -1,9 +1,11 @@
-import React, { useCallback, useReducer, useRef } from "react";
+import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import Category from "../../components/groupCreate/Category";
 import ImageUploader from "../../components/groupCreate/ImageUploader";
 import TagInput from "../../components/groupCreate/TagInput";
 import ScheduleInput from "../../components/groupCreate/ScheduleInput";
+import { AppContext } from "../../App";
 import {
   groupCreateReducer,
   initialState,
@@ -45,7 +47,15 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
+const url = "";
+
 const GroupCreate = props => {
+  const {
+    appState: { userEmail }
+  } = useContext(AppContext);
+
+  initialState.data.leader = userEmail;
+
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
   const { category, tags, title, subtitle, intro } = state.data;
@@ -56,6 +66,17 @@ const GroupCreate = props => {
 
     dispatch(input_content(contentType, description));
   }, []);
+
+  const onSubmit = useCallback(
+    e => {
+      const { data } = state;
+      console.log(data);
+      axios.post(url, data).then(result => {
+        console.log(result);
+      });
+    },
+    [state.data]
+  );
 
   return (
     <StyledGroupCreate>
@@ -106,7 +127,7 @@ const GroupCreate = props => {
 
       <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
 
-      <button type="submit" className="button">
+      <button type="submit" className="button" onClick={onSubmit}>
         {" "}
         등록하기{" "}
       </button>
