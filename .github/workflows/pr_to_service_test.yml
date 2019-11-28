@@ -46,7 +46,7 @@ jobs:
             npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/study_group" ]
           then
-            cd server/services/study_group
+            cd server/services/studygroup
             npm install
             npm test --detectOpenHandles --forceExit
           elif  [  ${{github.base_ref}} == "service/gateway" ]
