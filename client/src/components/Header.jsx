@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import AccountContainer from "../components/accountContainer";
 import axios from "axios";
-import { get_searched_groups_without_category } from "../reducer/AppContainer";
+import { _searched_grgetoups_without_category } from "../reducer/AppContainer";
 
-const HeaderBox = styled.div`
+const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,6 +40,7 @@ const HeaderBox = styled.div`
     }
   }
 `;
+
 
 const Header = ({ appContainerDispatch }) => {
   const onKeyUp = useCallback(e => {
@@ -83,8 +85,7 @@ const Header = ({ appContainerDispatch }) => {
   }, []);
 
   return (
-    <header>
-      <HeaderBox>
+    <HeaderContainer>
         <Link to="/">
           <img
             src="/image/logo-mini.png"
@@ -105,8 +106,8 @@ const Header = ({ appContainerDispatch }) => {
             <span> 태현님 환영합니다. </span>
           </div>
         </div>
-      </HeaderBox>
-    </header>
+      <AccountContainer />
+    </HeaderContainer>
   );
 };
 
