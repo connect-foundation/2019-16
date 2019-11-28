@@ -24,6 +24,7 @@ class ApiGateway extends App {
     }
 }
 const apigateway = new ApiGateway();
+const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 
 async function setResponseKey(req, res, next) {
     const key = await makeKey(req.client);
@@ -46,9 +47,9 @@ let searchRouter = require("./routes/search")(apigateway)
 
 server.use(setResponseKey)
 
-server.get('/', (req, res) => res.send('Hello World!'));
+server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
-server.use('/api/search', searchRouter);
+server.use("/api/search", gatewayLogger, searchRouter);
 
 server.use(writePacket)
 
