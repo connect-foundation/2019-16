@@ -42,6 +42,7 @@ class ApiGateway extends App {
 
 const apigateway = new ApiGateway();
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
+apigateway.connectToLogService();
 
 async function setResponseKey(req, res, next) {
   const key = await makeKey(req.client);

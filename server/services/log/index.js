@@ -31,4 +31,4 @@ class LogService extends require("../../lib/tcp/App") {
 
 const logService = new LogService("log", "127.0.0.1", LOG_PORT);
 
-logService.connectToAppListManager();
+// logService.connectToAppListManager();

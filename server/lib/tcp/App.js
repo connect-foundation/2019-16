@@ -9,6 +9,7 @@ class App extends TcpServer {
     super(name, host, port);
     this.query = query;
     this.isConnectToAppListManager = false;
+    this.isConnectedToLogService = false;
     this.appClients = {};
 
   }
@@ -73,6 +74,46 @@ class App extends TcpServer {
       }
     }, 1000);
     return this.appListManager;
+  }
+
+  connectToLogService() {
+    this.logService = new TcpClient(
+      "127.0.0.1",
+      8004,
+      () => {
+        this.isConnectedToLogService = true;
+
+        const packet = makePacket("POST", "add", {}, {}, "", this.context);
+
+        this.logService.write(packet);
+        logger.info(
+          `${this.context.host}:${this.context.port} is connected to logService`
+        );
+      },
+      () => {
+        logger.info(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        logger.warn(`end logService`);
+        this.isConnectedToLogService = false;
+      },
+      () => {
+        logger.warn(`logService is down`);
+        this.isConnectedToLogService = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectedToLogService) {
+        logger.info(`try connect to LogService`);
+        this.logService.connect();
+      }
+    }, 1000);
+    return this.logService;
+  }
+
+  onRead() {
+    console.log("this is on read");
   }
 }
 
