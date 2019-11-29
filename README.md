@@ -34,8 +34,8 @@
 | Front-End        | Back-End  | DevOps       | Etc      |
 | ---------------- | --------- | ------------ | -------- |
 | `React`          | `Express` | `Git Action` | `jest`   |
-| `Bulma`          | `GraphQL` | `Dokcer`     | `socket` |
-| `Kakao Maps API` | `mongoDB` |              | `OAuth`  |
+| `Bulma`          | `mongoDB` | `Dokcer`     | `socket` |
+| `Kakao Maps API` |           |              | `OAuth`  |
 
 ### 특징
 
