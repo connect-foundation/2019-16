@@ -114,7 +114,7 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => { };
+exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
   const { isRecruit } = info;
@@ -182,6 +182,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
 };
 
 exports.bulkStudyGroups = async groups => {
+  if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
     const id = group.id;
 

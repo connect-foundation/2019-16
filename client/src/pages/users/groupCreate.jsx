@@ -47,7 +47,7 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const url = "";
+const url = "http://localhost:8000/api/studyGroup/register";
 
 const GroupCreate = props => {
   const { appState: userInfo } = useContext(AppContext);

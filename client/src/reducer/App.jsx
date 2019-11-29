@@ -8,10 +8,10 @@ export const login_button_click = data => ({ type: LOGIN, data });
 export const logout_button_click = () => ({ type: LOGOUT, initalState });
 
 export const initalState = {
-  userEmail: "",
-  userName: "",
-  userAgeRange: 0,
-  userGender: "",
+  userEmail: "soob@naver.com",
+  userName: "숩",
+  userAgeRange: 10,
+  userGender: "남성",
   profileImage: ""
 };
 
