@@ -1,7 +1,7 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
 const logger = require("../logger/logger");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps, setIsChange } = require("../../lib/redis")
+const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
 
 let appManagerInstance;
 
@@ -38,13 +38,13 @@ class AppListManager extends TcpServer {
   }
   async onRead(socket, data) {
 
-    const { method, query, info } = data;
+    const { method, curQuery, info } = data;
     const key = await makeKey(socket);
     let result;
 
     try {
       if (method === "POST") {
-        switch (query) {
+        switch (curQuery) {
           case "add":
             result = await setAppbyKey(key, info);
             break;
@@ -59,7 +59,7 @@ class AppListManager extends TcpServer {
         }
       }
       if (method === "GET") {
-        switch (query) {
+        switch (curQuery) {
           case "get":
             result = await getAppbyKey(key);
             break;
@@ -69,7 +69,7 @@ class AppListManager extends TcpServer {
           default:
             break;
         }
-        const packet = makePacket("REPLY", "apps", {}, { apps: result }, "", this.context);
+        const packet = makePacket("REPLY", "apps", "apps", {}, { apps: result }, "", this.context);
 
         this.send(socket, packet)
       }
