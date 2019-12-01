@@ -39,6 +39,21 @@ class ApiGateway extends App {
     this.icConnectMap = {};
     this.resMap = {};
   }
+  onRead(socket, data) {
+    // data이벤트 함수
+    if (data.method === "REPLY") {
+      this.resMap[data.key].json(data.body);
+    }
+    if (data.method === "ERROR") {
+      let error = new Error("서비스에서 에러가 발생했습니다.");
+
+      this.resMap[data.key].status(error.status || 500);
+      this.resMap[data.key].send(
+        error.message || "서비스에서 에러가 발생했습니다."
+      );
+    }
+    delete this.resMap[data.key];
+  }
 }
 
 const apigateway = new ApiGateway();
@@ -116,19 +131,19 @@ async function makeAppClient(name) {
         console.log(`${name} service connect`);
       },
       data => {
-        // data이벤트 함수
-        if (data.method === "REPLY") {
-          apigateway.resMap[data.key].json(data.body);
-        }
-        if (data.method === "ERROR") {
-          let error = new Error("서비스에서 에러가 발생했습니다.");
+        // // data이벤트 함수
+        // if (data.method === "REPLY") {
+        //   apigateway.resMap[data.key].json(data.body);
+        // }
+        // if (data.method === "ERROR") {
+        //   let error = new Error("서비스에서 에러가 발생했습니다.");
 
-          apigateway.resMap[data.key].status(error.status || 500);
-          apigateway.resMap[data.key].send(
-            error.message || "서비스에서 에러가 발생했습니다."
-          );
-        }
-        delete apigateway.resMap[data.key];
+        //   apigateway.resMap[data.key].status(error.status || 500);
+        //   apigateway.resMap[data.key].send(
+        //     error.message || "서비스에서 에러가 발생했습니다."
+        //   );
+        // }
+        // delete apigateway.resMap[data.key];
       },
       () => {
         apigateway.icConnectMap[name] = false;
