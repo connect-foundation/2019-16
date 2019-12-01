@@ -9,8 +9,20 @@ class App extends TcpServer {
     super(name, host, port);
     this.query = query;
     this.isConnectToAppListManager = false;
+    this.isConnectToApiGateway = false;
     this.appClients = {};
+    this.ApiGateway = this.connectToApiGateway();
+  }
 
+  send(socket, data) {
+    const packet = makePacket(data.method, data.curQuery, data.endQuery, data.params, data.body, data.key, data.info);
+
+    if (data.curQuery === data.endQuery) {
+
+      this.ApiGateway.write(packet);
+    } else {
+      socket.write(packet)
+    }
   }
 
   async connectToApp(name, onCreate, onRead, onEnd, onError) {
@@ -46,7 +58,7 @@ class App extends TcpServer {
       8100,
       () => {
         this.isConnectToAppListManager = true;
-        const packet = makePacket("POST", "add", {}, {}, "", this.context);
+        const packet = makePacket("POST", "add", "add", {}, {}, "", this.context);
 
         this.appListManager.write(packet)
         logger.info(
@@ -74,6 +86,39 @@ class App extends TcpServer {
     }, 1000);
     return this.appListManager;
   }
+
+  connectToApiGateway() {
+    this.ApiGateway = new TcpClient(
+      "127.0.0.1",
+      8001,
+      () => {
+        this.isConnectToApiGateway = true;
+        logger.info(
+          `${this.context.host}:${this.context.port} is connected to ApiGateway`
+        );
+      },
+      () => {
+        logger.info(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        logger.warn(`end ApiGateway`);
+        this.isConnectToApiGateway = false;
+      },
+      () => {
+        logger.warn(`ApiGateway server is down`);
+        this.isConnectToApiGateway = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectToApiGateway) {
+        logger.info(`try connect to app list manager`);
+        this.ApiGateway.connect();
+      }
+    }, 1000);
+    return this.ApiGateway;
+  }
+
 }
 
 module.exports = App;
