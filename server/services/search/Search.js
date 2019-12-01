@@ -34,25 +34,27 @@ class Search extends App {
   async onRead(socket, data) {
 
     const { params, curQuery } = data;
-    const replyData = { ...data };
+
+    let replyData;
+    let method = "REPLY";
+    let params_ = {};
+    let result;
 
     try {
-      const result = await queryMap[curQuery](params);
-
-      replyData.method = "REPLY";
-      replyData.params = {};
-      replyData.body = result;
-
+      result = await queryMap[curQuery](params);
     } catch (e) {
-      replyData.method = "ERROR";
-      replyData.params = {};
-      replyData.body = e;
-
+      method = "ERROR";
+      result = e;
     } finally {
+      replyData = {
+        ...data,
+        method,
+        params: params_,
+        body: result
+      };
       this.send(socket, replyData);
     }
   }
-
 }
 
 module.exports = Search;
