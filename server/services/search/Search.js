@@ -32,24 +32,27 @@ class Search extends App {
     emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
-    let packet;
-    const { params, query, key } = data;
+
+    const { params, curQuery } = data;
+    const replyData = { ...data };
 
     try {
-      const result = await queryMap[query](params);
+      const result = await queryMap[curQuery](params);
 
-      packet = makePacket("REPLY", query, {}, result, key, this.context);
+      replyData.method = "REPLY";
+      replyData.params = {};
+      replyData.body = result;
+
     } catch (e) {
-      packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
+      replyData.method = "ERROR";
+      replyData.params = {};
+      replyData.body = e;
+
     } finally {
-      this.send(socket, packet);
+      this.send(socket, replyData);
     }
-
-
   }
-  send(socket, packet) {
-    socket.write(packet);
-  }
+
 }
 
 module.exports = Search;
