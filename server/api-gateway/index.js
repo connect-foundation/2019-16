@@ -6,6 +6,7 @@ const { makeKey } = require("../lib/tcp/util");
 const cors = require("cors");
 const express = require("express");
 const server = express();
+const { makeLogSender } = require("../lib/tcp/logUtils");
 
 require("./auth/passport")(server); // passport config
 const favicon = require("express-favicon");
@@ -37,11 +38,15 @@ class ApiGateway extends App {
     this.appClientMap = {};
     this.icConnectMap = {};
     this.resMap = {};
+    this.httpLogSender = makeLogSender.call(this, "http");
   }
 }
 
 const apigateway = new ApiGateway();
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
+const searchRouter = require("./routes/search")(apigateway);
+
+apigateway.connectToLogService();
 
 async function setResponseKey(req, res, next) {
   const key = await makeKey(req.client);
@@ -69,17 +74,16 @@ function writePacket(req, res, next) {
   }
 }
 
-const searchRouter = require("./routes/search")(apigateway);
-
 server.use(express.json());
 server.use(cors());
 
 server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 
-server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
+server.use(gatewayLogger);
+server.get("/", (req, res) => res.send("Hello World!"));
 
-server.use("/api/search", gatewayLogger, searchRouter);
+server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use(writePacket);
 

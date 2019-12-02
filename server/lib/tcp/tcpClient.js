@@ -31,7 +31,7 @@ function registEvent() {
   this.client.on("error", () => {
     this.onError();
   });
-};
+}
 
 class TcpClient {
   constructor(host, port, onCreate, onRead, onEnd, onError) {
@@ -60,6 +60,5 @@ class TcpClient {
     this.client.end();
   }
 }
-
 
 module.exports = TcpClient;
