@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-
 const { makePacket } = require("../../lib/tcp/util");
 
-module.exports = function (apigateway) {
-
+module.exports = function(apigateway) {
   router.get("/query/:searchWord/:isRecruit", async (req, res, next) => {
     const { searchWord, isRecruit = true } = req.params;
 
@@ -68,14 +66,14 @@ module.exports = function (apigateway) {
     next();
   });
 
-  router.get("/all/:isRecruit", async (req, res, next) => {
-    const { isRecruit } = req.params;
+  router.get("/all/location/:lat/:lon/:isRecruit", async (req, res, next) => {
+    const { lat, lon, isRecruit } = req.params;
 
     req.packet = makePacket(
       "POST",
       "searchAllStudyGroup",
       "searchAllStudyGroup",
-      { isRecruit },
+      { lat, lon, isRecruit },
       {},
       req.resKey,
       apigateway.context
