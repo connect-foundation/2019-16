@@ -64,6 +64,7 @@ const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
 const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+
 apigateway.connectToLogService();
 
 server.use(express.json());
@@ -74,7 +75,9 @@ server.use(setResponseKey);
 
 // server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
-//server.use("/api/search", gatewayLogger, searchRouter);
+// server.use("/api/search", gatewayLogger, searchRouter);
+
+server.use(gatewayLogger);
 server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
@@ -140,7 +143,6 @@ async function makeAppClient(name) {
         // }
         // if (data.method === "ERROR") {
         //   let error = new Error("서비스에서 에러가 발생했습니다.");
-
         //   apigateway.resMap[data.key].status(error.status || 500);
         //   apigateway.resMap[data.key].send(
         //     error.message || "서비스에서 에러가 발생했습니다."
