@@ -59,6 +59,7 @@ export const initialState = {
   daysInfo,
   data: {
     category: [null, null],
+    leader: "",
     tags: [],
     title: "",
     subtitle: "",
