@@ -2,11 +2,14 @@ import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+
+import { REQUEST_URL } from "../../config.json";
+
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
-import { get_all_groups } from "../../reducer/AppContainer";
-import { AppContext } from "../../App";
+
+import { set_groups } from "../../reducer/users";
 
 const Main = styled.div`
   display: flex;
@@ -68,7 +71,6 @@ const Main = styled.div`
  * 미로그인시main-page-title 출력
  * 로그인시 MyStudyCarousel 출력
  */
-const searchUrl = "http://localhost:8000/api/search/all/true";
 
 const MainPage = ({ appContainerState, appContainerDispatch }) => {
   const {
@@ -83,16 +85,16 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
   } = useContext(AppContext);
 
   useEffect(() => {
-    axios.get(searchUrl).then(result => {
+    axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
       const { data } = result;
-      console.log(data);
+
       for (let i = 0; i < data.length; i++) {
         data[i].id = i;
         data[
           i
         ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
       }
-      appContainerDispatch(get_all_groups(data));
+      appContainerDispatch(set_groups(data));
     }, []);
     // /api/search/all
     /**

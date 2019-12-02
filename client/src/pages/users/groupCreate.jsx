@@ -1,10 +1,10 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import Category from "../../components/groupCreate/Category";
-import ImageUploader from "../../components/groupCreate/ImageUploader";
-import TagInput from "../../components/groupCreate/TagInput";
-import ScheduleInput from "../../components/groupCreate/ScheduleInput";
+import Category from "../../components/users/groupCreate/Category";
+import ImageUploader from "../../components/users/groupCreate/ImageUploader";
+import TagInput from "../../components/users/groupCreate/TagInput";
+import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
 import { AppContext } from "../../App";
 import {
   groupCreateReducer,
