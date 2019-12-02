@@ -16,14 +16,14 @@ exports.searchStudyGroup = async info => {
             {
               query_string: {
                 query: `*${searchWord}*`,
-                fields: ["title", "description"]
+                fields: ["title", "intro", "subtitle"]
               }
             }
           ],
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ]
@@ -51,14 +51,14 @@ exports.searchStudyGroupWithCategory = async info => {
             {
               query_string: {
                 query: `*${searchWord}*`,
-                fields: ["title", "description"]
+                fields: ["title", "intro"]
               }
             }
           ],
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ],
@@ -98,7 +98,7 @@ exports.tagStudyGroup = async info => {
           must_not: [
             {
               term: {
-                isRecruit: !isRecruit
+                isRecruiting: !isRecruit
               }
             }
           ],
@@ -131,7 +131,7 @@ exports.searchAllStudyGroup = async info => {
           ],
           filter: {
             term: {
-              isRecruit: isRecruit
+              isRecruiting: isRecruit
             }
           }
         }
@@ -161,7 +161,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
           filter: [
             {
               term: {
-                isRecruit: isRecruit
+                isRecruiting: isRecruit
               }
             },
             {
@@ -182,6 +182,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
 };
 
 exports.bulkStudyGroups = async groups => {
+  if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
     const id = group.id;
 

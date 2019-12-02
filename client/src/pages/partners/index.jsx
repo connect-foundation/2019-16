@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import PartnersLoginPage from "./Login";
 import PartnersJoinPage from "./Join";
 
-const PartnersRouter = ({ match }) => {
+const PartnerPage = ({ match }) => {
   return (
     <>
       <Route
@@ -20,4 +20,4 @@ const PartnersRouter = ({ match }) => {
   );
 };
 
-export default PartnersRouter;
+export default PartnerPage;

@@ -4,13 +4,14 @@ const router = express.Router();
 
 const { makePacket } = require("../../lib/tcp/util");
 
-module.exports = function(apigateway) {
+module.exports = function (apigateway) {
 
   router.get("/query/:searchWord/:isRecruit", async (req, res, next) => {
     const { searchWord, isRecruit = true } = req.params;
 
     req.packet = makePacket(
       "POST",
+      "searchStudyGroup",
       "searchStudyGroup",
       { searchWord, isRecruit },
       {},
@@ -27,6 +28,7 @@ module.exports = function(apigateway) {
 
       req.packet = makePacket(
         "POST",
+        "searchStudyGroupWithCategory",
         "searchStudyGroupWithCategory",
         { searchWord, category, isRecruit },
         {},
@@ -45,6 +47,7 @@ module.exports = function(apigateway) {
       req.packet = makePacket(
         "POST",
         "tagStudyGroup",
+        "tagStudyGroup",
         { tags, isRecruit },
         {},
         req.resKey,
@@ -54,6 +57,7 @@ module.exports = function(apigateway) {
     if (category !== undefined)
       req.packet = makePacket(
         "POST",
+        "tagStudyGroupWithCategory",
         "tagStudyGroupWithCategory",
         { tags, isRecruit, category },
         {},
@@ -70,6 +74,7 @@ module.exports = function(apigateway) {
     req.packet = makePacket(
       "POST",
       "searchAllStudyGroup",
+      "searchAllStudyGroup",
       { isRecruit },
       {},
       req.resKey,
@@ -84,6 +89,7 @@ module.exports = function(apigateway) {
 
     req.packet = makePacket(
       "POST",
+      "searchAllStudyGroupWithCategory",
       "searchAllStudyGroupWithCategory",
       { category, isRecruit },
       {},

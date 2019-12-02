@@ -5,7 +5,7 @@ const UserSchema = new Schema(
   {
     email: String,
     gender: String,
-    ageRange: String,
+    ageRange: Number,
     history: [mongoose.Types.ObjectId],
     ownGroups: [mongoose.Types.ObjectId],
     partipatedGroups: [mongoose.Types.ObjectId]
