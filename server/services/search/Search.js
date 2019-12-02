@@ -1,7 +1,15 @@
 const App = require("../../lib/tcp/App");
 const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
-const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
+const {
+  searchAllStudyGroupWithCategory,
+  tagStudyGroup,
+  tagStudyGroupWithCategory,
+  searchAllStudyGroup,
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  bulkStudyGroups
+} = require("./elasticsearch");
 
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
@@ -10,7 +18,7 @@ const queryMap = {
   tagStudyGroupWithCategory: tagStudyGroupWithCategory,
   searchAllStudyGroup: searchAllStudyGroup,
   searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
-}
+};
 
 function emptyStudyGroupPeriodically(timer) {
   setTimeout(async () => {
@@ -22,7 +30,6 @@ function emptyStudyGroupPeriodically(timer) {
 
     if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
     else emptyStudyGroupPeriodically(timer);
-
   }, timer);
 }
 
@@ -32,6 +39,8 @@ class Search extends App {
     emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
+    this.tcpLogSender(query);
+
 
     const { params, curQuery } = data;
 

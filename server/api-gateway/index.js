@@ -8,6 +8,7 @@ const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
 
 const server = express();
+const { makeLogSender } = require("../lib/tcp/logUtils");
 
 require("./auth/passport")(server); // passport config
 
@@ -38,6 +39,7 @@ class ApiGateway extends App {
     this.appClientMap = {};
     this.icConnectMap = {};
     this.resMap = {};
+    this.httpLogSender = makeLogSender.call(this, "http");
   }
   onRead(socket, data) {
     // data이벤트 함수
@@ -60,8 +62,9 @@ const apigateway = new ApiGateway();
 
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
-const studyGroupRouter = require("./routes/studyGroup")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
+const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+apigateway.connectToLogService();
 
 server.use(express.json());
 server.use(cors());

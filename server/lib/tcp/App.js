@@ -3,12 +3,14 @@ const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
 const { getAppbyName, getAllApps } = require("../redis");
+const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
     super(name, host, port);
     this.query = query;
     this.isConnectToAppListManager = false;
+    this.isConnectedToLogService = false;
     this.isConnectToApiGateway = false;
     this.appClients = {};
     this.ApiGateway = this.connectToApiGateway();
@@ -17,6 +19,13 @@ class App extends TcpServer {
   send(socket, data) {
     const packet = makePacket(data.method, data.curQuery, data.endQuery, data.params, data.body, data.key, data.info);
 
+    /**
+     * params
+     * @param {string} query : 서비스의 쿼리
+     * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
+     */
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
+    
     if (data.curQuery === data.endQuery) {
 
       this.ApiGateway.write(packet);
@@ -31,9 +40,16 @@ class App extends TcpServer {
     try {
       const clientInfo = await getAppbyName(name);
 
-      if (clientInfo === null) throw new Error(`${name} server is not running`)
+      if (clientInfo === null) throw new Error(`${name} server is not running`);
 
-      const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+      const client = new TcpClient(
+        clientInfo.host,
+        clientInfo.port,
+        onCreate,
+        onRead,
+        onEnd,
+        onError
+      );
 
       this.appClients[name] = client;
       return client;
@@ -60,7 +76,7 @@ class App extends TcpServer {
         this.isConnectToAppListManager = true;
         const packet = makePacket("POST", "add", "add", {}, {}, "", this.context);
 
-        this.appListManager.write(packet)
+        this.appListManager.write(packet);
         logger.info(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
@@ -87,6 +103,33 @@ class App extends TcpServer {
     return this.appListManager;
   }
 
+connectToLogService() {
+    this.logService = new TcpClient(
+      logger.info(
+        `${this.context.host}:${this.context.port} is connected to logService`
+      ),
+      () => {
+        logger.info(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        logger.warn(`end logService`);
+        this.isConnectedToLogService = false;
+      },
+      () => {
+        logger.warn(`logService is down`);
+        this.isConnectedToLogService = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectedToLogService) {
+        logger.info(`try connect to LogService`);
+        this.logService.connect();
+      }
+    }, 1000);
+    return this.logService;
+  }
+  
   connectToApiGateway() {
     this.ApiGateway = new TcpClient(
       "127.0.0.1",
@@ -118,7 +161,6 @@ class App extends TcpServer {
     }, 1000);
     return this.ApiGateway;
   }
-
 }
 
 module.exports = App;
