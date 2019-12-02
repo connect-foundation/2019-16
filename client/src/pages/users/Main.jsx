@@ -79,7 +79,7 @@ const MainPage = () => {
   );
   const {
     myGroups,
-    cardList,
+    searchList,
     primaryCategories,
     secondaryCategories
   } = userIndexState;
@@ -130,32 +130,14 @@ const MainPage = () => {
           primaryCategories={primaryCategories}
           secondaryCategories={secondaryCategories}
         ></StudySearchNavbar>
-        {/* <Route
-          path={["/category/:categoryName", "/", "/search/:keyword"]}
-          render={({ match }) => {
-            const keyword = match.params.keyword;
-            const selectedCategory = match.params.categoryName;
-            const pathName = match.path;
-            const groupsData =
-              pathName === "/"
-                ? cardList
-                : cardList.filter(
-                    card => card.category[1] === selectedCategory
-                  );
-            const groupsDataLength = groupsData.length;
-            return (
-              <div className="study-group-list">
-                {groupsDataLength
-                  ? groupsData.map(groupData => {
-                      return (
-                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
-                      );
-                    })
-                  : "데이터가 업소용"}
-              </div>
-            );
-          }}
-        /> */}
+
+        <div className="study-group-list">
+          {searchList.length
+            ? searchList.map(groupData => {
+                return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
+              })
+            : "데이터가 업소용"}
+        </div>
       </Router>
     </Main>
   );
