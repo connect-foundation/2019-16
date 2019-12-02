@@ -3,14 +3,22 @@ const TcpClient = require("./tcpClient");
 const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
 const { getAppbyName, getAllApps } = require("../redis");
+const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
   constructor(name, host, port, query = []) {
     super(name, host, port);
     this.query = query;
     this.isConnectToAppListManager = false;
+    this.isConnectedToLogService = false;
     this.appClients = {};
 
+    /**
+     * params
+     * @param {string} query : 서비스의 쿼리
+     * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
+     */
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
   }
 
   async connectToApp(name, onCreate, onRead, onEnd, onError) {
@@ -19,9 +27,16 @@ class App extends TcpServer {
     try {
       const clientInfo = await getAppbyName(name);
 
-      if (clientInfo === null) throw new Error(`${name} server is not running`)
+      if (clientInfo === null) throw new Error(`${name} server is not running`);
 
-      const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+      const client = new TcpClient(
+        clientInfo.host,
+        clientInfo.port,
+        onCreate,
+        onRead,
+        onEnd,
+        onError
+      );
 
       this.appClients[name] = client;
       return client;
@@ -48,7 +63,7 @@ class App extends TcpServer {
         this.isConnectToAppListManager = true;
         const packet = makePacket("POST", "add", {}, {}, "", this.context);
 
-        this.appListManager.write(packet)
+        this.appListManager.write(packet);
         logger.info(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
@@ -73,6 +88,38 @@ class App extends TcpServer {
       }
     }, 1000);
     return this.appListManager;
+  }
+
+  connectToLogService() {
+    this.logService = new TcpClient(
+        logger.info(
+          `${this.context.host}:${this.context.port} is connected to logService`
+        );
+      },
+      () => {
+        logger.info(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        logger.warn(`end logService`);
+        this.isConnectedToLogService = false;
+      },
+      () => {
+        logger.warn(`logService is down`);
+        this.isConnectedToLogService = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectedToLogService) {
+        logger.info(`try connect to LogService`);
+        this.logService.connect();
+      }
+    }, 1000);
+    return this.logService;
+  }
+
+  onRead() {
+    console.log("this is on read");
   }
 }
 
