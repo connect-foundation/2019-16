@@ -5,11 +5,12 @@ import { Link, Route, BrowserRouter as Router } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
-import StudyGroupCard from "../../components/groupCard";
-import MyStudyCarousel from "../../components/MyStudyCarousel";
+import StudySearchNavbar from "../../components/users/studySearchNavbar/StudySearchNavbar";
+import StudyGroupCard from "../../components/users/groupCard";
+import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
 import { set_groups } from "../../reducer/users";
+import { UserContext } from "./index";
 
 const Main = styled.div`
   display: flex;
@@ -72,17 +73,17 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
-const MainPage = ({ appContainerState, appContainerDispatch }) => {
+const MainPage = () => {
+  const { userIndexState, userIndexDispatch, userInfo } = useContext(
+    UserContext
+  );
   const {
     myGroups,
     cardList,
     primaryCategories,
     secondaryCategories
-  } = appContainerState;
-
-  const {
-    appState: { userEmail }
-  } = useContext(AppContext);
+  } = userIndexState;
+  const { userEmail } = userInfo;
 
   useEffect(() => {
     axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
@@ -94,15 +95,11 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
           i
         ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
       }
-      appContainerDispatch(set_groups(data));
+
+      userIndexDispatch(set_groups(data));
     }, []);
-    // /api/search/all
-    /**
-     * TODO: data 요청로직 필요
-     * cardListData
-     * myStudyData
-     */
   }, []);
+
   return (
     <Main>
       <div className="main-jumbotron">
@@ -133,7 +130,7 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
           primaryCategories={primaryCategories}
           secondaryCategories={secondaryCategories}
         ></StudySearchNavbar>
-        <Route
+        {/* <Route
           path={["/category/:categoryName", "/", "/search/:keyword"]}
           render={({ match }) => {
             const keyword = match.params.keyword;
@@ -158,7 +155,7 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
               </div>
             );
           }}
-        />
+        /> */}
       </Router>
     </Main>
   );

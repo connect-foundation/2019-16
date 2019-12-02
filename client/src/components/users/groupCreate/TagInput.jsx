@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { add_tag } from "../../reducer/groupCreate";
+import { add_tag } from "../../../reducer/users/groupCreate";
 
 const StyledTagInput = styled.div`
   display: flex;

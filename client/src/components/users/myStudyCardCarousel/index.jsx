@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import StudyGroupCardMini from "./Card";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { AppContext } from "../../App";
-import { login_button_click } from "../../reducer/App";
+import { UserContext } from "../../../pages/users";
 
 const Button = styled.button`
   img {
@@ -14,11 +13,12 @@ const Button = styled.button`
 `;
 
 const LoginButton = () => {
-  const { appState, appDispatch } = useContext(AppContext);
+  const { userInfo } = useContext(UserContext);
+  const { userEmail } = userInfo;
 
   return (
     <>
-      {appState.userEmail && (
+      {userEmail && (
         <Button className="button is-warning is-rounded">
           <img src="/image/kakao-talk.png" alt="kakao-talk" />
           <span>&nbsp; 카카오톡으로 로그인하기</span>
