@@ -27,7 +27,15 @@ function makeLogSender(networkType) {
         };
 
         this.logService.write(
-          makePacket("POST", "log", {}, { data: logData }, "", this.context)
+          makePacket(
+            "POST",
+            "log",
+            "log",
+            {},
+            { data: logData },
+            "",
+            this.context
+          )
         );
       };
     case "http":
@@ -41,7 +49,15 @@ function makeLogSender(networkType) {
         };
 
         this.logService.write(
-          makePacket("POST", "log", {}, { data: logData }, "", this.context)
+          makePacket(
+            "POST",
+            "log",
+            "log",
+            {},
+            { data: logData },
+            "",
+            this.context
+          )
         );
       };
     default:
