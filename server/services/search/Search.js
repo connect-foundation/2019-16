@@ -39,10 +39,9 @@ class Search extends App {
     emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
-    this.tcpLogSender(query);
-
-
     const { params, curQuery } = data;
+
+    this.tcpLogSender(curQuery);
 
     let replyData;
     let method = "REPLY";

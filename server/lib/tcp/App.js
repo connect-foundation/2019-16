@@ -14,10 +14,20 @@ class App extends TcpServer {
     this.isConnectToApiGateway = false;
     this.appClients = {};
     this.ApiGateway = this.connectToApiGateway();
+
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
   }
 
   send(socket, data) {
-    const packet = makePacket(data.method, data.curQuery, data.endQuery, data.params, data.body, data.key, data.info);
+    const packet = makePacket(
+      data.method,
+      data.curQuery,
+      data.endQuery,
+      data.params,
+      data.body,
+      data.key,
+      data.info
+    );
 
     /**
      * params
@@ -25,12 +35,11 @@ class App extends TcpServer {
      * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
      */
     this.tcpLogSender = makeLogSender.call(this, "tcp");
-    
-    if (data.curQuery === data.endQuery) {
 
+    if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
     } else {
-      socket.write(packet)
+      socket.write(packet);
     }
   }
 
@@ -74,7 +83,15 @@ class App extends TcpServer {
       8100,
       () => {
         this.isConnectToAppListManager = true;
-        const packet = makePacket("POST", "add", "add", {}, {}, "", this.context);
+        const packet = makePacket(
+          "POST",
+          "add",
+          "add",
+          {},
+          {},
+          "",
+          this.context
+        );
 
         this.appListManager.write(packet);
         logger.info(
@@ -103,11 +120,16 @@ class App extends TcpServer {
     return this.appListManager;
   }
 
-connectToLogService() {
+  connectToLogService() {
     this.logService = new TcpClient(
-      logger.info(
-        `${this.context.host}:${this.context.port} is connected to logService`
-      ),
+      "127.0.0.1",
+      8004,
+      () => {
+        logger.info(
+          `${this.context.host}:${this.context.port} is connected to logService`
+        );
+        this.isConnectedToLogService = true;
+      },
       () => {
         logger.info(`It is read function at Port:${this.context.port}`);
       },
@@ -129,7 +151,7 @@ connectToLogService() {
     }, 1000);
     return this.logService;
   }
-  
+
   connectToApiGateway() {
     this.ApiGateway = new TcpClient(
       "127.0.0.1",
@@ -155,7 +177,7 @@ connectToLogService() {
 
     setInterval(() => {
       if (!this.isConnectToApiGateway) {
-        logger.info(`try connect to app list manager`);
+        logger.info(`try connect to ApiGateway`);
         this.ApiGateway.connect();
       }
     }, 1000);

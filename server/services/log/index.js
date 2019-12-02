@@ -17,15 +17,17 @@ class LogService extends require("../../lib/tcp/App") {
   }
 
   async onRead(socket, data) {
-    const { method, query, body } = data;
-    const { timestamp } = body.data;
+    const { method, curQuery, body } = data;
 
     console.log(data);
+
+    const { timestamp } = body.data;
+
     const jsonData = await new Promise(resolve =>
       resolve(JSON.stringify(body.data))
     );
 
-    if (query === "log" && method === "POST") {
+    if (curQuery === "log" && method === "POST") {
       elasticClient.index({
         index: "test",
         body: jsonData,
@@ -45,6 +47,6 @@ class LogService extends require("../../lib/tcp/App") {
   }
 }
 
-const logService = new LogService("log", "127.0.0.1", LOG_PORT);
+const logService = new LogService("log", "127.0.0.1", 8004);
 
 // logService.connectToAppListManager();
