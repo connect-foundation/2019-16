@@ -1,10 +1,10 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import Category from "../../components/groupCreate/Category";
-import ImageUploader from "../../components/groupCreate/ImageUploader";
-import TagInput from "../../components/groupCreate/TagInput";
-import ScheduleInput from "../../components/groupCreate/ScheduleInput";
+import Category from "../../components/users/groupCreate/Category";
+import ImageUploader from "../../components/users/groupCreate/ImageUploader";
+import TagInput from "../../components/users/groupCreate/TagInput";
+import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
 import { AppContext } from "../../App";
 import {
   groupCreateReducer,
@@ -47,7 +47,7 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const url = "";
+const url = "http://localhost:8000/api/studyGroup/register";
 
 const GroupCreate = props => {
   const { appState: userInfo } = useContext(AppContext);
@@ -77,7 +77,7 @@ const GroupCreate = props => {
       form.append("image", data.thumbnail);
       delete data.thumbnail;
       form.append("data", JSON.stringify(data));
-
+      console.log(url);
       axios
         .post(url, form, {
           headers: {
