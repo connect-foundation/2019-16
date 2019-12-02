@@ -4,11 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import MainPage from "./Main";
 import GroupCreatePage from "./groupCreate";
 import Header from "../../components/Header";
-import {
-  initalState,
-  appContainerReducer,
-  get_all_groups
-} from "../../reducer/AppContainer";
+import { initalState, appContainerReducer } from "../../reducer/AppContainer";
 
 const StyledAppContainer = styled.div``;
 
@@ -25,7 +21,12 @@ const AppContainer = () => {
         <Route path="/group/create" component={GroupCreatePage} />
         <Route
           path="/"
-          render={() => <MainPage appContainerState={appContainerState} />}
+          render={() => (
+            <MainPage
+              appContainerState={appContainerState}
+              appContainerDispatch={appContainerDispatch}
+            />
+          )}
         />
         <Route
           render={({ location }) => (

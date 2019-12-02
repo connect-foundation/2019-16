@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AccountContainer from "../components/accountContainer";
 import axios from "axios";
-import { _searched_grgetoups_without_category } from "../reducer/AppContainer";
+import { get_searched_groups_without_category } from "../reducer/AppContainer";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -13,7 +13,6 @@ const HeaderContainer = styled.header`
   padding-right: 5%;
   padding-top: 3%;
   margin-bottom: 2.3rem;
-
   .logo {
     width: 64px;
     height: 64px;
@@ -31,7 +30,6 @@ const HeaderContainer = styled.header`
     font-weight: bold;
     font-size: 1.3em;
     color: #000000;
-
     .accountbox-btn {
       padding: 0 0.4em;
     }
@@ -40,7 +38,6 @@ const HeaderContainer = styled.header`
     }
   }
 `;
-
 
 const Header = ({ appContainerDispatch }) => {
   const onKeyUp = useCallback(e => {
@@ -86,26 +83,26 @@ const Header = ({ appContainerDispatch }) => {
 
   return (
     <HeaderContainer>
-        <Link to="/">
-          <img
-            src="/image/logo-mini.png"
-            alt="study combined"
-            className={["logo"]}
-          />{" "}
-        </Link>
-        <div className={`search-box`}>
-          <input
-            class="input is-rounded"
-            type="text"
-            placeholder="스터디그룹 검색"
-            onKeyUp={onKeyUp}
-          />
+      <Link to="/">
+        <img
+          src="/image/logo-mini.png"
+          alt="study combined"
+          className={["logo"]}
+        />{" "}
+      </Link>
+      <div className={`search-box`}>
+        <input
+          class="input is-rounded"
+          type="text"
+          placeholder="스터디그룹 검색"
+          onKeyUp={onKeyUp}
+        />
+      </div>
+      <div className={`account-box`}>
+        <div className={`user-account-btn accountbox-btn`}>
+          <span> 태현님 환영합니다. </span>
         </div>
-        <div className={`account-box`}>
-          <div className={`user-account-btn accountbox-btn`}>
-            <span> 태현님 환영합니다. </span>
-          </div>
-        </div>
+      </div>
       <AccountContainer />
     </HeaderContainer>
   );
