@@ -92,14 +92,6 @@ class App extends TcpServer {
 
   connectToLogService() {
     this.logService = new TcpClient(
-      "127.0.0.1",
-      8004,
-      () => {
-        this.isConnectedToLogService = true;
-
-        const packet = makePacket("POST", "add", {}, {}, "", this.context);
-
-        this.logService.write(packet);
         logger.info(
           `${this.context.host}:${this.context.port} is connected to logService`
         );
