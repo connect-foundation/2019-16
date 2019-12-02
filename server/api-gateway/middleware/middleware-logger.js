@@ -1,6 +1,6 @@
 const uuidv1 = require("uuid/v1");
 
-module.exports = function(apigateway) {
+module.exports = function (apigateway) {
   const gatewayLogger = (req, res, next) => {
     const traceId = uuidv1();
 
@@ -10,6 +10,7 @@ module.exports = function(apigateway) {
       "http.path": req.path
     });
     res.append("Trace", traceId);
+
     next();
   };
 
