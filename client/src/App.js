@@ -1,7 +1,8 @@
 import React, { useReducer, createContext } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import AppContainer from "./pages/users/AppContainer";
+import UserPage from "./pages/users";
+import PartnerPage from "./pages/partners";
 import { initalState, appReducer } from "./reducer/App";
 
 const GlobalStyle = createGlobalStyle`
@@ -11,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
   font-family: "Nanum Gothic", sans-serif;
 `;
 
-export const AppContext = createContext();
+export const UserContext = createContext();
 
 function App() {
   const [appState, appDispatch] = useReducer(appReducer, initalState);
@@ -20,9 +21,8 @@ function App() {
     <div className="App">
       <GlobalStyle />
       <Router>
-        <AppContext.Provider value={{ appState, appDispatch }}>
-          <AppContainer></AppContainer>
-        </AppContext.Provider>
+        <Route path="/" component={UserPage} />
+        <Route path="/partners" component={PartnerPage} />
       </Router>
     </div>
   );
