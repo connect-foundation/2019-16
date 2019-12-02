@@ -19,6 +19,7 @@ module.exports = function (apigateway) {
     const packet = makePacket(
       "POST",
       "log",
+      "log",
       {},
       { log },
       req.resKey,
