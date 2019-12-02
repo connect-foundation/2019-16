@@ -13,9 +13,9 @@ const client = new Client({
 exports.searchStudyGroup = async info => {
   const { searchWord, userLocation, isRecruit } = info;
   let distance = 2;
-  let body;
+  let searchResult;
   while (distance <= 20) {
-    body = await client.search({
+    searchResult = await client.search({
       index: SEARCH_INDEX_STUDYGROUP,
       body: {
         query: {
@@ -47,13 +47,13 @@ exports.searchStudyGroup = async info => {
           }
         }
       }
-    }).body;
+    });
 
-    distance = distance * 1.5;
-    if (body.hits.hits.length >= 10) break;
+    distance += 2;
+    if (searchResult.body.hits.hits.length >= 10) break;
   }
 
-  const result = body.hits.hits.map(hit => {
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
   return result;
@@ -132,53 +132,50 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => {};
+exports.tagStudyGroupWithCategory = async () => { };
 
 exports.searchAllStudyGroup = async info => {
   const { lat, lon, isRecruit } = info;
   let distance = 2;
 
-  const body = await new Promise(async res => {
-    let body_;
-    while (distance <= 20) {
-      const { body } = await client.search({
-        index: SEARCH_INDEX_STUDYGROUP,
-        body: {
-          query: {
-            bool: {
-              must: [
-                {
-                  match_all: {}
+  let searchResult;
+  while (distance <= 20) {
+    searchResult = await client.search({
+      index: SEARCH_INDEX_STUDYGROUP,
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                match_all: {}
+              }
+            ],
+            filter: [
+              {
+                term: {
+                  isRecruiting: isRecruit
                 }
-              ],
-              filter: [
-                {
-                  term: {
-                    isRecruiting: isRecruit
-                  }
-                },
-                {
-                  geo_distance: {
-                    distance: `${distance}km`,
-                    location: {
-                      lat: lat,
-                      lon: lon
-                    }
+              },
+              {
+                geo_distance: {
+                  distance: `${distance}km`,
+                  location: {
+                    lat: lat,
+                    lon: lon
                   }
                 }
-              ]
-            }
+              }
+            ]
           }
         }
-      });
-      body_ = body;
-      distance = distance * 1.5;
-      if (body.hits.hits.length >= 10) break;
-    }
-    res(body_);
-  });
+      }
+    });
 
-  const result = body.hits.hits.map(hit => {
+    distance += 2;
+    if (searchResult.body.hits.hits.length >= 10) break;
+  }
+
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
