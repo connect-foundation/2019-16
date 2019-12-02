@@ -92,10 +92,9 @@ class App extends TcpServer {
 
   connectToLogService() {
     this.logService = new TcpClient(
-        logger.info(
-          `${this.context.host}:${this.context.port} is connected to logService`
-        );
-      },
+      logger.info(
+        `${this.context.host}:${this.context.port} is connected to logService`
+      ),
       () => {
         logger.info(`It is read function at Port:${this.context.port}`);
       },
