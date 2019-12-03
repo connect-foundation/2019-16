@@ -8,20 +8,20 @@ export const set_groups = searchList => ({
 export const initalState = {
   myGroups: [],
   searchList: [
-    {
-      id: 0,
-      days: [],
-      startTime: 0,
-      during: 0,
-      location: { lat: 0, lon: 0 },
-      max_personnel: 0,
-      now_personnel: 0,
-      // min_personnel: 0,
-      title: "",
-      subtitle: "",
-      thumbnail: "",
-      tags: []
-    }
+    // {
+    //   id: 0,
+    //   days: [],
+    //   startTime: 0,
+    //   during: 0,
+    //   //location: { lat: 0, lon: 0 },
+    //   max_personnel: 0,
+    //   now_personnel: 0,
+    //   // min_personnel: 0,
+    //   title: "",
+    //   subtitle: "",
+    //   thumbnail: "",
+    //   tags: []
+    // }
   ],
   primaryCategories: ["프로그래밍", "자격증", "외국어", "면접"],
   secondaryCategories: {
