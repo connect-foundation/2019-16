@@ -6,7 +6,14 @@ export const set_groups = searchList => ({
 });
 
 export const initalState = {
-  myGroups: [],
+  myGroups: [
+    // {
+    //   id: "",
+    //   img: "",
+    //   title: "",
+    //   leader: ""
+    // }
+  ],
   searchList: [
     // {
     //   id: 0,
