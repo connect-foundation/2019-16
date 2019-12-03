@@ -50,15 +50,13 @@ const MyStudyCarousel = () => {
       <div>
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
-          {myGroups.length
-            ? myGroups.map(groupData => {
-                return (
-                  <div className="carousel-item">
-                    <StudyGroupCardMini groupData={groupData} />
-                  </div>
-                );
-              })
-            : "소속된 그룹이 없어요"}
+          {myGroups.map(groupData => {
+            return (
+              <div className="carousel-item">
+                <StudyGroupCardMini groupData={groupData} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </StyledMyStudyCarousel>

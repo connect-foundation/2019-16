@@ -76,7 +76,7 @@ const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
-  const { searchList } = userIndexState;
+  const { searchList, myGroups } = userIndexState;
   const { userEmail } = userInfo;
 
   useEffect(() => {
@@ -96,7 +96,11 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel></MyStudyCarousel>
+            {myGroups.length ? (
+              <MyStudyCarousel></MyStudyCarousel>
+            ) : (
+              "현재 소속된 스터디 그룹이 없습니다."
+            )}
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
