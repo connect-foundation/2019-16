@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import TagButtons from "../common/TagButtons";
 import Location from "../common/Location";
 import TimeInfo from "./Time";
 import Personnel from "./Personnel";
@@ -18,7 +19,8 @@ const Footer = ({
     during,
     days,
     now_personnel,
-    max_personnel
+    max_personnel,
+    tags
   }
 }) => {
   const time = `${days
@@ -27,6 +29,7 @@ const Footer = ({
 
   return (
     <StyledFooter>
+      <TagButtons tags={tags} />
       <Location location={location} />
       <TimeInfo time={time} />
       <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
