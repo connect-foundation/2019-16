@@ -100,7 +100,7 @@ const Header = () => {
         />{" "}
         <div className={`search-box`}>
           <input
-            class="input is-rounded"
+            className="input is-rounded"
             type="text"
             placeholder="스터디그룹 검색"
             onKeyUp={onKeyUp}

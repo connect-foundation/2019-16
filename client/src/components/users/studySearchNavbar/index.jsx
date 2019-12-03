@@ -58,8 +58,9 @@ const StudySearchNavbar = () => {
               모두 보기
             </span>
 
-            {primaryCategories.map(category => (
+            {primaryCategories.map((category, idx) => (
               <StudyNavbarItem
+                key={idx}
                 primaryCategory={category}
                 secondaryCategories={secondaryCategories[category]}
               ></StudyNavbarItem>

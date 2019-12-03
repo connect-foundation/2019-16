@@ -117,7 +117,12 @@ const MainPage = () => {
         <div className="study-group-list">
           {searchList.length
             ? searchList.map(groupData => {
-                return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
+                return (
+                  <StudyGroupCard
+                    key={groupData.id}
+                    groupData={groupData}
+                  ></StudyGroupCard>
+                );
               })
             : "데이터가 업소용"}
         </div>

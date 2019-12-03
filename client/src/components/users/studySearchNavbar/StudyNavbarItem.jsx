@@ -37,8 +37,8 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
     });
   }, []);
 
-  const itemList = secondaryCategories.map(category => (
-    <span className="navbar-item is-size-3" onClick={searchGroups}>
+  const itemList = secondaryCategories.map((category, idx) => (
+    <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
       {category}
     </span>
   ));
