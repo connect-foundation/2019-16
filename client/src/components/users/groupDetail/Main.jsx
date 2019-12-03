@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
 import { REGISTER } from "../../../reducer/users/groupDetail";
+import { UserContext } from "../../../pages/users/index";
 
 const StyledMain = styled.div`
   width: 100%;
@@ -49,20 +50,26 @@ const StyledMain = styled.div`
   padding: 1.2rem;
 `;
 
-const Main = ({ state, dispatch }) => {
-  const { groupInfo } = state;
+const Main = ({ groupData, dispatch }) => {
+  const { userInfo } = useContext(UserContext);
+  const { userEmail } = userInfo;
   const {
-    studyThumbnail,
+    thumbnail,
     location,
-    time,
+    startTime,
+    days,
+    during,
     tags,
-    minCnt,
-    nowCnt,
-    maxCnt,
-    isMember,
-    isMaster,
-    isRecruiting
-  } = groupInfo;
+    min_personnel,
+    now_personnel,
+    max_personnel,
+    leader,
+    isRecruiting,
+    members
+  } = groupData;
+
+  const isMember = members.some(memberId => memberId === userEmail);
+  const isLeader = leader === userEmail;
 
   const isMemberClass = classnames("button", {
     "is-primary": !isMember,
@@ -71,7 +78,10 @@ const Main = ({ state, dispatch }) => {
   const isMemberText = isMember ? "취소하기" : "신청하기";
 
   const isRecruitingClass = classnames({
-    disable: isRecruiting || nowCnt > maxCnt || nowCnt < minCnt
+    disable:
+      isRecruiting ||
+      now_personnel > max_personnel ||
+      now_personnel < min_personnel
   });
   const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
 
@@ -82,31 +92,32 @@ const Main = ({ state, dispatch }) => {
   return (
     <StyledMain className="columns">
       <div className="column imageDiv is-half">
-        <img src={studyThumbnail} alt="img" />
+        <img src={thumbnail} alt="img" />
       </div>
 
       <div className="column content">
         <Location location={location} />
 
         <h4>
-          <Time time={time} />
+          <Time startTime={startTime} during={during} days={days} />
         </h4>
 
-        <p> 최소 인원: {minCnt} </p>
-        <p> 현재 인원: {nowCnt} </p>
-        <p> 최대 인원: {maxCnt} </p>
+        <p> 최소 인원: {min_personnel} </p>
+        <p> 현재 인원: {now_personnel} </p>
+        <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
 
         <div className="buttons">
-          {isMaster || (
-            <button className={isMemberClass} onClick={registerEvent}>
-              {" "}
-              {isMemberText}{" "}
-            </button>
-          )}
+          {userEmail &&
+            (isLeader || (
+              <button className={isMemberClass} onClick={registerEvent}>
+                {" "}
+                {isMemberText}{" "}
+              </button>
+            ))}
 
-          {isMaster && isMember && (
+          {isLeader && isMember && (
             <>
               <button className={`button is-danger ${!isRecruitingClass}`}>
                 {isRecruitingText}
