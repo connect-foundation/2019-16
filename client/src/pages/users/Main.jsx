@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
@@ -113,20 +113,18 @@ const MainPage = () => {
         )}
       </div>
 
-      <Router>
-        <div className="study-group-list">
-          {searchList.length
-            ? searchList.map(groupData => {
-                return (
-                  <StudyGroupCard
-                    key={groupData.id}
-                    groupData={groupData}
-                  ></StudyGroupCard>
-                );
-              })
-            : "데이터가 업소용"}
-        </div>
-      </Router>
+      <div className="study-group-list">
+        {searchList.length
+          ? searchList.map(groupData => {
+              return (
+                <StudyGroupCard
+                  key={groupData.id}
+                  groupData={groupData}
+                ></StudyGroupCard>
+              );
+            })
+          : "데이터가 업소용"}
+      </div>
     </Main>
   );
 };

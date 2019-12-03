@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
-import { REGISTER } from "../../reducer/users/groupDetail";
+import { REGISTER } from "../../../reducer/users/groupDetail";
 
 const StyledMain = styled.div`
   width: 100%;
