@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
+import StudySearchNavbar from "./studySearchNavbar";
 import AccountContainer from "./accountContainer";
 import { set_groups } from "../../reducer/users/index";
 import { UserContext } from "../../pages/users/index";
 
-const HeaderContainer = styled.header`
+const StyledHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -86,7 +87,7 @@ const Header = () => {
   }, []);
 
   return (
-    <HeaderContainer>
+    <StyledHeader>
       <Link to="/">
         <img
           src="/image/logo-mini.png"
@@ -108,7 +109,8 @@ const Header = () => {
         </div>
       </div>
       <AccountContainer />
-    </HeaderContainer>
+      <StudySearchNavbar />
+    </StyledHeader>
   );
 };
 

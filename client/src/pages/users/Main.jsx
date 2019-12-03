@@ -5,7 +5,6 @@ import { Link, BrowserRouter as Router } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/users/studySearchNavbar";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
@@ -92,7 +91,7 @@ const MainPage = () => {
       }
 
       userIndexDispatch(set_groups(data));
-    }, []);
+    });
   }, []);
 
   return (
@@ -118,8 +117,6 @@ const MainPage = () => {
       </div>
 
       <Router>
-        <StudySearchNavbar></StudySearchNavbar>
-
         <div className="study-group-list">
           {searchList.length
             ? searchList.map(groupData => {
