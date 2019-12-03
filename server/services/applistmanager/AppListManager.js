@@ -1,6 +1,5 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
-const logger = require("../logger/logger");
 const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
 
 let appManagerInstance;
@@ -16,7 +15,7 @@ class AppListManager extends TcpServer {
     socket.write(packet);
   }
   async onCreate(socket) {
-    logger.info(`create App: ${socket.remoteAddress} : ${socket.remotePort}`);
+    console.log(`create App: ${socket.remoteAddress} : ${socket.remotePort}`);
   }
   async onClose(socket) {
     const key = await makeKey(socket)
