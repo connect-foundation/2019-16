@@ -1,6 +1,5 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
-const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
 const { getAppbyName, getAllApps } = require("../redis");
 const { makeLogSender } = require("./logUtils");
@@ -94,26 +93,26 @@ class App extends TcpServer {
         );
 
         this.appListManager.write(packet);
-        logger.info(
+        console.log(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
       },
       () => {
-        logger.info(`It is read function at Port:${this.context.port}`);
+        console.log(`It is read function at Port:${this.context.port}`);
       },
       () => {
-        logger.warn(`end service`);
+        console.log(`end service`);
         this.isConnectToAppListManager = false;
       },
       () => {
-        logger.warn(`App list manager server is down`);
+        console.log(`App list manager server is down`);
         this.isConnectToAppListManager = false;
       }
     );
 
     setInterval(() => {
       if (!this.isConnectToAppListManager) {
-        logger.info(`try connect to app list manager`);
+        console.log(`try connect to app list manager`);
         this.appListManager.connect();
       }
     }, 1000);
@@ -125,27 +124,27 @@ class App extends TcpServer {
       "127.0.0.1",
       8004,
       () => {
-        logger.info(
+        console.log(
           `${this.context.host}:${this.context.port} is connected to logService`
         );
         this.isConnectedToLogService = true;
       },
       () => {
-        logger.info(`It is read function at Port:${this.context.port}`);
+        console.log(`It is read function at Port:${this.context.port}`);
       },
       () => {
-        logger.warn(`end logService`);
+        console.log(`end logService`);
         this.isConnectedToLogService = false;
       },
       () => {
-        logger.warn(`logService is down`);
+        console.log(`logService is down`);
         this.isConnectedToLogService = false;
       }
     );
 
     setInterval(() => {
       if (!this.isConnectedToLogService) {
-        logger.info(`try connect to LogService`);
+        console.log(`try connect to LogService`);
         this.logService.connect();
       }
     }, 1000);
@@ -158,26 +157,26 @@ class App extends TcpServer {
       8001,
       () => {
         this.isConnectToApiGateway = true;
-        logger.info(
+        console.log(
           `${this.context.host}:${this.context.port} is connected to ApiGateway`
         );
       },
       () => {
-        logger.info(`It is read function at Port:${this.context.port}`);
+        console.log(`It is read function at Port:${this.context.port}`);
       },
       () => {
-        logger.warn(`end ApiGateway`);
+        console.log(`end ApiGateway`);
         this.isConnectToApiGateway = false;
       },
       () => {
-        logger.warn(`ApiGateway server is down`);
+        console.log(`ApiGateway server is down`);
         this.isConnectToApiGateway = false;
       }
     );
 
     setInterval(() => {
       if (!this.isConnectToApiGateway) {
-        logger.info(`try connect to ApiGateway`);
+        console.log(`try connect to ApiGateway`);
         this.ApiGateway.connect();
       }
     }, 1000);

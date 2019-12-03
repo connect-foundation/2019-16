@@ -1,4 +1,4 @@
-require("dotenv").config({ path: ".env.gateway" });
+require("dotenv").config();
 const path = require("path");
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
@@ -13,15 +13,15 @@ const { makeLogSender } = require("../lib/tcp/logUtils");
 require("./auth/passport")(server); // passport config
 
 const {
-  GATE_EXPRESS_PORT,
-  GATE_TCP_PORT,
-  GATE_NAME,
-  ACCOUNTS_MONGO_URI,
-  GATE_HOST
+  GATEWAY_EXPRESS_PORT,
+  GATEWAY_TCP_PORT,
+  GATEWAY_NAME,
+  ACCOUNTS_MONGO_URL,
+  GATEWAY_HOST
 } = process.env;
 
 mongoose
-  .connect(ACCOUNTS_MONGO_URI, {
+  .connect(ACCOUNTS_MONGO_URL, {
     useNewUrlParser: true,
     useFindAndModify: true,
     useUnifiedTopology: true
@@ -35,7 +35,7 @@ mongoose
 
 class ApiGateway extends App {
   constructor() {
-    super(GATE_NAME, GATE_HOST, GATE_TCP_PORT);
+    super(GATEWAY_NAME, GATEWAY_HOST, GATEWAY_TCP_PORT);
     this.appClientMap = {};
     this.icConnectMap = {};
     this.resMap = {};
@@ -83,7 +83,7 @@ server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
 server.use(writePacket);
 
-server.listen(GATE_EXPRESS_PORT, async () => {
+server.listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 

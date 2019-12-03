@@ -1,4 +1,4 @@
-require("dotenv").config({ path: ".env" });
+require("dotenv").config();
 const {
   SEARCH_ELASTIC_HOST,
   SEARCH_ELASTIC_PORT,
@@ -22,16 +22,18 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
       }
     }
   };
+
   if (body.query.bool.filter !== undefined) {
     body.query.bool.filter.push(geoFilter);
   } else {
-    body.query.bool["filter"] = [geoFilter];
+    body.query.bool.filter = [geoFilter];
   }
 
   const search = {
     index,
     body
   };
+
   while (distance <= maxDistance) {
     search.body.query.bool.filter[
       search.body.query.bool.filter.length - 1
@@ -76,6 +78,7 @@ exports.searchStudyGroup = async info => {
   const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
+
   return result;
 };
 
@@ -156,6 +159,7 @@ exports.tagStudyGroup = async info => {
   const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
+
   return result;
 };
 
