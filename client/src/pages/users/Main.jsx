@@ -1,15 +1,16 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+import { Link, BrowserRouter as Router } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
-import StudyGroupCard from "../../components/groupCard";
-import MyStudyCarousel from "../../components/MyStudyCarousel";
+import StudySearchNavbar from "../../components/users/studySearchNavbar";
+import StudyGroupCard from "../../components/users/groupCard";
+import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
 import { set_groups } from "../../reducer/users";
+import { UserContext } from "./index";
 
 const Main = styled.div`
   display: flex;
@@ -72,17 +73,12 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
-const MainPage = ({ appContainerState, appContainerDispatch }) => {
-  const {
-    myGroups,
-    cardList,
-    primaryCategories,
-    secondaryCategories
-  } = appContainerState;
-
-  const {
-    appState: { userEmail }
-  } = useContext(AppContext);
+const MainPage = () => {
+  const { userIndexState, userIndexDispatch, userInfo } = useContext(
+    UserContext
+  );
+  const { searchList } = userIndexState;
+  const { userEmail } = userInfo;
 
   useEffect(() => {
     axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
@@ -94,24 +90,17 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
           i
         ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
       }
-      appContainerDispatch(set_groups(data));
+
+      userIndexDispatch(set_groups(data));
     }, []);
-    // /api/search/all
-    /**
-     * TODO: data 요청로직 필요
-     * cardListData
-     * myStudyData
-     */
   }, []);
+
   return (
     <Main>
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel
-              myGroups={myGroups}
-              user_email={userEmail}
-            ></MyStudyCarousel>
+            <MyStudyCarousel></MyStudyCarousel>
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -129,36 +118,15 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
       </div>
 
       <Router>
-        <StudySearchNavbar
-          primaryCategories={primaryCategories}
-          secondaryCategories={secondaryCategories}
-        ></StudySearchNavbar>
-        <Route
-          path={["/category/:categoryName", "/", "/search/:keyword"]}
-          render={({ match }) => {
-            const keyword = match.params.keyword;
-            const selectedCategory = match.params.categoryName;
-            const pathName = match.path;
-            const groupsData =
-              pathName === "/"
-                ? cardList
-                : cardList.filter(
-                    card => card.category[1] === selectedCategory
-                  );
-            const groupsDataLength = groupsData.length;
-            return (
-              <div className="study-group-list">
-                {groupsDataLength
-                  ? groupsData.map(groupData => {
-                      return (
-                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
-                      );
-                    })
-                  : "데이터가 업소용"}
-              </div>
-            );
-          }}
-        />
+        <StudySearchNavbar></StudySearchNavbar>
+
+        <div className="study-group-list">
+          {searchList.length
+            ? searchList.map(groupData => {
+                return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
+              })
+            : "데이터가 업소용"}
+        </div>
       </Router>
     </Main>
   );

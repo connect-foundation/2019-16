@@ -1,15 +1,16 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../App";
+import { UserContext } from "../../../pages/users/index";
 import LogoutButton from "./LogoutButton";
 
 const UserInfo = () => {
-  const { appState } = useContext(AppContext);
+  const { userInfo } = useContext(UserContext);
+  const { profileImage, userName, userEmail } = userInfo;
   return (
     <>
-      {appState.email && (
+      {userEmail && (
         <div>
-          <img src={appState.profileImage} alt="profile" />
-          <span>{appState.userName}님 반갑습니다.</span>
+          <img src={profileImage} alt="profile" />
+          <span>{userName}님 반갑습니다.</span>
           <LogoutButton />
         </div>
       )}

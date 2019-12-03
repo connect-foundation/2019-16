@@ -1,9 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import AccountContainer from "../components/accountContainer";
 import axios from "axios";
-import { get_searched_groups_without_category } from "../reducer/AppContainer";
+import { REQUEST_URL } from "../../config.json";
+import AccountContainer from "./accountContainer";
+import { set_groups } from "../../reducer/users/index";
+import { UserContext } from "../../pages/users/index";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -39,17 +41,20 @@ const HeaderContainer = styled.header`
   }
 `;
 
-const Header = ({ appContainerDispatch }) => {
+const Header = () => {
+  const { userIndexDispatch } = useContext(UserContext);
+
   const onKeyUp = useCallback(e => {
     if (e.key === "Enter") {
+      const keyword = e.target.value;
+
       e.preventDefault();
-      if (e.target.value[0] === "#") {
+      if (keyword[0] === "#") {
         //tag검색
-        console.log("tag");
-        const tag = e.target.value.substr(1);
-        const url = `http://127.0.0.1:8000/api/search/tags`;
+        const tag = keyword.slice(1);
+
         axios
-          .post(url, {
+          .post(`${REQUEST_URL}/search/tags`, {
             tags: [tag],
             isRecruit: true
           })
@@ -61,24 +66,23 @@ const Header = ({ appContainerDispatch }) => {
                 i
               ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
             }
-            appContainerDispatch(get_searched_groups_without_category(data));
+            userIndexDispatch(set_groups(data));
           });
       } else {
-        const url = `http://127.0.0.1:8000/api/search/query/${e.target.value}/true`;
-        axios.get(url).then(result => {
-          const { data } = result;
-          for (let i = 0; i < data.length; i++) {
-            data[i].id = i;
-            data[
-              i
-            ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-          }
-          appContainerDispatch(get_searched_groups_without_category(data));
-        });
+        axios
+          .get(`${REQUEST_URL}/search/query/${keyword}/true`)
+          .then(result => {
+            const { data } = result;
+            for (let i = 0; i < data.length; i++) {
+              data[i].id = i;
+              data[
+                i
+              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+            }
+            userIndexDispatch(set_groups(data));
+          });
       }
     }
-
-    console.log(e.target.value);
   }, []);
 
   return (
