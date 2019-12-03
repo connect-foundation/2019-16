@@ -105,10 +105,7 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel
-              myGroups={myGroups}
-              user_email={userEmail}
-            ></MyStudyCarousel>
+            <MyStudyCarousel></MyStudyCarousel>
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -126,10 +123,7 @@ const MainPage = () => {
       </div>
 
       <Router>
-        <StudySearchNavbar
-          primaryCategories={primaryCategories}
-          secondaryCategories={secondaryCategories}
-        ></StudySearchNavbar>
+        <StudySearchNavbar></StudySearchNavbar>
 
         <div className="study-group-list">
           {searchList.length

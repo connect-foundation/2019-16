@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import StudyNavbarItem from "./StudyNavbarItem";
+import { UserContext } from "../../../pages/users/index";
+
 const Navbar = styled.div`
   padding: 5%;
   width: 100%;
@@ -18,29 +20,34 @@ const Navbar = styled.div`
   }
 `;
 
-const StudySearchNavbar = ({ primaryCategories, secondaryCategories }) => (
-  <Navbar>
-    <nav
-      className="navbar is-transparent"
-      role="navigation"
-      aria-label="dropdown navigation"
-    >
-      <div id="navbarExampleTransparentExample" style={{ width: "100%" }}>
-        <div className="navbar-start">
-          <Link className="navbar-item" to="/">
-            모두 보기
-          </Link>
+const StudySearchNavbar = () => {
+  const { userIndexState } = useContext(UserContext);
+  const { primaryCategories, secondaryCategories } = userIndexState;
 
-          {primaryCategories.map(category => (
-            <StudyNavbarItem
-              primaryCategory={category}
-              secondaryCategories={secondaryCategories[category]}
-            ></StudyNavbarItem>
-          ))}
+  return (
+    <Navbar>
+      <nav
+        className="navbar is-transparent"
+        role="navigation"
+        aria-label="dropdown navigation"
+      >
+        <div id="navbarExampleTransparentExample" style={{ width: "100%" }}>
+          <div className="navbar-start">
+            <Link className="navbar-item" to="/">
+              모두 보기
+            </Link>
+
+            {primaryCategories.map(category => (
+              <StudyNavbarItem
+                primaryCategory={category}
+                secondaryCategories={secondaryCategories[category]}
+              ></StudyNavbarItem>
+            ))}
+          </div>
         </div>
-      </div>
-    </nav>
-  </Navbar>
-);
+      </nav>
+    </Navbar>
+  );
+};
 
 export default StudySearchNavbar;
