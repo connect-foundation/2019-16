@@ -1,6 +1,5 @@
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
 import StudySearchNavbar from "./studySearchNavbar";
@@ -93,11 +92,13 @@ const Header = () => {
   return (
     <StyledHeader>
       <div className="header-info">
-        <img
-          src="/image/logo-mini.png"
-          alt="study combined"
-          className={["logo"]}
-        />{" "}
+        <a href="/">
+          <img
+            src="/image/logo-mini.png"
+            alt="study combined"
+            className="logo"
+          />{" "}
+        </a>
         <div className={`search-box`}>
           <input
             className="input is-rounded"
