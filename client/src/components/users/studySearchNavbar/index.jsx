@@ -8,7 +8,6 @@ import { UserContext } from "../../../pages/users/index";
 import { set_groups } from "../../../reducer/users/index";
 
 const Navbar = styled.div`
-  padding: 5%;
   width: 100%;
   .navbar-start {
     display: flex;
