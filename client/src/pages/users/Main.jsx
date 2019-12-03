@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, Route, BrowserRouter as Router } from "react-router-dom";
+import { Link, BrowserRouter as Router } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/users/studySearchNavbar/StudySearchNavbar";
+import StudySearchNavbar from "../../components/users/studySearchNavbar";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
@@ -77,12 +77,7 @@ const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
-  const {
-    myGroups,
-    searchList,
-    primaryCategories,
-    secondaryCategories
-  } = userIndexState;
+  const { searchList } = userIndexState;
   const { userEmail } = userInfo;
 
   useEffect(() => {
