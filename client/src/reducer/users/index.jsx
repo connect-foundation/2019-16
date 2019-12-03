@@ -1,8 +1,8 @@
 const SET_GROUPS = "userIndex/SET_GROUPS";
 
-export const set_groups = cardList => ({
+export const set_groups = searchList => ({
   type: SET_GROUPS,
-  cardList
+  searchList
 });
 
 export const initalState = {
@@ -18,12 +18,12 @@ export const initalState = {
 };
 
 export const userIndexReducer = (state, action) => {
-  const { cardList } = action;
+  const { searchList } = action;
   switch (action.type) {
     case SET_GROUPS:
       return {
         ...state,
-        cardList
+        searchList
       };
 
     default:

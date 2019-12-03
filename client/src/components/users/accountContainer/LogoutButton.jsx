@@ -1,12 +1,9 @@
 import React, { useContext } from "react";
-import { AppContext } from "../../App";
-import { logout_button_click } from "../../reducer/App";
+import { UserContext } from "../../../pages/users/index";
 
 const LogoutButton = () => {
-  const { appDispatch } = useContext(AppContext);
-  const clickHandler = e => {
-    appDispatch(logout_button_click());
-  };
+  const { setUserInfo } = useContext(UserContext);
+  const clickHandler = e => {};
   return (
     <button className="button is-rounded is-warning" onClick={clickHandler}>
       로그아웃
