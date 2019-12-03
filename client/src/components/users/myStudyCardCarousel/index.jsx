@@ -4,8 +4,9 @@ import StudyGroupCardMini from "./Card";
 import { UserContext } from "../../../pages/users/index";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";
 
-const Main = styled.div`
-  .carousel-box{
+const StyledMyStudyCarousel = styled.div`
+overflow: hidden;
+width: ${props => props.carouselWidth}; 
     overflow:hidden;
 
     .carousel{
@@ -19,14 +20,14 @@ const Main = styled.div`
     }
 
     .my-group-title{
+      text-align: center;
       font-weight:bold;
-      font-size:1.5em;
+      font-size: 1.3em;
       padding 0 0 3%;
     }
     .slider-page{
       box-shadow:0 2px 5px #323232;
     }
-  }
  
 `;
 
@@ -45,11 +46,8 @@ const MyStudyCarousel = () => {
   });
 
   return (
-    <Main>
-      <div
-        className="carousel-box"
-        style={{ overflow: "hidden", width: carouselWidth }}
-      >
+    <StyledMyStudyCarousel carouselWidth={carouselWidth}>
+      <div>
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
           {myGroups.length
@@ -63,7 +61,7 @@ const MyStudyCarousel = () => {
             : "소속된 그룹이 없어요"}
         </div>
       </div>
-    </Main>
+    </StyledMyStudyCarousel>
   );
 };
 
