@@ -81,7 +81,7 @@ const MainPage = () => {
   const { userEmail } = userInfo;
 
   useEffect(() => {
-    axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
+    axios.get(`${REQUEST_URL}/api/search/all/true`).then(result => {
       const { data } = result;
 
       for (let i = 0; i < data.length; i++) {

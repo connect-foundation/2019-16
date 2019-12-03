@@ -78,7 +78,7 @@ const GroupCreate = () => {
       form.append("data", JSON.stringify(data));
 
       axios
-        .post(`${REQUEST_URL}/studyGroup/register"`, form, {
+        .post(`${REQUEST_URL}/api/studyGroup/register"`, form, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

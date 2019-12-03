@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
-import AccountContainer from "./accountContainer";
+import UserInfo from "./UserInfo";
 import { set_groups } from "../../reducer/users/index";
 import { UserContext } from "../../pages/users/index";
 
@@ -54,7 +54,7 @@ const Header = () => {
         const tag = keyword.slice(1);
 
         axios
-          .post(`${REQUEST_URL}/search/tags`, {
+          .post(`${REQUEST_URL}/api/search/tags`, {
             tags: [tag],
             isRecruit: true
           })
@@ -70,7 +70,7 @@ const Header = () => {
           });
       } else {
         axios
-          .get(`${REQUEST_URL}/search/query/${keyword}/true`)
+          .get(`${REQUEST_URL}/api/search/query/${keyword}/true`)
           .then(result => {
             const { data } = result;
             for (let i = 0; i < data.length; i++) {
@@ -107,7 +107,7 @@ const Header = () => {
           <span> 태현님 환영합니다. </span>
         </div>
       </div>
-      <AccountContainer />
+      <UserInfo />
     </HeaderContainer>
   );
 };
