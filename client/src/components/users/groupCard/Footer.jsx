@@ -10,8 +10,6 @@ const StyledFooter = styled.div`
   padding: 0 1rem;
 `;
 
-const days_char = ["일", "월", "화", "수", "목", "금", "토"];
-
 const Footer = ({
   footerData: {
     location,
@@ -23,15 +21,11 @@ const Footer = ({
     tags
   }
 }) => {
-  const time = `${days
-    .map(dayNumber => days_char[dayNumber])
-    .join(", ")} | ${startTime}:00 시작 | ${during}시간 `;
-
   return (
     <StyledFooter>
       <TagButtons tags={tags} />
       <Location location={location} />
-      <TimeInfo time={time} />
+      <TimeInfo days={days} startTime={startTime} during={during} />
       <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
     </StyledFooter>
   );
