@@ -48,7 +48,7 @@
 	"cafe_name": String,
 	"name": String, // 방 이름 (ex. 201호)
 	"location": String, // 공식 주소
-  "images": String [],
+	"images": String [],
 	"price": Int,
 	"min_personnel": Int,
 	"max_personnel": Int,
