@@ -1,4 +1,5 @@
-require("dotenv").config();
+
+require("dotenv").config({ path: ".env" });
 const {
   SEARCH_ELASTIC_HOST,
   SEARCH_ELASTIC_PORT,
@@ -201,6 +202,7 @@ exports.searchAllStudyGroup = async info => {
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
+
   const { category, lat, lon, isRecruit } = info;
 
   const body = {

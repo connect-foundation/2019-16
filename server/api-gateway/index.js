@@ -1,4 +1,5 @@
-require("dotenv").config();
+
+require("dotenv").config({ path: ".env" });
 const path = require("path");
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
@@ -37,7 +38,7 @@ class ApiGateway extends App {
   constructor() {
     super(GATEWAY_NAME, GATEWAY_HOST, GATEWAY_TCP_PORT);
     this.appClientMap = {};
-    this.icConnectMap = {};
+    this.isConnectMap = {};
     this.resMap = {};
     this.httpLogSender = makeLogSender.call(this, "http");
   }
@@ -133,7 +134,7 @@ async function makeAppClient(name) {
       () => {
         // connect이벤트 함수
         apigateway.appClientMap[name] = client;
-        apigateway.icConnectMap[name] = true;
+        apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
       data => {
@@ -151,17 +152,17 @@ async function makeAppClient(name) {
         // delete apigateway.resMap[data.key];
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service error`);
       }
     );
 
     setInterval(() => {
-      if (!apigateway.icConnectMap[name]) {
+      if (!apigateway.isConnectMap[name]) {
         console.log(`try connect to ${name}`);
 
         client.connect();
