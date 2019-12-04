@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const { searchAllStudyGroup, bulkStudyGroups } = require("../elasticsearch");
 
 /**
