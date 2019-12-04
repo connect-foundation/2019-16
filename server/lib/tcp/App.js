@@ -1,13 +1,13 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
 const { makePacket } = require("../tcp/util");
-const { getAppbyName, getAllApps } = require("../redis");
+const { getAppbyName, getAllApps, popMessageQueue } = require("../redis");
 const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
-  constructor(name, host, port, query = []) {
+  constructor(name, host, port, job) {
     super(name, host, port);
-    this.query = query;
+    this.job = job;
     this.isConnectToAppListManager = false;
     this.isConnectedToLogService = false;
     this.isConnectToApiGateway = false;
@@ -15,9 +15,19 @@ class App extends TcpServer {
     this.ApiGateway = this.connectToApiGateway();
 
     this.tcpLogSender = makeLogSender.call(this, "tcp");
+
   }
 
-  send(socket, data) {
+  async doMessageJob(job) {
+    const packets = await popMessageQueue(this.name, 1000);
+
+    if (!Array.isArray(packets)) job({}, JSON.parse(packets));
+    packets.forEach((packet) => {
+      job({}, JSON.parse(packet));
+    })
+  }
+
+  send(appClient, data) {
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -38,7 +48,7 @@ class App extends TcpServer {
     if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
     } else {
-      socket.write(packet);
+      appClient.write(packet);
     }
   }
 
