@@ -72,19 +72,6 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
-//geolocation api 실패
-const getCurrentPosition = new Promise((resolve, reject) => {
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      resolve({ lat, lon });
-    },
-    err => reject(err)
-  );
-});
-const geoError = function(error) {};
-
 const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
@@ -93,19 +80,7 @@ const MainPage = () => {
   const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
-  let { lat, lon } = useMemo(() => userLocation, []);
-
-  if (!userEmail) {
-    getCurrentPosition
-      .then(pos => {
-        // lat = pos.lat;
-        // lon = pos.lon;
-        lat = 41.12;
-        lon = -50.34;
-      })
-      .catch(console.error);
-  }
-
+  let { lat, lon } = userLocation;
   useEffect(() => {
     axios
       .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)

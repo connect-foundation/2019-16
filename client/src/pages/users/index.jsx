@@ -14,6 +14,17 @@ const StyledUserPage = styled.div``;
 
 export const UserContext = createContext();
 
+const getCurrentPosition = new Promise((resolve, reject) => {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      resolve({ lat, lon });
+    },
+    err => reject(err)
+  );
+});
+
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     userEmail: "",
@@ -30,8 +41,17 @@ const UserPage = () => {
   );
 
   useEffect(() => {
-    const userInfo = jwtParser();
-    userInfo && setUserInfo(userInfo);
+    const parsedUserInfo = jwtParser();
+    parsedUserInfo ||
+      getCurrentPosition
+        .then(pos => {
+          // const lat = pos.lat;
+          // const lon = pos.lon;
+          const lat = 41.12;
+          const lon = -50.34;
+          setUserInfo({ ...userInfo, userLocation: { lat, lon } });
+        })
+        .catch(console.error);
   }, []);
 
   return (
