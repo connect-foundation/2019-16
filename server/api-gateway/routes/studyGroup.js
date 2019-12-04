@@ -27,7 +27,7 @@ const S3 = new AWS.S3({
 
 const { makePacket } = require("../../lib/tcp/util");
 
-module.exports = function (apigateway) {
+module.exports = function(apigateway) {
   router.get("/", (req, res) => {
     res.send("Hello");
   });
@@ -56,7 +56,7 @@ module.exports = function (apigateway) {
 
     payload.thumbnail = imageLink;
 
-    const packet = await makePacket(
+    const packet = makePacket(
       "POST",
       "addGroup",
       "addGroup",
