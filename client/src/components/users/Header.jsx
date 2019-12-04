@@ -109,11 +109,6 @@ const Header = () => {
             onKeyUp={onKeyUp}
           />
         </div>
-        <div className={`account-box`}>
-          <div className={`user-account-btn accountbox-btn`}>
-            <span> {userName}님 환영합니다. </span>
-          </div>
-        </div>
         <UserInfo />
       </div>
       <StudySearchNavbar />
