@@ -1,11 +1,10 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/users/studySearchNavbar";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
@@ -80,6 +79,7 @@ const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
+
   const { searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
@@ -104,9 +104,6 @@ const MainPage = () => {
 
         for (let i = 0; i < data.length; i++) {
           data[i].id = i;
-          data[
-            i
-          ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
         }
 
         userIndexDispatch(set_groups(data));
@@ -118,7 +115,11 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel></MyStudyCarousel>
+            {myGroups.length ? (
+              <MyStudyCarousel></MyStudyCarousel>
+            ) : (
+              "현재 소속된 스터디 그룹이 없습니다."
+            )}
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -135,17 +136,18 @@ const MainPage = () => {
         )}
       </div>
 
-      <Router>
-        <StudySearchNavbar></StudySearchNavbar>
-
-        <div className="study-group-list">
-          {searchList.length
-            ? searchList.map(groupData => {
-                return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
-              })
-            : "데이터가 업소용"}
-        </div>
-      </Router>
+      <div className="study-group-list">
+        {searchList.length
+          ? searchList.map(groupData => {
+              return (
+                <StudyGroupCard
+                  key={groupData.id}
+                  groupData={groupData}
+                ></StudyGroupCard>
+              );
+            })
+          : "데이터가 업소용"}
+      </div>
     </Main>
   );
 };
