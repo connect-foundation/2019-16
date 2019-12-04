@@ -99,3 +99,23 @@ exports.popStudyGroups = async (count) => {
 exports.getStudyGroupsLength = async () => {
   return returnRedisPromise("llen", "studygroup");
 }
+
+exports.pushMessage = async (appName, packet) => {
+  return returnRedisPromise("rpush", `message:${appName}`, packet)
+}
+exports.popMessageQueue = async (appName, count) => {
+  const queueName = `message:${appName}`
+  const messages = await returnRedisPromise("lrange", queueName, 0, count - 1);
+
+  if (messages.length === 0) {
+    return new Promise((res) => {
+      res([]);
+    })
+  }
+
+  returnRedisPromise("ltrim", queueName, count - 1, -1);
+  return new Promise((res) => {
+    res(JSON.parse(messages[0]));
+  })
+}
+
