@@ -8,9 +8,8 @@ const StyledHeader = styled.div`
   }
 `;
 
-const Header = ({ state }) => {
-  const { groupInfo } = state;
-  const { title, category } = groupInfo;
+const Header = ({ groupData }) => {
+  const { title, category } = groupData;
   const categoryBtnEvent = useCallback(e => {
     const categoryName = e.target.textContent.trim();
     alert(categoryName);
@@ -25,9 +24,14 @@ const Header = ({ state }) => {
             className="button is-primary is-small"
             onClick={categoryBtnEvent}
           >
-            {" "}
-            {category}{" "}
-          </button>{" "}
+            {category[0]}
+          </button>
+          <button
+            className="button is-primary is-small"
+            onClick={categoryBtnEvent}
+          >
+            {category[1]}
+          </button>
         </div>
       </div>
     </StyledHeader>
