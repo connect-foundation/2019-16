@@ -52,8 +52,7 @@ const StyledGroupCreate = styled.div`
 
 const GroupCreate = () => {
   const { userInfo } = useContext(UserContext);
-
-  initialState.data.leader = userInfo.userEmail;
+  const { userEmail } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -74,9 +73,12 @@ const GroupCreate = () => {
   const onSubmit = useCallback(
     e => {
       const { data } = state;
+      data.leader = userEmail;
+      data.location = { lat: 41.12, lon: -50.34 };
+      delete data.thumbnail;
+
       const form = new FormData();
       form.append("image", data.thumbnail);
-      delete data.thumbnail;
       form.append("data", JSON.stringify(data));
 
       axios
@@ -85,12 +87,12 @@ const GroupCreate = () => {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(({ data: href }) => {
-          if (href) {
-            window.location.href = href;
-            return;
-          }
-
+        .then(({ status }) => {
+          if (status === 200) window.location.href = "/";
+          else alert("에러 발생");
+        })
+        .catch(e => {
+          console.error(e);
           alert("에러 발생");
         });
     },

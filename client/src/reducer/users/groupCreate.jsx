@@ -72,12 +72,13 @@ export const initialState = {
     subtitle: "",
     intro: "",
     selectedDays: [],
-    startTime: 0,
-    during: 0,
+    startTime: 1,
+    during: 1,
     isRecruiting: true,
     thumbnail: null,
     min_personnel: 0,
-    max_personnel: 0
+    max_personnel: 0,
+    location: { lat: 0, lon: 0 }
   }
 };
 
