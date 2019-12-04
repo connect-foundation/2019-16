@@ -1,20 +1,22 @@
 import React, { useContext } from "react";
-import { UserContext } from "../../../pages/users/index";
+import { UserContext } from "../../../pages/users";
+import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 
 const UserInfo = () => {
-  const { userInfo } = useContext(UserContext);
-  const { profileImage, userName, userEmail } = userInfo;
+  const { userEmail, profileImage, userName } = useContext(UserContext);
   return (
-    <>
-      {userEmail && (
-        <div>
+    <div>
+      {userEmail ? (
+        <>
           <img src={profileImage} alt="profile" />
           <span>{userName}님 반갑습니다.</span>
           <LogoutButton />
-        </div>
+        </>
+      ) : (
+        <LoginButton />
       )}
-    </>
+    </div>
   );
 };
 

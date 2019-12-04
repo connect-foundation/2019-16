@@ -17,12 +17,12 @@ const StyledGroupDetail = styled.div`
 `;
 
 const GroupDetail = () => {
-  const [state, dispatch] = useReducer(groupDetailReducer, initialState);
+  const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
 
   return (
     <StyledGroupDetail>
-      <Header state={state}></Header>
-      <Main state={state} dispatch={dispatch}></Main>
+      <Header groupData={groupData}></Header>
+      <Main groupData={groupData} dispatch={dispatch}></Main>
       <Intro></Intro>
     </StyledGroupDetail>
   );

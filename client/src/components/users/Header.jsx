@@ -1,48 +1,54 @@
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
-import AccountContainer from "./accountContainer";
+
+import UserInfo from "./UserInfo";
+import StudySearchNavbar from "./studySearchNavbar";
+
 import { set_groups } from "../../reducer/users/index";
 import { UserContext } from "../../pages/users/index";
 
-const HeaderContainer = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 5%;
-  padding-right: 5%;
-  padding-top: 3%;
-  margin-bottom: 2.3rem;
-  .logo {
-    width: 64px;
-    height: 64px;
-  }
-  .search-box {
-    width: 70%;
-    .input {
-      border-color: #53d0ec;
-      width: 50%;
-    }
-  }
-  .account-box {
+const StyledHeader = styled.header`
+  .header-info {
     display: flex;
-    font-family: NanumGothic;
-    font-weight: bold;
-    font-size: 1.3em;
-    color: #000000;
-    .accountbox-btn {
-      padding: 0 0.4em;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 3%;
+    margin-bottom: 2.3rem;
+
+    .logo {
+      width: 64px;
+      height: 64px;
     }
-    .user-account-btn {
-      color: #55f4c4;
+    .search-box {
+      width: 70%;
+      .input {
+        border-color: #53d0ec;
+        width: 50%;
+      }
+    }
+    .account-box {
+      display: flex;
+      font-family: NanumGothic;
+      font-weight: bold;
+      font-size: 1.3em;
+      color: #000000;
+      .accountbox-btn {
+        padding: 0 0.4em;
+      }
+      .user-account-btn {
+        color: #55f4c4;
+      }
     }
   }
 `;
 
 const Header = () => {
-  const { userIndexDispatch } = useContext(UserContext);
+  const { userInfo, userIndexDispatch } = useContext(UserContext);
+  const { userName } = { userInfo };
 
   const onKeyUp = useCallback(e => {
     if (e.key === "Enter") {
@@ -54,7 +60,7 @@ const Header = () => {
         const tag = keyword.slice(1);
 
         axios
-          .post(`${REQUEST_URL}/search/tags`, {
+          .post(`${REQUEST_URL}/api/search/tags`, {
             tags: [tag],
             isRecruit: true
           })
@@ -70,7 +76,7 @@ const Header = () => {
           });
       } else {
         axios
-          .get(`${REQUEST_URL}/search/query/${keyword}/true`)
+          .get(`${REQUEST_URL}/api/search/query/${keyword}/true`)
           .then(result => {
             const { data } = result;
             for (let i = 0; i < data.length; i++) {
@@ -86,29 +92,32 @@ const Header = () => {
   }, []);
 
   return (
-    <HeaderContainer>
-      <Link to="/">
-        <img
-          src="/image/logo-mini.png"
-          alt="study combined"
-          className={["logo"]}
-        />{" "}
-      </Link>
-      <div className={`search-box`}>
-        <input
-          class="input is-rounded"
-          type="text"
-          placeholder="스터디그룹 검색"
-          onKeyUp={onKeyUp}
-        />
-      </div>
-      <div className={`account-box`}>
-        <div className={`user-account-btn accountbox-btn`}>
-          <span> 태현님 환영합니다. </span>
+    <StyledHeader>
+      <div className="header-info">
+        <a href="/">
+          <img
+            src="/image/logo-mini.png"
+            alt="study combined"
+            className="logo"
+          />{" "}
+        </a>
+        <div className={`search-box`}>
+          <input
+            className="input is-rounded"
+            type="text"
+            placeholder="스터디그룹 검색"
+            onKeyUp={onKeyUp}
+          />
         </div>
+        <div className={`account-box`}>
+          <div className={`user-account-btn accountbox-btn`}>
+            <span> {userName}님 환영합니다. </span>
+          </div>
+        </div>
+        <UserInfo />
       </div>
-      <AccountContainer />
-    </HeaderContainer>
+      <StudySearchNavbar />
+    </StyledHeader>
   );
 };
 
