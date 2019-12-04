@@ -1,16 +1,14 @@
-const { searchAllStudyGroupWithFiltering, searchStudyGroup, bulkStudyGroups } = require("../elasticsearch")
+const { searchAllStudyGroup, searchStudyGroupWithCategory } = require("../elasticsearch")
 
 /**
- * bulkStudyGroups test
+ * searchStudyGroupWithCategory test
  */
-test("bulkStudyGroups Test", async () => {
-  const testGroups = [
-    { "title": "오늘도 코딩 스터디", "leader": "리더일", "members": [{ "email": "sdkf@naver.com" }, { "email": "sjdklf@kakao.com" }], "min_personnel": 2, "max_personnel": 6, "isRecruit": true, "description": "일주일에 3번 만나 모각코 합니다", "thumbnail": "으쌰으쌰", "location": { "lat": 41.12, "lon": -71.34 }, "tags": [{ "tag": "자바" }, { "tag": "파이썬" }] },
-    { "title": "어제도 코딩 스터디", "leader": "리더삼", "members": [{ "email": "sdzxckf@naver.com" }, { "email": "sjdkqweqwelf@kakao.com" }], "min_personnel": 4, "max_personnel": 9, "isRecruit": true, "description": "매일매일 만나고 싶지만 일주일에 한 번", "thumbnail": "고고고", "location": { "lat": 41.12, "lon": -50.34 }, "tags": [{ "tag": "GO" }] }
-  ]
+test("searchStudyGroupWithCategory Test", async () => {
+  const testGroups = [{ "title": "어제도 코딩 스터디", "subtitle": "언젠간GO를 마스터 할 날이 오겠죠", "leader": "리더삼", "members": [{ "email": "sdzxckf@naver.com" }, { "email": "sjdkqweqwelf@kakao.com" }], "min_personnel": 4, "now_personnel": 7, "max_personnel": 9, "startTime": 13, "during": 2, "days": [4, 5], "isRecruiting": true, "description": "매일매일 만나고 싶지만 일주일에 한 번", "thumbnail": "http://images.christiantoday.co.kr/data/images/full/323947/2.jpg?w=654", "location": { "lat": 41.12, "lon": -50.34 }, "category": ["프로그래밍", "JavaScript"], "tags": ["GO"] }]
 
-  await bulkStudyGroups(testGroups);
-  const result = await searchAllStudyGroupWithFiltering({ isRecruit: true });
+
+  const result = await searchStudyGroupWithCategory({ searchWord: "코딩", category: "프로그래밍", lat: 41.0, lon: -50.34, isRecruit: true });
 
   expect(testGroups).toEqual(result);
 })
+

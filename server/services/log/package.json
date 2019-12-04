@@ -19,6 +19,7 @@
   "homepage": "https://github.com/connect-foundation/2019-16#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "elasticsearch": "^16.5.0",
     "jest": "^24.9.0"
   }
 }
