@@ -1,6 +1,8 @@
-import React, { useState, useReducer, createContext } from "react";
+import React, { useEffect, useState, useReducer, createContext } from "react";
 import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 import MainPage from "./Main";
 import GroupDetailPage from "./groupDetail";
@@ -11,6 +13,17 @@ import { initalState, userIndexReducer } from "../../reducer/users";
 const StyledUserPage = styled.div``;
 
 export const UserContext = createContext();
+
+const getCurrentPosition = new Promise((resolve, reject) => {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      resolve({ lat, lon });
+    },
+    err => reject(err)
+  );
+});
 
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
@@ -27,9 +40,23 @@ const UserPage = () => {
     initalState
   );
 
+  useEffect(() => {
+    const parsedUserInfo = jwtParser();
+    parsedUserInfo ||
+      getCurrentPosition
+        .then(pos => {
+          // const lat = pos.lat;
+          // const lon = pos.lon;
+          const lat = 41.12;
+          const lon = -50.34;
+          setUserInfo({ ...userInfo, userLocation: { lat, lon } });
+        })
+        .catch(console.error);
+  }, []);
+
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo, userIndexState, userIndexDispatch }}
+      value={{ userInfo, userIndexState, userIndexDispatch }}
     >
       <StyledUserPage>
         <Header />
@@ -42,5 +69,10 @@ const UserPage = () => {
     </UserContext.Provider>
   );
 };
+
+function jwtParser() {
+  const jwt = Cookies.get("access_token");
+  return jwt && jwt_decode(jwt);
+}
 
 export default UserPage;

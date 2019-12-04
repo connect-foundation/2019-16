@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -72,43 +72,28 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
-//geolocation api 실패
-const geoError = function(error) {};
-
 const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
 
-  const { searchList } = userIndexState;
+  const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
+  let { lat, lon } = userLocation;
+
   useEffect(() => {
-    let lat;
-    let lon;
-    if (userEmail !== "") {
-      lat = userLocation.lat;
-      lon = userLocation.lon;
-    } else {
-      navigator.geolocation.getCurrentPosition(pos => {
-        lat = pos.coords.latitude;
-        lon = pos.coords.longitude;
-        lat = 41.12;
-        lon = -50.34;
-      }, geoError);
-    }
     axios
-      .get(`${REQUEST_URL}/search/all/location/${lat}/${lon}/true`)
+      .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
       .then(result => {
         const { data } = result;
 
         for (let i = 0; i < data.length; i++) {
           data[i].id = i;
         }
-
         userIndexDispatch(set_groups(data));
       }, []);
-  }, []);
+  }, [userLocation]);
 
   return (
     <Main>

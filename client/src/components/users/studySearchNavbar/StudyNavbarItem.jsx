@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../../config.json";
@@ -18,29 +19,39 @@ const Category = styled.div`
 `;
 
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
-  const { userIndexDispatch } = useContext(UserContext);
+  const { userIndexDispatch, userInfo } = useContext(UserContext);
 
-  const searchGroups = useCallback(e => {
-    const categoryName = e.target.textContent.trim();
+  const searchGroups = useCallback(
+    e => {
+      const categoryName = e.target.textContent.trim();
+      const { lat, lon } = userInfo.userLocation;
 
-    axios.get(`${REQUEST_URL}/search/all/${categoryName}/true`).then(result => {
-      const { data } = result;
+      axios
+        .get(
+          `${REQUEST_URL}/api/search/all/category/${categoryName}/location/${lat}/${lon}/true`
+        )
+        .then(result => {
+          const { data } = result;
 
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
+          for (let i = 0; i < data.length; i++) {
+            data[i].id = i;
+            data[
+              i
+            ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+          }
 
-      userIndexDispatch(set_groups(data));
-    });
-  }, []);
+          userIndexDispatch(set_groups(data));
+        });
+    },
+    [userInfo]
+  );
 
   const itemList = secondaryCategories.map((category, idx) => (
-    <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
-      {category}
-    </span>
+    <Link to="/">
+      <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
+        {category}
+      </span>
+    </Link>
   ));
 
   return (
