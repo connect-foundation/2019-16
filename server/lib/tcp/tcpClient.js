@@ -1,5 +1,4 @@
 const net = require("net");
-const logger = require("../../services/logger/logger");
 const { PACKET_SPLITTER } = require("./util");
 
 function registEvent() {
@@ -46,7 +45,7 @@ class TcpClient {
   }
   connect() {
     this.client = net.connect(this.options, () => {
-      logger.info(`connet to ${this.options.host} : ${this.options.port}`);
+      console.log(`connet to ${this.options.host} : ${this.options.port}`);
       this.onCreate();
     });
     registEvent.bind(this)();
