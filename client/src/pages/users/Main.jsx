@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -73,6 +73,16 @@ const Main = styled.div`
  */
 
 //geolocation api 실패
+const getCurrentPosition = new Promise((resolve, reject) => {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      resolve({ lat, lon });
+    },
+    err => reject(err)
+  );
+});
 const geoError = function(error) {};
 
 const MainPage = () => {
@@ -80,25 +90,25 @@ const MainPage = () => {
     UserContext
   );
 
-  const { searchList } = userIndexState;
+  const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
-  useEffect(() => {
-    let lat;
-    let lon;
-    if (userEmail !== "") {
-      lat = userLocation.lat;
-      lon = userLocation.lon;
-    } else {
-      navigator.geolocation.getCurrentPosition(pos => {
-        lat = pos.coords.latitude;
-        lon = pos.coords.longitude;
+  let { lat, lon } = useMemo(() => userLocation, []);
+
+  if (!userEmail) {
+    getCurrentPosition
+      .then(pos => {
+        // lat = pos.lat;
+        // lon = pos.lon;
         lat = 41.12;
         lon = -50.34;
-      }, geoError);
-    }
+      })
+      .catch(console.error);
+  }
+
+  useEffect(() => {
     axios
-      .get(`${REQUEST_URL}/search/all/location/${lat}/${lon}/true`)
+      .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
       .then(result => {
         const { data } = result;
 
@@ -108,7 +118,7 @@ const MainPage = () => {
 
         userIndexDispatch(set_groups(data));
       }, []);
-  }, []);
+  }, [userLocation]);
 
   return (
     <Main>
