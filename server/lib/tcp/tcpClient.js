@@ -1,5 +1,4 @@
 const net = require("net");
-const logger = require("../../services/logger/logger");
 const { PACKET_SPLITTER } = require("./util");
 
 function registEvent() {
@@ -31,7 +30,7 @@ function registEvent() {
   this.client.on("error", () => {
     this.onError();
   });
-};
+}
 
 class TcpClient {
   constructor(host, port, onCreate, onRead, onEnd, onError) {
@@ -46,7 +45,7 @@ class TcpClient {
   }
   connect() {
     this.client = net.connect(this.options, () => {
-      logger.info(`connet to ${this.options.host} : ${this.options.port}`);
+      console.log(`connet to ${this.options.host} : ${this.options.port}`);
       this.onCreate();
     });
     registEvent.bind(this)();
@@ -60,6 +59,5 @@ class TcpClient {
     this.client.end();
   }
 }
-
 
 module.exports = TcpClient;

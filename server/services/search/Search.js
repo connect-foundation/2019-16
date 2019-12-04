@@ -1,7 +1,15 @@
 const App = require("../../lib/tcp/App");
 const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
 const { makePacket } = require("../../lib/tcp/util");
-const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
+const {
+  searchAllStudyGroupWithCategory,
+  tagStudyGroup,
+  tagStudyGroupWithCategory,
+  searchAllStudyGroup,
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  bulkStudyGroups
+} = require("./elasticsearch");
 
 const queryMap = {
   searchStudyGroup: searchStudyGroup,
@@ -10,7 +18,7 @@ const queryMap = {
   tagStudyGroupWithCategory: tagStudyGroupWithCategory,
   searchAllStudyGroup: searchAllStudyGroup,
   searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
-}
+};
 
 function emptyStudyGroupPeriodically(timer) {
   setTimeout(async () => {
@@ -22,7 +30,6 @@ function emptyStudyGroupPeriodically(timer) {
 
     if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
     else emptyStudyGroupPeriodically(timer);
-
   }, timer);
 }
 
@@ -32,23 +39,29 @@ class Search extends App {
     emptyStudyGroupPeriodically(30000);
   }
   async onRead(socket, data) {
-    let packet;
-    const { params, query, key } = data;
+    const { params, curQuery } = data;
+
+    this.tcpLogSender(curQuery);
+
+    let replyData;
+    let method = "REPLY";
+    let params_ = {};
+    let result;
 
     try {
-      const result = await queryMap[query](params);
-
-      packet = makePacket("REPLY", query, {}, { studygroups: result }, key, this.context);
+      result = await queryMap[curQuery](params);
     } catch (e) {
-      packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
+      method = "ERROR";
+      result = e;
     } finally {
-      this.send(socket, packet);
+      replyData = {
+        ...data,
+        method,
+        params: params_,
+        body: result
+      };
+      this.send(socket, replyData);
     }
-
-
-  }
-  send(socket, packet) {
-    socket.write(packet);
   }
 }
 
