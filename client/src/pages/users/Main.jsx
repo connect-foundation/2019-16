@@ -72,23 +72,42 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
+//geolocation api 실패
+const geoError = function(error) {};
+
 const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
-  const { searchList, myGroups } = userIndexState;
-  const { userEmail } = userInfo;
+
+  const { searchList } = userIndexState;
+  const { userEmail, userLocation } = userInfo;
 
   useEffect(() => {
-    axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
-      const { data } = result;
+    let lat;
+    let lon;
+    if (userEmail !== "") {
+      lat = userLocation.lat;
+      lon = userLocation.lon;
+    } else {
+      navigator.geolocation.getCurrentPosition(pos => {
+        lat = pos.coords.latitude;
+        lon = pos.coords.longitude;
+        lat = 41.12;
+        lon = -50.34;
+      }, geoError);
+    }
+    axios
+      .get(`${REQUEST_URL}/search/all/location/${lat}/${lon}/true`)
+      .then(result => {
+        const { data } = result;
 
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-      }
+        for (let i = 0; i < data.length; i++) {
+          data[i].id = i;
+        }
 
-      userIndexDispatch(set_groups(data));
-    });
+        userIndexDispatch(set_groups(data));
+      }, []);
   }, []);
 
   return (

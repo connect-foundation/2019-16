@@ -18,7 +18,8 @@ const UserPage = () => {
     userName: "",
     userAgeRange: -1,
     userGender: "",
-    profileImage: ""
+    profileImage: "",
+    userLocation: { lat: 0, lon: 0 }
   });
 
   const [userIndexState, userIndexDispatch] = useReducer(
