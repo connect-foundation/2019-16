@@ -1,11 +1,10 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { REQUEST_URL } from "../../config.json";
 
-import StudySearchNavbar from "../../components/users/studySearchNavbar";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
@@ -73,26 +72,42 @@ const Main = styled.div`
  * 로그인시 MyStudyCarousel 출력
  */
 
+//geolocation api 실패
+const geoError = function(error) {};
+
 const MainPage = () => {
   const { userIndexState, userIndexDispatch, userInfo } = useContext(
     UserContext
   );
+
   const { searchList } = userIndexState;
-  const { userEmail } = userInfo;
+  const { userEmail, userLocation } = userInfo;
 
   useEffect(() => {
-    axios.get(`${REQUEST_URL}/api/search/all/true`).then(result => {
-      const { data } = result;
+    let lat;
+    let lon;
+    if (userEmail !== "") {
+      lat = userLocation.lat;
+      lon = userLocation.lon;
+    } else {
+      navigator.geolocation.getCurrentPosition(pos => {
+        lat = pos.coords.latitude;
+        lon = pos.coords.longitude;
+        lat = 41.12;
+        lon = -50.34;
+      }, geoError);
+    }
+    axios
+      .get(`${REQUEST_URL}/search/all/location/${lat}/${lon}/true`)
+      .then(result => {
+        const { data } = result;
 
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
+        for (let i = 0; i < data.length; i++) {
+          data[i].id = i;
+        }
 
-      userIndexDispatch(set_groups(data));
-    }, []);
+        userIndexDispatch(set_groups(data));
+      }, []);
   }, []);
 
   return (
@@ -100,7 +115,11 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel></MyStudyCarousel>
+            {myGroups.length ? (
+              <MyStudyCarousel></MyStudyCarousel>
+            ) : (
+              "현재 소속된 스터디 그룹이 없습니다."
+            )}
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -117,17 +136,18 @@ const MainPage = () => {
         )}
       </div>
 
-      <Router>
-        <StudySearchNavbar></StudySearchNavbar>
-
-        <div className="study-group-list">
-          {searchList.length
-            ? searchList.map(groupData => {
-                return <StudyGroupCard groupData={groupData}></StudyGroupCard>;
-              })
-            : "데이터가 업소용"}
-        </div>
-      </Router>
+      <div className="study-group-list">
+        {searchList.length
+          ? searchList.map(groupData => {
+              return (
+                <StudyGroupCard
+                  key={groupData.id}
+                  groupData={groupData}
+                ></StudyGroupCard>
+              );
+            })
+          : "데이터가 업소용"}
+      </div>
     </Main>
   );
 };

@@ -28,13 +28,20 @@ const StyledLocation = styled.div`
   }
 `;
 
-const Location = ({ location }) => (
-  <StyledLocation>
-    <div className="imageWrapper">
-      <img src="/image/location-icon.png" alt="location-icon" />
-    </div>
-    <div className="locationName">&nbsp;{location}</div>
-  </StyledLocation>
-);
+const Location = ({ location }) => {
+  const { lat, lon } = location;
+
+  return (
+    <StyledLocation>
+      <div className="imageWrapper">
+        <img src="/image/location-icon.png" alt="location-icon" />
+      </div>
+      <div className="locationName">
+        {" "}
+        위도: {lat} 경도: {lon}
+      </div>
+    </StyledLocation>
+  );
+};
 
 export default memo(Location);
