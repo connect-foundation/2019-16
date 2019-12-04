@@ -6,11 +6,13 @@ import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
 import TagInput from "../../components/users/groupCreate/TagInput";
 import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
+import RangeSlider from "../../components/users/common/RangeSlider";
 import { UserContext } from "./index";
 import {
   groupCreateReducer,
   initialState,
-  input_content
+  input_content,
+  change_personnel
 } from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -51,12 +53,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = () => {
   const { userInfo } = useContext(UserContext);
 
-  initialState.data.leader = {
-    email: userInfo.userEmail,
-    ageRange: userInfo.userAgeRange,
-    gender: userInfo.userGender,
-    name: userInfo.userName
-  };
+  initialState.data.leader = userInfo.userEmail;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -67,6 +64,11 @@ const GroupCreate = () => {
     const description = e.target.value;
 
     dispatch(input_content(contentType, description));
+  }, []);
+
+  const onChangeSlider = useCallback((min, max) => {
+    console.log(change_personnel);
+    dispatch(change_personnel(min, max));
   }, []);
 
   const onSubmit = useCallback(
@@ -144,6 +146,12 @@ const GroupCreate = () => {
 
       <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
 
+      <RangeSlider
+        minRange={1}
+        maxRange={10}
+        step={1}
+        onChangeSlider={onChangeSlider}
+      />
       <button type="submit" className="button" onClick={onSubmit}>
         {" "}
         등록하기{" "}
