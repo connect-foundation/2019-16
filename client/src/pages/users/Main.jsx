@@ -81,6 +81,7 @@ const MainPage = () => {
   const { userEmail, userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
+
   useEffect(() => {
     axios
       .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
@@ -90,7 +91,6 @@ const MainPage = () => {
         for (let i = 0; i < data.length; i++) {
           data[i].id = i;
         }
-
         userIndexDispatch(set_groups(data));
       }, []);
   }, [userLocation]);

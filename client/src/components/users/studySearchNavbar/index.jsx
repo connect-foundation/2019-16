@@ -27,23 +27,28 @@ const Navbar = styled.div`
 `;
 
 const StudySearchNavbar = () => {
-  const { userIndexState, userIndexDispatch } = useContext(UserContext);
+  const { userIndexState, userIndexDispatch, userInfo } = useContext(
+    UserContext
+  );
   const { primaryCategories, secondaryCategories } = userIndexState;
-
   const searchAllGroups = useCallback(() => {
-    axios.get(`${REQUEST_URL}/search/all/true`).then(result => {
-      const { data } = result;
+    const { lat, lon } = userInfo.userLocation;
 
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
+    axios
+      .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
+      .then(result => {
+        const { data } = result;
 
-      userIndexDispatch(set_groups(data));
-    });
-  }, []);
+        for (let i = 0; i < data.length; i++) {
+          data[i].id = i;
+          data[
+            i
+          ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+        }
+
+        userIndexDispatch(set_groups(data));
+      });
+  }, [userInfo]);
 
   return (
     <Navbar>
