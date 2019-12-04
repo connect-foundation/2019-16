@@ -73,23 +73,22 @@ const GroupCreate = () => {
   const onSubmit = useCallback(
     e => {
       const { data } = state;
+      const form = new FormData();
+
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
-      delete data.thumbnail;
-
-      const form = new FormData();
       form.append("image", data.thumbnail);
+      delete data.thumbnail;
       form.append("data", JSON.stringify(data));
 
       axios
-        .post(`${REQUEST_URL}/api/studyGroup/register"`, form, {
+        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         })
         .then(({ status }) => {
-          if (status === 200) window.location.href = "/";
-          else alert("에러 발생");
+          window.location.href = "/";
         })
         .catch(e => {
           console.error(e);
