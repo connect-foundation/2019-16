@@ -1,3 +1,4 @@
+
 require("dotenv").config({ path: ".env" });
 const {
   SEARCH_ELASTIC_HOST,
@@ -10,35 +11,72 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
-exports.searchStudyGroup = async info => {
-  const { searchWord, isRecruit } = info;
-
-  const { body } = await client.search({
-    index: SEARCH_INDEX_STUDYGROUP,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              query_string: {
-                query: `*${searchWord}*`,
-                fields: ["title", "intro", "subtitle"]
-              }
-            }
-          ],
-          must_not: [
-            {
-              term: {
-                isRecruiting: !isRecruit
-              }
-            }
-          ]
-        }
+async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
+  let distance = 2;
+  let searchResult;
+  const geoFilter = {
+    geo_distance: {
+      distance: distance,
+      location: {
+        lat: lat,
+        lon: lon
       }
     }
-  });
+  };
 
-  const result = body.hits.hits.map(hit => {
+  if (body.query.bool.filter !== undefined) {
+    body.query.bool.filter.push(geoFilter);
+  } else {
+    body.query.bool.filter = [geoFilter];
+  }
+
+  const search = {
+    index,
+    body
+  };
+
+  while (distance <= maxDistance) {
+    search.body.query.bool.filter[
+      search.body.query.bool.filter.length - 1
+    ].geo_distance.distance = `${distance}km`;
+    searchResult = await client.search(search);
+    distance += 2;
+    if (searchResult.body.hits.hits.length >= 10) break;
+  }
+  return searchResult;
+}
+
+exports.searchStudyGroup = async info => {
+  const { searchWord, lat, lon, isRecruit } = info;
+  const body = {
+    query: {
+      bool: {
+        must: [
+          {
+            query_string: {
+              query: `*${searchWord}*`,
+              fields: ["title", "intro", "subtitle"]
+            }
+          }
+        ],
+        must_not: [
+          {
+            term: {
+              isRecruiting: !isRecruit
+            }
+          }
+        ]
+      }
+    }
+  };
+  const searchResult = await reSearchInDistance(
+    SEARCH_INDEX_STUDYGROUP,
+    body,
+    lat,
+    lon,
+    20
+  );
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
@@ -46,41 +84,45 @@ exports.searchStudyGroup = async info => {
 };
 
 exports.searchStudyGroupWithCategory = async info => {
-  const { searchWord, category, isRecruit } = info;
+  const { searchWord, category, lat, lon, isRecruit } = info;
 
-  const { body } = await client.search({
-    index: SEARCH_INDEX_STUDYGROUP,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              query_string: {
-                query: `*${searchWord}*`,
-                fields: ["title", "intro"]
-              }
+  const body = {
+    query: {
+      bool: {
+        must: [
+          {
+            query_string: {
+              query: `*${searchWord}*`,
+              fields: ["title", "intro"]
             }
-          ],
-          must_not: [
-            {
-              term: {
-                isRecruiting: !isRecruit
-              }
+          }
+        ],
+        must_not: [
+          {
+            term: {
+              isRecruiting: !isRecruit
             }
-          ],
-          filter: [
-            {
-              term: {
-                category: category
-              }
+          }
+        ],
+        filter: [
+          {
+            term: {
+              category: category
             }
-          ]
-        }
+          }
+        ]
       }
     }
-  });
+  };
+  const searchResult = await reSearchInDistance(
+    SEARCH_INDEX_STUDYGROUP,
+    body,
+    lat,
+    lon,
+    20
+  );
 
-  const result = body.hits.hits.map(hit => {
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
@@ -88,32 +130,34 @@ exports.searchStudyGroupWithCategory = async info => {
 };
 
 exports.tagStudyGroup = async info => {
-  const { tags, isRecruit } = info;
+  const { tags, lat, lon, isRecruit } = info;
 
   const prefixs = tags.reduce((acc, tag) => {
     acc.push({ prefix: { tags: { value: tag } } });
     return acc;
   }, []);
-
-  console.log(prefixs);
-  const { body } = await client.search({
-    index: SEARCH_INDEX_STUDYGROUP,
-    body: {
-      query: {
-        bool: {
-          must_not: [
-            {
-              term: {
-                isRecruiting: !isRecruit
-              }
+  const body = {
+    query: {
+      bool: {
+        must_not: [
+          {
+            term: {
+              isRecruiting: !isRecruit
             }
-          ],
-          should: prefixs
-        }
+          }
+        ],
+        should: prefixs
       }
     }
-  });
-  const result = body.hits.hits.map(hit => {
+  };
+  const searchResult = await reSearchInDistance(
+    SEARCH_INDEX_STUDYGROUP,
+    body,
+    lat,
+    lon,
+    20
+  );
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
@@ -123,28 +167,34 @@ exports.tagStudyGroup = async info => {
 exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
-  const { isRecruit } = info;
+  const { lat, lon, isRecruit } = info;
 
-  const { body } = await client.search({
-    index: SEARCH_INDEX_STUDYGROUP,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              match_all: {}
-            }
-          ],
-          filter: {
+  const body = {
+    query: {
+      bool: {
+        must: [
+          {
+            match_all: {}
+          }
+        ],
+        filter: [
+          {
             term: {
               isRecruiting: isRecruit
             }
           }
-        }
+        ]
       }
     }
-  });
-  const result = body.hits.hits.map(hit => {
+  };
+  const searchResult = await reSearchInDistance(
+    SEARCH_INDEX_STUDYGROUP,
+    body,
+    lat,
+    lon,
+    20
+  );
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
@@ -152,35 +202,41 @@ exports.searchAllStudyGroup = async info => {
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
-  const { category, isRecruit } = info;
 
-  const { body } = await client.search({
-    index: SEARCH_INDEX_STUDYGROUP,
-    body: {
-      query: {
-        bool: {
-          must: [
-            {
-              match_all: {}
+  const { category, lat, lon, isRecruit } = info;
+
+  const body = {
+    query: {
+      bool: {
+        must: [
+          {
+            match_all: {}
+          }
+        ],
+        filter: [
+          {
+            term: {
+              isRecruiting: isRecruit
             }
-          ],
-          filter: [
-            {
-              term: {
-                isRecruiting: isRecruit
-              }
-            },
-            {
-              term: {
-                category: category
-              }
+          },
+          {
+            term: {
+              category: category
             }
-          ]
-        }
+          }
+        ]
       }
     }
-  });
-  const result = body.hits.hits.map(hit => {
+  };
+
+  const searchResult = await reSearchInDistance(
+    SEARCH_INDEX_STUDYGROUP,
+    body,
+    lat,
+    lon,
+    20
+  );
+  const result = searchResult.body.hits.hits.map(hit => {
     return hit._source;
   });
 
