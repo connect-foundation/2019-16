@@ -31,7 +31,7 @@ const UserPage = () => {
 
   useEffect(() => {
     const userInfo = jwtParser();
-    setUserInfo(userInfo);
+    userInfo && setUserInfo(userInfo);
   }, []);
 
   return (
@@ -52,7 +52,7 @@ const UserPage = () => {
 
 function jwtParser() {
   const jwt = Cookies.get("access_token");
-  return jwt_decode(jwt);
+  return jwt && jwt_decode(jwt);
 }
 
 export default UserPage;
