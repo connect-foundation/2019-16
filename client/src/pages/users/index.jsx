@@ -1,6 +1,8 @@
-import React, { useState, useReducer, createContext } from "react";
+import React, { useEffect, useState, useReducer, createContext } from "react";
 import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
+import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 
 import MainPage from "./Main";
 import GroupDetailPage from "./groupDetail";
@@ -27,9 +29,14 @@ const UserPage = () => {
     initalState
   );
 
+  useEffect(() => {
+    const userInfo = jwtParser();
+    setUserInfo(userInfo);
+  }, []);
+
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo, userIndexState, userIndexDispatch }}
+      value={{ userInfo, userIndexState, userIndexDispatch }}
     >
       <StyledUserPage>
         <Header />
@@ -42,5 +49,10 @@ const UserPage = () => {
     </UserContext.Provider>
   );
 };
+
+function jwtParser() {
+  const jwt = Cookies.get("access_token");
+  return jwt_decode(jwt);
+}
 
 export default UserPage;
