@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../../config.json";
@@ -46,9 +47,11 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   );
 
   const itemList = secondaryCategories.map((category, idx) => (
-    <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
-      {category}
-    </span>
+    <Link to="/">
+      <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
+        {category}
+      </span>
+    </Link>
   ));
 
   return (

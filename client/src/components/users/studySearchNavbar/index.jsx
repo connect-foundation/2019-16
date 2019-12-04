@@ -1,4 +1,5 @@
 import React, { useContext, useCallback } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -59,9 +60,11 @@ const StudySearchNavbar = () => {
       >
         <div id="navbarExampleTransparentExample" style={{ width: "100%" }}>
           <div className="navbar-start">
-            <span className="navbar-item is-size-3" onClick={searchAllGroups}>
-              모두 보기
-            </span>
+            <Link to="/">
+              <span className="navbar-item is-size-3" onClick={searchAllGroups}>
+                모두 보기
+              </span>{" "}
+            </Link>
 
             {primaryCategories.map((category, idx) => (
               <StudyNavbarItem
