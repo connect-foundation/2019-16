@@ -1,14 +1,20 @@
-require("dotenv").config({ path: ".env.search" });
-const { ELASTIC_HOST, ELASTIC_PORT, INDEX_STUDYGROUP } = process.env;
+require("dotenv").config({ path: ".env" });
+const {
+  SEARCH_ELASTIC_HOST,
+  SEARCH_ELASTIC_PORT,
+  SEARCH_INDEX_STUDYGROUP
+} = process.env;
 
 const { Client } = require("@elastic/elasticsearch");
-const client = new Client({ node: `http://${ELASTIC_HOST}:${ELASTIC_PORT}` });
+const client = new Client({
+  node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
+});
 
 exports.searchStudyGroup = async info => {
   const { searchWord, isRecruit } = info;
 
   const { body } = await client.search({
-    index: INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_STUDYGROUP,
     body: {
       query: {
         bool: {
@@ -43,7 +49,7 @@ exports.searchStudyGroupWithCategory = async info => {
   const { searchWord, category, isRecruit } = info;
 
   const { body } = await client.search({
-    index: INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_STUDYGROUP,
     body: {
       query: {
         bool: {
@@ -91,7 +97,7 @@ exports.tagStudyGroup = async info => {
 
   console.log(prefixs);
   const { body } = await client.search({
-    index: INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_STUDYGROUP,
     body: {
       query: {
         bool: {
@@ -120,7 +126,7 @@ exports.searchAllStudyGroup = async info => {
   const { isRecruit } = info;
 
   const { body } = await client.search({
-    index: INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_STUDYGROUP,
     body: {
       query: {
         bool: {
@@ -149,7 +155,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
   const { category, isRecruit } = info;
 
   const { body } = await client.search({
-    index: INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_STUDYGROUP,
     body: {
       query: {
         bool: {
@@ -188,7 +194,7 @@ exports.bulkStudyGroups = async groups => {
 
     delete group.id;
     return [
-      { index: { _index: INDEX_STUDYGROUP, _type: "_doc", _id: id } },
+      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
       group
     ];
   });

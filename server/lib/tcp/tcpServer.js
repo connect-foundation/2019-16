@@ -1,5 +1,4 @@
 const net = require("net");
-const logger = require("../../services/logger/logger");
 const { makeKey, PACKET_SPLITTER } = require("./util");
 
 class TcpServer {
@@ -43,14 +42,14 @@ class TcpServer {
       });
     });
     this.server.listen(port, host, () => {
-      logger.info(`${name} Server Listening!`);
+      console.log(`${name} Server Listening!`);
     });
   }
   onError(socket) {}
   onCreate(socket) {}
   onClose(socket) {}
   onRead(socket, data) {
-    logger.info(data);
+    console.log(data);
 
     socket.write(data);
   }
