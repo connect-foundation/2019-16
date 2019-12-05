@@ -10,14 +10,14 @@ export const initialState = {
     "https://secure.meetupstatic.com/photos/event/c/6/d/c/600_482150908.jpeg",
   location: { lat: 50, lon: 40 },
   startTime: 5,
+  endTime: 7,
   days: [1, 3],
-  during: 2,
   min_personnel: 1,
   now_personnel: 2,
   max_personnel: 4,
   tags: ["Java", "C++", "Python"],
-  leader: "dlatns0201@naver.com",
-  members: []
+  members: [],
+  isRecruiting: true
 };
 
 export const groupDetail = (state, action) => {
