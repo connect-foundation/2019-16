@@ -15,16 +15,18 @@ class App extends TcpServer {
     this.ApiGateway = this.connectToApiGateway();
 
     this.tcpLogSender = makeLogSender.call(this, "tcp");
-
+    (async () => {
+      await this.doMessageJob(job);
+    })();
   }
 
   async doMessageJob(job) {
-    const packets = await popMessageQueue(this.name, 1000);
+    const packets = await popMessageQueue(this.context.name, 1000);
 
-    if (!Array.isArray(packets)) job({}, JSON.parse(packets));
-    packets.forEach((packet) => {
-      job({}, JSON.parse(packet));
-    })
+    if (!Array.isArray(packets)) job.bind(this)({}, JSON.parse(packets));
+    packets.forEach(packet => {
+      job.bind(this)({}, JSON.parse(packet));
+    });
   }
 
   send(appClient, data) {
@@ -61,6 +63,7 @@ class App extends TcpServer {
       if (clientInfo === null) throw new Error(`${name} server is not running`);
 
       const client = new TcpClient(
+        name,
         clientInfo.host,
         clientInfo.port,
         onCreate,
@@ -88,6 +91,7 @@ class App extends TcpServer {
 
   connectToAppListManager() {
     this.appListManager = new TcpClient(
+      "appListManager",
       "127.0.0.1",
       8100,
       () => {
@@ -131,6 +135,7 @@ class App extends TcpServer {
 
   connectToLogService() {
     this.logService = new TcpClient(
+      "logService",
       "127.0.0.1",
       8004,
       () => {
@@ -163,6 +168,7 @@ class App extends TcpServer {
 
   connectToApiGateway() {
     this.ApiGateway = new TcpClient(
+      "apiGateway",
       "127.0.0.1",
       8001,
       () => {
