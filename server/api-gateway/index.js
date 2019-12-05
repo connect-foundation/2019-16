@@ -79,9 +79,9 @@ server.use(setResponseKey);
 // server.use("/api/search", gatewayLogger, searchRouter);
 
 server.use(gatewayLogger);
-server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
-server.use("/api/studyGroup", studyGroupRouter);
+server.use("/api/search", searchRouter);
+server.use("/api/studygroup", studyGroupRouter);
 server.use("/api/studyroom", studyRoomRouter);
 server.use(writePacket);
 

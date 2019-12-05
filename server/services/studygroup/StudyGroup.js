@@ -27,7 +27,20 @@ class StudyGroup extends App {
           console.error(e);
           replyData.method = "ERROR";
           replyData.body = e;
-          // packet = makePacket("ERROR", query, {}, {}, key, this.context);
+        }
+        break;
+
+      case "getGroupDetail":
+        try {
+          const { id: _id } = params;
+          const result = await StudyGroups.findOne({ _id });
+
+          replyData.method = "REPLY";
+          replyData.body = result;
+        } catch (e) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
         }
         break;
 
