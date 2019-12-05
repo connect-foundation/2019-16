@@ -24,7 +24,6 @@ class StudyGroup extends App {
           console.error(e);
           replyData.method = "ERROR";
           replyData.body = e;
-          // packet = makePacket("ERROR", query, {}, {}, key, this.context);
         }
         break;
 
