@@ -1,6 +1,6 @@
 require("dotenv").config({ path: ".env" });
 const {
-  STUDYROOMS_MONGO_URL,
+  STUDYGROUPS_MONGO_URL,
   STUDYGROUP_NAME,
   STUDYGROUP_HOST,
   STUDYGROUP_PORT
@@ -9,7 +9,7 @@ const StudyGroup = require("./StudyGroup");
 const mongoose = require("mongoose");
 
 mongoose
-  .connect(STUDYROOMS_MONGO_URL, {
+  .connect(STUDYGROUPS_MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
