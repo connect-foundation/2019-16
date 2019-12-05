@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const { searchAllStudyGroup, bulkStudyGroups } = require("../elasticsearch");
 
 /**
@@ -53,4 +52,6 @@ searchAllStudyGroup({
   lat: 41.0,
   lon: -50.34,
   isRecruit: true
-}).then(() => {});
+}).then(res => {
+  console.log(res);
+});
