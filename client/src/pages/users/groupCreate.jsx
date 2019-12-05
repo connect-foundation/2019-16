@@ -1,16 +1,17 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { REQUEST_URL } from "../../config.json";
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
 import TagInput from "../../components/users/groupCreate/TagInput";
 import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
-import { AppContext } from "../../App";
+import { UserContext } from "./index";
 import {
   groupCreateReducer,
   initialState,
   input_content
-} from "../../reducer/groupCreate";
+} from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
   width: 60%;
@@ -47,10 +48,8 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const url = "http://localhost:8000/api/studyGroup/register";
-
-const GroupCreate = props => {
-  const { appState: userInfo } = useContext(AppContext);
+const GroupCreate = () => {
+  const { userInfo } = useContext(UserContext);
 
   initialState.data.leader = {
     email: userInfo.userEmail,
@@ -77,9 +76,9 @@ const GroupCreate = props => {
       form.append("image", data.thumbnail);
       delete data.thumbnail;
       form.append("data", JSON.stringify(data));
-      console.log(url);
+
       axios
-        .post(url, form, {
+        .post(`${REQUEST_URL}/api/studyGroup/register"`, form, {
           headers: {
             "Content-Type": "multipart/form-data"
           }

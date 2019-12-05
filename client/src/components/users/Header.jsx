@@ -1,55 +1,66 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import AccountContainer from "../components/accountContainer";
 import axios from "axios";
-import { get_searched_groups_without_category } from "../reducer/AppContainer";
+import { REQUEST_URL } from "../../config.json";
 
-const HeaderContainer = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 5%;
-  padding-right: 5%;
-  padding-top: 3%;
-  margin-bottom: 2.3rem;
-  .logo {
-    width: 64px;
-    height: 64px;
-  }
-  .search-box {
-    width: 70%;
-    .input {
-      border-color: #53d0ec;
-      width: 50%;
-    }
-  }
-  .account-box {
+import UserInfo from "./UserInfo";
+import StudySearchNavbar from "./studySearchNavbar";
+
+import { set_groups } from "../../reducer/users/index";
+import { UserContext } from "../../pages/users/index";
+
+const StyledHeader = styled.header`
+  .header-info {
     display: flex;
-    font-family: NanumGothic;
-    font-weight: bold;
-    font-size: 1.3em;
-    color: #000000;
-    .accountbox-btn {
-      padding: 0 0.4em;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 3%;
+    margin-bottom: 2.3rem;
+
+    .logo {
+      width: 64px;
+      height: 64px;
     }
-    .user-account-btn {
-      color: #55f4c4;
+    .search-box {
+      width: 70%;
+      .input {
+        border-color: #53d0ec;
+        width: 50%;
+      }
+    }
+    .account-box {
+      display: flex;
+      font-family: NanumGothic;
+      font-weight: bold;
+      font-size: 1.3em;
+      color: #000000;
+      .accountbox-btn {
+        padding: 0 0.4em;
+      }
+      .user-account-btn {
+        color: #55f4c4;
+      }
     }
   }
 `;
 
-const Header = ({ appContainerDispatch }) => {
+const Header = () => {
+  const { userInfo, userIndexDispatch } = useContext(UserContext);
+  const { userName } = { userInfo };
+
   const onKeyUp = useCallback(e => {
     if (e.key === "Enter") {
+      const keyword = e.target.value;
+
       e.preventDefault();
-      if (e.target.value[0] === "#") {
+      if (keyword[0] === "#") {
         //tag검색
-        console.log("tag");
-        const tag = e.target.value.substr(1);
-        const url = `http://127.0.0.1:8000/api/search/tags`;
+        const tag = keyword.slice(1);
+
         axios
-          .post(url, {
+          .post(`${REQUEST_URL}/api/search/tags`, {
             tags: [tag],
             isRecruit: true
           })
@@ -61,50 +72,52 @@ const Header = ({ appContainerDispatch }) => {
                 i
               ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
             }
-            appContainerDispatch(get_searched_groups_without_category(data));
+            userIndexDispatch(set_groups(data));
           });
       } else {
-        const url = `http://127.0.0.1:8000/api/search/query/${e.target.value}/true`;
-        axios.get(url).then(result => {
-          const { data } = result;
-          for (let i = 0; i < data.length; i++) {
-            data[i].id = i;
-            data[
-              i
-            ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-          }
-          appContainerDispatch(get_searched_groups_without_category(data));
-        });
+        axios
+          .get(`${REQUEST_URL}/api/search/query/${keyword}/true`)
+          .then(result => {
+            const { data } = result;
+            for (let i = 0; i < data.length; i++) {
+              data[i].id = i;
+              data[
+                i
+              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
+            }
+            userIndexDispatch(set_groups(data));
+          });
       }
     }
-
-    console.log(e.target.value);
   }, []);
 
   return (
-    <HeaderContainer>
-      <Link to="/">
-        <img
-          src="/image/logo-mini.png"
-          alt="study combined"
-          className={["logo"]}
-        />{" "}
-      </Link>
-      <div className={`search-box`}>
-        <input
-          class="input is-rounded"
-          type="text"
-          placeholder="스터디그룹 검색"
-          onKeyUp={onKeyUp}
-        />
-      </div>
-      <div className={`account-box`}>
-        <div className={`user-account-btn accountbox-btn`}>
-          <span> 태현님 환영합니다. </span>
+    <StyledHeader>
+      <div className="header-info">
+        <a href="/">
+          <img
+            src="/image/logo-mini.png"
+            alt="study combined"
+            className="logo"
+          />{" "}
+        </a>
+        <div className={`search-box`}>
+          <input
+            className="input is-rounded"
+            type="text"
+            placeholder="스터디그룹 검색"
+            onKeyUp={onKeyUp}
+          />
         </div>
+        <div className={`account-box`}>
+          <div className={`user-account-btn accountbox-btn`}>
+            <span> {userName}님 환영합니다. </span>
+          </div>
+        </div>
+        <UserInfo />
       </div>
-      <AccountContainer />
-    </HeaderContainer>
+      <StudySearchNavbar />
+    </StyledHeader>
   );
 };
 

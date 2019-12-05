@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from "react";
 import styled from "styled-components";
-import { click_day, change_hour } from "../../reducer/groupCreate";
+import { click_day, change_hour } from "../../../reducer/users/groupCreate";
 
 const StyledScheduleInput = styled.div`
   display: flex;

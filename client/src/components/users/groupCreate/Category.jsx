@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { category_click } from "../../reducer/groupCreate";
+import { category_click } from "../../../reducer/users/groupCreate";
 
 const StyledCategory = styled.ul`
   display: flex;
