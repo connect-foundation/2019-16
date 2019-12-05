@@ -11,9 +11,26 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
+async function filterInDistance(search, distance, maxDistance, res) {
+  setTimeout(async () => {
+    search.body.query.bool.filter[
+      search.body.query.bool.filter.length - 1
+    ].geo_distance.distance = `${distance}km`;
+    let searchResult = await client.search(search);
+
+    if (distance >= maxDistance) {
+      res(searchResult);
+    }
+    if (searchResult.body.hits.hits.length >= 20) {
+      res(searchResult);
+    }
+    filterInDistance(search, distance + 2, maxDistance, res);
+  }, 0);
+}
+
 async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
   let distance = 2;
-  let searchResult;
+
   const geoFilter = {
     geo_distance: {
       distance: distance,
@@ -35,14 +52,10 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
     body
   };
 
-  while (distance <= maxDistance) {
-    search.body.query.bool.filter[
-      search.body.query.bool.filter.length - 1
-    ].geo_distance.distance = `${distance}km`;
-    searchResult = await client.search(search);
-    distance += 2;
-    if (searchResult.body.hits.hits.length >= 10) break;
-  }
+  let searchResult = await new Promise(res =>
+    filterInDistance(search, distance, maxDistance, res)
+  );
+
   return searchResult;
 }
 
