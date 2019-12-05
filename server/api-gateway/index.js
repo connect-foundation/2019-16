@@ -63,7 +63,7 @@ const apigateway = new ApiGateway();
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
-const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const studyGroupRouter = require("./routes/api/studyGroup")(apigateway);
 
 apigateway.connectToLogService();
 
@@ -79,8 +79,8 @@ server.use(setResponseKey);
 
 server.use(gatewayLogger);
 server.use("/api/search", searchRouter);
+server.use("/api/studygroup", studyGroupRouter);
 server.use("/auth", authRouter);
-server.use("/api/studyGroup", studyGroupRouter);
 server.use(writePacket);
 
 server.listen(GATEWAY_EXPRESS_PORT, async () => {
