@@ -12,12 +12,12 @@ const {
 } = require("./elasticsearch");
 
 const queryMap = {
-  searchStudyGroup: searchStudyGroup,
-  searchStudyGroupWithCategory: searchStudyGroupWithCategory,
-  tagStudyGroup: tagStudyGroup,
-  tagStudyGroupWithCategory: tagStudyGroupWithCategory,
-  searchAllStudyGroup: searchAllStudyGroup,
-  searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  tagStudyGroup,
+  tagStudyGroupWithCategory,
+  searchAllStudyGroup,
+  searchAllStudyGroupWithCategory
 };
 
 function emptyStudyGroupPeriodically(timer) {
