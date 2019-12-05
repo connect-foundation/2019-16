@@ -1,62 +1,23 @@
 # API Gateway
 
 ## API
-### 1. 사용자 로그인
-> 카카오 로그인을 위한 요청
-- `GET /auth/uesrs/login`
 
+### 1. Payment
 
+결제 서비스에 사용되는 API
 
-### 2. 사용자 로그아웃
-> 카카오 로그아웃을 위한 요청
-- `GET /auth/users/logout`
+| Method |         Url          |                 When                 |                                 What                                 |
+| :----: | :------------------: | :----------------------------------: | :------------------------------------------------------------------: |
+| `POST` | `/api/payment/ready` | `사용자가 결제하기 버튼을 눌렀을 때` | `결제 가능한 스터디룸인지 확인하고 카카오 페이 API의 결제 승인 요청` |
 
-### 3. OAuth Callback 
-- `GET /auth/users/callback`
+#### 1.1 `POST /api/payment/ready`
 
-### 4. 파트너 회원가입
-- `POST /auth/partners/join`
-- `Content-type: application/json`
-
-|   Name   | Data Type | Required / Optional |   Description    |
-| :------: | :-------: | :-----------------: | :--------------: |
-|   name   |  string   |      required       |      파트너 이름      |
-|  email   |  string   |      required       | 파트너 이메일 (unique) |
-| password |  string   |      required       |     파트너 비밀번호     |
-|   cid    |  string   |      required       |  가맹점 번호 (10글자)   |
-- Req
-```json
-{
-	"join": "success" // 회원가입 성공
-}
-
-{
-	"join": "fail" // 회원가입 실패
-}
-```
-
-### 5. 파트너 로그인
-- `POST /auth/partners/login`
-- `Content-type: application/json`
-
-|   Name   | Data Type | Required / Optional | Description |
-| :------: | :-------: | :-----------------: | :---------: |
-|  email   |  string   |      required       |   파트너 이메일   |
-| password |  string   |      required       |  파트너 비밀번호   |
-
-- Req
-```json
-{
-	"login": "success" // 로그인 성공
-}
-{
-	"login": "fail" // 로그인 실패
-}
-```
-
-### 6. 파트너 로그아웃
-- `GET /auth/partners/logout`
-
+- Content-type : `application/json`
+- Body
+  | Fields | `accssToken` | `cid` | `partner_order_id` | `partner_user_id` | `item_name` | `quantity` | `total_amount` | `tax_free_amount` | `approval_url` | `cancel_url` | `fail_url` |
+  | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+  | **Type** | `String` | `String` | `String` | `String` | `String` | `Number` | `Number` | `Number` | `String` | `String` | `String` |
+  | **Description** | `사용자 access_token` |`가맹점 코드. 10자` | `가맹점 주문번호. 최대 100자` | `가맹점 회원 id. 최대 100자` | `상품명. 최대 100자` | `상품 수량` |`상품 총액`| `상품 비과세 금액` | `결제 성공시 redirect url. 최대 255자` | `결제 취소시 redirect url. 최대 255자` | `결제 실패시 redirect url. 최대 255자` |
 
 ## Database Schema
 
@@ -73,14 +34,15 @@
 ```
 
 ### 일반 사용자 모델
+
 ```json
 {
-	"_id": ObjectId,
-	"email": String,
-	"gender": String,
-	"ageRange": String,
-	"history": [mongoose.Types.ObjectId],
-	"ownGroups": [mongoose.Types.ObjectId],
-	"partipatedGroups": [mongoose.Types.ObjectId]
+  "_id": ObjectId,
+  "email": String,
+  "gender": String,
+  "ageRange": String,
+  "history": [mongoose.Types.ObjectId],
+  "ownGroups": [mongoose.Types.ObjectId],
+  "partipatedGroups": [mongoose.Types.ObjectId]
 }
 ```
