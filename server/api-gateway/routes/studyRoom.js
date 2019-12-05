@@ -3,8 +3,20 @@ const router = express.Router();
 const { makePacket } = require("../../lib/tcp/util");
 
 module.exports = function(apigateway) {
-  router.get("/", (req, res) => {
-    res.end("Hello");
+  router.get("/availableRooms", (req, res, next) => {
+    const studyGroupData = req.body;
+
+    req.packet = makePacket(
+      "GET",
+      "availableRooms",
+      "availableRooms",
+      { studyGroupData },
+      {},
+      req.resKey,
+      apigateway.context
+    );
+
+    next();
   });
   return router;
 };
