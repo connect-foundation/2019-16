@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
-import { REGISTER } from "../../../reducer/users/groupDetail";
+import {} from "../../../reducer/users/groupDetail";
 import { UserContext } from "../../../pages/users/index";
 
 const StyledMain = styled.div`
@@ -85,9 +85,7 @@ const Main = ({ groupData, dispatch }) => {
   });
   const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
 
-  const registerEvent = useCallback(() => {
-    dispatch({ type: REGISTER });
-  }, [dispatch]);
+  const registerEvent = useCallback(() => {}, [dispatch]);
 
   return (
     <StyledMain className="columns">
