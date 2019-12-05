@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef } from "react";
 import styled from "styled-components";
-import { attach_image } from "../../reducer/groupCreate";
+import { attach_image } from "../../../reducer/users/groupCreate";
 
 const StyledImageUploader = styled.div`
   .image {

@@ -1,11 +1,12 @@
 import classnames from "classnames";
 
-export const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
-export const ADD_TAG = "groupCreate/ADD_TAG";
-export const CLICK_DAY = "groupCreate/CLICK_DAY";
-export const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
-export const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
-export const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
+const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
+const ADD_TAG = "groupCreate/ADD_TAG";
+const CLICK_DAY = "groupCreate/CLICK_DAY";
+const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
+const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
+const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
+const CHANGE_PERSONNEL = "groupCreate/CHANGE_PERSONNEL";
 
 export const category_click = ({ categoryType, categoryName }) => ({
   type: CATEGORY_CLICK,
@@ -40,6 +41,12 @@ export const attach_image = file => ({
   file
 });
 
+export const change_personnel = (min_personnel, max_personnel) => ({
+  type: CHANGE_PERSONNEL,
+  min_personnel,
+  max_personnel
+});
+
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
 const daysInfo = daysStr.map(str => ({
   isSelected: false,
@@ -65,17 +72,18 @@ export const initialState = {
     subtitle: "",
     intro: "",
     selectedDays: [],
-    startTime: 0,
-    during: 0,
+    startTime: 1,
+    during: 1,
     isRecruiting: true,
     thumbnail: null,
     min_personnel: 0,
-    max_personnel: 0
+    max_personnel: 0,
+    location: { lat: 0, lon: 0 }
   }
 };
 
 export const groupCreateReducer = (state, action) => {
-  const data = state.data;
+  let data = state.data;
   switch (action.type) {
     case CATEGORY_CLICK:
       const { categoryType, categoryName } = action;
@@ -127,6 +135,11 @@ export const groupCreateReducer = (state, action) => {
     case ATTACH_IMAGE:
       data.thumbnail = action.file;
 
+      return { ...state, data };
+
+    case CHANGE_PERSONNEL:
+      const { min_personnel, max_personnel } = action;
+      data = { ...data, min_personnel, max_personnel };
       return { ...state, data };
 
     default:

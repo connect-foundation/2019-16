@@ -1,8 +1,8 @@
 import React, { useReducer } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import EmailInput from "../../components/common/EmailInput";
-import SubmitButton from "../../components/common/SubmitButton";
+import EmailInput from "../../components/users/common/EmailInput";
+import SubmitButton from "../../components/users/common/SubmitButton";
 
 const LoginForm = styled.div`
   width: 50%;
