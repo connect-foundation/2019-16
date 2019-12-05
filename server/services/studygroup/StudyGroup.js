@@ -29,8 +29,8 @@ class StudyGroup extends App {
 
       case "getGroupDetail":
         try {
-          const { id: _id } = params;
-          const result = await StudyGroups.findOne({ _id });
+          const { id } = params;
+          const result = await StudyGroups.findById(id);
 
           replyData.method = "REPLY";
           replyData.body = result;
