@@ -20,7 +20,7 @@ function readyToPay(req, res, next) {
   fetch("https://kapi.kakao.com/v1/payment/ready", options)
     .then(_res => _res.json())
     .then(answer => {
-      return res.redirect(answer.next_redirect_pc_url);
+      return res.json(answer.next_redirect_pc_url);
     });
 }
 
