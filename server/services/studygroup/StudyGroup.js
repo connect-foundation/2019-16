@@ -27,6 +27,20 @@ class StudyGroup extends App {
         }
         break;
 
+      case "getGroupDetail":
+        try {
+          const { id: _id } = params;
+          const result = await StudyGroups.findOne({ _id });
+
+          replyData.method = "REPLY";
+          replyData.body = result;
+        } catch (e) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
+        }
+        break;
+
       default:
         break;
     }

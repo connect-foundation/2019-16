@@ -55,3 +55,20 @@ exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
   req.packet = packet;
   next();
 };
+
+exports.sendGetGroupDetailPacket = apigateway => (req, res, next) => {
+  const { id } = req.params;
+
+  const packet = makePacket(
+    "GET",
+    "getGroupDetail",
+    "getGroupDetail",
+    { id },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
