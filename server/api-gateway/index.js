@@ -82,7 +82,7 @@ server.use(gatewayLogger);
 server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
-server.use("/api/studyRoom", studyRoomRouter);
+server.use("/api/studyroom", studyRoomRouter);
 server.use(writePacket);
 
 server.listen(GATEWAY_EXPRESS_PORT, async () => {
