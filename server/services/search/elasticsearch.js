@@ -99,7 +99,8 @@ exports.searchStudyGroup = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     } = hit._source;
 
     return {
@@ -113,7 +114,8 @@ exports.searchStudyGroup = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     };
   });
 
@@ -170,7 +172,8 @@ exports.searchStudyGroupWithCategory = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     } = hit._source;
 
     return {
@@ -184,7 +187,8 @@ exports.searchStudyGroupWithCategory = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     };
   });
 
@@ -220,8 +224,34 @@ exports.tagStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    hit._source._id = hit._id;
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
@@ -268,7 +298,8 @@ exports.searchAllStudyGroup = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     } = hit._source;
 
     return {
@@ -282,7 +313,8 @@ exports.searchAllStudyGroup = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     };
   });
 
@@ -334,7 +366,8 @@ exports.searchAllStudyGroupWithCategory = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     } = hit._source;
 
     return {
@@ -348,7 +381,8 @@ exports.searchAllStudyGroupWithCategory = async info => {
       min_personnel,
       title,
       subtitle,
-      thumbnail
+      thumbnail,
+      tags
     };
   });
 
