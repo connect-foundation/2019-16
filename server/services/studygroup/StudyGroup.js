@@ -15,13 +15,6 @@ class StudyGroup extends App {
         try {
           const groupInfo = params.payload;
 
-          groupInfo.members = [];
-          groupInfo.now_personnel = 1;
-          groupInfo.days = groupInfo.selectedDays;
-          groupInfo.endTime = groupInfo.startTime + groupInfo.during;
-          delete groupInfo.selectedDays;
-          delete groupInfo.during;
-
           await StudyGroups.create(groupInfo);
           await pushStudyGroups(groupInfo);
 
