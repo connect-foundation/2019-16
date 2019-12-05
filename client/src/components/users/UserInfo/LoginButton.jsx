@@ -38,24 +38,27 @@ const LoginButton = () => {
       onSuccess={({ response, profile }) => {
         const email = profile.kakao_account.email;
 
-        axios
-          .post(`${REQUEST_URL}/auth/users/checkEmail`, { email })
-          .then(({ data }) => {
-            if (!data.exist) {
-              // 처음 방문한 사용자라면 위치를 입력받아서 데이터베이스에 저장
-              const location = prompt(
-                "처음이신가봐요! 거주하고 계신 동네를 말씀해 주세요"
-              );
-            }
-            const tmp = Object.assign(
-              userInfo,
-              userInfoParser({ response, profile })
-            );
-            setUserInfo(tmp);
-          })
-          .catch(e => {
-            console.error(e);
-          });
+        // axios
+        //   .post(`${REQUEST_URL}/auth/users/checkEmail`, { email })
+        //   .then(({ data }) => {
+        //     if (!data.exist) {
+        //       // 처음 방문한 사용자라면 위치를 입력받아서 데이터베이스에 저장
+        //       const location = prompt(
+        //         "처음이신가봐요! 거주하고 계신 동네를 말씀해 주세요"
+        //       );
+        //     }
+        //     const tmp = Object.assign(
+        //       userInfo,
+        //       userInfoParser({ response, profile })
+        //     );
+        //     setUserInfo(tmp);
+        //   })
+        //   .catch(e => {
+        //     console.error(e);
+        //   });
+        setUserInfo(
+          Object.assign(userInfo, userInfoParser({ response, profile }))
+        );
       }}
       onFailure={res => {
         // Caution popup
