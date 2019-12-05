@@ -1,4 +1,5 @@
-require("dotenv").config({ path: ".env.gateway" });
+
+require("dotenv").config({ path: ".env" });
 const path = require("path");
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
@@ -8,19 +9,20 @@ const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
 
 const server = express();
+const { makeLogSender } = require("../lib/tcp/logUtils");
 
 require("./auth/passport")(server); // passport config
 
 const {
-  GATE_EXPRESS_PORT,
-  GATE_TCP_PORT,
-  GATE_NAME,
-  ACCOUNTS_MONGO_URI,
-  GATE_HOST
+  GATEWAY_EXPRESS_PORT,
+  GATEWAY_TCP_PORT,
+  GATEWAY_NAME,
+  ACCOUNTS_MONGO_URL,
+  GATEWAY_HOST
 } = process.env;
 
 mongoose
-  .connect(ACCOUNTS_MONGO_URI, {
+  .connect(ACCOUNTS_MONGO_URL, {
     useNewUrlParser: true,
     useFindAndModify: true,
     useUnifiedTopology: true
@@ -34,10 +36,26 @@ mongoose
 
 class ApiGateway extends App {
   constructor() {
-    super(GATE_NAME, GATE_HOST, GATE_TCP_PORT);
+    super(GATEWAY_NAME, GATEWAY_HOST, GATEWAY_TCP_PORT);
     this.appClientMap = {};
-    this.icConnectMap = {};
+    this.isConnectMap = {};
     this.resMap = {};
+    this.httpLogSender = makeLogSender.call(this, "http");
+  }
+  onRead(socket, data) {
+    // data이벤트 함수
+    if (data.method === "REPLY") {
+      this.resMap[data.key].json(data.body);
+    }
+    if (data.method === "ERROR") {
+      let error = new Error("서비스에서 에러가 발생했습니다.");
+
+      this.resMap[data.key].status(error.status || 500);
+      this.resMap[data.key].send(
+        error.message || "서비스에서 에러가 발생했습니다."
+      );
+    }
+    delete this.resMap[data.key];
   }
 }
 
@@ -45,8 +63,10 @@ const apigateway = new ApiGateway();
 
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
-const studyGroupRouter = require("./routes/studyGroup")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
+const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+
+apigateway.connectToLogService();
 
 server.use(express.json());
 server.use(cors());
@@ -56,12 +76,15 @@ server.use(setResponseKey);
 
 // server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
 
-server.use("/api/search", gatewayLogger, searchRouter);
+// server.use("/api/search", gatewayLogger, searchRouter);
+
+server.use(gatewayLogger);
+server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
 server.use(writePacket);
 
-server.listen(GATE_EXPRESS_PORT, async () => {
+server.listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
@@ -111,36 +134,35 @@ async function makeAppClient(name) {
       () => {
         // connect이벤트 함수
         apigateway.appClientMap[name] = client;
-        apigateway.icConnectMap[name] = true;
+        apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
       data => {
-        // data이벤트 함수
-        if (data.method === "REPLY") {
-          apigateway.resMap[data.key].json(data.body);
-        }
-        if (data.method === "ERROR") {
-          let error = new Error("서비스에서 에러가 발생했습니다.");
-
-          apigateway.resMap[data.key].status(error.status || 500);
-          apigateway.resMap[data.key].send(
-            error.message || "서비스에서 에러가 발생했습니다."
-          );
-        }
-        delete apigateway.resMap[data.key];
+        // // data이벤트 함수
+        // if (data.method === "REPLY") {
+        //   apigateway.resMap[data.key].json(data.body);
+        // }
+        // if (data.method === "ERROR") {
+        //   let error = new Error("서비스에서 에러가 발생했습니다.");
+        //   apigateway.resMap[data.key].status(error.status || 500);
+        //   apigateway.resMap[data.key].send(
+        //     error.message || "서비스에서 에러가 발생했습니다."
+        //   );
+        // }
+        // delete apigateway.resMap[data.key];
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service error`);
       }
     );
 
     setInterval(() => {
-      if (!apigateway.icConnectMap[name]) {
+      if (!apigateway.isConnectMap[name]) {
         console.log(`try connect to ${name}`);
 
         client.connect();

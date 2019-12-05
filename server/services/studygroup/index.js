@@ -1,15 +1,24 @@
-require("dotenv").config();
-const { MONGO_URL } = process.env;
-const { APP_NAME, HOST, PORT } = process.env;
+require("dotenv").config({ path: ".env" });
+const {
+  STUDYROOMS_MONGO_URL,
+  STUDYGROUP_NAME,
+  STUDYGROUP_HOST,
+  STUDYGROUP_PORT
+} = process.env;
 const StudyGroup = require("./StudyGroup");
 const mongoose = require("mongoose");
+
 mongoose
-  .connect(MONGO_URL, {
+  .connect(STUDYROOMS_MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then((err, result) => {});
 
-const studyGroup = new StudyGroup(APP_NAME, HOST, PORT);
+const studyGroup = new StudyGroup(
+  STUDYGROUP_NAME,
+  STUDYGROUP_HOST,
+  STUDYGROUP_PORT
+);
 
 studyGroup.connectToAppListManager();

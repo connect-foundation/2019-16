@@ -1,12 +1,12 @@
-import React, { useEffect, useContext, useReducer } from "react";
+import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import { Link, Route, BrowserRouter as Router } from "react-router-dom";
 import axios from "axios";
+import { Link, Route, BrowserRouter as Router } from "react-router-dom";
 import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
 import StudyGroupCard from "../../components/groupCard";
 import MyStudyCarousel from "../../components/MyStudyCarousel";
+import { get_all_groups } from "../../reducer/AppContainer";
 import { AppContext } from "../../App";
-import { initalState, mainReducer, get_all_groups } from "../../reducer/Main";
 
 const Main = styled.div`
   display: flex;
@@ -24,7 +24,11 @@ const Main = styled.div`
       margin-top: 2rem;
     }
   }
-
+  .group-create-button {
+    margin-top: 2rem;
+    display:flex;
+    justify-content:center;
+  }
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
     color: #000000;
@@ -64,33 +68,31 @@ const Main = styled.div`
  * 미로그인시main-page-title 출력
  * 로그인시 MyStudyCarousel 출력
  */
-const searchUrl = "";
+const searchUrl = "http://localhost:8000/api/search/all/true";
 
-const MainPage = () => {
-  const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
-
+const MainPage = ({ appContainerState, appContainerDispatch }) => {
   const {
     myGroups,
     cardList,
     primaryCategories,
     secondaryCategories
-  } = mainState;
+  } = appContainerState;
 
   const {
-    appState: { user_email }
+    appState: { userEmail }
   } = useContext(AppContext);
 
   useEffect(() => {
     axios.get(searchUrl).then(result => {
       const { data } = result;
-
+      console.log(data);
       for (let i = 0; i < data.length; i++) {
         data[i].id = i;
         data[
           i
         ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
       }
-      mainDispatch(get_all_groups(data));
+      appContainerDispatch(get_all_groups(data));
     }, []);
     // /api/search/all
     /**
@@ -99,15 +101,14 @@ const MainPage = () => {
      * myStudyData
      */
   }, []);
-
   return (
     <Main>
       <div className="main-jumbotron">
-        {user_email ? (
+        {userEmail ? (
           <>
             <MyStudyCarousel
               myGroups={myGroups}
-              user_email={user_email}
+              user_email={userEmail}
             ></MyStudyCarousel>
             <Link to="/group/create" className="group-create-button">
               {" "}
@@ -131,8 +132,9 @@ const MainPage = () => {
           secondaryCategories={secondaryCategories}
         ></StudySearchNavbar>
         <Route
-          path={["/category/:categoryName", "/"]}
+          path={["/category/:categoryName", "/", "/search/:keyword"]}
           render={({ match }) => {
+            const keyword = match.params.keyword;
             const selectedCategory = match.params.categoryName;
             const pathName = match.path;
             const groupsData =
@@ -142,7 +144,6 @@ const MainPage = () => {
                     card => card.category[1] === selectedCategory
                   );
             const groupsDataLength = groupsData.length;
-
             return (
               <div className="study-group-list">
                 {groupsDataLength

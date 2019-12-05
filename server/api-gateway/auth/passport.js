@@ -17,12 +17,12 @@ function config(server) {
 
         user.email = profile._json.kakao_account.email;
         user.gender = profile._json.kakao_account.gender;
-        user.ageRange = profile._json.kakao_account.age_range;
+        user.ageRange = profile._json.kakao_account.age_range.split("~")[0];
         user.name = profile.username;
         user.profileImage = profile._json.properties.profile_image;
         user.birthday = profile._json.kakao_account.birthday;
         user.role = "user";
-        console.log(user.gender);
+
         return done(null, user);
       }
     )
