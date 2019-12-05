@@ -76,6 +76,9 @@ const GroupCreate = () => {
 
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
+      data.endTime = data.startTime + data.during;
+      delete data.during;
+
       form.append("image", data.thumbnail);
       delete data.thumbnail;
       form.append("data", JSON.stringify(data));

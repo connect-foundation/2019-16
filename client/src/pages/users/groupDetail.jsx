@@ -19,24 +19,28 @@ const StyledGroupDetail = styled.div`
   margin: 3rem auto;
 `;
 
-const GroupDetail = props => {
+const GroupDetail = ({ match }) => {
   const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
-  const groupId = props._id;
+  const { id } = match.params;
 
   useEffect(() => {
-    axios
-      .get(`${REQUEST_URL}/api/studygroup/detail/${groupId}`)
-      .then(result => {
-        const groupData = result.data;
-        dispatch(set_detail_data(groupData));
-      });
+    axios.get(`${REQUEST_URL}/api/studygroup/detail/${id}`).then(result => {
+      const groupData = result.data;
+      dispatch(set_detail_data(groupData));
+    });
   }, []);
 
+  const isHaveGroupData = Object.keys(groupData).length;
+  const { intro } = groupData;
   return (
     <StyledGroupDetail>
-      <Header groupData={groupData}></Header>
-      <Main groupData={groupData} dispatch={dispatch}></Main>
-      <Intro></Intro>
+      {isHaveGroupData && (
+        <>
+          <Header groupData={groupData}></Header>
+          <Main groupData={groupData} dispatch={dispatch}></Main>
+          <Intro intro={intro}></Intro>
+        </>
+      )}
     </StyledGroupDetail>
   );
 };
