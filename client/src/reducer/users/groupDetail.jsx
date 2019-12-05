@@ -1,4 +1,4 @@
-export const SET_DETAIL_DATA = "groupDetail/SET_DEATIL_DATA";
+const SET_DETAIL_DATA = "groupDetail/SET_DEATIL_DATA";
 
 export const set_detail_data = groupData => ({
   type: SET_DETAIL_DATA,

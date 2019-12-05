@@ -66,7 +66,6 @@ const GroupCreate = () => {
   }, []);
 
   const onChangeSlider = useCallback((min, max) => {
-    console.log(change_personnel);
     dispatch(change_personnel(min, max));
   }, []);
 
