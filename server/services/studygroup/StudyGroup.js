@@ -15,8 +15,8 @@ class StudyGroup extends App {
         try {
           const groupInfo = params.payload;
 
-          await StudyGroups.create(groupInfo);
-          await pushStudyGroups(groupInfo);
+          const result = await StudyGroups.create(groupInfo);
+          await pushStudyGroups(result);
 
           replyData.method = "REPLY";
           replyData.body = { href: "/" };
