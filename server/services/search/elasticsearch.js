@@ -1,4 +1,3 @@
-
 require("dotenv").config({ path: ".env" });
 const {
   SEARCH_ELASTIC_HOST,
@@ -90,7 +89,32 @@ exports.searchStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    };
   });
 
   return result;
@@ -136,7 +160,32 @@ exports.searchStudyGroupWithCategory = async info => {
   );
 
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    };
   });
 
   return result;
@@ -171,6 +220,7 @@ exports.tagStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
+    hit._source._id = hit._id;
     return hit._source;
   });
 
@@ -208,14 +258,38 @@ exports.searchAllStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    };
   });
 
   return result;
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
-
   const { category, lat, lon, isRecruit } = info;
 
   const body = {
@@ -250,7 +324,32 @@ exports.searchAllStudyGroupWithCategory = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail
+    };
   });
 
   return result;
@@ -259,11 +358,12 @@ exports.searchAllStudyGroupWithCategory = async info => {
 exports.bulkStudyGroups = async groups => {
   if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
-    const id = group.id;
+    const _id = group.id;
 
+    delete group._id;
     delete group.id;
     return [
-      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
+      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id } },
       group
     ];
   });
