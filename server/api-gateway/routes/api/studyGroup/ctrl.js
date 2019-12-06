@@ -9,8 +9,6 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
   const imageSrc = `${path}/${Date.now()}${image.originalname}`;
   const imageLink = bucketLink + imageSrc;
 
-  console.log(bucketName);
-
   try {
     await storage
       .putObject({
@@ -29,7 +27,6 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
       .promise();
 
     req.imageLink = imageLink;
-    console.log("good\n\n\n\n\n\n");
     next();
   } catch (e) {
     console.error(e);

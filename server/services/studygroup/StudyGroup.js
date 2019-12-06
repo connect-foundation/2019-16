@@ -18,8 +18,8 @@ class StudyGroup extends App {
         try {
           const groupInfo = params.payload;
 
-          await StudyGroups.create(groupInfo);
-          await pushStudyGroups(groupInfo);
+          const result = await StudyGroups.create(groupInfo);
+          await pushStudyGroups(result);
 
           replyData.method = "REPLY";
           replyData.body = { href: "/" };
@@ -32,8 +32,8 @@ class StudyGroup extends App {
 
       case "getGroupDetail":
         try {
-          const { id: _id } = params;
-          const result = await StudyGroups.findOne({ _id });
+          const { id } = params;
+          const result = await StudyGroups.findById(id);
 
           replyData.method = "REPLY";
           replyData.body = result;
