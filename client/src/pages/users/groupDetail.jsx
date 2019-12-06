@@ -1,12 +1,15 @@
-import React, { memo, useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import styled from "styled-components";
-import Header from "../../components/groupDetail/Header";
-import Main from "../../components/groupDetail/Main";
-import Intro from "../../components/groupDetail/Intro";
+import axios from "axios";
+import { REQUEST_URL } from "../../config.json";
+import Header from "../../components/users/groupDetail/Header";
+import Main from "../../components/users/groupDetail/Main";
+import Intro from "../../components/users/groupDetail/Intro";
 import {
   groupDetail as groupDetailReducer,
-  initialState
-} from "../../reducer/groupDetail";
+  initialState,
+  set_detail_data
+} from "../../reducer/users/groupDetail";
 
 const StyledGroupDetail = styled.div`
   display: flex;
@@ -16,14 +19,28 @@ const StyledGroupDetail = styled.div`
   margin: 3rem auto;
 `;
 
-const GroupDetail = () => {
-  const [state, dispatch] = useReducer(groupDetailReducer, initialState);
+const GroupDetail = ({ match }) => {
+  const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
+  const { id } = match.params;
 
+  useEffect(() => {
+    axios.get(`${REQUEST_URL}/api/studygroup/detail/${id}`).then(result => {
+      const groupData = result.data;
+      dispatch(set_detail_data(groupData));
+    });
+  }, []);
+
+  const isHaveGroupData = Object.keys(groupData).length;
+  const { intro } = groupData;
   return (
     <StyledGroupDetail>
-      <Header state={state}></Header>
-      <Main state={state} dispatch={dispatch}></Main>
-      <Intro></Intro>
+      {isHaveGroupData && (
+        <>
+          <Header groupData={groupData}></Header>
+          <Main groupData={groupData} dispatch={dispatch}></Main>
+          <Intro intro={intro}></Intro>
+        </>
+      )}
     </StyledGroupDetail>
   );
 };

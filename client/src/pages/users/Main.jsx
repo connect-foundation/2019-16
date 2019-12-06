@@ -1,12 +1,15 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link, Route, BrowserRouter as Router } from "react-router-dom";
-import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
-import StudyGroupCard from "../../components/groupCard";
-import MyStudyCarousel from "../../components/MyStudyCarousel";
-import { get_all_groups } from "../../reducer/AppContainer";
-import { AppContext } from "../../App";
+import { Link } from "react-router-dom";
+
+import { REQUEST_URL } from "../../config.json";
+
+import StudyGroupCard from "../../components/users/groupCard";
+import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
+
+import { set_groups } from "../../reducer/users";
+import { UserContext } from "./index";
 
 const Main = styled.div`
   display: flex;
@@ -68,48 +71,36 @@ const Main = styled.div`
  * 미로그인시main-page-title 출력
  * 로그인시 MyStudyCarousel 출력
  */
-const searchUrl = "http://localhost:8000/api/search/all/true";
 
-const MainPage = ({ appContainerState, appContainerDispatch }) => {
-  const {
-    myGroups,
-    cardList,
-    primaryCategories,
-    secondaryCategories
-  } = appContainerState;
+const MainPage = () => {
+  const { userIndexState, userIndexDispatch, userInfo } = useContext(
+    UserContext
+  );
 
-  const {
-    appState: { userEmail }
-  } = useContext(AppContext);
+  const { myGroups, searchList } = userIndexState;
+  const { userEmail, userLocation } = userInfo;
+
+  let { lat, lon } = userLocation;
 
   useEffect(() => {
-    axios.get(searchUrl).then(result => {
-      const { data } = result;
-      console.log(data);
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
-      appContainerDispatch(get_all_groups(data));
-    }, []);
-    // /api/search/all
-    /**
-     * TODO: data 요청로직 필요
-     * cardListData
-     * myStudyData
-     */
-  }, []);
+    axios
+      .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
+      .then(result => {
+        const { data } = result;
+        userIndexDispatch(set_groups(data));
+      }, []);
+  }, [userLocation]);
+
   return (
     <Main>
       <div className="main-jumbotron">
         {userEmail ? (
           <>
-            <MyStudyCarousel
-              myGroups={myGroups}
-              user_email={userEmail}
-            ></MyStudyCarousel>
+            {myGroups.length ? (
+              <MyStudyCarousel></MyStudyCarousel>
+            ) : (
+              "현재 소속된 스터디 그룹이 없습니다."
+            )}
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -126,38 +117,18 @@ const MainPage = ({ appContainerState, appContainerDispatch }) => {
         )}
       </div>
 
-      <Router>
-        <StudySearchNavbar
-          primaryCategories={primaryCategories}
-          secondaryCategories={secondaryCategories}
-        ></StudySearchNavbar>
-        <Route
-          path={["/category/:categoryName", "/", "/search/:keyword"]}
-          render={({ match }) => {
-            const keyword = match.params.keyword;
-            const selectedCategory = match.params.categoryName;
-            const pathName = match.path;
-            const groupsData =
-              pathName === "/"
-                ? cardList
-                : cardList.filter(
-                    card => card.category[1] === selectedCategory
-                  );
-            const groupsDataLength = groupsData.length;
-            return (
-              <div className="study-group-list">
-                {groupsDataLength
-                  ? groupsData.map(groupData => {
-                      return (
-                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
-                      );
-                    })
-                  : "데이터가 업소용"}
-              </div>
-            );
-          }}
-        />
-      </Router>
+      <div className="study-group-list">
+        {searchList.length
+          ? searchList.map(groupData => {
+              return (
+                <StudyGroupCard
+                  key={groupData.id}
+                  groupData={groupData}
+                ></StudyGroupCard>
+              );
+            })
+          : "데이터가 업소용"}
+      </div>
     </Main>
   );
 };
