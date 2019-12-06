@@ -1,34 +1,43 @@
 # API Gateway
 
-API 게이트웨이는 클라이언트의 요청을 제일 먼저 받는 서버입니다. 클라이언트에게서 온 요청을 어느 서비스에게 줄 것인지 확인하기도 하며 인증작업도 하고 있습니다.
 
 ## API
 
-### 1. 사용자 등록 유무 확인
+### 1. Payment
 
-사용자가 처음 방문했는 지 확인하기 위한 요청입니다. 사용자의 이메일이 데이터베이스에 존재하지 않는다면 `false`를 반환하고 추가적인 작업을 합니다.
+결제 서비스에 사용되는 API
 
-- `POST /auth/users/checkEmail`
-- Params
+| No. | Method |           Url           |                 When                 |                                 What                                 |
+| :-: | :----: | :---------------------: | :----------------------------------: | :------------------------------------------------------------------: |
+|  1  | `POST` |  `/api/payment/ready`   | `사용자가 결제하기 버튼을 눌렀을 때` | `결제 가능한 스터디룸인지 확인하고 카카오 페이 API의 결제 승인 요청` |
+|  2  | `GET`  | `/api/payment/approval` |    `결제가 성공적으로 끝났을 때`     |                                                                      |
+|  3  | `GET`  |  `/api/payment/cancel`  |     `결제를 중간에 취소했을 때`      |
+|  4  | `GET`  |   `/api/payment/fail`   |         `결제를 실패했을 때`         |
 
-```json
-{
-  "email": String
-}
-```
+#### 1.1 `POST /api/payment/ready`
+
+- Content-type : `application/json`
+- Body
+
+|       Fields       |   Type   |              Description               |                      Example                      |
+| :----------------: | :------: | :------------------------------------: | :-----------------------------------------------: |
+|    `accssToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
+|       `cid`        | `String` |          `가맹점 코드. 10자`           |                   `TC0ONETIME`                    |
+| `partner_order_id` | `String` |     `가맹점 주문번호. 최대 100자`      |                                                   |
+| `partner_user_id`  | `String` |      `가맹점 회원 id. 최대 100자`      |                                                   |
+|    `item_name`     | `String` |          `상품명. 최대 100자`          |      `20191205-20200120 201호 월수 8시-10시`      |
+|     `quantity`     | `Number` |              `상품 수량`               |                        `1`                        |
+|   `total_amount`   | `Number` |              `상품 총액`               |                      `50000`                      |
+| `tax_free_amount`  | `Number` |           `상품 비과세 금액`           |                        `0`                        |
+|   `approval_url`   | `String` | `결제 성공시 redirect url. 최대 255자` | `https://studycombined:8000/api/payment/approval` |
+|    `cancel_url`    | `String` | `결제 취소시 redirect url. 최대 255자` |  `https://studycombined:8000/api/payment/cancel`  |
+|     `fail_url`     | `String` | `결제 실패시 redirect url. 최대 255자` |   `https://studycombined:8000/api/payment/fail`   |
 
 - Res
 
-```json
-{	"exist": true }
-////// or ///////
-{ "exist": false }
-
-```
-
 ## Database Schema
 
-### Partners-account
+### 파트너 모델
 
 ```json
 {
@@ -37,5 +46,19 @@ API 게이트웨이는 클라이언트의 요청을 제일 먼저 받는 서버�
   "email": String,
   "password": String, // hashed
   "cid": String // 10자
+}
+```
+
+### 일반 사용자 모델
+
+```json
+{
+  "_id": ObjectId,
+  "email": String,
+  "gender": String,
+  "ageRange": String,
+  "history": [mongoose.Types.ObjectId],
+  "ownGroups": [mongoose.Types.ObjectId],
+  "partipatedGroups": [mongoose.Types.ObjectId]
 }
 ```

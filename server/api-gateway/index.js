@@ -1,5 +1,5 @@
-require("dotenv").config({ path: ".env.gateway" });
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "/../.env") });
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
 const cors = require("cors");
@@ -10,18 +10,16 @@ const { makeKey } = require("../lib/tcp/util");
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
 
-require("./auth/passport")(server); // passport config
-
 const {
-  GATE_EXPRESS_PORT,
-  GATE_TCP_PORT,
-  GATE_NAME,
-  ACCOUNTS_MONGO_URI,
-  GATE_HOST
+  GATEWAY_EXPRESS_PORT,
+  GATEWAY_TCP_PORT,
+  GATEWAY_NAME,
+  ACCOUNTS_MONGO_URL,
+  GATEWAY_HOST
 } = process.env;
 
 mongoose
-  .connect(ACCOUNTS_MONGO_URI, {
+  .connect(ACCOUNTS_MONGO_URL, {
     useNewUrlParser: true,
     useFindAndModify: true,
     useUnifiedTopology: true
@@ -35,9 +33,9 @@ mongoose
 
 class ApiGateway extends App {
   constructor() {
-    super(GATE_NAME, GATE_HOST, GATE_TCP_PORT);
+    super(GATEWAY_NAME, GATEWAY_HOST, GATEWAY_TCP_PORT);
     this.appClientMap = {};
-    this.icConnectMap = {};
+    this.isConnectMap = {};
     this.resMap = {};
     this.httpLogSender = makeLogSender.call(this, "http");
   }
@@ -64,6 +62,9 @@ const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
 const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const studyRoomRouter = require("./routes/studyRoom")(apigateway);
+const apiRouter = require("./routes/api");
+
 
 apigateway.connectToLogService();
 
@@ -73,17 +74,15 @@ server.use(cors());
 server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 
-// server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
-
-// server.use("/api/search", gatewayLogger, searchRouter);
-
 server.use(gatewayLogger);
-server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
-server.use("/api/studyGroup", studyGroupRouter);
+server.use("/api/search", searchRouter);
+server.use("/api/studygroup", studyGroupRouter);
+server.use("/api/studyroom", studyRoomRouter);
+server.use("/api", apiRouter);
 server.use(writePacket);
 
-server.listen(GATE_EXPRESS_PORT, async () => {
+server.listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
@@ -133,7 +132,7 @@ async function makeAppClient(name) {
       () => {
         // connect이벤트 함수
         apigateway.appClientMap[name] = client;
-        apigateway.icConnectMap[name] = true;
+        apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
       data => {
@@ -151,17 +150,17 @@ async function makeAppClient(name) {
         // delete apigateway.resMap[data.key];
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
       },
       () => {
-        apigateway.icConnectMap[name] = false;
+        apigateway.isConnectMap[name] = false;
         console.log(`${name} service error`);
       }
     );
 
     setInterval(() => {
-      if (!apigateway.icConnectMap[name]) {
+      if (!apigateway.isConnectMap[name]) {
         console.log(`try connect to ${name}`);
 
         client.connect();
