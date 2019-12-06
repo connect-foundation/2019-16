@@ -21,7 +21,7 @@
 
 |       Fields       |   Type   |              Description               |                      Example                      |
 | :----------------: | :------: | :------------------------------------: | :-----------------------------------------------: |
-|    `accssToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
+|    `accessToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
 |       `cid`        | `String` |          `가맹점 코드. 10자`           |                   `TC0ONETIME`                    |
 | `partner_order_id` | `String` |     `가맹점 주문번호. 최대 100자`      |                                                   |
 | `partner_user_id`  | `String` |      `가맹점 회원 id. 최대 100자`      |                                                   |
@@ -39,7 +39,7 @@
 
 ### 파트너 모델
 
-```json
+```
 {
   "_id": ObjectId,
   "name": String,
@@ -51,7 +51,7 @@
 
 ### 일반 사용자 모델
 
-```json
+```
 {
   "_id": ObjectId,
   "email": String,
