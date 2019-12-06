@@ -68,32 +68,6 @@ class Search extends App {
 
   async onRead(socket, data) {
     doJob.bind(this)(socket, data);
-    //   const { params, curQuery } = data;
-
-    //   this.tcpLogSender(curQuery);
-
-    //   let replyData;
-    //   let method = "REPLY";
-    //   let params_ = {};
-    //   let result;
-
-    //   try {
-    //     result = await queryMap[curQuery](params);
-    //   } catch (e) {
-    //     method = "ERROR";
-    //     result = e;
-    //   } finally {
-    //     replyData = {
-    //       ...data,
-    //       method,
-    //       params: params_,
-    //       body: result
-    //     };
-    //     const appClient = {};
-
-    //     this.send(appClient, replyData);
-    //   }
-    // }
   }
 }
 module.exports = Search;
