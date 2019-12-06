@@ -64,6 +64,7 @@ const searchRouter = require("./routes/search")(apigateway);
 const studyGroupRouter = require("./routes/studyGroup")(apigateway);
 const apiRouter = require("./routes/api");
 
+
 apigateway.connectToLogService();
 
 server.use(express.json());
@@ -78,8 +79,8 @@ server.use(setResponseKey);
 
 server.use(gatewayLogger);
 server.use("/api/search", searchRouter);
+server.use("/api/studygroup", studyGroupRouter);
 server.use("/auth", authRouter);
-server.use("/api/studyGroup", studyGroupRouter);
 server.use("/api", apiRouter);
 server.use(writePacket);
 
