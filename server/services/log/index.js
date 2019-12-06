@@ -18,9 +18,7 @@ class LogService extends require("../../lib/tcp/App") {
 
   async onRead(socket, data) {
     const { method, curQuery, body } = data;
-
-    console.log(data);
-
+    // console.log(data);
     const { timestamp } = body.data;
 
     const jsonData = await new Promise(resolve =>
