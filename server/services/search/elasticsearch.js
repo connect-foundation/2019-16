@@ -392,13 +392,14 @@ exports.searchAllStudyGroupWithCategory = async info => {
 exports.bulkStudyGroups = async groups => {
   if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
-    const id = group.id;
+    const objGroup = JSON.parse(group);
+    const id = group._id;
 
-    delete group._id;
-    delete group.id;
+    delete objGroup._id;
+
     return [
       { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
-      group
+      objGroup
     ];
   });
 
