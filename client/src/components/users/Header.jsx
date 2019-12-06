@@ -14,9 +14,8 @@ const StyledHeader = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-top: 3%;
+    border-bottom: 1.5px solid #dfdfdf;
+    padding: 1% 10%;
     margin-bottom: 2.3rem;
 
     .logo {
@@ -24,10 +23,8 @@ const StyledHeader = styled.header`
       height: 64px;
     }
     .search-box {
-      width: 70%;
       .input {
         border-color: #53d0ec;
-        width: 50%;
       }
     }
     .account-box {
