@@ -17,9 +17,7 @@ const Navbar = styled.div`
   }
 
   a {
-    font-family: "Nanum Gothic", sans-serif;
     font-weight: bold;
-    font-size: 1.7em;
   }
 
   .navbar-item {
@@ -61,7 +59,7 @@ const StudySearchNavbar = () => {
         <div id="navbarExampleTransparentExample" style={{ width: "100%" }}>
           <div className="navbar-start">
             <Link to="/">
-              <span className="navbar-item is-size-3" onClick={searchAllGroups}>
+              <span className="navbar-item" onClick={searchAllGroups}>
                 모두 보기
               </span>{" "}
             </Link>
