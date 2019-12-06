@@ -43,6 +43,13 @@ const StyledHeader = styled.header`
   }
 `;
 
+const LeftHeader = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: space-around;
+`;
+
 const Header = () => {
   const { userInfo, userIndexDispatch } = useContext(UserContext);
   const { userName } = { userInfo };
@@ -91,24 +98,26 @@ const Header = () => {
   return (
     <StyledHeader>
       <div className="header-info">
-        <a href="/">
-          <img
-            src="/image/logo-mini.png"
-            alt="study combined"
-            className="logo"
-          />{" "}
-        </a>
-        <div className={`search-box`}>
-          <input
-            className="input is-rounded"
-            type="text"
-            placeholder="스터디그룹 검색"
-            onKeyUp={onKeyUp}
-          />
-        </div>
+        <LeftHeader>
+          <a href="/">
+            <img
+              src="/image/logo-mini.png"
+              alt="study combined"
+              className="logo"
+            />
+          </a>
+          <div className={`search-box`}>
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="스터디그룹 검색"
+              onKeyUp={onKeyUp}
+            />
+          </div>
+          <StudySearchNavbar />
+        </LeftHeader>
         <UserInfo />
       </div>
-      <StudySearchNavbar />
     </StyledHeader>
   );
 };
