@@ -63,7 +63,8 @@ const apigateway = new ApiGateway();
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
-const studyGroupRouter = require("./routes/api/studyGroup")(apigateway);
+const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const studyRoomRouter = require("./routes/studyRoom")(apigateway);
 
 apigateway.connectToLogService();
 
@@ -73,14 +74,11 @@ server.use(cors());
 server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 
-// server.get("/", gatewayLogger, (req, res) => res.send("Hello World!"));
-
-// server.use("/api/search", gatewayLogger, searchRouter);
-
 server.use(gatewayLogger);
+server.use("/auth", authRouter);
 server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
-server.use("/auth", authRouter);
+server.use("/api/studyroom", studyRoomRouter);
 server.use(writePacket);
 
 server.listen(GATEWAY_EXPRESS_PORT, async () => {

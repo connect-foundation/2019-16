@@ -22,3 +22,4 @@ const studyGroup = new StudyGroup(
 );
 
 studyGroup.connectToAppListManager();
+studyGroup.connectToLogService();
