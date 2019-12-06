@@ -9,7 +9,9 @@ import { UserContext } from "../../../pages/users/index";
 import { set_groups } from "../../../reducer/users/index";
 
 const Navbar = styled.div`
-  width: 100%;
+  .navbar {
+    align-items: center;
+  }
   .navbar-start {
     display: flex;
     justify-content: space-around;
