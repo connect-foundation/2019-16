@@ -1,5 +1,5 @@
-require("dotenv").config({ path: ".env" });
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "/../.env") });
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
 const cors = require("cors");
@@ -9,8 +9,6 @@ const { makeKey } = require("../lib/tcp/util");
 
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
-
-require("./auth/passport")(server); // passport config
 
 const {
   GATEWAY_EXPRESS_PORT,
@@ -63,7 +61,9 @@ const apigateway = new ApiGateway();
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
-const studyGroupRouter = require("./routes/api/studyGroup")(apigateway);
+const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const apiRouter = require("./routes/api");
+
 
 apigateway.connectToLogService();
 
@@ -81,6 +81,7 @@ server.use(gatewayLogger);
 server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
 server.use("/auth", authRouter);
+server.use("/api", apiRouter);
 server.use(writePacket);
 
 server.listen(GATEWAY_EXPRESS_PORT, async () => {
