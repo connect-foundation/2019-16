@@ -41,7 +41,7 @@ const HeaderBox = styled.div`
 `;
 
 const Header = ({ appContainerDispatch }) => {
-  const onKeyUp = useCallback(e => {
+  const handleKeyUp = useCallback(e => {
     if (e.key === "Enter") {
       e.preventDefault();
       if (e.target.value[0] === "#") {
