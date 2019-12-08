@@ -1,10 +1,8 @@
 import React, { useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
-import { REQUEST_URL } from "../../../config.json";
+
 import { UserContext } from "../../../pages/users/index";
-import { set_groups } from "../../../reducer/users/index";
 
 const Category = styled.div`
   a {
@@ -26,21 +24,17 @@ const Category = styled.div`
 `;
 
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
-  const { userIndexDispatch, userInfo } = useContext(UserContext);
+  const { userInfo, getApiAxiosState } = useContext(UserContext);
+  const { request } = getApiAxiosState;
 
   const searchGroups = useCallback(
     e => {
       const categoryName = e.target.textContent.trim();
       const { lat, lon } = userInfo.userLocation;
-
-      axios
-        .get(
-          `${REQUEST_URL}/api/search/all/category/${categoryName}/location/${lat}/${lon}/true`
-        )
-        .then(result => {
-          const { data } = result;
-          userIndexDispatch(set_groups(data));
-        });
+      request(
+        "get",
+        `/search/all/category/${categoryName}/location/${lat}/${lon}/true`
+      );
     },
     [userInfo]
   );
