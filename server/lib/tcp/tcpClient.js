@@ -54,7 +54,7 @@ class TcpClient {
   }
 
   write(data) {
-    if (this.client.destroyed) {
+    if (this.client.connecting) {
       pushMessage(this.name, data.slice(0, -1));
     } else {
       this.client.write(data);
