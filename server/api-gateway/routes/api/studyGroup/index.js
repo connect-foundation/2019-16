@@ -3,6 +3,7 @@ const multer = require("multer");
 const router = express.Router();
 const upload = multer();
 const {
+  registerValidation,
   uploadToImage,
   sendGroupCreationPacket,
   sendGetGroupDetailPacket
@@ -27,6 +28,7 @@ module.exports = function(apigateway) {
   router.post(
     "/register",
     upload.single("image"),
+    registerValidation,
     uploadToImage(studyCombinedStorage, "groupImage", bucketName, bucketLink),
     sendGroupCreationPacket(apigateway)
   );
