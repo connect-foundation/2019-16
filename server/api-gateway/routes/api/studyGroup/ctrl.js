@@ -43,7 +43,7 @@ exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
     "POST",
     "addGroup",
     "addGroup",
-    { payload },
+    { ...payload },
     {},
     req.resKey,
     apigateway.context
