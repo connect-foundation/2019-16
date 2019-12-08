@@ -47,8 +47,7 @@ const StyledHeader = styled.header`
 `;
 
 const Header = () => {
-  const { userInfo, userIndexDispatch } = useContext(UserContext);
-  const { userName } = { userInfo };
+  const { userIndexDispatch } = useContext(UserContext);
 
   const onKeyUp = useCallback(e => {
     if (e.key === "Enter") {
@@ -66,12 +65,6 @@ const Header = () => {
           })
           .then(result => {
             const { data } = result;
-            for (let i = 0; i < data.length; i++) {
-              data[i].id = i;
-              data[
-                i
-              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-            }
             userIndexDispatch(set_groups(data));
           });
       } else {
