@@ -83,10 +83,10 @@ const GroupCreate = () => {
       if (!(validationObj = validation(data)).isProper)
         return alert(validationObj.reason);
 
-      delete data.during;
-
       form.append("image", data.thumbnail);
+      delete data.during;
       delete data.thumbnail;
+
       form.append("data", JSON.stringify(data));
 
       axios
@@ -95,7 +95,9 @@ const GroupCreate = () => {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(({ status }) => {
+        .then(({ data }) => {
+          const { status } = data;
+          if (status === 400) return alert(data.reason);
           window.location.href = "/";
         })
         .catch(e => {
