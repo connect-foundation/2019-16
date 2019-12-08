@@ -79,7 +79,9 @@ const MainPage = () => {
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
       request("get", `/search/all/location/${lat}/${lon}/true`);
+  }, [userLocation]);
 
+  useEffect(() => {
     isHaveCardDataWhenLoaded(loading, data) &&
       userIndexDispatch(set_groups(data));
   }, [data, userLocation]);
