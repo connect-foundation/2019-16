@@ -9,8 +9,14 @@ export default axiosInstance => {
 
   return {
     ...state,
-    request: (method, url) => {
-      axiosInstance[method](url)
+    request: (method, url, _option) => {
+      const option = {
+        method,
+        url,
+        ..._option
+      };
+
+      axiosInstance(option)
         .then(result => {
           const { data } = result;
           setState({ ...state, data, loading: false });
