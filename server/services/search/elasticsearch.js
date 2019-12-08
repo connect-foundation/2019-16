@@ -393,7 +393,7 @@ exports.bulkStudyGroups = async groups => {
   if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
     const objGroup = JSON.parse(group);
-    const id = group._id;
+    const id = objGroup._id;
 
     delete objGroup._id;
 
