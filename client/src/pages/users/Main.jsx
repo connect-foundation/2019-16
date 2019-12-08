@@ -137,6 +137,6 @@ const isSetPositionDuringLoading = (loading, lat, lon) =>
   loading && lat !== null && lon !== null;
 
 const isHaveCardDataWhenLoaded = (loading, data) =>
-  loading || (data && data.length);
+  !loading && data && data.length;
 
 export default MainPage;
