@@ -1,18 +1,12 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { Link } from "react-router-dom";
-
-import { REQUEST_URL } from "../../config.json";
-import useAxios from "../../lib/useAxios";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
 import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
-
-const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const Main = styled.div`
   display: flex;
@@ -70,14 +64,17 @@ const Main = styled.div`
 `;
 
 const MainPage = () => {
-  const { userIndexState, userIndexDispatch, userInfo } = useContext(
-    UserContext
-  );
+  const {
+    userIndexState,
+    userIndexDispatch,
+    userInfo,
+    getApiAxiosState
+  } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
-  let { loading, data, error, request } = useAxios(apiAxios);
+  let { loading, data, error, request } = getApiAxiosState;
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
