@@ -68,7 +68,7 @@
 | ---------------- | --------- | ------------ | -------- |
 | `React`          | `Express` | `Git Action` | `jest`   |
 | `Bulma`          | `mongoDB` | `Dokcer`     | `socket` |
-| `Kakao Maps API` |           |              | `OAuth`  |
+| `Kakao Maps API` | `elasticsearch`|              | `OAuth`  |
 
 ### 특징
 
