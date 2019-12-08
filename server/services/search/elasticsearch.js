@@ -1,4 +1,3 @@
-
 require("dotenv").config({ path: ".env" });
 const {
   SEARCH_ELASTIC_HOST,
@@ -11,9 +10,26 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
+async function filterInDistance(search, distance, maxDistance, res) {
+  setTimeout(async () => {
+    search.body.query.bool.filter[
+      search.body.query.bool.filter.length - 1
+    ].geo_distance.distance = `${distance}km`;
+    let searchResult = await client.search(search);
+
+    if (distance >= maxDistance) {
+      res(searchResult);
+    }
+    if (searchResult.body.hits.hits.length >= 20) {
+      res(searchResult);
+    }
+    filterInDistance(search, distance + 2, maxDistance, res);
+  }, 0);
+}
+
 async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
   let distance = 2;
-  let searchResult;
+
   const geoFilter = {
     geo_distance: {
       distance: distance,
@@ -35,14 +51,10 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
     body
   };
 
-  while (distance <= maxDistance) {
-    search.body.query.bool.filter[
-      search.body.query.bool.filter.length - 1
-    ].geo_distance.distance = `${distance}km`;
-    searchResult = await client.search(search);
-    distance += 2;
-    if (searchResult.body.hits.hits.length >= 10) break;
-  }
+  let searchResult = await new Promise(res =>
+    filterInDistance(search, distance, maxDistance, res)
+  );
+
   return searchResult;
 }
 
@@ -77,7 +89,34 @@ exports.searchStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
@@ -123,7 +162,34 @@ exports.searchStudyGroupWithCategory = async info => {
   );
 
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
@@ -158,7 +224,34 @@ exports.tagStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
@@ -195,14 +288,40 @@ exports.searchAllStudyGroup = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
-
   const { category, lat, lon, isRecruit } = info;
 
   const body = {
@@ -237,7 +356,34 @@ exports.searchAllStudyGroupWithCategory = async info => {
     20
   );
   const result = searchResult.body.hits.hits.map(hit => {
-    return hit._source;
+    const {
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    } = hit._source;
+
+    return {
+      id: hit._id,
+      days,
+      startTime,
+      endTime,
+      location,
+      max_personnel,
+      now_personnel,
+      min_personnel,
+      title,
+      subtitle,
+      thumbnail,
+      tags
+    };
   });
 
   return result;
@@ -246,12 +392,13 @@ exports.searchAllStudyGroupWithCategory = async info => {
 exports.bulkStudyGroups = async groups => {
   if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
-    const id = group.id;
+    const groupObj = JSON.parse(group);
+    const _id = groupObj._id;
 
-    delete group.id;
+    delete groupObj._id;
     return [
-      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
-      group
+      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id } },
+      groupObj
     ];
   });
 

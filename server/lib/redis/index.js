@@ -74,16 +74,9 @@ exports.getAllApps = async () => {
   return apps;
 };
 
-exports.pushStudyGroups = (...studyGroups) => {
-  studyGroups.forEach(studygourp => {
-    multi.rpush("studygroup", JSON.stringify(studygourp));
-  });
-  return new Promise((res, rej) => {
-    multi.exec_atomic((err, reply) => {
-      if (err) rej(err);
-      res(reply);
-    });
-  });
+exports.pushStudyGroups = studyGroup => {
+  return returnRedisPromise("rpush", "studygroup", JSON.stringify(studyGroup));
+
 };
 
 exports.popStudyGroups = async count => {
@@ -97,7 +90,7 @@ exports.popStudyGroups = async count => {
 
   returnRedisPromise("ltrim", "studygroup", count - 1, -1);
   return new Promise(res => {
-    res(JSON.parse(groups[0]));
+    res(groups);
   });
 };
 
@@ -123,3 +116,4 @@ exports.popMessageQueue = async (appName, count) => {
     res(messages);
   });
 };
+
