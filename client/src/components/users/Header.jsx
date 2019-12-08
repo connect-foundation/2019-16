@@ -48,18 +48,24 @@ const Header = () => {
   // const { lat, lon} = userInfo.userLocation;
   const { lat, lon } = { lat: 41.24, lon: -50.34 };
   const { request } = getApiAxiosState;
-  const onKeyUp = useCallback(e => {
-    const keyword = e.target.value;
+  const onKeyUp = useCallback(
+    e => {
+      const keyword = e.target.value;
 
-    if (e.key !== "Enter") return;
-    if (!isProperInput) return;
+      if (e.key !== "Enter") return;
+      if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
-    isTagSearch(keyword)
-      ? request("post", "/search/tags", {
-          data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
-        })
-      : request("get", `/search/query/${keyword}/location/${lat}/${lon}/true`);
-  }, []);
+      isTagSearch(keyword)
+        ? request("post", "/search/tags", {
+            data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
+          })
+        : request(
+            "get",
+            `/search/query/${keyword}/location/${lat}/${lon}/true`
+          );
+    },
+    [lat, lon, request]
+  );
 
   return (
     <StyledHeader>
