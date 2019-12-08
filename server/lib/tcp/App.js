@@ -16,6 +16,7 @@ class App extends TcpServer {
 
     this.tcpLogSender = makeLogSender.call(this, "tcp");
     (async () => {
+      await new Promise(res => this.connectToLogService(res));
       await this.doMessageJob(job);
     })();
   }
@@ -133,7 +134,7 @@ class App extends TcpServer {
     return this.appListManager;
   }
 
-  connectToLogService() {
+  connectToLogService(res) {
     this.logService = new TcpClient(
       "logService",
       "127.0.0.1",
@@ -143,6 +144,7 @@ class App extends TcpServer {
           `${this.context.host}:${this.context.port} is connected to logService`
         );
         this.isConnectedToLogService = true;
+        if (res) res();
       },
       () => {
         console.log(`It is read function at Port:${this.context.port}`);
