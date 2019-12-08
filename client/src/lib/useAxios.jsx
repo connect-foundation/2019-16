@@ -16,6 +16,8 @@ export default axiosInstance => {
         ..._option
       };
 
+      setState({ loading: true, data: null, error: null });
+
       axiosInstance(option)
         .then(result => {
           const { data } = result;
