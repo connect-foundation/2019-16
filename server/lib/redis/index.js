@@ -1,7 +1,4 @@
-const redis = require("redis");
-const client = redis.createClient(6379, "106.10.57.60");
-// const client = redis.createClient();
-const multi = client.multi();
+const { client, multi } = require("./client");
 
 function returnRedisPromise(command, ...params) {
   return new Promise((res, rej) => {
