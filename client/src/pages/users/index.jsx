@@ -30,10 +30,10 @@ const UserPage = () => {
     accessToken: "",
     userEmail: "",
     userName: "",
-    userAgeRange: -1,
+    userAgeRange: null,
     userGender: "",
     profileImage: "",
-    userLocation: { lat: 0, lon: 0 }
+    userLocation: { lat: null, lon: null }
   });
 
   const [userIndexState, userIndexDispatch] = useReducer(
