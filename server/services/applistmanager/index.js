@@ -1,2 +1,4 @@
+require("dotenv").config({ path: ".env" });
 const AppListManager = require("./AppListManager");
-const appListManager = new AppListManager("AppListManager", "127.0.0.1", 8100);
+const { ALM_PORT, ALM_HOST } = process.env;
+const appListManager = new AppListManager("AppListManager", ALM_HOST, ALM_PORT);

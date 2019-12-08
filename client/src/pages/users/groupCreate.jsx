@@ -6,11 +6,13 @@ import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
 import TagInput from "../../components/users/groupCreate/TagInput";
 import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
+import RangeSlider from "../../components/users/common/RangeSlider";
 import { UserContext } from "./index";
 import {
   groupCreateReducer,
   initialState,
-  input_content
+  input_content,
+  change_personnel
 } from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -50,13 +52,7 @@ const StyledGroupCreate = styled.div`
 
 const GroupCreate = () => {
   const { userInfo } = useContext(UserContext);
-
-  initialState.data.leader = {
-    email: userInfo.userEmail,
-    ageRange: userInfo.userAgeRange,
-    gender: userInfo.userGender,
-    name: userInfo.userName
-  };
+  const { userEmail } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -69,26 +65,35 @@ const GroupCreate = () => {
     dispatch(input_content(contentType, description));
   }, []);
 
+  const onChangeSlider = useCallback((min, max) => {
+    dispatch(change_personnel(min, max));
+  }, []);
+
   const onSubmit = useCallback(
     e => {
       const { data } = state;
       const form = new FormData();
+
+      data.leader = userEmail;
+      data.location = { lat: 41.12, lon: -50.34 };
+      data.endTime = data.startTime + data.during;
+      delete data.during;
+
       form.append("image", data.thumbnail);
       delete data.thumbnail;
       form.append("data", JSON.stringify(data));
 
       axios
-        .post(`${REQUEST_URL}/api/studyGroup/register"`, form, {
+        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(({ data: href }) => {
-          if (href) {
-            window.location.href = href;
-            return;
-          }
-
+        .then(({ status }) => {
+          window.location.href = "/";
+        })
+        .catch(e => {
+          console.error(e);
           alert("에러 발생");
         });
     },
@@ -144,6 +149,12 @@ const GroupCreate = () => {
 
       <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
 
+      <RangeSlider
+        minRange={1}
+        maxRange={10}
+        step={1}
+        onChangeSlider={onChangeSlider}
+      />
       <button type="submit" className="button" onClick={onSubmit}>
         {" "}
         등록하기{" "}

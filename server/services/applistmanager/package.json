@@ -12,6 +12,7 @@
   "author": "soob",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "jest": "^24.9.0"
   }
 }

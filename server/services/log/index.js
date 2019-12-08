@@ -1,5 +1,5 @@
-require("dotenv").config({ path: "./server/services/log/.env.log" });
-const { LOG_PORT } = process.env;
+require("dotenv").config({ path: ".env" });
+const { LOG_PORT, LOG_HOST, LOG_NAME } = process.env;
 const elasticsearch = require("elasticsearch");
 const elasticClient = new elasticsearch.Client({
   host: "http://210.89.189.171:9200/",
@@ -18,9 +18,7 @@ class LogService extends require("../../lib/tcp/App") {
 
   async onRead(socket, data) {
     const { method, curQuery, body } = data;
-
-    console.log(data);
-
+    // console.log(data);
     const { timestamp } = body.data;
 
     const jsonData = await new Promise(resolve =>
@@ -47,6 +45,6 @@ class LogService extends require("../../lib/tcp/App") {
   }
 }
 
-const logService = new LogService("log", "127.0.0.1", 8004);
+const logService = new LogService(LOG_NAME, LOG_HOST, LOG_PORT);
 
 // logService.connectToAppListManager();
