@@ -1,7 +1,12 @@
 const TcpServer = require("../../lib/tcp/tcpServer");
 const { makePacket, makeKey } = require("../../lib/tcp/util");
-const logger = require("../logger/logger");
-const { setAppbyKey, deletebyKey, updateAppbyKey, getAppbyKey, getAllApps } = require("../../lib/redis")
+const {
+  setAppbyKey,
+  deletebyKey,
+  updateAppbyKey,
+  getAppbyKey,
+  getAllApps
+} = require("../../lib/redis");
 
 let appManagerInstance;
 
@@ -16,28 +21,27 @@ class AppListManager extends TcpServer {
     socket.write(packet);
   }
   async onCreate(socket) {
-    logger.info(`create App: ${socket.remoteAddress} : ${socket.remotePort}`);
+    console.log(`create App: ${socket.remoteAddress} : ${socket.remotePort}`);
   }
   async onClose(socket) {
-    const key = await makeKey(socket)
+    const key = await makeKey(socket);
 
     try {
       await deletebyKey(key);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
   async onError(socket) {
-    const key = await makeKey(socket)
+    const key = await makeKey(socket);
 
     try {
       await deletebyKey(key);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
   async onRead(socket, data) {
-
     const { method, curQuery, info } = data;
     const key = await makeKey(socket);
     let result;
@@ -69,16 +73,22 @@ class AppListManager extends TcpServer {
           default:
             break;
         }
-        const packet = makePacket("REPLY", "apps", "apps", {}, { apps: result }, "", this.context);
+        const packet = makePacket(
+          "REPLY",
+          "apps",
+          "apps",
+          {},
+          { apps: result },
+          "",
+          this.context
+        );
 
-        this.send(socket, packet)
+        this.send(socket, packet);
       }
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e);
     }
   }
-
 }
 
 module.exports = AppListManager;

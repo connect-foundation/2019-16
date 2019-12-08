@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
-import { REGISTER } from "../../../reducer/users/groupDetail";
+import {} from "../../../reducer/users/groupDetail";
 import { UserContext } from "../../../pages/users/index";
 
 const StyledMain = styled.div`
@@ -58,7 +58,7 @@ const Main = ({ groupData, dispatch }) => {
     location,
     startTime,
     days,
-    during,
+    endTime,
     tags,
     min_personnel,
     now_personnel,
@@ -68,26 +68,24 @@ const Main = ({ groupData, dispatch }) => {
     members
   } = groupData;
 
-  const isMember = members.some(memberId => memberId === userEmail);
-  const isLeader = leader === userEmail;
+  // const isMember = members.some(memberId => memberId === userEmail);
+  // const isLeader = leader === userEmail;
 
-  const isMemberClass = classnames("button", {
-    "is-primary": !isMember,
-    "is-success": isMember
-  });
-  const isMemberText = isMember ? "취소하기" : "신청하기";
+  // const isMemberClass = classnames("button", {
+  //   "is-primary": !isMember,
+  //   "is-success": isMember
+  // });
+  // const isMemberText = isMember ? "취소하기" : "신청하기";
 
-  const isRecruitingClass = classnames({
-    disable:
-      isRecruiting ||
-      now_personnel > max_personnel ||
-      now_personnel < min_personnel
-  });
-  const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
+  // const isRecruitingClass = classnames({
+  //   disable:
+  //     isRecruiting ||
+  //     now_personnel > max_personnel ||
+  //     now_personnel < min_personnel
+  // });
+  // const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
 
-  const registerEvent = useCallback(() => {
-    dispatch({ type: REGISTER });
-  }, [dispatch]);
+  // const registerEvent = useCallback(() => {}, [dispatch]);
 
   return (
     <StyledMain className="columns">
@@ -99,7 +97,7 @@ const Main = ({ groupData, dispatch }) => {
         <Location location={location} />
 
         <h4>
-          <Time startTime={startTime} during={during} days={days} />
+          <Time startTime={startTime} endTime={endTime} days={days} />
         </h4>
 
         <p> 최소 인원: {min_personnel} </p>
@@ -108,7 +106,7 @@ const Main = ({ groupData, dispatch }) => {
 
         <TagButtons tags={tags} />
 
-        <div className="buttons">
+        {/* <div className="buttons">
           {userEmail &&
             (isLeader || (
               <button className={isMemberClass} onClick={registerEvent}>
@@ -129,7 +127,7 @@ const Main = ({ groupData, dispatch }) => {
               </button>
             </>
           )}
-        </div>
+        </div> */}
       </div>
     </StyledMain>
   );

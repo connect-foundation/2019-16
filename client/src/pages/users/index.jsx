@@ -27,6 +27,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
+    accessToken: "",
     userEmail: "",
     userName: "",
     userAgeRange: -1,
@@ -56,7 +57,7 @@ const UserPage = () => {
 
   return (
     <UserContext.Provider
-      value={{ userInfo, userIndexState, userIndexDispatch }}
+      value={{ userInfo, setUserInfo, userIndexState, userIndexDispatch }}
     >
       <StyledUserPage>
         <Header />

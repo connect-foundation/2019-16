@@ -65,13 +65,14 @@ export const initialState = {
   },
   daysInfo,
   data: {
+    id: 0,
     category: [null, null],
     leader: "",
     tags: [],
     title: "",
     subtitle: "",
     intro: "",
-    selectedDays: [],
+    days: [],
     startTime: 1,
     during: 1,
     isRecruiting: true,
@@ -116,10 +117,9 @@ export const groupCreateReducer = (state, action) => {
         })
       };
 
-      if (isSelected)
-        data.selectedDays = data.selectedDays.filter(day => day !== idx);
-      else data.selectedDays.push(idx);
-      return { ...state, daysInfo: daysInfo, data };
+      if (isSelected) data.days = data.days.filter(day => day !== idx);
+      else data.days.push(idx);
+      return { ...state, daysInfo, data };
 
     case CHANGE_HOUR:
       const { timeType, hour } = action;

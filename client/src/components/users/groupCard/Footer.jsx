@@ -14,7 +14,7 @@ const Footer = ({
   footerData: {
     location,
     startTime,
-    during,
+    endTime,
     days,
     now_personnel,
     max_personnel,
@@ -25,7 +25,7 @@ const Footer = ({
     <StyledFooter>
       <TagButtons tags={tags} />
       <Location location={location} />
-      <TimeInfo days={days} startTime={startTime} during={during} />
+      <TimeInfo days={days} startTime={startTime} endTime={endTime} />
       <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />
     </StyledFooter>
   );

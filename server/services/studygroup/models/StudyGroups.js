@@ -4,7 +4,7 @@ const User = require("./Users").schema;
 const GroupSchema = new Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  leader: { type: User, required: true },
+  leader: { type: String, required: true },
   members: { type: [User] },
   min_personnel: { type: Number, required: true },
   now_personnel: { type: Number },
@@ -18,9 +18,9 @@ const GroupSchema = new Schema({
   },
   category: { type: [String] },
   tags: { type: [String] },
-  selectedDays: { type: [Number] },
+  days: { type: [Number] },
   startTime: { type: Number },
-  during: { type: Number }
+  endTime: { type: Number }
 });
 
 module.exports = model("StudyGroup", GroupSchema);

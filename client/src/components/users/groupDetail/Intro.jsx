@@ -19,11 +19,11 @@ const StyledIntro = styled.div`
   }
 `;
 
-const Intro = () => {
+const Intro = ({ intro }) => {
   return (
     <StyledIntro>
       <h3> 스터디 소개 </h3>
-      <div className="description">블라블라...</div>
+      <div className="description">{intro}</div>
     </StyledIntro>
   );
 };

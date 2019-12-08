@@ -87,10 +87,6 @@ const MainPage = () => {
       .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
       .then(result => {
         const { data } = result;
-
-        for (let i = 0; i < data.length; i++) {
-          data[i].id = i;
-        }
         userIndexDispatch(set_groups(data));
       }, []);
   }, [userLocation]);
