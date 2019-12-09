@@ -24,13 +24,13 @@
 ## Query
 | No. |      From   | Query | To | Description |
 | :-: | :----------: | :---: | :-: | :---------: |
-|  1  |`ApiGateway` |  `searchAllStudyGroupWithCategory` |
-|  2  |`ApiGateway` | `tagStudyGroup` |
-|  3  |`ApiGateway` | `tagStudyGroupWithCategory` |
-|  4  |`ApiGateway` | `searchAllStudyGroup` |
-|  5  |`ApiGateway` | `searchStudyGroup` |
-|  6  |`ApiGateway` | `searchStudyGroupWithCategory` |
-|  7  |`studygroup`| `bulkStudyGroups` |
+|  1  |`ApiGateway` |  `searchAllStudyGroupWithCategory` |`ApiGateway`|
+|  2  |`ApiGateway` | `tagStudyGroup` |`ApiGateway`|
+|  3  |`ApiGateway` | `tagStudyGroupWithCategory` |`ApiGateway`|
+|  4  |`ApiGateway` | `searchAllStudyGroup` |`ApiGateway`|
+|  5  |`ApiGateway` | `searchStudyGroup` |`ApiGateway`|
+|  6  |`ApiGateway` | `searchStudyGroupWithCategory` |`ApiGateway`|
+|  7  |`studygroup`| `bulkStudyGroups` |`ApiGateway`|
 
 ### 1.1 searchAllStudyGroupWithCategory
 - Params
