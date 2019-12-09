@@ -10,7 +10,7 @@ const Category = styled.div`
   a {
     font-family: "Nanum Gothic", sans-serif;
     font-weight: bold;
-    font-size: 1.7em;
+    font-size: 1em;
   }
 
   .navbar-item {
@@ -48,7 +48,7 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
 
   const itemList = secondaryCategories.map((category, idx) => (
     <Link to="/">
-      <span key={idx} className="navbar-item is-size-3" onClick={searchGroups}>
+      <span key={idx} className="navbar-item" onClick={searchGroups}>
         {category}
       </span>
     </Link>
@@ -57,10 +57,7 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   return (
     <Category>
       <div className="navbar-item has-dropdown is-hoverable">
-        <span
-          className="navbar-link is-arrowless is-size-3"
-          onClick={searchGroups}
-        >
+        <span className="navbar-link is-arrowless" onClick={searchGroups}>
           {primaryCategory}
         </span>
         <div className="navbar-dropdown is-boxed">{itemList}</div>
