@@ -1,16 +1,19 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import Category from "../../components/groupCreate/Category";
-import ImageUploader from "../../components/groupCreate/ImageUploader";
-import TagInput from "../../components/groupCreate/TagInput";
-import ScheduleInput from "../../components/groupCreate/ScheduleInput";
-import { AppContext } from "../../App";
+import { REQUEST_URL } from "../../config.json";
+import Category from "../../components/users/groupCreate/Category";
+import ImageUploader from "../../components/users/groupCreate/ImageUploader";
+import TagInput from "../../components/users/groupCreate/TagInput";
+import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
+import RangeSlider from "../../components/users/common/RangeSlider";
+import { UserContext } from "./index";
 import {
   groupCreateReducer,
   initialState,
-  input_content
-} from "../../reducer/groupCreate";
+  input_content,
+  change_personnel
+} from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
   width: 60%;
@@ -47,17 +50,9 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const url = "http://localhost:8000/api/studyGroup/register";
-
-const GroupCreate = props => {
-  const { appState: userInfo } = useContext(AppContext);
-
-  initialState.data.leader = {
-    email: userInfo.userEmail,
-    ageRange: userInfo.userAgeRange,
-    gender: userInfo.userGender,
-    name: userInfo.userName
-  };
+const GroupCreate = () => {
+  const { userInfo } = useContext(UserContext);
+  const { userEmail } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -70,30 +65,47 @@ const GroupCreate = props => {
     dispatch(input_content(contentType, description));
   }, []);
 
+  const onChangeSlider = useCallback((min, max) => {
+    dispatch(change_personnel(min, max));
+  }, []);
+
   const onSubmit = useCallback(
     e => {
       const { data } = state;
       const form = new FormData();
+
+      data.leader = userEmail;
+      data.location = { lat: 41.12, lon: -50.34 };
+      data.endTime = data.startTime + data.during;
+      data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
+
+      let validationObj = {};
+      if (!(validationObj = validation(data)).isProper)
+        return alert(validationObj.reason);
+
       form.append("image", data.thumbnail);
+      delete data.during;
       delete data.thumbnail;
+
       form.append("data", JSON.stringify(data));
-      console.log(url);
+
       axios
-        .post(url, form, {
+        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(({ data: href }) => {
-          if (href) {
-            window.location.href = href;
-            return;
-          }
-
+        .then(({ data }) => {
+          const { status } = data;
+          if (status === 400) return alert(data.reason);
+          window.location.href = "/";
+        })
+        .catch(e => {
+          console.error(e);
           alert("에러 발생");
         });
     },
-    [state]
+    [state, userEmail]
   );
 
   return (
@@ -145,12 +157,32 @@ const GroupCreate = props => {
 
       <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
 
+      <RangeSlider
+        minRange={1}
+        maxRange={10}
+        step={1}
+        onChangeSlider={onChangeSlider}
+      />
       <button type="submit" className="button" onClick={onSubmit}>
         {" "}
         등록하기{" "}
       </button>
     </StyledGroupCreate>
   );
+};
+
+const validation = data => {
+  if (data.category.length !== 2 || data.category.some(v => v === null))
+    return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
+  if (!data.title) return { isProper: false, reason: "제목을 입력해주세요" };
+  if (!data.subtitle)
+    return { isProper: false, reason: "부제목을 입력해주세요" };
+  if (!data.days.length)
+    return { isProper: false, reason: "스터디 요일을 선택해주세요" };
+  if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
+  if (!data.location || Object.values(data.location).length !== 2)
+    return { isProper: false, reason: "위치를 선택해주세요" };
+  return { isProper: true };
 };
 
 export default GroupCreate;
