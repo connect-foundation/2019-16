@@ -65,7 +65,7 @@ export const initialState = {
   },
   daysInfo,
   data: {
-    category: [null, null],
+    category: [],
     leader: "",
     tags: [],
     title: "",
@@ -76,10 +76,10 @@ export const initialState = {
     during: 1,
     isRecruiting: true,
     thumbnail: null,
-    min_personnel: 0,
-    max_personnel: 0,
+    min_personnel: 1,
     now_personnel: 1,
-    location: { lat: 0, lon: 0 }
+    max_personnel: 10,
+    location: { lat: null, lon: null }
   }
 };
 

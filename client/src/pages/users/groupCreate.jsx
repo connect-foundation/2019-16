@@ -77,10 +77,16 @@ const GroupCreate = () => {
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
       data.endTime = data.startTime + data.during;
-      delete data.during;
+      data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
+
+      let validationObj = {};
+      if (!(validationObj = validation(data)).isProper)
+        return alert(validationObj.reason);
 
       form.append("image", data.thumbnail);
+      delete data.during;
       delete data.thumbnail;
+
       form.append("data", JSON.stringify(data));
 
       axios
@@ -89,7 +95,9 @@ const GroupCreate = () => {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(({ status }) => {
+        .then(({ data }) => {
+          const { status } = data;
+          if (status === 400) return alert(data.reason);
           window.location.href = "/";
         })
         .catch(e => {
@@ -97,7 +105,7 @@ const GroupCreate = () => {
           alert("에러 발생");
         });
     },
-    [state]
+    [state, userEmail]
   );
 
   return (
@@ -161,6 +169,20 @@ const GroupCreate = () => {
       </button>
     </StyledGroupCreate>
   );
+};
+
+const validation = data => {
+  if (data.category.length !== 2 || data.category.some(v => v === null))
+    return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
+  if (!data.title) return { isProper: false, reason: "제목을 입력해주세요" };
+  if (!data.subtitle)
+    return { isProper: false, reason: "부제목을 입력해주세요" };
+  if (!data.days.length)
+    return { isProper: false, reason: "스터디 요일을 선택해주세요" };
+  if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
+  if (!data.location || Object.values(data.location).length !== 2)
+    return { isProper: false, reason: "위치를 선택해주세요" };
+  return { isProper: true };
 };
 
 export default GroupCreate;
