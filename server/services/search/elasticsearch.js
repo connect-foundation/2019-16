@@ -135,7 +135,10 @@ exports.searchStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.map(hit => hit._source);
+  const result = searchResult.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
 
   return result;
 };
@@ -179,7 +182,10 @@ exports.searchStudyGroupWithCategory = async info => {
     20
   );
 
-  const result = searchResult.map(hit => hit._source);
+  const result = searchResult.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
 
   return result;
 };
@@ -212,7 +218,10 @@ exports.tagStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.map(hit => hit._source);
+  const result = searchResult.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
 
   return result;
 };
@@ -247,7 +256,10 @@ exports.searchAllStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.map(hit => hit._source);
+  const result = searchResult.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
 
   return result;
 };
@@ -286,7 +298,10 @@ exports.searchAllStudyGroupWithCategory = async info => {
     lon,
     20
   );
-  const result = searchResult.map(hit => hit._source);
+  const result = searchResult.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
 
   return result;
 };
