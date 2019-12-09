@@ -1,12 +1,9 @@
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { REQUEST_URL } from "../../config.json";
 
 import UserInfo from "./UserInfo";
 import StudySearchNavbar from "./studySearchNavbar";
 
-import { set_groups } from "../../reducer/users/index";
 import { UserContext } from "../../pages/users/index";
 
 const StyledHeader = styled.header`
@@ -14,9 +11,8 @@ const StyledHeader = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-top: 3%;
+    border-bottom: 1.5px solid #dfdfdf;
+    padding: 1% 10%;
     margin-bottom: 2.3rem;
 
     .logo {
@@ -24,10 +20,8 @@ const StyledHeader = styled.header`
       height: 64px;
     }
     .search-box {
-      width: 70%;
       .input {
         border-color: #53d0ec;
-        width: 50%;
       }
     }
     .account-box {
@@ -46,74 +40,68 @@ const StyledHeader = styled.header`
   }
 `;
 
-const Header = () => {
-  const { userInfo, userIndexDispatch } = useContext(UserContext);
-  const { userName } = { userInfo };
+const LeftHeader = styled.div`
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: space-around;
+`;
 
-  const onKeyUp = useCallback(e => {
-    if (e.key === "Enter") {
+const Header = () => {
+  const { userInfo, getApiAxiosState } = useContext(UserContext);
+  // const { lat, lon} = userInfo.userLocation;
+  const { lat, lon } = { lat: 41.24, lon: -50.34 };
+  const { request } = getApiAxiosState;
+  const onKeyUp = useCallback(
+    e => {
       const keyword = e.target.value;
 
-      e.preventDefault();
-      if (keyword[0] === "#") {
-        //tag검색
-        const tag = keyword.slice(1);
+      if (e.key !== "Enter") return;
+      if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
-        axios
-          .post(`${REQUEST_URL}/api/search/tags`, {
-            tags: [tag],
-            isRecruit: true
+      isTagSearch(keyword)
+        ? request("post", "/search/tags", {
+            data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
           })
-          .then(result => {
-            const { data } = result;
-            for (let i = 0; i < data.length; i++) {
-              data[i].id = i;
-              data[
-                i
-              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-            }
-            userIndexDispatch(set_groups(data));
-          });
-      } else {
-        axios
-          .get(`${REQUEST_URL}/api/search/query/${keyword}/true`)
-          .then(result => {
-            const { data } = result;
-            for (let i = 0; i < data.length; i++) {
-              data[i].id = i;
-              data[
-                i
-              ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-            }
-            userIndexDispatch(set_groups(data));
-          });
-      }
-    }
-  }, []);
+        : request(
+            "get",
+            `/search/query/${keyword}/location/${lat}/${lon}/true`
+          );
+    },
+    [lat, lon, request]
+  );
 
   return (
     <StyledHeader>
       <div className="header-info">
-        <a href="/">
-          <img
-            src="/image/logo-mini.png"
-            alt="study combined"
-            className="logo"
-          />{" "}
-        </a>
-        <div className={`search-box`}>
-          <input
-            className="input is-rounded"
-            type="text"
-            placeholder="스터디그룹 검색"
-            onKeyUp={onKeyUp}
-          />
-        </div>
+        <LeftHeader>
+          <a href="/">
+            <img
+              src="/image/logo-mini.png"
+              alt="study combined"
+              className="logo"
+            />
+          </a>
+          <div className={`search-box`}>
+            <input
+              className="input is-rounded"
+              type="text"
+              placeholder="스터디그룹 검색"
+              onKeyUp={onKeyUp}
+            />
+          </div>
+          <StudySearchNavbar />
+        </LeftHeader>
         <UserInfo />
       </div>
-      <StudySearchNavbar />
     </StyledHeader>
   );
 };
+
+const isTagSearch = keyword => keyword[0] === "#";
+const isProperInput = keyword =>
+  typeof keyword === "string" &&
+  keyword &&
+  (keyword[0] !== "#" ? true : keyword.length > 1);
 
 export default Header;
