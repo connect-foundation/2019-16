@@ -1,12 +1,11 @@
 # develop, master 브랜치에 PR을 보낼 경우 모든 노드에 대해 test를 실행한다.
-name: PR Test [dev, master]
+name: PR Test [dev]
 
 on:
   pull_request:
     types: [opened, reopened]
     branches:
-      - develop
-      - master
+      - develop/*
 
 jobs:
   RunTest:
@@ -83,3 +82,31 @@ jobs:
             npm install
             npm test
           fi
+      - name: test [payment]
+        run: |
+          if [ -d server/services/payment ]
+          then
+            cd server/services/payment
+            npm install
+            npm test
+          fi
+      - name: if fail
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const ref = "${{github.ref}}"
+            const pull_number = Number(ref.split("/")[2])
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body:"테스트코드를 다시 확인해주세요. ",
+              event: "REQUEST_CHANGES"
+            })
+            await github.pulls.update({
+              ...context.repo,
+              pull_number,
+              state: "closed"
+            })
+        if: failure()
+
