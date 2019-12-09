@@ -24,47 +24,48 @@
 ## Query
 | No. |      From   | Query | To | Description |
 | :-: | :----------: | :---: | :-: | :---------: |
-|  1  | |  `searchAllStudyGroupWithCategory` |
-|  2  | | `tagStudyGroup` |
-|  3  | | `tagStudyGroupWithCategory` |
-|  4  | | `searchAllStudyGroup` |
-|  5  | | `searchStudyGroup` |
-|  6  | | `searchStudyGroupWithCategory` |
-|  7  | | `bulkStudyGroups` |
+|  1  |`ApiGateway` |  `searchAllStudyGroupWithCategory` |
+|  2  |`ApiGateway` | `tagStudyGroup` |
+|  3  |`ApiGateway` | `tagStudyGroupWithCategory` |
+|  4  |`ApiGateway` | `searchAllStudyGroup` |
+|  5  |`ApiGateway` | `searchStudyGroup` |
+|  6  |`ApiGateway` | `searchStudyGroupWithCategory` |
+|  7  |`studygroup`| `bulkStudyGroups` |
 
 ### 1.1 searchAllStudyGroupWithCategory
 - Params
 ```
-{ category, lat, lon, isRecruit }
+{ category :String, lat : String, lon: String, isRecruit:String }
 ```
 
 ### 1.2 tagStudyGroup
 - Params
 ```
-{ tags, lat, lon, isRecruit }
+{ tags :String, lat :String, lon:String, isRecruit:String }
 ```
-### 1.3 tagStudyGroupWithCategory
+### 1.3 tagStudyGroupWithCategory (아직 미구현)
 - Params
 ```
+{}
 ```
 
 ### 1.4 searchAllStudyGroup
 - Params
 ```
-{ lat, lon, isRecruit }
+{ lat:String, lon:String, isRecruit:String }
 ```
 
 ### 1.5 searchStudyGroup
 - Params
 ```
-{ searchWord, lat, lon, isRecruit }
+{ searchWord:String, lat:String, lon:String, isRecruit:String }
 ```
 
 
 ### 1.6 searchStudyGroupWithCategory
 - Params
 ```
-{ searchWord, category, lat, lon, isRecruit }
+{ searchWord:String, category:String, lat:String, lon:String, isRecruit:String }
 ```
 
 
