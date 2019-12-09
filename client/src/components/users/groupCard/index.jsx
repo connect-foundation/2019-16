@@ -25,16 +25,18 @@ const StyledCard = styled.div`
   }
 `;
 
-const StudyGroupCard = ({ groupData }) => (
-  <StyledCard className="card-wrapper">
-    <Link to={`/group/detail/${groupData.id}`}>
-      <div className="card">
-        <Thumbnail src={groupData.thumbnail} alt={groupData.alt} />
-        <Body bodyData={{ ...groupData }} />
-        <Footer footerData={{ ...groupData }} />
-      </div>
-    </Link>
-  </StyledCard>
-);
+const StudyGroupCard = ({ groupData }) => {
+  return (
+    <StyledCard className="card-wrapper">
+      <Link to={`/group/detail/${groupData._id}`}>
+        <div className="card">
+          <Thumbnail src={groupData.thumbnail} alt={groupData.alt} />
+          <Body bodyData={{ ...groupData }} />
+          <Footer footerData={{ ...groupData }} />
+        </div>
+      </Link>
+    </StyledCard>
+  );
+};
 
 export default StudyGroupCard;
