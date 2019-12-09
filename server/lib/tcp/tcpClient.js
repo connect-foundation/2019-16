@@ -1,4 +1,5 @@
 const net = require("net");
+const { pushMessage } = require("../redis");
 const { PACKET_SPLITTER } = require("./util");
 
 function registEvent() {
@@ -33,11 +34,12 @@ function registEvent() {
 }
 
 class TcpClient {
-  constructor(host, port, onCreate, onRead, onEnd, onError) {
+  constructor(name, host, port, onCreate, onRead, onEnd, onError) {
     this.options = {
       host,
       port
     };
+    this.name = name;
     this.onCreate = onCreate;
     this.onRead = onRead;
     this.onEnd = onEnd;
@@ -52,9 +54,12 @@ class TcpClient {
   }
 
   write(data) {
-    this.client.write(data);
+    if (this.client.connecting) {
+      pushMessage(this.name, data.slice(0, -1));
+    } else {
+      this.client.write(data);
+    }
   }
-
   end() {
     this.client.end();
   }

@@ -16,13 +16,13 @@ class StudyGroup extends App {
     switch (curQuery) {
       case "addGroup":
         try {
-          const groupInfo = params.payload;
+          const groupInfo = params;
 
           const result = await StudyGroups.create(groupInfo);
           await pushStudyGroups(result);
 
           replyData.method = "REPLY";
-          replyData.body = { href: "/" };
+          replyData.body = { id: result.id };
         } catch (e) {
           console.error(e);
           replyData.method = "ERROR";

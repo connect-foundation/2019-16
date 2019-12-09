@@ -1,13 +1,13 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
 const { makePacket } = require("../tcp/util");
-const { getAppbyName, getAllApps } = require("../redis");
+const { getAppbyName, getAllApps, popMessageQueue } = require("../redis");
 const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
-  constructor(name, host, port, query = []) {
+  constructor(name, host, port, job) {
     super(name, host, port);
-    this.query = query;
+    this.job = job;
     this.isConnectToAppListManager = false;
     this.isConnectedToLogService = false;
     this.isConnectToApiGateway = false;
@@ -15,9 +15,29 @@ class App extends TcpServer {
     this.ApiGateway = this.connectToApiGateway();
 
     this.tcpLogSender = makeLogSender.call(this, "tcp");
+    (async () => {
+      await new Promise(res => this.connectToLogService(res));
+      this.doMessageJob(job);
+    })();
   }
 
-  send(socket, data) {
+  async doMessageJob(job) {
+    const packets = await popMessageQueue(this.context.name, 1000);
+
+    if (!Array.isArray(packets)) {
+      job.bind(this)({}, JSON.parse(packets));
+    } else {
+      packets.forEach(packet => {
+        this.job({}, JSON.parse(packet));
+      });
+    }
+  }
+
+  async onRead(socket, data) {
+    this.job(socket, data);
+  }
+
+  send(appClient, data) {
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -38,7 +58,7 @@ class App extends TcpServer {
     if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
     } else {
-      socket.write(packet);
+      appClient.write(packet);
     }
   }
 
@@ -51,6 +71,7 @@ class App extends TcpServer {
       if (clientInfo === null) throw new Error(`${name} server is not running`);
 
       const client = new TcpClient(
+        name,
         clientInfo.host,
         clientInfo.port,
         onCreate,
@@ -78,6 +99,7 @@ class App extends TcpServer {
 
   connectToAppListManager() {
     this.appListManager = new TcpClient(
+      "appListManager",
       "127.0.0.1",
       8100,
       () => {
@@ -119,8 +141,9 @@ class App extends TcpServer {
     return this.appListManager;
   }
 
-  connectToLogService() {
+  connectToLogService(res) {
     this.logService = new TcpClient(
+      "logService",
       "127.0.0.1",
       8004,
       () => {
@@ -128,6 +151,7 @@ class App extends TcpServer {
           `${this.context.host}:${this.context.port} is connected to logService`
         );
         this.isConnectedToLogService = true;
+        if (res) res();
       },
       () => {
         console.log(`It is read function at Port:${this.context.port}`);
@@ -153,6 +177,7 @@ class App extends TcpServer {
 
   connectToApiGateway() {
     this.ApiGateway = new TcpClient(
+      "apiGateway",
       "127.0.0.1",
       8001,
       () => {
