@@ -10,32 +10,51 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
-async function filterInDistance(search, distance, maxDistance, res) {
-  setTimeout(async () => {
-    search.body.query.bool.filter[
-      search.body.query.bool.filter.length - 1
-    ].geo_distance.distance = `${distance}km`;
-    let searchResult = await client.search(search);
+function filterInDistance(maxResult, cur, accumulatedCount, res) {
+  setTimeout(() => {
+    const buckets = maxResult.body.aggregations.rings_around_amsterdam.buckets;
+    const curCount = buckets[cur].doc_count;
 
-    if (distance >= maxDistance) {
-      res(searchResult);
+    const resultCount = accumulatedCount + curCount;
+
+    if (buckets.length - 1 === cur) {
+      res(maxResult.body.hits.hits.slice(0, resultCount));
+      return;
     }
-    if (searchResult.body.hits.hits.length >= 20) {
-      res(searchResult);
+
+    if (resultCount >= 20) {
+      res(maxResult.body.hits.hits.slice(0, resultCount));
+      return;
     }
-    filterInDistance(search, distance + 2, maxDistance, res);
+    filterInDistance(maxResult, cur + 1, resultCount, res);
   }, 0);
 }
 
 async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
   let distance = 2;
 
+  body.sort = {
+    _script: {
+      type: "number",
+      script: {
+        lang: "expression",
+        source:
+          "(doc['location'].lat - lat )*(doc['location'].lat - lat ) + (doc['location'].lon - lon )*(doc['location'].lon - lon )",
+        params: {
+          lat: +lat,
+          lon: +lon
+        }
+      },
+      order: "asc"
+    }
+  };
+
   const geoFilter = {
     geo_distance: {
       distance: distance,
       location: {
-        lat: lat,
-        lon: lon
+        lat: +lat,
+        lon: +lon
       }
     }
   };
@@ -46,13 +65,41 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
     body.query.bool.filter = [geoFilter];
   }
 
+  body.aggs = {
+    rings_around_amsterdam: {
+      geo_distance: {
+        field: "location",
+        origin: `${+lat}, ${+lon}`,
+        unit: "km",
+        ranges: [
+          { to: 2 },
+          { from: 2, to: 4 },
+          { from: 4, to: 6 },
+          { from: 6, to: 8 },
+          { from: 8, to: 10 },
+          { from: 10, to: 12 },
+          { from: 12, to: 14 },
+          { from: 14, to: 16 },
+          { from: 16, to: 18 },
+          { from: 18, to: 20 }
+        ]
+      }
+    }
+  };
+  body.size = 10000;
   const search = {
     index,
     body
   };
 
+  search.body.query.bool.filter[
+    search.body.query.bool.filter.length - 1
+  ].geo_distance.distance = `${maxDistance}km`;
+
+  let maxResult = await client.search(search);
+
   let searchResult = await new Promise(res =>
-    filterInDistance(search, distance, maxDistance, res)
+    filterInDistance(maxResult, 0, 0, res)
   );
 
   return searchResult;
@@ -88,36 +135,7 @@ exports.searchStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.body.hits.hits.map(hit => {
-    const {
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    } = hit._source;
-
-    return {
-      id: hit._id,
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    };
-  });
+  const result = searchResult.map(hit => hit._source);
 
   return result;
 };
@@ -161,36 +179,7 @@ exports.searchStudyGroupWithCategory = async info => {
     20
   );
 
-  const result = searchResult.body.hits.hits.map(hit => {
-    const {
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    } = hit._source;
-
-    return {
-      id: hit._id,
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    };
-  });
+  const result = searchResult.map(hit => hit._source);
 
   return result;
 };
@@ -223,36 +212,7 @@ exports.tagStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.body.hits.hits.map(hit => {
-    const {
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    } = hit._source;
-
-    return {
-      id: hit._id,
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    };
-  });
+  const result = searchResult.map(hit => hit._source);
 
   return result;
 };
@@ -287,36 +247,7 @@ exports.searchAllStudyGroup = async info => {
     lon,
     20
   );
-  const result = searchResult.body.hits.hits.map(hit => {
-    const {
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    } = hit._source;
-
-    return {
-      id: hit._id,
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    };
-  });
+  const result = searchResult.map(hit => hit._source);
 
   return result;
 };
@@ -355,36 +286,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
     lon,
     20
   );
-  const result = searchResult.body.hits.hits.map(hit => {
-    const {
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    } = hit._source;
-
-    return {
-      id: hit._id,
-      days,
-      startTime,
-      endTime,
-      location,
-      max_personnel,
-      now_personnel,
-      min_personnel,
-      title,
-      subtitle,
-      thumbnail,
-      tags
-    };
-  });
+  const result = searchResult.map(hit => hit._source);
 
   return result;
 };
