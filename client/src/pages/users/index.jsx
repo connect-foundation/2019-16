@@ -3,12 +3,18 @@ import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
+import axios from "axios";
+
+import useAxios from "../../lib/useAxios";
+import { REQUEST_URL } from "../../config.json";
 
 import MainPage from "./Main";
 import GroupDetailPage from "./groupDetail";
 import GroupCreatePage from "./groupCreate";
 import Header from "../../components/users/Header";
 import { initalState, userIndexReducer } from "../../reducer/users";
+
+const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const StyledUserPage = styled.div``;
 
@@ -30,11 +36,13 @@ const UserPage = () => {
     accessToken: "",
     userEmail: "",
     userName: "",
-    userAgeRange: -1,
+    userAgeRange: null,
     userGender: "",
     profileImage: "",
-    userLocation: { lat: 0, lon: 0 }
+    userLocation: { lat: null, lon: null }
   });
+
+  const getApiAxiosState = useAxios(apiAxios);
 
   const [userIndexState, userIndexDispatch] = useReducer(
     userIndexReducer,
@@ -57,7 +65,13 @@ const UserPage = () => {
 
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo, userIndexState, userIndexDispatch }}
+      value={{
+        userInfo,
+        setUserInfo,
+        userIndexState,
+        userIndexDispatch,
+        getApiAxiosState
+      }}
     >
       <StyledUserPage>
         <Header />
