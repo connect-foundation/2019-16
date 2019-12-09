@@ -1,9 +1,6 @@
-import React, { useEffect, useContext, useMemo } from "react";
+import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { Link } from "react-router-dom";
-
-import { REQUEST_URL } from "../../config.json";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
@@ -66,30 +63,28 @@ const Main = styled.div`
   }
 `;
 
-/**
- * TODO: 로그인 여부에 따라서 main jumbotron에서 표시되는 정보가 다르다
- * 미로그인시main-page-title 출력
- * 로그인시 MyStudyCarousel 출력
- */
-
 const MainPage = () => {
-  const { userIndexState, userIndexDispatch, userInfo } = useContext(
-    UserContext
-  );
-
+  const {
+    userIndexState,
+    userIndexDispatch,
+    userInfo,
+    getApiAxiosState
+  } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
+  let { loading, data, error, request } = getApiAxiosState;
 
   useEffect(() => {
-    axios
-      .get(`${REQUEST_URL}/api/search/all/location/${lat}/${lon}/true`)
-      .then(result => {
-        const { data } = result;
-        userIndexDispatch(set_groups(data));
-      }, []);
+    isSetPositionDuringLoading(loading, lat, lon) &&
+      request("get", `/search/all/location/${lat}/${lon}/true`);
   }, [userLocation]);
+
+  useEffect(() => {
+    isHaveCardDataWhenLoaded(loading, data) &&
+      userIndexDispatch(set_groups(data));
+  }, [data, userLocation]);
 
   return (
     <Main>
@@ -118,19 +113,29 @@ const MainPage = () => {
       </div>
 
       <div className="study-group-list">
-        {searchList.length
-          ? searchList.map(groupData => {
-              return (
-                <StudyGroupCard
-                  key={groupData.id}
-                  groupData={groupData}
-                ></StudyGroupCard>
-              );
-            })
-          : "데이터가 업소용"}
+        {(() => {
+          if (loading) return <h3> 로딩 중... </h3>;
+          if (error) return <h3> 에러 발생 </h3>;
+          if (!data.length) return <h3> 데이터가 업소용 </h3>;
+
+          return searchList.map(groupData => {
+            return (
+              <StudyGroupCard
+                key={groupData.id}
+                groupData={groupData}
+              ></StudyGroupCard>
+            );
+          });
+        })()}
       </div>
     </Main>
   );
 };
+
+const isSetPositionDuringLoading = (loading, lat, lon) =>
+  loading && lat !== null && lon !== null;
+
+const isHaveCardDataWhenLoaded = (loading, data) =>
+  !loading && data && data.length;
 
 export default MainPage;
