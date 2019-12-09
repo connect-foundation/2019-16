@@ -17,17 +17,20 @@ class App extends TcpServer {
     this.tcpLogSender = makeLogSender.call(this, "tcp");
     (async () => {
       await new Promise(res => this.connectToLogService(res));
-      await this.doMessageJob(job);
+      this.doMessageJob(job);
     })();
   }
 
   async doMessageJob(job) {
     const packets = await popMessageQueue(this.context.name, 1000);
 
-    if (!Array.isArray(packets)) job.bind(this)({}, JSON.parse(packets));
-    packets.forEach(packet => {
-      this.job({}, JSON.parse(packet));
-    });
+    if (!Array.isArray(packets)) {
+      job.bind(this)({}, JSON.parse(packets));
+    } else {
+      packets.forEach(packet => {
+        this.job({}, JSON.parse(packet));
+      });
+    }
   }
 
   async onRead(socket, data) {
