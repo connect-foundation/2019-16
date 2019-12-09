@@ -107,3 +107,5 @@ test("searchStudyGroupWithCategory Test", async () => {
 
   expect(result).toEqual([testGroups[0]]);
 });
+
+jest.setTimeout(30000);
