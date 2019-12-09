@@ -7,8 +7,7 @@ on:
   pull_request:
     types: [labeled]
     branches:
-      - develop
-      - master
+      - develop/*
       - service/*
 
 jobs:
@@ -54,5 +53,6 @@ jobs:
           SLACK_USERNAME: mergeBot
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: 16team
+          SLACK_ICON: http://newsimg.hankookilbo.com/2019/09/30/201909301390722067_1.jpg
         # if: success()
     needs: [RunTest, Automerge]

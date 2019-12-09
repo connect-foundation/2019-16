@@ -21,34 +21,64 @@ jobs:
           echo head_ref is ${{github.head_ref}}
           if [  ${{github.base_ref}} == "service/log" ]
           then
-            cd server/log
+            cd server/services/log
             npm install
-            npm test
+            npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/analytics" ]
           then
-            cd server/analytics
-            npm intall
-            npm test
+            cd server/services/analytics
+            npm install
+            npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/reservation" ]
           then
-            cd server/reservation
-            npm intall
-            npm test
+            cd server/services/reservation
+            npm install
+            npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/search" ]
           then
-            cd server/search
-            npm intall
-            npm test
+            cd server/services/search
+            npm install
+            npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/study_room" ]
           then
-            cd server/study_room
-            npm intall
-            npm test
+            cd server/services/studyroom
+            npm install
+            npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/study_group" ]
           then
-            cd server/study_group
-            npm intall
-            npm test
+            cd server/services/studygroup
+            npm install
+            npm test --detectOpenHandles --forceExit
+          elif  [  ${{github.base_ref}} == "service/gateway" ]
+          then 
+            cd server/api-gateway
+            npm install
+            npm test --detectOpenHandles --forceExit
+          elif  [  ${{github.base_ref}} == "service/payment" ]
+          then 
+            cd server/services/payment
+            npm install
+            npm test --detectOpenHandles --forceExit
           else
+            echo Err:Nothing match with your service branch
             return 0
           fi
+      - name: if fail
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const ref = "${{github.ref}}"
+            const pull_number = Number(ref.split("/")[2])
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body:"테스트코드를 다시 확인해주세요. ",
+              event: "REQUEST_CHANGES"
+            })
+            await github.pulls.update({
+              ...context.repo,
+              pull_number,
+              state: "closed"
+            })
+        if: failure()
