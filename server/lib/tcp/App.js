@@ -26,8 +26,12 @@ class App extends TcpServer {
 
     if (!Array.isArray(packets)) job.bind(this)({}, JSON.parse(packets));
     packets.forEach(packet => {
-      job.bind(this)({}, JSON.parse(packet));
+      this.job({}, JSON.parse(packet));
     });
+  }
+
+  async onRead(socket, data) {
+    this.job(socket, data);
   }
 
   send(appClient, data) {
