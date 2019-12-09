@@ -1,34 +1,37 @@
 const express = require("express");
 const router = express.Router();
 
-
 const { makePacket } = require("../../lib/tcp/util");
 
 module.exports = function(apigateway) {
+  router.get(
+    "/query/:searchWord/location/:lat/:lon/:isRecruit",
+    async (req, res, next) => {
+      const { searchWord, lat, lon, isRecruit = true } = req.params;
 
-  router.get("/query/:searchWord/:isRecruit", async (req, res, next) => {
-    const { searchWord, isRecruit = true } = req.params;
-
-    req.packet = makePacket(
-      "POST",
-      "searchStudyGroup",
-      { searchWord, isRecruit },
-      {},
-      req.resKey,
-      apigateway.context
-    );
-    next();
-  });
+      req.packet = makePacket(
+        "POST",
+        "searchStudyGroup",
+        "searchStudyGroup",
+        { searchWord, lat, lon, isRecruit },
+        {},
+        req.resKey,
+        apigateway.context
+      );
+      next();
+    }
+  );
 
   router.get(
-    "/query/:searchWord/:category/:isRecruit",
+    "/query/:searchWord/category/:category/location/:lat/:lon/:isRecruit",
     async (req, res, next) => {
-      const { searchWord, category, isRecruit } = req.params;
+      const { searchWord, category, lat, lon, isRecruit } = req.params;
 
       req.packet = makePacket(
         "POST",
         "searchStudyGroupWithCategory",
-        { searchWord, category, isRecruit },
+        "searchStudyGroupWithCategory",
+        { searchWord, category, lat, lon, isRecruit },
         {},
         req.resKey,
         apigateway.context
@@ -39,13 +42,14 @@ module.exports = function(apigateway) {
   );
 
   router.post("/tags", async (req, res, next) => {
-    const { tags, category, isRecruit } = req.body;
+    const { tags, category, lat, lon, isRecruit } = req.body;
 
     if (category === undefined)
       req.packet = makePacket(
         "POST",
         "tagStudyGroup",
-        { tags, isRecruit },
+        "tagStudyGroup",
+        { tags, lat, lon, isRecruit },
         {},
         req.resKey,
         apigateway.context
@@ -55,7 +59,8 @@ module.exports = function(apigateway) {
       req.packet = makePacket(
         "POST",
         "tagStudyGroupWithCategory",
-        { tags, isRecruit, category },
+        "tagStudyGroupWithCategory",
+        { tags, isRecruit, lat, lon, category },
         {},
         req.resKey,
         apigateway.context
@@ -64,13 +69,14 @@ module.exports = function(apigateway) {
     next();
   });
 
-  router.get("/all/:isRecruit", async (req, res, next) => {
-    const { isRecruit } = req.params;
+  router.get("/all/location/:lat/:lon/:isRecruit", async (req, res, next) => {
+    const { lat, lon, isRecruit } = req.params;
 
     req.packet = makePacket(
       "POST",
       "searchAllStudyGroup",
-      { isRecruit },
+      "searchAllStudyGroup",
+      { lat, lon, isRecruit },
       {},
       req.resKey,
       apigateway.context
@@ -79,19 +85,23 @@ module.exports = function(apigateway) {
     next();
   });
 
-  router.get("/all/:category/:isRecruit", async (req, res, next) => {
-    const { category, isRecruit } = req.params;
+  router.get(
+    "/all/category/:category/location/:lat/:lon/:isRecruit",
+    async (req, res, next) => {
+      const { category, lat, lon, isRecruit } = req.params;
 
-    req.packet = makePacket(
-      "POST",
-      "searchAllStudyGroupWithCategory",
-      { category, isRecruit },
-      {},
-      req.resKey,
-      apigateway.context
-    );
+      req.packet = makePacket(
+        "POST",
+        "searchAllStudyGroupWithCategory",
+        "searchAllStudyGroupWithCategory",
+        { category, lat, lon, isRecruit },
+        {},
+        req.resKey,
+        apigateway.context
+      );
 
-    next();
-  });
+      next();
+    }
+  );
   return router;
 };

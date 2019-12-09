@@ -1,16 +1,24 @@
 const App = require("../../lib/tcp/App");
 const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis");
-const { makePacket } = require("../../lib/tcp/util");
-const { searchAllStudyGroupWithCategory, tagStudyGroup, tagStudyGroupWithCategory, searchAllStudyGroup, searchStudyGroup, searchStudyGroupWithCategory, bulkStudyGroups } = require("./elasticsearch")
+
+const {
+  searchAllStudyGroupWithCategory,
+  tagStudyGroup,
+  tagStudyGroupWithCategory,
+  searchAllStudyGroup,
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  bulkStudyGroups
+} = require("./elasticsearch");
 
 const queryMap = {
-  searchStudyGroup: searchStudyGroup,
-  searchStudyGroupWithCategory: searchStudyGroupWithCategory,
-  tagStudyGroup: tagStudyGroup,
-  tagStudyGroupWithCategory: tagStudyGroupWithCategory,
-  searchAllStudyGroup: searchAllStudyGroup,
-  searchAllStudyGroupWithCategory: searchAllStudyGroupWithCategory
-}
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  tagStudyGroup,
+  tagStudyGroupWithCategory,
+  searchAllStudyGroup,
+  searchAllStudyGroupWithCategory
+};
 
 function emptyStudyGroupPeriodically(timer) {
   setTimeout(async () => {
@@ -22,34 +30,40 @@ function emptyStudyGroupPeriodically(timer) {
 
     if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
     else emptyStudyGroupPeriodically(timer);
-
   }, timer);
 }
 
-class Search extends App {
-  constructor(name, host, port) {
-    super(name, host, port);
-    emptyStudyGroupPeriodically(30000);
-  }
-  async onRead(socket, data) {
-    let packet;
-    const { params, query, key } = data;
+async function doJob(socket, data) {
+  const { params, curQuery } = data;
 
-    try {
-      const result = await queryMap[query](params);
+  this.tcpLogSender(curQuery);
 
-      packet = makePacket("REPLY", query, {}, { studygroups: result }, key, this.context);
-    } catch (e) {
-      packet = makePacket("ERROR", query, {}, { message: e }, key, this.context);
-    } finally {
-      this.send(socket, packet);
-    }
+  let replyData;
+  let method = "REPLY";
+  let params_ = {};
+  let result;
 
+  try {
+    result = await queryMap[curQuery](params);
+  } catch (e) {
+    method = "ERROR";
+    result = e;
+  } finally {
+    replyData = {
+      ...data,
+      method,
+      params: params_,
+      body: result
+    };
+    const appClient = {};
 
-  }
-  send(socket, packet) {
-    socket.write(packet);
+    this.send(appClient, replyData);
   }
 }
-
+class Search extends App {
+  constructor(name, host, port) {
+    super(name, host, port, doJob);
+    emptyStudyGroupPeriodically(30000);
+  }
+}
 module.exports = Search;

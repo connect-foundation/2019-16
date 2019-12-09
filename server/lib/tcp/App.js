@@ -1,16 +1,65 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
-const logger = require("../../services/logger/logger");
 const { makePacket } = require("../tcp/util");
-const { getAppbyName, getAllApps } = require("../redis");
+const { getAppbyName, getAllApps, popMessageQueue } = require("../redis");
+const { makeLogSender } = require("./logUtils");
 
 class App extends TcpServer {
-  constructor(name, host, port, query = []) {
+  constructor(name, host, port, job) {
     super(name, host, port);
-    this.query = query;
+    this.job = job;
     this.isConnectToAppListManager = false;
+    this.isConnectedToLogService = false;
+    this.isConnectToApiGateway = false;
     this.appClients = {};
+    this.ApiGateway = this.connectToApiGateway();
 
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
+    (async () => {
+      await new Promise(res => this.connectToLogService(res));
+      this.doMessageJob(job);
+    })();
+  }
+
+  async doMessageJob(job) {
+    const packets = await popMessageQueue(this.context.name, 1000);
+
+    if (!Array.isArray(packets)) {
+      job.bind(this)({}, JSON.parse(packets));
+    } else {
+      packets.forEach(packet => {
+        this.job({}, JSON.parse(packet));
+      });
+    }
+  }
+
+  async onRead(socket, data) {
+    this.job(socket, data);
+  }
+
+  send(appClient, data) {
+    const packet = makePacket(
+      data.method,
+      data.curQuery,
+      data.endQuery,
+      data.params,
+      data.body,
+      data.key,
+      data.info
+    );
+
+    /**
+     * params
+     * @param {string} query : 서비스의 쿼리
+     * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
+     */
+    this.tcpLogSender = makeLogSender.call(this, "tcp");
+
+    if (data.curQuery === data.endQuery) {
+      this.ApiGateway.write(packet);
+    } else {
+      appClient.write(packet);
+    }
   }
 
   async connectToApp(name, onCreate, onRead, onEnd, onError) {
@@ -19,9 +68,17 @@ class App extends TcpServer {
     try {
       const clientInfo = await getAppbyName(name);
 
-      if (clientInfo === null) throw new Error(`${name} server is not running`)
+      if (clientInfo === null) throw new Error(`${name} server is not running`);
 
-      const client = new TcpClient(clientInfo.host, clientInfo.port, onCreate, onRead, onEnd, onError);
+      const client = new TcpClient(
+        name,
+        clientInfo.host,
+        clientInfo.port,
+        onCreate,
+        onRead,
+        onEnd,
+        onError
+      );
 
       this.appClients[name] = client;
       return client;
@@ -42,37 +99,113 @@ class App extends TcpServer {
 
   connectToAppListManager() {
     this.appListManager = new TcpClient(
+      "appListManager",
       "127.0.0.1",
       8100,
       () => {
         this.isConnectToAppListManager = true;
-        const packet = makePacket("POST", "add", {}, {}, "", this.context);
+        const packet = makePacket(
+          "POST",
+          "add",
+          "add",
+          {},
+          {},
+          "",
+          this.context
+        );
 
-        this.appListManager.write(packet)
-        logger.info(
+        this.appListManager.write(packet);
+        console.log(
           `${this.context.host}:${this.context.port} is connected to app list manager`
         );
       },
       () => {
-        logger.info(`It is read function at Port:${this.context.port}`);
+        console.log(`It is read function at Port:${this.context.port}`);
       },
       () => {
-        logger.warn(`end service`);
+        console.log(`end service`);
         this.isConnectToAppListManager = false;
       },
       () => {
-        logger.warn(`App list manager server is down`);
+        console.log(`App list manager server is down`);
         this.isConnectToAppListManager = false;
       }
     );
 
     setInterval(() => {
       if (!this.isConnectToAppListManager) {
-        logger.info(`try connect to app list manager`);
+        console.log(`try connect to app list manager`);
         this.appListManager.connect();
       }
     }, 1000);
     return this.appListManager;
+  }
+
+  connectToLogService(res) {
+    this.logService = new TcpClient(
+      "logService",
+      "127.0.0.1",
+      8004,
+      () => {
+        console.log(
+          `${this.context.host}:${this.context.port} is connected to logService`
+        );
+        this.isConnectedToLogService = true;
+        if (res) res();
+      },
+      () => {
+        console.log(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        console.log(`end logService`);
+        this.isConnectedToLogService = false;
+      },
+      () => {
+        console.log(`logService is down`);
+        this.isConnectedToLogService = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectedToLogService) {
+        console.log(`try connect to LogService`);
+        this.logService.connect();
+      }
+    }, 1000);
+    return this.logService;
+  }
+
+  connectToApiGateway() {
+    this.ApiGateway = new TcpClient(
+      "apiGateway",
+      "127.0.0.1",
+      8001,
+      () => {
+        this.isConnectToApiGateway = true;
+        console.log(
+          `${this.context.host}:${this.context.port} is connected to ApiGateway`
+        );
+      },
+      () => {
+        console.log(`It is read function at Port:${this.context.port}`);
+      },
+      () => {
+        console.log(`end ApiGateway`);
+        this.isConnectToApiGateway = false;
+      },
+      () => {
+        console.log(`ApiGateway server is down`);
+        this.isConnectToApiGateway = false;
+      }
+    );
+
+    setInterval(() => {
+      if (!this.isConnectToApiGateway) {
+        console.log(`try connect to ApiGateway`);
+        this.ApiGateway.connect();
+      }
+    }, 1000);
+    return this.ApiGateway;
   }
 }
 

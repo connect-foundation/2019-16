@@ -1,12 +1,12 @@
-import React, { useEffect, useContext, useReducer } from "react";
+import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import { Link, Route, BrowserRouter as Router } from "react-router-dom";
-import axios from "axios";
-import StudySearchNavbar from "../../components/studySearchNavbar/StudySearchNavbar";
-import StudyGroupCard from "../../components/groupCard";
-import MyStudyCarousel from "../../components/MyStudyCarousel";
-import { AppContext } from "../../App";
-import { initalState, mainReducer, get_all_groups } from "../../reducer/Main";
+import { Link } from "react-router-dom";
+
+import StudyGroupCard from "../../components/users/groupCard";
+import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
+
+import { set_groups } from "../../reducer/users";
+import { UserContext } from "./index";
 
 const Main = styled.div`
   display: flex;
@@ -24,7 +24,11 @@ const Main = styled.div`
       margin-top: 2rem;
     }
   }
-
+  .group-create-button {
+    margin-top: 2rem;
+    display:flex;
+    justify-content:center;
+  }
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
     color: #000000;
@@ -59,56 +63,39 @@ const Main = styled.div`
   }
 `;
 
-/**
- * TODO: 로그인 여부에 따라서 main jumbotron에서 표시되는 정보가 다르다
- * 미로그인시main-page-title 출력
- * 로그인시 MyStudyCarousel 출력
- */
-const searchUrl = "";
-
 const MainPage = () => {
-  const [mainState, mainDispatch] = useReducer(mainReducer, initalState);
-
   const {
-    myGroups,
-    cardList,
-    primaryCategories,
-    secondaryCategories
-  } = mainState;
+    userIndexState,
+    userIndexDispatch,
+    userInfo,
+    getApiAxiosState
+  } = useContext(UserContext);
+  const { myGroups, searchList } = userIndexState;
+  const { userEmail, userLocation } = userInfo;
 
-  const {
-    appState: { user_email }
-  } = useContext(AppContext);
+  let { lat, lon } = userLocation;
+  let { loading, data, error, request } = getApiAxiosState;
 
   useEffect(() => {
-    axios.get(searchUrl).then(result => {
-      const { data } = result;
+    isSetPositionDuringLoading(loading, lat, lon) &&
+      request("get", `/search/all/location/${lat}/${lon}/true`);
+  }, [userLocation]);
 
-      for (let i = 0; i < data.length; i++) {
-        data[i].id = i;
-        data[
-          i
-        ].location = `위도: ${data[i].location.lat}, 경도: ${data[i].location.lon}`;
-      }
-      mainDispatch(get_all_groups(data));
-    }, []);
-    // /api/search/all
-    /**
-     * TODO: data 요청로직 필요
-     * cardListData
-     * myStudyData
-     */
-  }, []);
+  useEffect(() => {
+    isHaveCardDataWhenLoaded(loading, data) &&
+      userIndexDispatch(set_groups(data));
+  }, [data, userLocation]);
 
   return (
     <Main>
       <div className="main-jumbotron">
-        {user_email ? (
+        {userEmail ? (
           <>
-            <MyStudyCarousel
-              myGroups={myGroups}
-              user_email={user_email}
-            ></MyStudyCarousel>
+            {myGroups.length ? (
+              <MyStudyCarousel></MyStudyCarousel>
+            ) : (
+              "현재 소속된 스터디 그룹이 없습니다."
+            )}
             <Link to="/group/create" className="group-create-button">
               {" "}
               <button className="button"> 그룹 생성 </button>
@@ -125,40 +112,30 @@ const MainPage = () => {
         )}
       </div>
 
-      <Router>
-        <StudySearchNavbar
-          primaryCategories={primaryCategories}
-          secondaryCategories={secondaryCategories}
-        ></StudySearchNavbar>
-        <Route
-          path={["/category/:categoryName", "/"]}
-          render={({ match }) => {
-            const selectedCategory = match.params.categoryName;
-            const pathName = match.path;
-            const groupsData =
-              pathName === "/"
-                ? cardList
-                : cardList.filter(
-                    card => card.category[1] === selectedCategory
-                  );
-            const groupsDataLength = groupsData.length;
+      <div className="study-group-list">
+        {(() => {
+          if (loading) return <h3> 로딩 중... </h3>;
+          if (error) return <h3> 에러 발생 </h3>;
+          if (!data.length) return <h3> 데이터가 업소용 </h3>;
 
+          return searchList.map(groupData => {
             return (
-              <div className="study-group-list">
-                {groupsDataLength
-                  ? groupsData.map(groupData => {
-                      return (
-                        <StudyGroupCard groupData={groupData}></StudyGroupCard>
-                      );
-                    })
-                  : "데이터가 업소용"}
-              </div>
+              <StudyGroupCard
+                key={groupData.id}
+                groupData={groupData}
+              ></StudyGroupCard>
             );
-          }}
-        />
-      </Router>
+          });
+        })()}
+      </div>
     </Main>
   );
 };
+
+const isSetPositionDuringLoading = (loading, lat, lon) =>
+  loading && lat !== null && lon !== null;
+
+const isHaveCardDataWhenLoaded = (loading, data) =>
+  !loading && data && data.length;
 
 export default MainPage;
