@@ -10,23 +10,21 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
-async function filterInDistance(maxResult, cur, rC, res) {
-
-
-  setTimeout(async () => {
+function filterInDistance(maxResult, cur, accumulatedCount, res) {
+  setTimeout(() => {
     const buckets = maxResult.body.aggregations.rings_around_amsterdam.buckets;
     const curCount = buckets[cur].doc_count;
 
-    const resultCount = rC + curCount;
+    const resultCount = accumulatedCount + curCount;
 
     if (buckets.length - 1 === cur) {
       res(maxResult.body.hits.hits.slice(0, resultCount));
-      return
+      return;
     }
 
     if (resultCount >= 20) {
       res(maxResult.body.hits.hits.slice(0, resultCount));
-      return
+      return;
     }
     filterInDistance(maxResult, cur + 1, resultCount, res);
   }, 0);
@@ -40,7 +38,8 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
       type: "number",
       script: {
         lang: "expression",
-        source: "(doc['location'].lat - lat )*(doc['location'].lat - lat ) + (doc['location'].lon - lon )*(doc['location'].lon - lon )",
+        source:
+          "(doc['location'].lat - lat )*(doc['location'].lat - lat ) + (doc['location'].lon - lon )*(doc['location'].lon - lon )",
         params: {
           lat: +lat,
           lon: +lon
@@ -48,7 +47,7 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
       },
       order: "asc"
     }
-  }
+  };
 
   const geoFilter = {
     geo_distance: {
@@ -59,8 +58,6 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
       }
     }
   };
-
-
 
   if (body.query.bool.filter !== undefined) {
     body.query.bool.filter.push(geoFilter);
@@ -75,26 +72,25 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
         origin: `${+lat}, ${+lon}`,
         unit: "km",
         ranges: [
-          { "to": 2 },
-          { "from": 2, "to": 4 },
-          { "from": 4, "to": 6 },
-          { "from": 6, "to": 8 },
-          { "from": 8, "to": 10 },
-          { "from": 10, "to": 12 },
-          { "from": 12, "to": 14 },
-          { "from": 14, "to": 16 },
-          { "from": 16, "to": 18 },
-          { "from": 18, "to": 20 }
+          { to: 2 },
+          { from: 2, to: 4 },
+          { from: 4, to: 6 },
+          { from: 6, to: 8 },
+          { from: 8, to: 10 },
+          { from: 10, to: 12 },
+          { from: 12, to: 14 },
+          { from: 14, to: 16 },
+          { from: 16, to: 18 },
+          { from: 18, to: 20 }
         ]
       }
     }
-  }
+  };
   body.size = 10000;
   const search = {
     index,
     body
   };
-
 
   search.body.query.bool.filter[
     search.body.query.bool.filter.length - 1
@@ -221,7 +217,7 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => { };
+exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
   const { lat, lon, isRecruit } = info;
