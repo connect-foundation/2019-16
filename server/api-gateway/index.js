@@ -61,10 +61,9 @@ const apigateway = new ApiGateway();
 const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
-const studyGroupRouter = require("./routes/studyGroup")(apigateway);
+const studyGroupRouter = require("./routes/api/studyGroup")(apigateway);
 const studyRoomRouter = require("./routes/studyRoom")(apigateway);
 const apiRouter = require("./routes/api");
-
 
 apigateway.connectToLogService();
 

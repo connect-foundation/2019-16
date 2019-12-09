@@ -21,7 +21,7 @@
 
 |       Fields       |   Type   |              Description               |                      Example                      |
 | :----------------: | :------: | :------------------------------------: | :-----------------------------------------------: |
-|    `accssToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
+|    `accessToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
 |       `cid`        | `String` |          `가맹점 코드. 10자`           |                   `TC0ONETIME`                    |
 | `partner_order_id` | `String` |     `가맹점 주문번호. 최대 100자`      |                                                   |
 | `partner_user_id`  | `String` |      `가맹점 회원 id. 최대 100자`      |                                                   |
@@ -39,7 +39,7 @@
 
 ### 파트너 모델
 
-```json
+```
 {
   "_id": ObjectId,
   "name": String,
@@ -51,7 +51,7 @@
 
 ### 일반 사용자 모델
 
-```json
+```
 {
   "_id": ObjectId,
   "email": String,
@@ -62,3 +62,14 @@
   "partipatedGroups": [mongoose.Types.ObjectId]
 }
 ```
+### 2. Search
+
+사용자 location 주변의 studygroup을 검색할 때 호출
+
+| No. | Method |     Url      |        Body        |                                 What                                     |
+| :-: | :----: | :----------: | :----------------: | :----------------------------------------------------------------------: |
+|  1  | `GET` |`api/query/:searchWord/location/:lat/:lon/:isRecruit`|| `검색어로 필터링한 스터디그룹 조회` |
+|  2  | `GET`  |`/api/query/:searchWord/category/:category/location/:lat/:lon/:isRecruit`|| `검색어와 카테고리로 필터링한 스터디그룹 조회`|
+|  3  | `GET`  |`/api/all/location/:lat/:lon/:isRecruit` ||`모든 스터디그룹 조회`|
+|  4  | `GET`  |`/api/all/category/:category/location/:lat/:lon/:isRecruit`||`카테고리로 필터링 한 모든 스터디 그룹 조회`|
+|  5  | `POST` |`/api/tags`| `{tags, category, lat, lon, isRecruit}`|`태그 검색`|

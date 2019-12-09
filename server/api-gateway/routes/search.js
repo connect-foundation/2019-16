@@ -3,27 +3,28 @@ const router = express.Router();
 
 const { makePacket } = require("../../lib/tcp/util");
 
-module.exports = function (apigateway) {
-  router.get("/query/:searchWord/location/:lat/:lon/:isRecruit", async (req, res, next) => {
-    console.log("/query/:searchWord/location/:lat/:lon/:isRecruit")
-    const { searchWord, lat, lon, isRecruit = true } = req.params;
+module.exports = function(apigateway) {
+  router.get(
+    "/query/:searchWord/location/:lat/:lon/:isRecruit",
+    async (req, res, next) => {
+      const { searchWord, lat, lon, isRecruit = true } = req.params;
 
-    req.packet = makePacket(
-      "POST",
-      "searchStudyGroup",
-      "searchStudyGroup",
-      { searchWord, lat, lon, isRecruit },
-      {},
-      req.resKey,
-      apigateway.context
-    );
-    next();
-  });
+      req.packet = makePacket(
+        "POST",
+        "searchStudyGroup",
+        "searchStudyGroup",
+        { searchWord, lat, lon, isRecruit },
+        {},
+        req.resKey,
+        apigateway.context
+      );
+      next();
+    }
+  );
 
   router.get(
     "/query/:searchWord/category/:category/location/:lat/:lon/:isRecruit",
     async (req, res, next) => {
-      console.log("/query/:searchWord/category/:category/location/:lat/:lon/:isRecruit")
       const { searchWord, category, lat, lon, isRecruit } = req.params;
 
       req.packet = makePacket(
@@ -84,20 +85,23 @@ module.exports = function (apigateway) {
     next();
   });
 
-  router.get("/all/category/:category/location/:lat/:lon/:isRecruit", async (req, res, next) => {
-    const { category, lat, lon, isRecruit } = req.params;
+  router.get(
+    "/all/category/:category/location/:lat/:lon/:isRecruit",
+    async (req, res, next) => {
+      const { category, lat, lon, isRecruit } = req.params;
 
-    req.packet = makePacket(
-      "POST",
-      "searchAllStudyGroupWithCategory",
-      "searchAllStudyGroupWithCategory",
-      { category, lat, lon, isRecruit },
-      {},
-      req.resKey,
-      apigateway.context
-    );
+      req.packet = makePacket(
+        "POST",
+        "searchAllStudyGroupWithCategory",
+        "searchAllStudyGroupWithCategory",
+        { category, lat, lon, isRecruit },
+        {},
+        req.resKey,
+        apigateway.context
+      );
 
-    next();
-  });
+      next();
+    }
+  );
   return router;
 };
