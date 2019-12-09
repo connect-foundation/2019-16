@@ -51,7 +51,12 @@ jobs:
             npm test --detectOpenHandles --forceExit
           elif  [  ${{github.base_ref}} == "service/gateway" ]
           then 
-            cd server/services/api-gateway
+            cd server/api-gateway
+            npm install
+            npm test --detectOpenHandles --forceExit
+          elif  [  ${{github.base_ref}} == "service/payment" ]
+          then 
+            cd server/services/payment
             npm install
             npm test --detectOpenHandles --forceExit
           else
