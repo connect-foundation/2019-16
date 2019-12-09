@@ -65,9 +65,5 @@ class Search extends App {
     super(name, host, port, doJob);
     emptyStudyGroupPeriodically(30000);
   }
-
-  async onRead(socket, data) {
-    doJob.bind(this)(socket, data);
-  }
 }
 module.exports = Search;
