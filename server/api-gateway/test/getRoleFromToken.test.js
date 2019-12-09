@@ -1,6 +1,10 @@
-const path = require("path");
+// const path = require("path");
+// require("dotenv").config({ path: path.join(__dirname, "/../../.env") });
 
-require("dotenv").config({ path: path.join(__dirname, "/../../.env") });
+process.env.JWT_USER_SECRET_KEY =
+  "sdflkajf97qwp4oh4o3qfquweahhaw7eic3h4ioqhrq34iu";
+process.env.JWT_PARTNER_SECRET_KEY =
+  "2497fouwrahnodahunhcigzsiuef3ru8n98274875gvnljf";
 
 const getRoleFromToken = require("../lib/getRoleFromToken");
 
