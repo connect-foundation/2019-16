@@ -4,6 +4,7 @@ const {
   SEARCH_ELASTIC_PORT
 } = process.env;
 
+console.log(`ENV is host:${SEARCH_ELASTIC_HOST}, port: ${SEARCH_ELASTIC_PORT}`);
 const { Client } = require("@elastic/elasticsearch");
 const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
