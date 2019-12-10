@@ -18,13 +18,14 @@ import {
   change_personnel,
   category_click,
   change_hour,
-  click_day
+  click_day,
+  change_during,
+  set_initial_data
 } from "../../reducer/users/groupUpdate";
-import { set_initial_data } from "../../reducer/users/groupUpdate.jsx";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
-const StyledGroupCreate = styled.div`
+const StyledGroupUpdate = styled.div`
   width: 60%;
   margin: 2rem auto;
 
@@ -59,7 +60,7 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const GroupCreate = ({ match }) => {
+const GroupUpdate = ({ match }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
@@ -94,19 +95,21 @@ const GroupCreate = ({ match }) => {
   );
 
   const onTimeDispatch = useCallback(
-    TimeSlot => e => {
-      let time = Number.parseInt(e.target.value, 10);
-      const timeType = e.target.name;
+    (TimeSlot, StartTime) => e => {
+      const timeSlot = TimeSlot.current.value;
+      const selectedStartTime = Number.parseInt(StartTime.current.value, 10);
+      const resultStartTime = selectedStartTime + (timeSlot === "pm" ? 12 : 0);
+      console.log(timeSlot, selectedStartTime, resultStartTime);
 
-      if (timeType === "startTime") {
-        const timeSlot = TimeSlot.current.value;
-        if (timeSlot === "pm") time += 12;
-      }
-
-      dispatch(change_hour(timeType, time));
+      dispatch(change_hour(resultStartTime));
     },
     []
   );
+
+  const onChangeDuring = useCallback(e => {
+    const during = +e.target.value;
+    dispatch(change_during(during));
+  });
 
   const onSubmit = useCallback(e => {
     //   const { data } = state;
@@ -151,7 +154,7 @@ const GroupCreate = ({ match }) => {
   }, []);
 
   return (
-    <StyledGroupCreate>
+    <StyledGroupUpdate>
       <div className="is-centered categories">
         <Category
           categories={primaryCategories}
@@ -201,6 +204,7 @@ const GroupCreate = ({ match }) => {
         daysInfo={daysInfo}
         onTimeDispatch={onTimeDispatch}
         onDayDispatch={onDayDispatch}
+        onChangeDuring={onChangeDuring}
       />
 
       <RangeSlider
@@ -213,7 +217,7 @@ const GroupCreate = ({ match }) => {
         {" "}
         등록하기{" "}
       </button>
-    </StyledGroupCreate>
+    </StyledGroupUpdate>
   );
 };
 
@@ -231,4 +235,4 @@ const validation = data => {
   return { isProper: true };
 };
 
-export default GroupCreate;
+export default GroupUpdate;

@@ -13,7 +13,10 @@ import {
   initialState,
   input_content,
   change_personnel,
-  category_click
+  category_click,
+  click_day,
+  change_hour,
+  change_during
 } from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -69,6 +72,30 @@ const GroupCreate = () => {
 
     dispatch(input_content(contentType, description));
   }, []);
+
+  const onDayDispatch = useCallback(
+    i => e => {
+      e.target.blur();
+      dispatch(click_day(i));
+    },
+    []
+  );
+
+  const onTimeDispatch = useCallback(
+    (TimeSlot, StartTime) => e => {
+      const timeSlot = TimeSlot.current.value;
+      const selectedStartTime = Number.parseInt(StartTime.current.value, 10);
+      const resultStartTime = selectedStartTime + (timeSlot === "pm" ? 12 : 0);
+
+      dispatch(change_hour(resultStartTime));
+    },
+    []
+  );
+
+  const onChangeDuring = useCallback(e => {
+    const during = +e.target.value;
+    dispatch(change_during(during));
+  });
 
   const onChangeSlider = useCallback((min, max) => {
     dispatch(change_personnel(min, max));
@@ -160,7 +187,12 @@ const GroupCreate = () => {
 
       <TagInput tags={tags} dispatch={dispatch} />
 
-      <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
+      <ScheduleInput
+        daysInfo={daysInfo}
+        onDayDispatch={onDayDispatch}
+        onTimeDispatch={onTimeDispatch}
+        onChangeDuring={onChangeDuring}
+      />
 
       <RangeSlider
         minRange={1}

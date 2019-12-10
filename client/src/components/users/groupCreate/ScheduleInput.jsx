@@ -19,8 +19,9 @@ const StyledScheduleInput = styled.div`
 `;
 
 const ScheduleInput = props => {
-  const { daysInfo, onDayDispatch, onTimeDispatch } = props;
+  const { daysInfo, onDayDispatch, onTimeDispatch, onChangeDuring } = props;
   const TimeSlot = useRef();
+  const StartTime = useRef();
 
   return (
     <StyledScheduleInput>
@@ -40,15 +41,21 @@ const ScheduleInput = props => {
       </div>
 
       <div className="time-select">
-        <select className="select" ref={TimeSlot}>
+        <select
+          className="select"
+          name="timeSlot"
+          ref={TimeSlot}
+          onChange={onTimeDispatch(TimeSlot, StartTime)}
+        >
           <option value="am">오전</option>
           <option value="pm">오후</option>
         </select>
 
         <select
           className="select"
+          ref={StartTime}
           name="startTime"
-          onChange={onTimeDispatch(TimeSlot)}
+          onChange={onTimeDispatch(TimeSlot, StartTime)}
         >
           <option value="1">1시</option>
           <option value="2">2시</option>
@@ -64,11 +71,7 @@ const ScheduleInput = props => {
           <option value="12">12시</option>
         </select>
 
-        <select
-          className="select"
-          name="during"
-          onChange={onTimeDispatch(TimeSlot)}
-        >
+        <select className="select" name="during" onChange={onChangeDuring}>
           <option value="1"> 1시간 </option>
           <option value="2"> 2시간 </option>
           <option value="3"> 3시간 </option>
