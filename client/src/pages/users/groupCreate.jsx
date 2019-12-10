@@ -12,7 +12,8 @@ import {
   groupCreateReducer,
   initialState,
   input_content,
-  change_personnel
+  change_personnel,
+  category_click
 } from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -57,6 +58,10 @@ const GroupCreate = () => {
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
   const { category, tags, title, subtitle, intro } = state.data;
+
+  const onCategoryClick = useCallback((categoryType, categoryName) => {
+    dispatch(category_click(categoryType, categoryName));
+  }, []);
 
   const onChangeContent = useCallback(e => {
     const contentType = e.target.name;
@@ -113,15 +118,15 @@ const GroupCreate = () => {
       <div className="is-centered categories">
         <Category
           categories={primaryCategories}
-          type="primary"
-          dispatch={dispatch}
+          categoryType="primary"
+          onCategoryClick={onCategoryClick}
         />
 
         {category[0] && (
           <Category
             categories={secondaryCategories[category[0]]}
-            type="secondary"
-            dispatch={dispatch}
+            categoryType="secondary"
+            onCategoryClick={onCategoryClick}
           />
         )}
       </div>
