@@ -32,6 +32,10 @@
 |   `approval_url`   | `String` | `결제 성공시 redirect url. 최대 255자` | `https://studycombined:8000/api/payment/approval` |
 |    `cancel_url`    | `String` | `결제 취소시 redirect url. 최대 255자` |  `https://studycombined:8000/api/payment/cancel`  |
 |     `fail_url`     | `String` | `결제 실패시 redirect url. 최대 255자` |   `https://studycombined:8000/api/payment/fail`   |
+| `days` | `Number[]` | 결제 하려는 스터디의 요일 정보 | `[1, 3]` 은 월요일과 수요일을 뜻한다. |
+| `startTime` | `Number` | 스터디가 시작하는 시간 | `20` |
+| `endTime` | `Number` | 스터디가 끝나는 시간 | `22` |
+| `roomId` | `ObjectId` | 결제하려는 스터디룸의 id |  |
 
 - Res
 
