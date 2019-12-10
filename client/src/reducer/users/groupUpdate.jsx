@@ -4,6 +4,7 @@ const CATEGORY_CLICK = "groupUpdate/CATEGORY_CLICK";
 const ADD_TAG = "groupUpdate/ADD_TAG";
 const CLICK_DAY = "groupUpdate/CLICK_DAY";
 const CHANGE_HOUR = "groupUpdate/CHANGE_HOUR";
+const CHANGE_DURING = "groupUpdate/CHANGE_DURING";
 const INPUT_CONTENT = "groupUpdate/INPUT_CONTENT";
 const ATTACH_IMAGE = "groupUpdate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupUpdate/CHANGE_PERSONNEL";
@@ -25,10 +26,14 @@ export const click_day = changedIndex => ({
   changedIndex
 });
 
-export const change_hour = (timeType, hour) => ({
+export const change_hour = startTime => ({
   type: CHANGE_HOUR,
-  timeType,
-  hour
+  startTime
+});
+
+export const change_during = during => ({
+  type: CHANGE_DURING,
+  during
 });
 
 export const input_content = (contentType, description) => ({
@@ -131,8 +136,13 @@ export const groupUpdateReducer = (state, action) => {
       return { ...state, daysInfo, data };
 
     case CHANGE_HOUR:
-      const { timeType, hour } = action;
-      data[timeType] = hour;
+      const { startTime } = action;
+      data.startTime = startTime;
+      return { ...state, data };
+
+    case CHANGE_DURING:
+      const { during } = action;
+      data.during = during;
       return { ...state, data };
 
     case INPUT_CONTENT:
