@@ -1,6 +1,25 @@
+const mongoose = require("mongoose");
 const App = require("../../lib/tcp/App");
+const { filterStudyGroup } = require("./query/queries");
 
-const queryMap = {};
+const { RESERVATIONS_MONGO_URL } = process.env;
+
+mongoose
+  .connect(RESERVATIONS_MONGO_URL, {
+    useNewUrlParser: true,
+    useFindAndModify: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Rservation mongoDB is connected");
+  })
+  .catch(err => {
+    console.log("Rservation mongoDB connection fail", err);
+  });
+
+const queryMap = {
+  filterStudyGroup
+};
 
 async function doJob(socket, data) {
   const { params, curQuery } = data;
