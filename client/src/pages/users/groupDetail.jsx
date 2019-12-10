@@ -1,8 +1,10 @@
-import React, { useReducer, useEffect, useCallback } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useReducer, useEffect, useCallback, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
 import useAxios from "../../lib/useAxios";
+import { UserContext } from "../../pages/users";
 import Header from "../../components/users/groupDetail/Header";
 import Main from "../../components/users/groupDetail/Main";
 import Intro from "../../components/users/groupDetail/Intro";
@@ -33,9 +35,20 @@ const StyledGroupDetail = styled.div`
 `;
 
 const GroupDetail = ({ match }) => {
+  const { userInfo } = useContext(UserContext);
   const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
   const { loading, error, data, request } = useAxios(apiAxios);
   const { id } = match.params;
+
+  const requestDelete = useCallback(async () => {
+    try {
+      const { status } = await request("delete", `/studygroup/detail/${id}`);
+      if (status === 200) window.location.href = "/";
+      else alert("서버 에러");
+    } catch (err) {
+      alert("요청 오류");
+    }
+  }, [id]);
 
   useEffect(() => {
     id && request("get", `/studygroup/detail/${id}`);
@@ -53,18 +66,25 @@ const GroupDetail = ({ match }) => {
       {(() => {
         if (loading) return <h2>로딩 중... </h2>;
         if (error) return <h2> 에러 발생 </h2>;
-        if (isHaveGroupData)
+        if (isHaveGroupData) {
+          const isMyGroup = groupData.leader === userInfo.userEmail;
           return (
             <>
               <Header groupData={groupData}></Header>
               <Main groupData={groupData} dispatch={dispatch}></Main>
-              <div className="modify-buttons">
-                <button className="button"> 수정 </button>
-                <button className="button"> 삭제 </button>
-              </div>
+              {isMyGroup && (
+                <div className="modify-buttons">
+                  <button className="button"> 수정 </button>
+                  <button className="button" onClick={requestDelete}>
+                    {" "}
+                    삭제{" "}
+                  </button>
+                </div>
+              )}
               <Intro intro={intro}></Intro>
             </>
           );
+        }
       })()}
     </StyledGroupDetail>
   );
