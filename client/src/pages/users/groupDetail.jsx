@@ -17,6 +17,16 @@ const StyledGroupDetail = styled.div`
 
   width: 54rem;
   margin: 3rem auto;
+
+  .modify-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    .button {
+      margin-left: 1.7rem;
+    }
+  }
 `;
 
 const GroupDetail = ({ match }) => {
@@ -28,7 +38,7 @@ const GroupDetail = ({ match }) => {
       const groupData = result.data;
       dispatch(set_detail_data(groupData));
     });
-  }, []);
+  }, [id]);
 
   const isHaveGroupData = Object.keys(groupData).length;
   const { intro } = groupData;
@@ -38,6 +48,10 @@ const GroupDetail = ({ match }) => {
         <>
           <Header groupData={groupData}></Header>
           <Main groupData={groupData} dispatch={dispatch}></Main>
+          <div className="modify-buttons">
+            <button className="button"> 수정 </button>
+            <button className="button"> 삭제 </button>
+          </div>
           <Intro intro={intro}></Intro>
         </>
       )}
