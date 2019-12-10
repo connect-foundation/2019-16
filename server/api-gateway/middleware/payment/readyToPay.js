@@ -3,31 +3,8 @@ const formurlencoded = require("form-urlencoded").default;
 
 function readyToPay(req, res, next) {
   const accessToken = req.body.accessToken;
-  const {
-    cid,
-    partner_order_id,
-    partner_user_id,
-    item_name,
-    quantity,
-    total_amount,
-    tax_free_amount,
-    approval_url,
-    cancel_url,
-    fail_url
-  } = req.body;
 
-  const form = formurlencoded({
-    cid,
-    partner_order_id,
-    partner_user_id,
-    item_name,
-    quantity,
-    total_amount,
-    tax_free_amount,
-    approval_url,
-    cancel_url,
-    fail_url
-  });
+  const form = formurlencoded(req.body.paymentInfo);
 
   const options = {
     method: "POST",
