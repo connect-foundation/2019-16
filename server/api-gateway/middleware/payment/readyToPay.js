@@ -42,6 +42,9 @@ function readyToPay(req, res, next) {
     .then(_res => _res.json())
     .then(answer => {
       return res.json(answer.next_redirect_pc_url);
+    })
+    .catch(() => {
+      return res.json({ error: "kpay fetch error" });
     });
 }
 
