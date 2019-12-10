@@ -1,6 +1,9 @@
 const App = require("../../lib/tcp/App");
 const StudyRooms = require("./models/studyrooms");
 
+const convertKntoMile = km => {
+  return km / 6378.1;
+};
 class StudyRoom extends App {
   constructor(name, host, port) {
     super(name, host, port);
@@ -9,26 +12,29 @@ class StudyRoom extends App {
   async onRead(socket, data) {
     const { method, params, curQuery, endQuery, key } = data;
 
-    this.tcpLogSender(curQuery);
+    const { geopoint, personnel, startTime, endTime, days } = params;
 
     if (method === "GET" && curQuery === "availableRooms") {
       const filteredRooms = await StudyRooms.find({
         max_personnel: {
-          $gte: 5
+          $gte: personnel
         },
         min_personnel: {
-          $lte: 5
+          $lte: personnel
         },
         location: {
           $geoWithin: {
-            $centerSphere: [[127.029975, 37.494179], 0.00031357300763550273]
+            $centerSphere: [
+              [geopoint.latitude, geopoint.longitude],
+              convertKntoMile(1)
+            ]
           }
         },
         open_time: {
-          $lte: 20
+          $lte: startTime
         },
         close_time: {
-          $gte: 22
+          $gte: endTime
         }
       });
 
@@ -37,7 +43,7 @@ class StudyRoom extends App {
         curQuery,
         endQuery,
         params: {},
-        body: { ...filteredRooms },
+        body: { filteredRooms },
         key
       });
     }

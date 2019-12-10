@@ -10,7 +10,7 @@ module.exports = function(apigateway) {
       "GET",
       "availableRooms",
       "availableRooms",
-      { studyGroupData },
+      { ...studyGroupData },
       {},
       req.resKey,
       apigateway.context
