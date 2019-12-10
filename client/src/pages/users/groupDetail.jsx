@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useReducer, useEffect, useCallback, useContext } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
 import useAxios from "../../lib/useAxios";
@@ -74,10 +75,11 @@ const GroupDetail = ({ match }) => {
               <Main groupData={groupData} dispatch={dispatch}></Main>
               {isMyGroup && (
                 <div className="modify-buttons">
-                  <button className="button"> 수정 </button>
+                  <Link to={`/group/update/${id}`}>
+                    <button className="button"> 수정 </button>
+                  </Link>
                   <button className="button" onClick={requestDelete}>
-                    {" "}
-                    삭제{" "}
+                    삭제
                   </button>
                 </div>
               )}
