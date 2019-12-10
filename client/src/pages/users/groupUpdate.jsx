@@ -80,7 +80,7 @@ const GroupCreate = ({ match }) => {
   }, []);
 
   const onCategoryClick = useCallback((categoryType, categoryName) => {
-    dispatch(category_click({ categoryType, categoryName }));
+    dispatch(category_click(categoryType, categoryName));
   }, []);
 
   const onSubmit = useCallback(e => {

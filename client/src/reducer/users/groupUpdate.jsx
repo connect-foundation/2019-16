@@ -9,7 +9,7 @@ const ATTACH_IMAGE = "groupUpdate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupUpdate/CHANGE_PERSONNEL";
 const SET_INITIAL_DATA = "groupUpdate/SET_INITIAL_DATA";
 
-export const category_click = ({ categoryType, categoryName }) => ({
+export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
   categoryType,
   categoryName

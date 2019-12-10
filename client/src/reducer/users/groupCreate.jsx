@@ -8,7 +8,7 @@ const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
 const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupCreate/CHANGE_PERSONNEL";
 
-export const category_click = ({ categoryType, categoryName }) => ({
+export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
   categoryType,
   categoryName
