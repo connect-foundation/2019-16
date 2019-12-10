@@ -24,7 +24,7 @@ exports.filterStudyGroup = async (studyGroup, studyRooms) => {
         }
       }
     ]);
-  const reservatedId = reservatedInfo.map(info => info.studyRoom._id);
+  const reservatedId = reservatedInfo.map(info => info.studyRoom.id);
   const filterdRooms = studyRooms.filter(
     room => !reservatedId.includes(room._id)
   );
