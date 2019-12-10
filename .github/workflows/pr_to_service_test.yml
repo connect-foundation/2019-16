@@ -37,6 +37,7 @@ jobs:
           elif [  ${{github.base_ref}} == "service/search" ]
           then
             cd server/services/search
+            ifconfig
             npm install
             npm test --detectOpenHandles --forceExit
           elif [  ${{github.base_ref}} == "service/study_room" ]
@@ -63,26 +64,7 @@ jobs:
             echo Err:Nothing match with your service branch
             return 0
           fi
-      - name: if fail
-        uses: actions/github-script@0.2.0
-        with:
-          github-token: ${{github.token}}
-          script: |
-            const ref = "${{github.ref}}"
-            const pull_number = Number(ref.split("/")[2])
-            await github.pulls.createReview({
-              ...context.repo,
-              pull_number,
-              body:"테스트코드를 다시 확인해주세요. ",
-              event: "REQUEST_CHANGES"
-            })
-            await github.pulls.update({
-              ...context.repo,
-              pull_number,
-              state: "closed"
-            })
-        if: failure()
-      - env:
+        env:
           GATEWAY_NAME: apigateway
           GATEWAY_HOST: 127.0.0.1
           GATEWAY_EXPRESS_PORT: 8000
@@ -94,7 +76,7 @@ jobs:
           SEARCH_PORT: 8002
           SEARCH_ELASTIC_HOST: 106.10.41.25
           SEARCH_ELASTIC_PORT: 9200
-          SEARCH_INDEX_STUDYGROUP: studygroup
+          SEARCH_INDEX_STUDYGROUP: test
           STUDYGROUP_NAME: studygroup
           STUDYGROUP_HOST: 127.0.0.1
           STUDYGROUP_PORT: 8003
@@ -121,3 +103,22 @@ jobs:
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      - name: if fail
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const ref = "${{github.ref}}"
+            const pull_number = Number(ref.split("/")[2])
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body:"테스트코드를 다시 확인해주세요. ",
+              event: "REQUEST_CHANGES"
+            })
+            await github.pulls.update({
+              ...context.repo,
+              pull_number,
+              state: "closed"
+            })
+        if: failure()
