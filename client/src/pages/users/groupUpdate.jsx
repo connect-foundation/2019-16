@@ -16,7 +16,9 @@ import {
   initialState,
   input_content,
   change_personnel,
-  category_click
+  category_click,
+  change_hour,
+  click_day
 } from "../../reducer/users/groupUpdate";
 import { set_initial_data } from "../../reducer/users/groupUpdate.jsx";
 
@@ -82,6 +84,29 @@ const GroupCreate = ({ match }) => {
   const onCategoryClick = useCallback((categoryType, categoryName) => {
     dispatch(category_click(categoryType, categoryName));
   }, []);
+
+  const onDayDispatch = useCallback(
+    i => e => {
+      e.target.blur();
+      dispatch(click_day(i));
+    },
+    []
+  );
+
+  const onTimeDispatch = useCallback(
+    TimeSlot => e => {
+      let time = Number.parseInt(e.target.value, 10);
+      const timeType = e.target.name;
+
+      if (timeType === "startTime") {
+        const timeSlot = TimeSlot.current.value;
+        if (timeSlot === "pm") time += 12;
+      }
+
+      dispatch(change_hour(timeType, time));
+    },
+    []
+  );
 
   const onSubmit = useCallback(e => {
     //   const { data } = state;
@@ -172,7 +197,11 @@ const GroupCreate = ({ match }) => {
 
       <TagInput tags={tags} dispatch={dispatch} />
 
-      <ScheduleInput daysInfo={daysInfo} dispatch={dispatch} />
+      <ScheduleInput
+        daysInfo={daysInfo}
+        onTimeDispatch={onTimeDispatch}
+        onDayDispatch={onDayDispatch}
+      />
 
       <RangeSlider
         minRange={1}

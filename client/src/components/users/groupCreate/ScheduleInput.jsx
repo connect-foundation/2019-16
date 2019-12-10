@@ -19,27 +19,8 @@ const StyledScheduleInput = styled.div`
 `;
 
 const ScheduleInput = props => {
-  const { daysInfo, dispatch } = props;
+  const { daysInfo, onDayDispatch, onTimeDispatch } = props;
   const TimeSlot = useRef();
-
-  const onClickDay = i => {
-    return e => {
-      e.target.blur();
-      dispatch(click_day(i));
-    };
-  };
-
-  const onTimeChange = useCallback(e => {
-    let time = Number.parseInt(e.target.value, 10);
-    const timeType = e.target.name;
-
-    if (timeType === "startTime") {
-      const timeSlot = TimeSlot.current.value;
-      if (timeSlot === "pm") time += 12;
-    }
-
-    dispatch(change_hour(timeType, time));
-  }, []);
 
   return (
     <StyledScheduleInput>
@@ -49,7 +30,7 @@ const ScheduleInput = props => {
             <p className="control" key={idx}>
               <button
                 className={`button is-info is-outlined ${day && day.class}`}
-                onClick={onClickDay(idx)}
+                onClick={onDayDispatch(idx)}
               >
                 {day.str}
               </button>
@@ -64,7 +45,11 @@ const ScheduleInput = props => {
           <option value="pm">오후</option>
         </select>
 
-        <select className="select" name="startTime" onChange={onTimeChange}>
+        <select
+          className="select"
+          name="startTime"
+          onChange={onTimeDispatch(TimeSlot)}
+        >
           <option value="1">1시</option>
           <option value="2">2시</option>
           <option value="3">3시</option>
@@ -79,7 +64,11 @@ const ScheduleInput = props => {
           <option value="12">12시</option>
         </select>
 
-        <select className="select" name="during" onChange={onTimeChange}>
+        <select
+          className="select"
+          name="during"
+          onChange={onTimeDispatch(TimeSlot)}
+        >
           <option value="1"> 1시간 </option>
           <option value="2"> 2시간 </option>
           <option value="3"> 3시간 </option>
