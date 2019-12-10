@@ -14,7 +14,7 @@ class App extends TcpServer {
     this.appClients = {};
     this.ApiGateway = this.connectToApiGateway();
 
-    this.tcpLogSender = makeLogSender.call(this, "tcp");
+    this.sendTcpLog = makeLogSender.call(this, "tcp");
     (async () => {
       await new Promise(res => this.connectToLogService(res));
       this.doMessageJob();
@@ -34,10 +34,17 @@ class App extends TcpServer {
   }
 
   async onRead(socket, data) {
+    if (Object.prototype.hasOwnProperty.call(data, "curQuery")) {
+      this.sendTcpLog(data.curQuery);
+    }
+
     this.job(socket, data);
   }
 
   send(appClient, data) {
+    // if (Object.prototype.hasOwnProperty.call(data, "curQuery")) {
+    //   this.sendTcpLog(data.curQuery);
+    // }
     const packet = makePacket(
       data.method,
       data.curQuery,
