@@ -13,6 +13,7 @@ module.exports = function(apigateway) {
         "POST",
         "searchStudyGroup",
         "searchStudyGroup",
+        "searchStudyGroup",
         { searchWord, lat, lon, isRecruit },
         {},
         req.resKey,
@@ -29,6 +30,7 @@ module.exports = function(apigateway) {
 
       req.packet = makePacket(
         "POST",
+        "searchStudyGroupWithCategory",
         "searchStudyGroupWithCategory",
         "searchStudyGroupWithCategory",
         { searchWord, category, lat, lon, isRecruit },
@@ -49,6 +51,7 @@ module.exports = function(apigateway) {
         "POST",
         "tagStudyGroup",
         "tagStudyGroup",
+        "tagStudyGroup",
         { tags, lat, lon, isRecruit },
         {},
         req.resKey,
@@ -58,6 +61,7 @@ module.exports = function(apigateway) {
     if (category !== undefined)
       req.packet = makePacket(
         "POST",
+        "tagStudyGroupWithCategory",
         "tagStudyGroupWithCategory",
         "tagStudyGroupWithCategory",
         { tags, isRecruit, lat, lon, category },
@@ -76,6 +80,7 @@ module.exports = function(apigateway) {
       "POST",
       "searchAllStudyGroup",
       "searchAllStudyGroup",
+      "searchAllStudyGroup",
       { lat, lon, isRecruit },
       {},
       req.resKey,
@@ -92,6 +97,7 @@ module.exports = function(apigateway) {
 
       req.packet = makePacket(
         "POST",
+        "searchAllStudyGroupWithCategory",
         "searchAllStudyGroupWithCategory",
         "searchAllStudyGroupWithCategory",
         { category, lat, lon, isRecruit },
