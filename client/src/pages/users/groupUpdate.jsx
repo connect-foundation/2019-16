@@ -15,7 +15,8 @@ import {
   groupUpdateReducer,
   initialState,
   input_content,
-  change_personnel
+  change_personnel,
+  category_click
 } from "../../reducer/users/groupUpdate";
 import { set_initial_data } from "../../reducer/users/groupUpdate.jsx";
 
@@ -64,6 +65,7 @@ const GroupCreate = ({ match }) => {
 
   const [state, dispatch] = useReducer(groupUpdateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
+
   const { category, tags, title, subtitle, intro } = state.data;
 
   const onChangeContent = useCallback(e => {
@@ -75,6 +77,10 @@ const GroupCreate = ({ match }) => {
 
   const onChangeSlider = useCallback((min, max) => {
     dispatch(change_personnel(min, max));
+  }, []);
+
+  const onCategoryClick = useCallback((categoryType, categoryName) => {
+    dispatch(category_click({ categoryType, categoryName }));
   }, []);
 
   const onSubmit = useCallback(e => {
@@ -124,15 +130,15 @@ const GroupCreate = ({ match }) => {
       <div className="is-centered categories">
         <Category
           categories={primaryCategories}
-          type="primary"
-          dispatch={dispatch}
+          categoryType="primary"
+          onCategoryClick={onCategoryClick}
         />
 
         {category[0] && (
           <Category
             categories={secondaryCategories[category[0]]}
-            type="secondary"
-            dispatch={dispatch}
+            categoryType="secondary"
+            onCategoryClick={onCategoryClick}
           />
         )}
       </div>
