@@ -20,6 +20,7 @@ import {
   change_hour,
   click_day,
   change_during,
+  add_tag,
   set_initial_data
 } from "../../reducer/users/groupUpdate";
 
@@ -94,12 +95,15 @@ const GroupUpdate = ({ match }) => {
     []
   );
 
+  const onChangeTagInput = useCallback(tagArr => {
+    dispatch(add_tag(tagArr));
+  }, []);
+
   const onTimeDispatch = useCallback(
     (TimeSlot, StartTime) => e => {
       const timeSlot = TimeSlot.current.value;
       const selectedStartTime = Number.parseInt(StartTime.current.value, 10);
       const resultStartTime = selectedStartTime + (timeSlot === "pm" ? 12 : 0);
-      console.log(timeSlot, selectedStartTime, resultStartTime);
 
       dispatch(change_hour(resultStartTime));
     },
@@ -198,7 +202,7 @@ const GroupUpdate = ({ match }) => {
         ></textarea>
       </div>
 
-      <TagInput tags={tags} dispatch={dispatch} />
+      <TagInput tags={tags} onChangeTagInput={onChangeTagInput} />
 
       <ScheduleInput
         daysInfo={daysInfo}

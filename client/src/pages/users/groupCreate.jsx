@@ -16,7 +16,8 @@ import {
   category_click,
   click_day,
   change_hour,
-  change_during
+  change_during,
+  add_tag
 } from "../../reducer/users/groupCreate";
 
 const StyledGroupCreate = styled.div`
@@ -80,6 +81,10 @@ const GroupCreate = () => {
     },
     []
   );
+
+  const onChangeTagInput = useCallback(tagArr => {
+    dispatch(add_tag(tagArr));
+  }, []);
 
   const onTimeDispatch = useCallback(
     (TimeSlot, StartTime) => e => {
@@ -185,7 +190,7 @@ const GroupCreate = () => {
         ></textarea>
       </div>
 
-      <TagInput tags={tags} dispatch={dispatch} />
+      <TagInput tags={tags} onChangeTagInput={onChangeTagInput} />
 
       <ScheduleInput
         daysInfo={daysInfo}
