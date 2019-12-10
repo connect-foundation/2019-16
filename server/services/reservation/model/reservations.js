@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const StudyGroupSchema = require("./studygroup");
-const StudyRoomSchema = require("./studyroom");
+const { StudyGroupSchema } = require("./studygroup");
+const { StudyRoomSchema } = require("./studyroom");
 
 const ReservationsSchema = new Schema({
   studyGroup: StudyGroupSchema,

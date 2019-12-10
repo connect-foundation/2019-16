@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-StudyRoomSchema = new Schema(
+exports.StudyRoomSchema = new Schema(
   {
     partner_id: String,
     cafe_name: String,

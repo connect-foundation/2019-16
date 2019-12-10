@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   name: { type: String }
 });
 
-const StudyGroupSchema = new Schema({
+exports.StudyGroupSchema = new Schema({
   title: { type: String },
   subtitle: { type: String },
   leader: { type: String },
