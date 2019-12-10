@@ -1,7 +1,8 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
+import useAxios from "../../lib/useAxios";
 import Header from "../../components/users/groupDetail/Header";
 import Main from "../../components/users/groupDetail/Main";
 import Intro from "../../components/users/groupDetail/Intro";
@@ -10,6 +11,8 @@ import {
   initialState,
   set_detail_data
 } from "../../reducer/users/groupDetail";
+
+const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const StyledGroupDetail = styled.div`
   display: flex;
@@ -31,30 +34,38 @@ const StyledGroupDetail = styled.div`
 
 const GroupDetail = ({ match }) => {
   const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
+  const { loading, error, data, request } = useAxios(apiAxios);
   const { id } = match.params;
 
   useEffect(() => {
-    axios.get(`${REQUEST_URL}/api/studygroup/detail/${id}`).then(result => {
-      const groupData = result.data;
-      dispatch(set_detail_data(groupData));
-    });
+    id && request("get", `/studygroup/detail/${id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    !loading && data && dispatch(set_detail_data(data));
+  }, [data, loading]);
   const isHaveGroupData = Object.keys(groupData).length;
   const { intro } = groupData;
+
   return (
     <StyledGroupDetail>
-      {isHaveGroupData && (
-        <>
-          <Header groupData={groupData}></Header>
-          <Main groupData={groupData} dispatch={dispatch}></Main>
-          <div className="modify-buttons">
-            <button className="button"> 수정 </button>
-            <button className="button"> 삭제 </button>
-          </div>
-          <Intro intro={intro}></Intro>
-        </>
-      )}
+      {(() => {
+        if (loading) return <h2>로딩 중... </h2>;
+        if (error) return <h2> 에러 발생 </h2>;
+        if (isHaveGroupData)
+          return (
+            <>
+              <Header groupData={groupData}></Header>
+              <Main groupData={groupData} dispatch={dispatch}></Main>
+              <div className="modify-buttons">
+                <button className="button"> 수정 </button>
+                <button className="button"> 삭제 </button>
+              </div>
+              <Intro intro={intro}></Intro>
+            </>
+          );
+      })()}
     </StyledGroupDetail>
   );
 };
