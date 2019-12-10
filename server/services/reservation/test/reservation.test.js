@@ -19,7 +19,7 @@ const Reservations = require("../model/reservations");
 const { filterStudyGroup } = require("../query/queries");
 
 const studyGroup = {
-  _id: "studygroup1",
+  _id: "5dec901744df7f249cdcbc2a",
   title: "testTitle",
   subtitle: "testSubTitle",
   leader: "testLeader",
@@ -36,8 +36,8 @@ const studyGroup = {
   intro: "test Intro",
   thumbnail: "test thumbnail",
   location: {
-    lat: 50,
-    lon: 120
+    type: "Point",
+    coordinates: [127.02510622872565, 37.500994534216495]
   },
   category: ["testCategory"],
   tags: ["tag"],
@@ -47,11 +47,14 @@ const studyGroup = {
 };
 
 const studyRoom = {
-  _id: "studyroom1",
-  partner_id: "partenrer",
+  _id: "5dec9a47d5199c05b4013407",
+  partner_id: "5de7b74cc39a82426cdba280",
   cafe_name: "testCafe",
   name: "testName",
-  location: [120, 50],
+  location: {
+    type: "Point",
+    coordinates: [127.02510622872565, 37.500994534216495]
+  },
   images: ["testImage"],
   price: 20000,
   min_personnel: 1,
@@ -62,11 +65,14 @@ const studyRoom = {
 };
 
 const studyRoom2 = {
-  _id: "studyroom2",
-  partner_id: "partenrer",
-  cafe_name: "testCafe",
-  name: "testName",
-  location: [120, 50],
+  _id: "5dec9abf13d3461378c7bc5b",
+  partner_id: "5de7b74cc39a82426cdba280",
+  cafe_name: "testCafe2",
+  name: "testName2",
+  location: {
+    type: "Point",
+    coordinates: [127.02510622872565, 37.500994534216495]
+  },
   images: ["testImage"],
   price: 20000,
   min_personnel: 1,
@@ -78,9 +84,9 @@ const studyRoom2 = {
 
 const testReservations = [
   {
-    id: "reservation1",
-    studyGroup,
-    studyRoom,
+    _id: "5dee03953420ea1d33083b76",
+    studyGroup: studyGroup,
+    studyRoom: studyRoom,
     dates: [
       {
         reservedDate: new Date("2019-12-17"),
@@ -105,7 +111,7 @@ const testReservations = [
     ]
   },
   {
-    id: "reservation2",
+    _id: "5ded188883acd438ac226bdd",
     studyGroup: studyGroup,
     studyRoom: studyRoom2,
     dates: [
@@ -127,7 +133,8 @@ const initializeDb = async () => {
   await Reservations.insertMany(testReservations);
 };
 const clearDb = async () => {
-  await Reservations.deleteMany({ _id: "reservation1" });
+  await Reservations.deleteOne({ _id: testReservations[0]._id });
+  await Reservations.deleteOne({ _id: testReservations[1]._id });
   await mongoose.disconnect();
 };
 
@@ -143,219 +150,73 @@ afterAll(async () => {
  * filterStudyGroup
  */
 test("filterStudyGroup Test1", async () => {
-  const studyGroup = {
-    _id: "studygroup1",
+  const _studyGroup = {
+    _id: studyGroup._id,
     dates: {
       date: [new Date("2019-12-17"), new Date("2019-12-18")],
       start: 15,
       end: 16
     }
   };
-  const studyRooms = [
-    {
-      _id: "studyroom1",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    },
-    {
-      _id: "studyroom2",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    }
-  ];
-  const result = await filterStudyGroup(studyGroup, studyRooms);
-
+  const studyRooms = [studyRoom, studyRoom2];
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
   expect(result).toEqual([studyRooms[1]]);
 });
 
 test("filterStudyGroup Test2", async () => {
-  const studyGroup = {
-    _id: "studygroup1",
+  const _studyGroup = {
+    _id: studyGroup._id,
     dates: {
       date: [new Date("2019-12-17"), new Date("2019-12-18")],
       start: 16,
       end: 18
     }
   };
-  const studyRooms = [
-    {
-      _id: "studyroom1",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    },
-    {
-      _id: "studyroom2",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    }
-  ];
-  const result = await filterStudyGroup(studyGroup, studyRooms);
+  const studyRooms = [studyRoom, studyRoom2];
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([studyRooms[1]]);
 });
 test("filterStudyGroup Test3", async () => {
-  const studyGroup = {
-    _id: "studygroup1",
+  const _studyGroup = {
+    _id: studyGroup._id,
     dates: {
       date: [new Date("2019-12-17"), new Date("2019-12-18")],
       start: 14,
       end: 18
     }
   };
-  const studyRooms = [
-    {
-      _id: "studyroom1",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    },
-    {
-      _id: "studyroom2",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    }
-  ];
-  const result = await filterStudyGroup(studyGroup, studyRooms);
+  const studyRooms = [studyRoom, studyRoom2];
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([studyRooms[1]]);
 });
 test("filterStudyGroup Test", async () => {
-  const studyGroup = {
-    _id: "studygroup1",
+  const _studyGroup = {
+    _id: studyGroup._id,
     dates: {
       date: [new Date("2019-12-17"), new Date("2019-12-18")],
       start: 21,
       end: 22
     }
   };
-  const studyRooms = [
-    {
-      _id: "studyroom1",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    },
-    {
-      _id: "studyroom2",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    }
-  ];
-  const result = await filterStudyGroup(studyGroup, studyRooms);
+  const studyRooms = [studyRoom, studyRoom2];
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([studyRooms[1]]);
 });
 
-test("filterStudyGroup Test", async () => {
-  const studyGroup = {
-    _id: "studygroup1",
+test("filterStudyGroup Test4", async () => {
+  const _studyGroup = {
+    _id: studyGroup._id,
     dates: {
       date: [new Date("2019-12-17"), new Date("2019-12-20")],
       start: 16,
       end: 18
     }
   };
-  const studyRooms = [
-    {
-      _id: "studyroom1",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    },
-    {
-      _id: "studyroom2",
-      partner_id: "partenrer",
-      cafe_name: "testCafe",
-      name: "testName",
-      location: [120, 50],
-      images: "testImage",
-      price: 20000,
-      min_personnel: 1,
-      max_personnel: 6,
-      description: "testDescription",
-      open_time: 10,
-      close_time: 22
-    }
-  ];
-  const result = await filterStudyGroup(studyGroup, studyRooms);
+  const studyRooms = [studyRoom, studyRoom2];
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([]);
 });
