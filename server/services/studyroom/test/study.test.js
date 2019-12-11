@@ -40,7 +40,7 @@ describe("StudyRoom Model Test", () => {
     await mongoose.disconnect();
   });
 
-  it("availableRooms query working successfully", async () => {
+  test("availableRooms query working successfully", async () => {
     const result = await queryResolver(
       mockPacket.curQuery,
       mockPacket.params,
@@ -52,7 +52,7 @@ describe("StudyRoom Model Test", () => {
     expect(result.params.hasOwnProperty("filteredRooms")).toEqual(true);
   });
 
-  it("If resolver get wrong query", async () => {
+  test("If resolver get wrong query", async () => {
     try {
       const result = await queryResolver(
         "wrong",
