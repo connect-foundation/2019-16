@@ -9,8 +9,8 @@ module.exports = function(apigateway) {
     req.packet = makePacket(
       "GET",
       "availableRooms",
-      "availableRooms",
-      { studyGroupData },
+      "filterStudyGroup",
+      { ...studyGroupData },
       {},
       req.resKey,
       apigateway.context
