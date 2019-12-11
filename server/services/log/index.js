@@ -17,7 +17,7 @@ class LogService extends require("../../lib/tcp/App") {
   }
 
   async onRead(socket, data) {
-    const { method, curQuery, body } = data;
+    const { method, nextQuery, body } = data;
     // console.log(data);
     const { timestamp } = body.data;
 
@@ -25,7 +25,7 @@ class LogService extends require("../../lib/tcp/App") {
       resolve(JSON.stringify(body.data))
     );
 
-    if (curQuery === "log" && method === "POST") {
+    if (nextQuery === "log" && method === "POST") {
       elasticClient.index({
         index: "test",
         body: jsonData,
