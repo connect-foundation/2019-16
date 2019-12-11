@@ -16,6 +16,7 @@ exports.makePacket = (method, curQuery, endQuery, params, body, key, info) => {
   const packet = {
     method,
     curQuery,
+    nextQuery,
     endQuery,
     params,
     body,

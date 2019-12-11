@@ -31,6 +31,7 @@ function makeLogSender(networkType) {
             "POST",
             "log",
             "log",
+            "log",
             {},
             { data: logData },
             "",
@@ -51,6 +52,7 @@ function makeLogSender(networkType) {
         this.logService.write(
           makePacket(
             "POST",
+            "log",
             "log",
             "log",
             {},

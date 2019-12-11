@@ -7,18 +7,19 @@ class StudyGroup extends App {
     super(name, host, port);
   }
   async onRead(socket, data) {
-    const { params, curQuery } = data;
+    const { params, nextQuery } = data;
 
-    this.tcpLogSender(curQuery);
+    this.tcpLogSender(nextQuery);
 
     let replyData = data;
 
-    switch (curQuery) {
+    switch (nextQuery) {
       case "addGroup":
         try {
           const groupInfo = params;
 
           const result = await StudyGroups.create(groupInfo);
+
           await pushStudyGroups(result);
 
           replyData.method = "REPLY";
@@ -47,7 +48,7 @@ class StudyGroup extends App {
       default:
         break;
     }
-
+    replyData.curQuery = nextQuery;
     this.send(socket, replyData);
   }
 }
