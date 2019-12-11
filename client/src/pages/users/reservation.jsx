@@ -1,7 +1,19 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
-const StyledGroupCreate = styled.div``;
+const { kakao } = window;
+var bounds = new kakao.maps.LatLngBounds();
+
+const MapView = styled.div`
+  position: absolute;
+  left: 408px;
+`;
+
+const MapSidebar = styled.div`
+  width: 408px;
+  position: absolute;
+  background-color: black;
+`;
 
 const Reservation = () => {
   const { kakao } = window;
@@ -16,11 +28,10 @@ const Reservation = () => {
   }, []);
 
   return (
-    <div
-      id="map"
-      className="map"
-      style={{ width: "75%", height: "40em" }}
-    ></div>
+    <Fragment>
+      <MapSidebar style={{ height }}></MapSidebar>
+      <MapView id="map" style={{ width, height }}></MapView>
+    </Fragment>
   );
 };
 export default Reservation;
