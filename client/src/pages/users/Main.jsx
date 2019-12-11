@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -84,7 +85,7 @@ const MainPage = () => {
   useEffect(() => {
     isHaveCardDataWhenLoaded(loading, data) &&
       userIndexDispatch(set_groups(data));
-  }, [data, userLocation]);
+  }, [data]);
 
   return (
     <Main>

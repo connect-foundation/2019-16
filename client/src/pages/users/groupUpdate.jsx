@@ -1,7 +1,10 @@
-import React, { useCallback, useReducer, useContext } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useReducer, useContext, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
+import useAxios from "../../lib/useAxios";
+
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
 import TagInput from "../../components/users/groupCreate/TagInput";
@@ -9,18 +12,21 @@ import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
 import RangeSlider from "../../components/users/common/RangeSlider";
 import { UserContext } from "./index";
 import {
-  groupCreateReducer,
+  groupUpdateReducer,
   initialState,
   input_content,
   change_personnel,
   category_click,
-  click_day,
   change_hour,
+  click_day,
   change_during,
-  add_tag
-} from "../../reducer/users/groupCreate";
+  add_tag,
+  set_initial_data
+} from "../../reducer/users/groupUpdate";
 
-const StyledGroupCreate = styled.div`
+const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
+
+const StyledGroupUpdate = styled.div`
   width: 60%;
   margin: 2rem auto;
 
@@ -55,23 +61,30 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const GroupCreate = () => {
+const GroupUpdate = ({ match }) => {
   const { userInfo } = useContext(UserContext);
+  const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
+  const { id } = match.params;
 
-  const [state, dispatch] = useReducer(groupCreateReducer, initialState);
+  const [state, dispatch] = useReducer(groupUpdateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
-  const { category, tags, title, subtitle, intro } = state.data;
 
-  const onCategoryClick = useCallback((categoryType, categoryName) => {
-    dispatch(category_click(categoryType, categoryName));
-  }, []);
+  const { category, tags, title, subtitle, intro } = state.data;
 
   const onChangeContent = useCallback(e => {
     const contentType = e.target.name;
     const description = e.target.value;
 
     dispatch(input_content(contentType, description));
+  }, []);
+
+  const onChangeSlider = useCallback((min, max) => {
+    dispatch(change_personnel(min, max));
+  }, []);
+
+  const onCategoryClick = useCallback((categoryType, categoryName) => {
+    dispatch(category_click(categoryType, categoryName));
   }, []);
 
   const onDayDispatch = useCallback(
@@ -102,51 +115,50 @@ const GroupCreate = () => {
     dispatch(change_during(during));
   });
 
-  const onChangeSlider = useCallback((min, max) => {
-    dispatch(change_personnel(min, max));
+  const onSubmit = useCallback(e => {
+    //   const { data } = state;
+    //   const form = new FormData();
+    //   data.leader = userEmail;
+    //   data.location = { lat: 41.12, lon: -50.34 };
+    //   data.endTime = data.startTime + data.during;
+    //   data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
+    //   let validationObj = {};
+    //   if (!(validationObj = validation(data)).isProper)
+    //     return alert(validationObj.reason);
+    //   form.append("image", data.thumbnail);
+    //   delete data.during;
+    //   delete data.thumbnail;
+    //   form.append("data", JSON.stringify(data));
+    //   axios
+    //     .post(`${REQUEST_URL}/api/studygroup/register`, form, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data"
+    //       }
+    //     })
+    //     .then(({ data }) => {
+    //       const { status } = data;
+    //       if (status === 400) return alert(data.reason);
+    //       window.location.href = "/";
+    //     })
+    //     .catch(e => {
+    //       console.error(e);
+    //       alert("에러 발생");
+    //     });
   }, []);
 
-  const onSubmit = useCallback(
-    e => {
-      const { data } = state;
-      const form = new FormData();
-
-      data.leader = userEmail;
-      data.location = { lat: 41.12, lon: -50.34 };
-      data.endTime = data.startTime + data.during;
-      data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
-
-      let validationObj = {};
-      if (!(validationObj = validation(data)).isProper)
-        return alert(validationObj.reason);
-
-      form.append("image", data.thumbnail);
-      delete data.during;
-      delete data.thumbnail;
-
-      form.append("data", JSON.stringify(data));
-
-      axios
-        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then(({ data }) => {
-          const { status } = data;
-          if (status === 400) return alert(data.reason);
-          window.location.href = "/";
-        })
-        .catch(e => {
-          console.error(e);
-          alert("에러 발생");
-        });
-    },
-    [state, userEmail]
-  );
+  useEffect(() => {
+    request("get", `/studygroup/detail/${id}`)
+      .then(data => {
+        // dispatch(set_detail_data(data));
+      })
+      .catch(err => {
+        console.error(err);
+        alert("요청 에러");
+      });
+  }, []);
 
   return (
-    <StyledGroupCreate>
+    <StyledGroupUpdate>
       <div className="is-centered categories">
         <Category
           categories={primaryCategories}
@@ -194,8 +206,8 @@ const GroupCreate = () => {
 
       <ScheduleInput
         daysInfo={daysInfo}
-        onDayDispatch={onDayDispatch}
         onTimeDispatch={onTimeDispatch}
+        onDayDispatch={onDayDispatch}
         onChangeDuring={onChangeDuring}
       />
 
@@ -209,7 +221,7 @@ const GroupCreate = () => {
         {" "}
         등록하기{" "}
       </button>
-    </StyledGroupCreate>
+    </StyledGroupUpdate>
   );
 };
 
@@ -227,4 +239,4 @@ const validation = data => {
   return { isProper: true };
 };
 
-export default GroupCreate;
+export default GroupUpdate;
