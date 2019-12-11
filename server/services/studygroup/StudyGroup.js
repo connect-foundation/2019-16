@@ -9,8 +9,6 @@ class StudyGroup extends App {
   async onRead(socket, data) {
     const { params, nextQuery } = data;
 
-    this.tcpLogSender(nextQuery);
-
     let replyData = data;
 
     switch (nextQuery) {
