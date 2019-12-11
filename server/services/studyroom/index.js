@@ -25,4 +25,3 @@ mongoose
 const studyRoom = new StudyRoom(STUDYROOM_NAME, STUDYROOM_HOST, STUDYROOM_PORT);
 
 studyRoom.connectToAppListManager();
-studyRoom.connectToLogService();
