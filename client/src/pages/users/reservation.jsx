@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import styled from "styled-components";
+import useWindowSize from "../../lib/useWindowSize";
+import { makeOverlay, markerImage, hoverImage } from "../../lib/kakaoMapUtils";
 
 const { kakao } = window;
 var bounds = new kakao.maps.LatLngBounds();
@@ -119,11 +121,13 @@ const Reservation = () => {
   useEffect(() => {
     let el = document.querySelector("#map");
     var options = {
-      //지도를 생성할 때 필요한 기본 옵션
-      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-      level: 3 //지도의 레벨(확대, 축소 정도)
+      center: new kakao.maps.LatLng(33.450701, 126.570667),
+      level: 3
     };
-    let map = new kakao.maps.Map(el, options);
+    studyRoomMap = new kakao.maps.Map(el, options);
+
+    // axios로 스터디룸 데이터 요청
+    // setStudyRooms
   }, []);
 
   return (
