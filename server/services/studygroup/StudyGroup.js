@@ -21,7 +21,7 @@ class StudyGroup extends App {
           await pushStudyGroups(result);
 
           replyData.method = "REPLY";
-          replyData.body = { id: result.id };
+          replyData.body = { status: 200, id: result.id };
         } catch (e) {
           console.error(e);
           replyData.method = "ERROR";
