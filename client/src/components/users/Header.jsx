@@ -7,13 +7,21 @@ import StudySearchNavbar from "./studySearchNavbar";
 import { UserContext } from "../../pages/users/index";
 
 const StyledHeader = styled.header`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-bottom: 1.5px solid #dfdfdf;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+
   .header-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1.5px solid #dfdfdf;
-    padding: 1% 10%;
-    margin-bottom: 2.3rem;
+    justify-content: space-evenly;
+    padding: 1% 0 1% 0;
+    width: 80%;
 
     .logo {
       width: 64px;
@@ -43,8 +51,11 @@ const StyledHeader = styled.header`
 const LeftHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 50%;
-  justify-content: space-around;
+  width: 100%;
+
+  & > * {
+    margin-right: 2rem;
+  }
 `;
 
 const Header = () => {
