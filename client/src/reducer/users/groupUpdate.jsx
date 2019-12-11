@@ -66,13 +66,12 @@ const daysInfo = daysStr.map(str => ({
 }));
 
 export const initialState = {
-  primaryCategories: ["프로그래밍", "자격증", "외국어", "면접", "지역"],
+  primaryCategories: ["프로그래밍", "자격증", "외국어", "면접"],
   secondaryCategories: {
     프로그래밍: ["C++", "Java", "JavaScript"],
     자격증: ["IT", "운전", "보건", "식품"],
     외국어: ["영어", "중국어", "불어", "스페인어"],
-    면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"],
-    지역: ["경기도", "서울", "울산", "인천", "광주", "부산"]
+    면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"]
   },
   daysInfo,
   data: {
