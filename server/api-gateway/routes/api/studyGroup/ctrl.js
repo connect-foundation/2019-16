@@ -88,6 +88,23 @@ exports.sendGetGroupDetailPacket = apigateway => (req, res, next) => {
   next();
 };
 
+exports.sendDeleteGroupPacket = apigateway => (req, res, next) => {
+  const { id } = req.params;
+
+  const packet = makePacket(
+    "GET",
+    "removeGroup",
+    "removeGroup",
+    { id },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
 function validation(data) {
   if (data.category.length !== 2 || data.category.some(v => v === null))
     return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
