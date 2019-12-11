@@ -217,6 +217,8 @@ const GroupUpdate = ({ match }) => {
         minRange={1}
         maxRange={10}
         step={1}
+        min_personnel={state.data.min_personnel}
+        max_personnel={state.data.max_personnel}
         onChangeSlider={onChangeSlider}
       />
       <button type="submit" className="button" onClick={onSubmit}>
