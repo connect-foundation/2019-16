@@ -117,54 +117,45 @@ const GroupUpdate = ({ match, history }) => {
     dispatch(change_during(during));
   });
 
-  const onSubmit = useCallback(e => {
-    const { data } = state;
-    const form = new FormData();
-    data.leader = userEmail;
-    data.location = { lat: 41.12, lon: -50.34 };
-    data.endTime = data.startTime + data.during;
-    data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
-    let validationObj = {};
-    if (!(validationObj = validation(data)).isProper)
-      return alert(validationObj.reason);
+  const onSubmit = useCallback(
+    e => {
+      const { data } = state;
+      const form = new FormData();
+      data.leader = userEmail;
+      data.location = { lat: 41.12, lon: -50.34 };
+      data.endTime = data.startTime + data.during;
+      data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
-    if (!isURL(data.thumbnail)) {
-      form.append("image", data.thumbnail);
-      delete data.thumbnail;
-    }
+      let validationObj = {};
+      if (!(validationObj = validation(data)).isProper)
+        return alert(validationObj.reason);
 
-    delete data.during;
-    form.append("data", JSON.stringify(data));
-    request("put", "/studygroup/detail", {
-      data: form,
-      headers: {
-        "Content-Type": "multipart/form-data"
+      if (!isURL(data.thumbnail)) {
+        form.append("image", data.thumbnail);
+        delete data.thumbnail;
       }
-    })
-      .then(data => {
-        const { id } = data;
-        history.push(`/group/detail/${id}`);
+
+      delete data.during;
+      form.append("data", JSON.stringify(data));
+
+      request("put", "/studygroup/detail", {
+        data: form,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
       })
-      .catch(err => {
-        alert("에러 발생");
-        console.error(err);
-      });
-    //   axios
-    //     .post(`${REQUEST_URL}/api/studygroup/register`, form, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data"
-    //       }
-    //     })
-    //     .then(({ data }) => {
-    //       const { status } = data;
-    //       if (status === 400) return alert(data.reason);
-    //       window.location.href = "/";
-    //     })
-    //     .catch(e => {
-    //       console.error(e);
-    //       alert("에러 발생");
-    //     });
-  }, []);
+        .then(data => {
+          const { id, status, reason } = data;
+          if (status === 400) return alert(reason);
+          if (status === 200) history.push(`/group/detail/${id}`);
+        })
+        .catch(err => {
+          alert("에러 발생");
+          console.error(err);
+        });
+    },
+    [state, userEmail]
+  );
 
   useEffect(() => {
     request("get", `/studygroup/detail/${id}`)
