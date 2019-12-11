@@ -9,7 +9,7 @@ module.exports = function(apigateway) {
     req.packet = makePacket(
       "GET",
       "availableRooms",
-      "availableRooms",
+      "filterStudyGroup",
       { ...studyGroupData },
       {},
       req.resKey,
