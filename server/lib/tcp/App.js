@@ -34,8 +34,8 @@ class App extends TcpServer {
   }
 
   async onRead(socket, data) {
-    if (Object.prototype.hasOwnProperty.call(data, "curQuery")) {
-      this.sendTcpLog(data.curQuery);
+    if (Object.prototype.hasOwnProperty.call(data, "nextQuery")) {
+      this.sendTcpLog(data.nextQuery);
     }
 
     this.job(socket, data);
