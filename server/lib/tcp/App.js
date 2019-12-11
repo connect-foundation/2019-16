@@ -14,18 +14,18 @@ class App extends TcpServer {
     this.appClients = {};
     this.ApiGateway = this.connectToApiGateway();
 
-    this.tcpLogSender = makeLogSender.call(this, "tcp");
+    this.sendTcpLog = makeLogSender.call(this, "tcp");
     (async () => {
       await new Promise(res => this.connectToLogService(res));
-      this.doMessageJob(job);
+      this.doMessageJob();
     })();
   }
 
-  async doMessageJob(job) {
+  async doMessageJob() {
     const packets = await popMessageQueue(this.context.name, 1000);
 
     if (!Array.isArray(packets)) {
-      job.bind(this)({}, JSON.parse(packets));
+      this.job({}, JSON.parse(packets));
     } else {
       packets.forEach(packet => {
         this.job({}, JSON.parse(packet));
@@ -34,10 +34,17 @@ class App extends TcpServer {
   }
 
   async onRead(socket, data) {
+    if (Object.prototype.hasOwnProperty.call(data, "nextQuery")) {
+      this.sendTcpLog(data.nextQuery);
+    }
+
     this.job(socket, data);
   }
 
   send(appClient, data) {
+    // if (Object.prototype.hasOwnProperty.call(data, "curQuery")) {
+    //   this.sendTcpLog(data.curQuery);
+    // }
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -47,13 +54,6 @@ class App extends TcpServer {
       data.key,
       data.info
     );
-
-    /**
-     * params
-     * @param {string} query : 서비스의 쿼리
-     * @param {object} parentData : 해당 서비스를 호출한 서비스 정보
-     */
-    this.tcpLogSender = makeLogSender.call(this, "tcp");
 
     if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
