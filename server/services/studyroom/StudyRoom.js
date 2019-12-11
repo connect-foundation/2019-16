@@ -1,46 +1,18 @@
 const App = require("../../lib/tcp/App");
-const StudyRooms = require("./models/studyrooms");
-
-const convertKntoMile = km => {
-  return km / 6378.1;
-};
+const { queryResolver } = require("./queryResolver");
 
 async function jobEexcutor(socket, data) {
-  const { params, curQuery, endQuery, key } = data;
+  const { params, curQuery } = data;
+  let queryResult;
 
-  const { geopoint, personnel, startTime, endTime, days } = params;
-
-  if (curQuery === "availableRooms") {
-    const filteredRooms = await StudyRooms.find({
-      max_personnel: {
-        $gte: personnel
-      },
-      min_personnel: {
-        $lte: personnel
-      },
-      location: {
-        $geoWithin: {
-          $centerSphere: [
-            [geopoint.latitude, geopoint.longitude],
-            convertKntoMile(1)
-          ]
-        }
-      },
-      open_time: {
-        $lte: startTime
-      },
-      close_time: {
-        $gte: endTime
-      }
-    });
-
+  try {
+    queryResult = await queryResolver(curQuery, params);
+  } catch (error) {
+    queryResult = { method: "ERROR", body: { error } };
+  } finally {
     this.send(socket, {
-      method: "GET",
-      curQuery: "filterStudyGroup",
-      endQuery,
-      params: { filteredRooms, studyGroupInfo: { ...params } },
-      body: {},
-      key
+      ...data,
+      ...queryResult
     });
   }
 }
