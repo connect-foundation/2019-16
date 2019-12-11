@@ -62,7 +62,7 @@ const StyledGroupUpdate = styled.div`
   }
 `;
 
-const GroupUpdate = ({ match }) => {
+const GroupUpdate = ({ match, history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
@@ -118,19 +118,37 @@ const GroupUpdate = ({ match }) => {
   });
 
   const onSubmit = useCallback(e => {
-    //   const { data } = state;
-    //   const form = new FormData();
-    //   data.leader = userEmail;
-    //   data.location = { lat: 41.12, lon: -50.34 };
-    //   data.endTime = data.startTime + data.during;
-    //   data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
-    //   let validationObj = {};
-    //   if (!(validationObj = validation(data)).isProper)
-    //     return alert(validationObj.reason);
-    //   form.append("image", data.thumbnail);
-    //   delete data.during;
-    //   delete data.thumbnail;
-    //   form.append("data", JSON.stringify(data));
+    const { data } = state;
+    const form = new FormData();
+    data.leader = userEmail;
+    data.location = { lat: 41.12, lon: -50.34 };
+    data.endTime = data.startTime + data.during;
+    data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
+    let validationObj = {};
+    if (!(validationObj = validation(data)).isProper)
+      return alert(validationObj.reason);
+
+    if (!isURL(data.thumbnail)) {
+      form.append("image", data.thumbnail);
+      delete data.thumbnail;
+    }
+
+    delete data.during;
+    form.append("data", JSON.stringify(data));
+    request("put", "/studygroup/detail", {
+      data: form,
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+      .then(data => {
+        const { id } = data;
+        history.push(`/group/detail/${id}`);
+      })
+      .catch(err => {
+        alert("에러 발생");
+        console.error(err);
+      });
     //   axios
     //     .post(`${REQUEST_URL}/api/studygroup/register`, form, {
     //       headers: {
@@ -228,7 +246,7 @@ const GroupUpdate = ({ match }) => {
       />
       <button type="submit" className="button" onClick={onSubmit}>
         {" "}
-        등록하기{" "}
+        수정하기{" "}
       </button>
     </StyledGroupUpdate>
   );
@@ -247,5 +265,18 @@ const validation = data => {
     return { isProper: false, reason: "위치를 선택해주세요" };
   return { isProper: true };
 };
+
+function isURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return str && pattern.test(str);
+}
 
 export default GroupUpdate;
