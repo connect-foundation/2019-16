@@ -130,6 +130,38 @@ const Reservation = () => {
     // setStudyRooms
   }, []);
 
+  useEffect(() => {
+    bounds = new kakao.maps.LatLngBounds();
+    let lat = 0;
+    let lon = 0;
+
+    studyRooms.forEach(studyRoom => {
+      // bounds.extend(position.latlng);
+      const location = studyRoom.location.coordinates;
+      const studyRoomlat = location[1];
+      const studyRoomlng = location[0];
+      const kakaoPosition = new kakao.maps.LatLng(studyRoomlat, studyRoomlng);
+
+      lat += kakaoPosition.getLat();
+      lon += kakaoPosition.getLng();
+      const marker = new kakao.maps.Marker({
+        map: studyRoomMap,
+        position: kakaoPosition,
+        title: studyRoom.title,
+        image: markerImage
+      });
+
+      marker.data = studyRoom;
+
+      addMarkerEvent(marker);
+    });
+
+    lat /= studyRooms.length;
+    lon /= studyRooms.length;
+    // studyRoomMap.setBounds(bounds);
+    studyRoomMap.setCenter(new kakao.maps.LatLng(lat, lon));
+  }, [studyRooms]);
+
   return (
     <Fragment>
       <MapSidebar style={{ height }}></MapSidebar>
