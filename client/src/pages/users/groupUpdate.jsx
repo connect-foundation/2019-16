@@ -149,7 +149,7 @@ const GroupUpdate = ({ match }) => {
   useEffect(() => {
     request("get", `/studygroup/detail/${id}`)
       .then(data => {
-        // dispatch(set_detail_data(data));
+        dispatch(set_initial_data(data));
       })
       .catch(err => {
         console.error(err);
@@ -206,6 +206,8 @@ const GroupUpdate = ({ match }) => {
 
       <ScheduleInput
         daysInfo={daysInfo}
+        startTime={state.data.startTime}
+        during={state.data.during}
         onTimeDispatch={onTimeDispatch}
         onDayDispatch={onDayDispatch}
         onChangeDuring={onChangeDuring}

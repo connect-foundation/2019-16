@@ -98,7 +98,20 @@ export const groupUpdateReducer = (state, action) => {
   let data = state.data;
   switch (action.type) {
     case SET_INITIAL_DATA:
-      return action.groupData;
+      const { groupData } = action;
+      const initialDays = [...groupData.days];
+
+      data = groupData;
+
+      data.during = groupData.endTime - groupData.startTime;
+      delete data.endTime;
+
+      initialDays.forEach(day => {
+        state.daysInfo[day].isSelected = true;
+        state.daysInfo[day].class = classnames({ "is-focused": true });
+      });
+
+      return { ...state, data };
 
     case CATEGORY_CLICK:
       const { categoryType, categoryName } = action;
