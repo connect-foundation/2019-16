@@ -22,9 +22,9 @@ const queryMap = {
 };
 
 async function doJob(socket, data) {
-  const { params, curQuery } = data;
+  const { params, nextQuery } = data;
 
-  this.tcpLogSender(curQuery);
+  this.tcpLogSender(nextQuery);
 
   let replyData;
   let method = "REPLY";
@@ -32,7 +32,7 @@ async function doJob(socket, data) {
   let result;
 
   try {
-    result = await queryMap[curQuery](params);
+    result = await queryMap[nextQuery](params);
   } catch (e) {
     method = "ERROR";
     result = e;
@@ -40,6 +40,7 @@ async function doJob(socket, data) {
     replyData = {
       ...data,
       method,
+      curQuery: nextQuery,
       params: params_,
       body: result
     };

@@ -15,7 +15,7 @@ exports.makeKey = async socket => {
 exports.makePacket = (
   method,
   curQuery,
-  toQuery,
+  nextQuery,
   endQuery,
   params,
   body,
@@ -25,7 +25,7 @@ exports.makePacket = (
   const packet = {
     method,
     curQuery,
-    toQuery,
+    nextQuery,
     endQuery,
     params,
     body,
