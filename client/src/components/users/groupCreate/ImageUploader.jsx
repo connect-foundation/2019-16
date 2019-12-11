@@ -1,6 +1,5 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { attach_image } from "../../../reducer/users/groupCreate";
 
 const StyledImageUploader = styled.div`
   .image {
@@ -16,7 +15,7 @@ const StyledImageUploader = styled.div`
 `;
 
 const ImageUploader = props => {
-  const { dispatch } = props;
+  const { thumbnail, onAttachImage } = props;
   const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
 
   const uploaderBtn = useRef();
@@ -33,11 +32,15 @@ const ImageUploader = props => {
 
     reader.onloadend = () => {
       setImagePreviewUrl(reader.result);
-      dispatch(attach_image(file));
+      onAttachImage(file);
     };
 
     reader.readAsDataURL(file);
   }, []);
+
+  useEffect(() => {
+    isURL(thumbnail) && setImagePreviewUrl(thumbnail);
+  }, [thumbnail]);
 
   return (
     <StyledImageUploader>
@@ -46,5 +49,18 @@ const ImageUploader = props => {
     </StyledImageUploader>
   );
 };
+
+function isURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return str && pattern.test(str);
+}
 
 export default ImageUploader;

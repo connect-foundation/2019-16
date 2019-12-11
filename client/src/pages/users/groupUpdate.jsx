@@ -21,7 +21,8 @@ import {
   click_day,
   change_during,
   add_tag,
-  set_initial_data
+  set_initial_data,
+  attach_image
 } from "../../reducer/users/groupUpdate";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
@@ -72,6 +73,7 @@ const GroupUpdate = ({ match }) => {
 
   const { category, tags, title, subtitle, intro } = state.data;
 
+  const onAttachImage = useCallback(file => dispatch(attach_image(file)), []);
   const onChangeContent = useCallback(e => {
     const contentType = e.target.name;
     const description = e.target.value;
@@ -192,7 +194,10 @@ const GroupUpdate = ({ match }) => {
       />
 
       <div className="introduction">
-        <ImageUploader dispatch={dispatch} />
+        <ImageUploader
+          thumbnail={state.data.thumbnail}
+          onAttachImage={onAttachImage}
+        />
         <textarea
           className="textarea"
           name="intro"
