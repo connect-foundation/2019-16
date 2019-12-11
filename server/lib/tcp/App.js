@@ -41,6 +41,7 @@ class App extends TcpServer {
     const packet = makePacket(
       data.method,
       data.curQuery,
+      data.nextQuery,
       data.endQuery,
       data.params,
       data.body,
@@ -106,6 +107,7 @@ class App extends TcpServer {
         this.isConnectToAppListManager = true;
         const packet = makePacket(
           "POST",
+          this.name,
           "add",
           "add",
           {},
