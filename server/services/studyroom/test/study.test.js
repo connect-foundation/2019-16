@@ -1,7 +1,6 @@
-require("dotenv").config({ path: "../.env" });
 const mongoose = require("mongoose");
 const studyRoomsModel = require("../models/studyrooms");
-const { queryResolver, findRooms } = require("../StudyRoom");
+const { queryResolver } = require("../queryResolver");
 
 const mockPacket = {
   method: "GET",
@@ -18,13 +17,6 @@ const mockPacket = {
   key: "",
   info: ""
 };
-
-const {
-  STUDYROOMS_MONGO_URL,
-  STUDYROOM_NAME,
-  STUDYROOM_HOST,
-  STUDYROOM_PORT
-} = process.env;
 
 describe("StudyRoom Model Test", () => {
   let connection;
