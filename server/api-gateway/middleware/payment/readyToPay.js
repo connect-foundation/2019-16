@@ -4,9 +4,7 @@ const formurlencoded = require("form-urlencoded").default;
 function readyToPay(req, res, next) {
   const accessToken = req.body.accessToken;
 
-  delete req.body.accessToken;
-
-  const form = formurlencoded(req.body);
+  const form = formurlencoded(req.body.paymentInfo);
 
   const options = {
     method: "POST",
@@ -21,6 +19,9 @@ function readyToPay(req, res, next) {
     .then(_res => _res.json())
     .then(answer => {
       return res.json(answer.next_redirect_pc_url);
+    })
+    .catch(() => {
+      return res.json({ error: "kpay fetch error" });
     });
 }
 
