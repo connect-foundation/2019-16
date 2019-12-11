@@ -31,11 +31,12 @@ const ImageUploader = props => {
     const file = e.target.files[0];
 
     reader.onloadend = () => {
+      if (!file) return;
       setImagePreviewUrl(reader.result);
       onAttachImage(file);
     };
 
-    reader.readAsDataURL(file);
+    file && reader.readAsDataURL(file);
   }, []);
 
   useEffect(() => {
