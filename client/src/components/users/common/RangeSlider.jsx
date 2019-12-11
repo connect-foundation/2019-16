@@ -11,9 +11,9 @@ const StyleRangeSlider = styled.div`
 
 const RangeSlider = ({
   minRange,
-  min_personnel,
-  max_personnel,
   maxRange,
+  min_personnel = minRange,
+  max_personnel = maxRange,
   step,
   onChangeSlider
 }) => {
