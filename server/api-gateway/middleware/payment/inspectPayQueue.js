@@ -14,7 +14,7 @@ function getElementsHaveSameRoomId(roomId) {
   return payQueue[roomId];
 }
 
-function payQueueInspection(req, res, next) {
+function inspectPayQueue(req, res, next) {
   const {
     roomId,
     day,
@@ -50,4 +50,4 @@ function payQueueInspection(req, res, next) {
   // res.json();
 }
 
-module.exports = payQueueInspection;
+module.exports = inspectPayQueue;
