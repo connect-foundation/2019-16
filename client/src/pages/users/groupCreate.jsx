@@ -17,8 +17,12 @@ import {
   click_day,
   change_hour,
   change_during,
-  add_tag
+  add_tag,
+  attach_image
 } from "../../reducer/users/groupCreate";
+import useAxios from "../../lib/useAxios.jsx";
+
+const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const StyledGroupCreate = styled.div`
   width: 60%;
@@ -55,8 +59,9 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const GroupCreate = () => {
+const GroupCreate = ({ history }) => {
   const { userInfo } = useContext(UserContext);
+  const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
@@ -81,7 +86,7 @@ const GroupCreate = () => {
     },
     []
   );
-
+  const onAttachImage = useCallback(file => dispatch(attach_image(file)), []);
   const onChangeTagInput = useCallback(tagArr => {
     dispatch(add_tag(tagArr));
   }, []);
@@ -126,20 +131,19 @@ const GroupCreate = () => {
 
       form.append("data", JSON.stringify(data));
 
-      axios
-        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+      request("post", "/studygroup/register", {
+        data: form,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+        .then(({ status, id }) => {
+          if (status === 400) return alert("요청 데이터가 잘못됨");
+          if (status === 200) history.push(`/group/detail/${id}`);
         })
-        .then(({ data }) => {
-          const { status } = data;
-          if (status === 400) return alert(data.reason);
-          window.location.href = "/";
-        })
-        .catch(e => {
-          console.error(e);
-          alert("에러 발생");
+        .catch(err => {
+          alert("서버 에러 발생");
+          console.error(err);
         });
     },
     [state, userEmail]
@@ -180,7 +184,7 @@ const GroupCreate = () => {
       />
 
       <div className="introduction">
-        <ImageUploader dispatch={dispatch} />
+        <ImageUploader onAttachImage={onAttachImage} />
         <textarea
           className="textarea"
           name="intro"
