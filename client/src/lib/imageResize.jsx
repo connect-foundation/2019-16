@@ -18,7 +18,7 @@ const dataURItoBlob = dataURI => {
   return new Blob([ia], { type: mime });
 };
 
-const getSizeAtMaxWidth = _.curryN(2, (maxWidth, maxHeight, image) => {
+const getSizeAtMaxWidth = _.curryN(1, (maxWidth, image) => {
   let width = image.width;
   let height = image.height;
 
@@ -36,6 +36,12 @@ const resizedDataUrl = _.curryN(2, (width, height, image) => {
   return canvas.toDataURL("image/jpeg");
 });
 
+const InputArrayAndGetresizedDataUrl = _.reduce.bind(
+  null,
+  (f, x) => f(x),
+  resizedDataUrl
+);
+
 const readImage = originalImage => {
   const reader = new FileReader();
   const image = new Image();
@@ -52,11 +58,11 @@ const readImage = originalImage => {
   });
 };
 
-export default (image, width, height) =>
+export default (image, maxWidth) =>
   _.go(
     image,
     readImage,
-    getSizeAtMaxWidth(width, height),
-    _.reduce.bind(null, (f, x) => f(x), resizedDataUrl),
+    getSizeAtMaxWidth(maxWidth), // [width, height, image]
+    InputArrayAndGetresizedDataUrl,
     dataURItoBlob
   );
