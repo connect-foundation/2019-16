@@ -92,11 +92,7 @@ const Main = ({ groupData }) => {
         <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
-        <ApplyButtons
-          isRecruiting={isRecruiting}
-          members={members}
-          leader={leader}
-        />
+        <ApplyButtons groupData={groupData} />
       </div>
     </StyledMain>
   );
