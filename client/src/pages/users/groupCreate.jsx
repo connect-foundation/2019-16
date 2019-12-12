@@ -132,7 +132,7 @@ const GroupCreate = ({ history }) => {
 
       data.days.sort((a, b) => a - b);
 
-      const resizedImage = image && (await resizeImage(image, 304));
+      const resizedImage = image && (await resizeImage(image, 272));
 
       form.append("image", resizedImage, imageName);
       delete data.during;

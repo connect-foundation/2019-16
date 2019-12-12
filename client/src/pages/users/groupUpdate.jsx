@@ -138,7 +138,7 @@ const GroupUpdate = ({ match, history }) => {
 
       if (!isURL(image)) {
         const imageName = image.name;
-        const resizedImage = await imageResize(image, 304, imageName);
+        const resizedImage = await imageResize(image, 272, imageName);
         delete data.thumbnail;
         form.append("image", resizedImage, ".jpeg");
       }
