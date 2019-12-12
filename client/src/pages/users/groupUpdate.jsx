@@ -5,6 +5,7 @@ import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
 import useAxios from "../../lib/useAxios";
 import imageResize from "../../lib/imageResize";
+import { isURL, isProperGroupDataFormat } from "../../lib/utils";
 
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
@@ -128,7 +129,7 @@ const GroupUpdate = ({ match, history }) => {
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
       let validationObj = {};
-      if (!(validationObj = validation(data)).isProper)
+      if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
       if (!isURL(data.thumbnail)) {
@@ -244,32 +245,5 @@ const GroupUpdate = ({ match, history }) => {
     </StyledGroupUpdate>
   );
 };
-
-const validation = data => {
-  if (data.category.length !== 2 || data.category.some(v => v === null))
-    return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
-  if (!data.title) return { isProper: false, reason: "제목을 입력해주세요" };
-  if (!data.subtitle)
-    return { isProper: false, reason: "부제목을 입력해주세요" };
-  if (!data.days.length)
-    return { isProper: false, reason: "스터디 요일을 선택해주세요" };
-  if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
-  if (!data.location || Object.values(data.location).length !== 2)
-    return { isProper: false, reason: "위치를 선택해주세요" };
-  return { isProper: true };
-};
-
-function isURL(str) {
-  var pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // fragment locator
-  return str && pattern.test(str);
-}
 
 export default GroupUpdate;

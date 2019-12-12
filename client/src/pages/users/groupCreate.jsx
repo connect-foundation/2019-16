@@ -2,6 +2,7 @@ import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import resizeImage from "../../lib/imageResize";
+import { isProperGroupDataFormat } from "../../lib/utils";
 
 import { REQUEST_URL } from "../../config.json";
 import Category from "../../components/users/groupCreate/Category";
@@ -124,7 +125,7 @@ const GroupCreate = ({ history }) => {
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
       let validationObj = {};
-      if (!(validationObj = validation(data)).isProper)
+      if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
       const image = data.thumbnail && (await resizeImage(data.thumbnail, 304));
@@ -219,20 +220,6 @@ const GroupCreate = ({ history }) => {
       </button>
     </StyledGroupCreate>
   );
-};
-
-const validation = data => {
-  if (data.category.length !== 2 || data.category.some(v => v === null))
-    return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
-  if (!data.title) return { isProper: false, reason: "제목을 입력해주세요" };
-  if (!data.subtitle)
-    return { isProper: false, reason: "부제목을 입력해주세요" };
-  if (!data.days.length)
-    return { isProper: false, reason: "스터디 요일을 선택해주세요" };
-  if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
-  if (!data.location || Object.values(data.location).length !== 2)
-    return { isProper: false, reason: "위치를 선택해주세요" };
-  return { isProper: true };
 };
 
 export default GroupCreate;
