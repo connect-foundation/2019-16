@@ -66,7 +66,7 @@ const Header = ({ history }) => {
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
       isTagSearch(keyword)
-        ? history.push(`/search/tags`)
+        ? history.push(`/search/tags?query=${keyword.slice(1)}`)
         : history.push(`/search?query=${keyword}`);
 
       // isTagSearch(keyword)
@@ -78,7 +78,7 @@ const Header = ({ history }) => {
       //       `/search/query/${keyword}/location/${lat}/${lon}/true`
       //     );
     },
-    [lat, lon, request, keyword]
+    [lat, lon, request, keyword],
   );
 
   return (
