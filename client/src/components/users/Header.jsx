@@ -66,8 +66,8 @@ const Header = ({ history }) => {
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
       isTagSearch(keyword)
-        ? createBrowserHistory.push(`/search/tags`)
-        : createBrowserHistory.push(`/search?query=${keyword}`);
+        ? history.push(`/search/tags`)
+        : history.push(`/search?query=${keyword}`);
 
       // isTagSearch(keyword)
       //   ? request("post", "/search/tags", {
