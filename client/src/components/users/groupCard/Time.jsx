@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import styled from "styled-components";
 
 const StyledStudyTime = styled.div`
-  font-size: 0.97rem;
+  font-size: 0.86rem;
   font-weight: bold;
 `;
 

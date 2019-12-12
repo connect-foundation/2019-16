@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Thumbnail = styled.div`
-  width: 304px;
+  width: 272px;
   height: 200px;
   display: flex;
   justify-content: center;

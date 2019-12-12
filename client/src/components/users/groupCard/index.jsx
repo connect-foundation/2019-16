@@ -13,7 +13,7 @@ const StyledCard = styled.div`
     font-family: "Nanum Gothic", sans-serif;
     font-weight: bold;
 
-    width: 19rem;
+    width: 17rem;
     background-color: whitesmoke;
     border-radius: 0.2rem;
     padding-bottom: 0.5rem;

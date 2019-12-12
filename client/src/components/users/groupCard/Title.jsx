@@ -4,8 +4,8 @@ import styled from "styled-components";
 const Title = styled.h3`
   font-family: "Nanum Gothic", sans-serif;
   font-weight: bold;
-  line-height: 1.5rem;
-  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-size: 1.3rem;
   color: #1d6de4;
 `;
 
