@@ -5,6 +5,7 @@ import Subtitle from "../groupCard/Subtitle";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
+import ApplyButtons from "../groupDetail/ApplyButtons";
 import {} from "../../../reducer/users/groupDetail";
 import { UserContext } from "../../../pages/users/index";
 
@@ -55,10 +56,9 @@ const StyledMain = styled.div`
   padding: 1.2rem;
 `;
 
-const Main = ({ groupData, dispatch }) => {
-  const { userInfo } = useContext(UserContext);
-  const { userEmail } = userInfo;
+const Main = ({ groupData }) => {
   const {
+    isRecruiting,
     thumbnail,
     location,
     startTime,
@@ -69,7 +69,8 @@ const Main = ({ groupData, dispatch }) => {
     min_personnel,
     now_personnel,
     max_personnel,
-    leader
+    leader,
+    members
   } = groupData;
 
   return (
@@ -91,6 +92,11 @@ const Main = ({ groupData, dispatch }) => {
         <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
+        <ApplyButtons
+          isRecruiting={isRecruiting}
+          members={members}
+          leader={leader}
+        />
       </div>
     </StyledMain>
   );
