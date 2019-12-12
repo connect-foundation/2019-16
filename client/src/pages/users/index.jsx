@@ -50,12 +50,15 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
-    if (parsedUserInfo) {
+    if (parsedUserInfo.email && parsedUserInfo.role) {
       const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
       const options = { method: "GET" };
 
       fetch(url, options)
-        .then(r => r.json())
+        .then(r => {
+          if (r.ok) return r.json();
+          throw new Error("fetch error");
+        })
         .then(result => {
           setUserInfo(result);
         })
