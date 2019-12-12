@@ -1,17 +1,22 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
+import Subtitle from "../groupCard/Subtitle";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
-import {} from "../../../reducer/users/groupDetail";
-import { UserContext } from "../../../pages/users/index";
+import ApplyButtons from "../groupDetail/ApplyButtons";
+import { toggle_recruit } from "../../../reducer/users/groupDetail";
 
 const StyledMain = styled.div`
   width: 100%;
   height: 23rem;
   background-color: whitesmoke;
-  font-family: "Nanum Gothic", sans-serif;
+
+  * {
+    font-family: "Nanum Gothic", sans-serif;
+    font-size: 1rem;
+  }
 
   .imageDiv {
     display: flex;
@@ -28,7 +33,7 @@ const StyledMain = styled.div`
   .content {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-around;
 
     font-weight: bold;
 
@@ -51,8 +56,6 @@ const StyledMain = styled.div`
 `;
 
 const Main = ({ groupData, dispatch }) => {
-  const { userInfo } = useContext(UserContext);
-  const { userEmail } = userInfo;
   const {
     thumbnail,
     location,
@@ -60,32 +63,15 @@ const Main = ({ groupData, dispatch }) => {
     days,
     endTime,
     tags,
+    subtitle,
     min_personnel,
     now_personnel,
-    max_personnel,
-    leader,
-    isRecruiting,
-    members
+    max_personnel
   } = groupData;
 
-  // const isMember = members.some(memberId => memberId === userEmail);
-  // const isLeader = leader === userEmail;
-
-  // const isMemberClass = classnames("button", {
-  //   "is-primary": !isMember,
-  //   "is-success": isMember
-  // });
-  // const isMemberText = isMember ? "취소하기" : "신청하기";
-
-  // const isRecruitingClass = classnames({
-  //   disable:
-  //     isRecruiting ||
-  //     now_personnel > max_personnel ||
-  //     now_personnel < min_personnel
-  // });
-  // const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
-
-  // const registerEvent = useCallback(() => {}, [dispatch]);
+  const onToggleReservation = useCallback(isRecruiting => {
+    dispatch(toggle_recruit(isRecruiting));
+  }, []);
 
   return (
     <StyledMain className="columns">
@@ -94,6 +80,7 @@ const Main = ({ groupData, dispatch }) => {
       </div>
 
       <div className="column content">
+        <Subtitle subtitle={subtitle} />
         <Location location={location} />
 
         <h4>
@@ -105,29 +92,10 @@ const Main = ({ groupData, dispatch }) => {
         <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
-
-        {/* <div className="buttons">
-          {userEmail &&
-            (isLeader || (
-              <button className={isMemberClass} onClick={registerEvent}>
-                {" "}
-                {isMemberText}{" "}
-              </button>
-            ))}
-
-          {isLeader && isMember && (
-            <>
-              <button className={`button is-danger ${!isRecruitingClass}`}>
-                {isRecruitingText}
-              </button>
-
-              <button className={`button is-warning ${isRecruitingClass}`}>
-                {" "}
-                예약하기{" "}
-              </button>
-            </>
-          )}
-        </div> */}
+        <ApplyButtons
+          groupData={groupData}
+          onToggleReservation={onToggleReservation}
+        />
       </div>
     </StyledMain>
   );

@@ -1,6 +1,9 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import resizeImage from "../../lib/imageResize";
+import { isProperGroupDataFormat } from "../../lib/utils";
+
 import { REQUEST_URL } from "../../config.json";
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
@@ -17,8 +20,12 @@ import {
   click_day,
   change_hour,
   change_during,
-  add_tag
+  add_tag,
+  attach_image
 } from "../../reducer/users/groupCreate";
+import useAxios from "../../lib/useAxios.jsx";
+
+const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const StyledGroupCreate = styled.div`
   width: 60%;
@@ -55,8 +62,9 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const GroupCreate = () => {
+const GroupCreate = ({ history }) => {
   const { userInfo } = useContext(UserContext);
+  const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
@@ -81,7 +89,7 @@ const GroupCreate = () => {
     },
     []
   );
-
+  const onAttachImage = useCallback(file => dispatch(attach_image(file)), []);
   const onChangeTagInput = useCallback(tagArr => {
     dispatch(add_tag(tagArr));
   }, []);
@@ -107,9 +115,11 @@ const GroupCreate = () => {
   }, []);
 
   const onSubmit = useCallback(
-    e => {
+    async e => {
       const { data } = state;
       const form = new FormData();
+      const image = data.thumbnail;
+      const imageName = image.name;
 
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
@@ -117,29 +127,32 @@ const GroupCreate = () => {
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
       let validationObj = {};
-      if (!(validationObj = validation(data)).isProper)
+      if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
-      form.append("image", data.thumbnail);
+      data.days.sort((a, b) => a - b);
+
+      const resizedImage = image && (await resizeImage(image, 272));
+
+      form.append("image", resizedImage, imageName);
       delete data.during;
       delete data.thumbnail;
 
       form.append("data", JSON.stringify(data));
 
-      axios
-        .post(`${REQUEST_URL}/api/studygroup/register`, form, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+      request("post", "/studygroup/register", {
+        data: form,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      })
+        .then(({ status, id }) => {
+          if (status === 400) return alert("요청 데이터가 잘못됨");
+          if (status === 200) history.push(`/group/detail/${id}`);
         })
-        .then(({ data }) => {
-          const { status } = data;
-          if (status === 400) return alert(data.reason);
-          window.location.href = "/";
-        })
-        .catch(e => {
-          console.error(e);
-          alert("에러 발생");
+        .catch(err => {
+          alert("서버 에러 발생");
+          console.error(err);
         });
     },
     [state, userEmail]
@@ -180,7 +193,7 @@ const GroupCreate = () => {
       />
 
       <div className="introduction">
-        <ImageUploader dispatch={dispatch} />
+        <ImageUploader onAttachImage={onAttachImage} />
         <textarea
           className="textarea"
           name="intro"
@@ -211,20 +224,6 @@ const GroupCreate = () => {
       </button>
     </StyledGroupCreate>
   );
-};
-
-const validation = data => {
-  if (data.category.length !== 2 || data.category.some(v => v === null))
-    return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
-  if (!data.title) return { isProper: false, reason: "제목을 입력해주세요" };
-  if (!data.subtitle)
-    return { isProper: false, reason: "부제목을 입력해주세요" };
-  if (!data.days.length)
-    return { isProper: false, reason: "스터디 요일을 선택해주세요" };
-  if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
-  if (!data.location || Object.values(data.location).length !== 2)
-    return { isProper: false, reason: "위치를 선택해주세요" };
-  return { isProper: true };
 };
 
 export default GroupCreate;

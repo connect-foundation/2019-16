@@ -1,6 +1,5 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { click_day, change_hour } from "../../../reducer/users/groupCreate";
 
 const StyledScheduleInput = styled.div`
   display: flex;
@@ -19,9 +18,26 @@ const StyledScheduleInput = styled.div`
 `;
 
 const ScheduleInput = props => {
-  const { daysInfo, onDayDispatch, onTimeDispatch, onChangeDuring } = props;
+  const {
+    daysInfo,
+    startTime = 1,
+    during = 1,
+    onDayDispatch,
+    onTimeDispatch,
+    onChangeDuring
+  } = props;
+
+  const timeSlot = startTime > 12 ? "pm" : "am";
+  const selectedStartTime = startTime > 12 ? startTime - 12 : startTime;
   const TimeSlot = useRef();
   const StartTime = useRef();
+  const During = useRef();
+
+  useEffect(() => {
+    TimeSlot.current.value = timeSlot;
+    StartTime.current.value = selectedStartTime;
+    During.current.value = during;
+  }, [timeSlot, selectedStartTime, during]);
 
   return (
     <StyledScheduleInput>
@@ -71,7 +87,12 @@ const ScheduleInput = props => {
           <option value="12">12시</option>
         </select>
 
-        <select className="select" name="during" onChange={onChangeDuring}>
+        <select
+          className="select"
+          name="during"
+          ref={During}
+          onChange={onChangeDuring}
+        >
           <option value="1"> 1시간 </option>
           <option value="2"> 2시간 </option>
           <option value="3"> 3시간 </option>

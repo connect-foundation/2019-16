@@ -55,8 +55,9 @@ const Main = styled.div`
       justify-content: space-evenly;
 
       background-color: #f8f0ee;
-      width: 75rem;
+      width: 68rem;
       flex-wrap: wrap;
+      padding: 0 1rem;
       margin:0 10%;
       .study-group-card{
           margin: 2em;
