@@ -18,21 +18,12 @@ const dataURItoBlob = dataURI => {
   return new Blob([ia], { type: mime });
 };
 
-const convertSize = _.curryN(2, (maxWidth, maxHeight, image) => {
+const getSizeAtMaxWidth = _.curryN(2, (maxWidth, maxHeight, image) => {
   let width = image.width;
   let height = image.height;
 
-  if (width > height) {
-    if (width > maxWidth) {
-      height *= maxWidth / width;
-      width = maxWidth;
-    }
-  } else {
-    if (height > maxHeight) {
-      width *= maxHeight / height;
-      height = maxHeight;
-    }
-  }
+  height *= maxWidth / width;
+  width = maxWidth;
 
   return [width, height, image];
 });
@@ -65,7 +56,7 @@ export default (image, width, height) =>
   _.go(
     image,
     readImage,
-    convertSize(width, height),
+    getSizeAtMaxWidth(width, height),
     _.reduce.bind(null, (f, x) => f(x), resizedDataUrl),
     dataURItoBlob
   );
