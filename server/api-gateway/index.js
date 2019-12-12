@@ -68,6 +68,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
+server.use(express.static(path.join(__dirname, "build")));
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
@@ -77,13 +78,17 @@ server.use(setResponseKey);
 
 server.use(gatewayLogger);
 
-server.use(require("./middleware/auth/token-parser"));
+// server.use(require("./middleware/auth/token-parser"));
 server.use("/auth", authRouter);
 server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
 server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
-server.use(writePacket);
+server.use("/api", writePacket);
+
+server.get("/*", function(req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 server.listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
