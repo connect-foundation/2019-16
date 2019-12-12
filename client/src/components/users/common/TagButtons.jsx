@@ -2,6 +2,10 @@ import React, { memo, useCallback } from "react";
 import styled from "styled-components";
 
 const StyledTagButtons = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
   .button {
     font-family: "Nanum Gothic", sans-serif;
   }

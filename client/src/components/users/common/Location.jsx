@@ -9,6 +9,9 @@ const StyledLocation = styled.div`
   flex-direction: row;
   align-items: center;
 
+  position: relative;
+  right: 0.3rem;
+
   .imageWrapper {
     width: 1.6rem;
     height: 1.6rem;

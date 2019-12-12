@@ -14,10 +14,9 @@ const StyledCard = styled.div`
     font-weight: bold;
 
     width: 19rem;
-    height: 34rem;
     background-color: whitesmoke;
     border-radius: 0.2rem;
-    padding-bottom: 1.3rem;
+    padding-bottom: 0.5rem;
     box-shadow: 0 17px 30px 0 rgba(0, 0, 0, 0.2);
     &:hover {
       box-shadow: none;
@@ -30,7 +29,7 @@ const StudyGroupCard = ({ groupData }) => {
     <StyledCard className="card-wrapper">
       <Link to={`/group/detail/${groupData._id}`}>
         <div className="card">
-          <Thumbnail src={groupData.thumbnail} alt={groupData.alt} />
+          <Thumbnail src={groupData.thumbnail} />
           <Body bodyData={{ ...groupData }} />
           <Footer footerData={{ ...groupData }} />
         </div>

@@ -6,8 +6,6 @@ const Title = styled.h3`
   font-weight: bold;
   line-height: 1.5rem;
   font-size: 1.5rem;
-
-  margin: 1.3rem 0;
   color: #1d6de4;
 `;
 

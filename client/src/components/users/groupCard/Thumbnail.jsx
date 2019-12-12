@@ -7,17 +7,18 @@ const Thumbnail = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* height: 50%; */
+
   overflow: hidden;
+
   img {
     border-top-left-radius: 0.2rem;
     border-top-right-radius: 0.2rem;
   }
 `;
 
-const StudyThumbnail = ({ src, alt }) => (
+const StudyThumbnail = ({ src }) => (
   <Thumbnail>
-    <img src={src} alt={alt} />
+    <img src={src} alt="groupThumbnail" />
   </Thumbnail>
 );
 
