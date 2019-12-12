@@ -2,8 +2,11 @@ import React, { useContext, useCallback } from "react";
 import styled from "styled-components";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { UserContext } from "../../../pages/users";
 import { REQUEST_URL, KAKAO_JS_KEY } from "../../../config.json";
+
+const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 const KakaoLoginButton = styled(KakaoLogin)`
   img {
@@ -20,39 +23,39 @@ const LoginButton = () => {
 
   const userInfoParser = useCallback(({ profile, response }) => {
     const { kakao_account, properties } = profile;
+    debugger;
 
     return {
-      userAgeRange: +kakao_account.age_range[0],
+      userAgeRange: +kakao_account.age_range[0] || null,
       userName: properties.nickname,
-      userEmail: kakao_account.email,
-      userGender: kakao_account.gender,
-      profileImage: properties.profile_image,
-      accessToken: response.access_token
+      userEmail: kakao_account.email || "blank",
+      userGender: kakao_account.gender || "",
+      profileImage: properties.profile_image || DEFAULT_PROFILE_IMAGE,
+      userLocation: { lat: null, lon: null }
     };
   }, []);
 
-  const onSuccess = ({ response, profile }) => {
-    const email = profile.kakao_account.email;
+  const onSuccess = async ({ response, profile }) => {
+    const email = profile.kakao_account.email || "blank";
+    const url = `${REQUEST_URL}/auth/users/accounts?email=${email}`;
+    const options = { method: "GET" };
 
-    // axios
-    //   .post(`${REQUEST_URL}/auth/users/checkEmail`, { email })
-    //   .then(({ data }) => {
-    //     if (!data.exist) {
-    //       // 처음 방문한 사용자라면 위치를 입력받아서 데이터베이스에 저장
-    //       const location = prompt(
-    //         "처음이신가봐요! 거주하고 계신 동네를 말씀해 주세요"
-    //       );
-    //     }
-    //     const tmp = Object.assign(
-    //       userInfo,
-    //       userInfoParser({ response, profile })
-    //     );
-    //     setUserInfo(tmp);
-    //   })
-    //   .catch(e => {
-    //     console.error(e);
-    //   });
-    setUserInfo({ ...userInfo, ...userInfoParser({ response, profile }) });
+    fetch(url, options)
+      .then(r => r.json())
+      .then(res => {
+        if (res) {
+          setUserInfo({
+            ...userInfo,
+            ...userInfoParser({ response, profile })
+          });
+        } else {
+          const inputLocation = prompt("사는 지역을 말씀해 주세요");
+        }
+      })
+      .catch(e => {
+        alert("데이터 요청을 할 수 없습니다.");
+        console.error(e);
+      });
   };
 
   return (
@@ -60,10 +63,7 @@ const LoginButton = () => {
       className="button is-warning is-rounded"
       jsKey={KAKAO_JS_KEY}
       onSuccess={onSuccess}
-      onFailure={res => {
-        // Caution popup
-        console.error(res);
-      }}
+      onFailure={console.error}
       getProfile="true"
     >
       <img src="/image/kakao-talk.png" alt="kakao-talk" />
