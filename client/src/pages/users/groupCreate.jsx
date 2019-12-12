@@ -1,7 +1,8 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import _ from "fxjs/Strict";
+import resizeImage from "../../lib/imageResize";
+
 import { REQUEST_URL } from "../../config.json";
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
@@ -126,8 +127,7 @@ const GroupCreate = ({ history }) => {
       if (!(validationObj = validation(data)).isProper)
         return alert(validationObj.reason);
 
-      const image =
-        data.thumbnail && (await resizeImage(data.thumbnail, 304, 200));
+      const image = data.thumbnail && (await resizeImage(data.thumbnail, 304));
 
       form.append("image", image, `${userEmail}.jpeg`);
       delete data.during;
