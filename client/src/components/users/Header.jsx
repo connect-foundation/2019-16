@@ -7,17 +7,25 @@ import StudySearchNavbar from "./studySearchNavbar";
 import { UserContext } from "../../pages/users/index";
 
 const StyledHeader = styled.header`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-bottom: 1.5px solid #dfdfdf;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+
   .header-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1.5px solid #dfdfdf;
-    padding: 1% 10%;
-    margin-bottom: 2.3rem;
+    justify-content: space-evenly;
+    padding: 0.7% 0 0% 0;
+    width: 80%;
 
     .logo {
-      width: 64px;
-      height: 64px;
+      width: 85px;
+      height: 68px;
     }
     .search-box {
       .input {
@@ -43,8 +51,11 @@ const StyledHeader = styled.header`
 const LeftHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 50%;
-  justify-content: space-around;
+  width: 100%;
+
+  & > * {
+    margin-right: 2rem;
+  }
 `;
 
 const Header = () => {
@@ -77,7 +88,7 @@ const Header = () => {
         <LeftHeader>
           <a href="/">
             <img
-              src="/image/logo-mini.png"
+              src="/image/new-logo-mini.png"
               alt="study combined"
               className="logo"
             />

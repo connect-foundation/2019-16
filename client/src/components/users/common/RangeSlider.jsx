@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { Range } from "rc-slider";
 
@@ -9,12 +9,26 @@ const StyleRangeSlider = styled.div`
   flex-direction: column;
 `;
 
-const RangeSlider = ({ minRange, maxRange, step, onChangeSlider }) => {
+const RangeSlider = ({
+  minRange,
+  maxRange,
+  min_personnel = minRange,
+  max_personnel = maxRange,
+  step,
+  onChangeSlider
+}) => {
   const [range, setRange] = useState([minRange, maxRange]);
-  const onSliderChange = useCallback(r => {
-    setRange(r);
-    onChangeSlider(...r);
-  }, []);
+  const onSliderChange = useCallback(
+    r => {
+      setRange(r);
+      onChangeSlider(...r);
+    },
+    [onChangeSlider]
+  );
+
+  useEffect(() => {
+    setRange([min_personnel, max_personnel]);
+  }, [min_personnel, max_personnel]);
 
   return (
     <StyleRangeSlider>
