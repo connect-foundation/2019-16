@@ -34,7 +34,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
-    accessToken: "",
+    kakaoAccessToken: "",
     userEmail: "",
     userName: "",
     userAgeRange: null,
@@ -52,7 +52,17 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
-    parsedUserInfo ||
+    if (parsedUserInfo) {
+      const url = `${REQUEST_URL}/auth/users/accounts?email=${parsedUserInfo.email}`;
+      const options = { method: "GET" };
+
+      fetch(url, options)
+        .then(r => r.json())
+        .then(res => {
+          setUserInfo({ ...userInfo, res });
+        })
+        .catch(console.error);
+    } else {
       getCurrentPosition
         .then(pos => {
           // const lat = pos.lat;
@@ -62,6 +72,7 @@ const UserPage = () => {
           setUserInfo({ ...userInfo, userLocation: { lat, lon } });
         })
         .catch(console.error);
+    }
   }, []);
 
   return (
@@ -89,6 +100,7 @@ const UserPage = () => {
 
 function jwtParser() {
   const jwt = Cookies.get("access_token");
+
   return jwt && jwt_decode(jwt);
 }
 
