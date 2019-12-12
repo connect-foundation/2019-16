@@ -20,12 +20,12 @@ const StyledHeader = styled.header`
     display: flex;
     align-items: center;
     justify-content: space-evenly;
-    padding: 1% 0 1% 0;
+    padding: 0.7% 0 0% 0;
     width: 80%;
 
     .logo {
-      width: 64px;
-      height: 64px;
+      width: 85px;
+      height: 68px;
     }
     .search-box {
       .input {
@@ -88,7 +88,7 @@ const Header = () => {
         <LeftHeader>
           <a href="/">
             <img
-              src="/image/logo-mini.png"
+              src="/image/new-logo-mini.png"
               alt="study combined"
               className="logo"
             />
