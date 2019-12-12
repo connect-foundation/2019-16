@@ -14,7 +14,7 @@ const StyledCard = styled.div`
     font-weight: bold;
 
     width: 19rem;
-    height: 32rem;
+    height: 34rem;
     background-color: whitesmoke;
     border-radius: 0.2rem;
     padding-bottom: 1.3rem;
