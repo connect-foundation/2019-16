@@ -56,26 +56,39 @@ const isHaveCardDataWhenLoaded = (loading, data) =>
 
 const Search = ({ location, match }) => {
   const query = queryString.parse(location.search).query;
+  const pathname = location.pathname;
   const {
     userIndexState,
     userIndexDispatch,
     userInfo,
-    getApiAxiosState
+    getApiAxiosState,
   } = useContext(UserContext);
-  const { myGroups, searchList } = userIndexState;
-  const { userEmail, userLocation } = userInfo;
+  const { searchList } = userIndexState;
+  const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
 
   useEffect(() => {
-    isSetPositionDuringLoading(loading, lat, lon) &&
+    if (pathname === "/search")
       request("get", `/search/query/${query}/location/${lat}/${lon}/true`);
+
+    if (pathname === "/search/tags")
+      request("post", "/search/tags", {
+        data: { tags: [query], isRecruit: true, lat, lon },
+      });
+    userIndexDispatch(set_groups(data));
+  }, []);
+
+  useEffect(() => {
+    if (isSetPositionDuringLoading(loading, lat, lon)) {
+    }
   }, [userLocation]);
 
   useEffect(() => {
-    isHaveCardDataWhenLoaded(loading, data) &&
+    if (isHaveCardDataWhenLoaded(loading, data)) {
       userIndexDispatch(set_groups(data));
+    }
   }, [data, userLocation]);
 
   return (
