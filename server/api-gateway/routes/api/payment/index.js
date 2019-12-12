@@ -1,8 +1,8 @@
 const express = require("express");
-const Router = express.Router();
-const payQueueInspection = require("../../../middleware/payment/payQueueInspection");
+const router = express.Router();
+const inspectPayQueue = require("../../../middleware/payment/inspectPayQueue");
 const readyToPay = require("../../../middleware/payment/readyToPay");
 
-Router.post("/ready", payQueueInspection, readyToPay);
+router.post("/ready", inspectPayQueue, readyToPay);
 
-module.exports = Router;
+module.exports = router;
