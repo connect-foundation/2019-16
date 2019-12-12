@@ -76,7 +76,7 @@ const UserPage = () => {
       }}
     >
       <StyledUserPage>
-        <Header />
+        <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
