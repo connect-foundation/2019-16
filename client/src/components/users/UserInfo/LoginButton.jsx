@@ -21,7 +21,6 @@ const LoginButton = () => {
 
   const userInfoParser = useCallback(({ profile, response }) => {
     const { kakao_account, properties } = profile;
-    debugger;
 
     return {
       kakaoAccessToken: response.access_token,
@@ -55,7 +54,7 @@ const LoginButton = () => {
             userAgeRange: +profile.kakao_account.age_range[0] || null,
             profileImage:
               response.properties.profile_image || DEFAULT_PROFILE_IMAGE,
-            userLocation: locationInput
+            userLocation: { lat: 37.4986832, lon: 127.0280951 }
           };
           const options = {
             method: "POST",
