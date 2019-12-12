@@ -14,6 +14,7 @@ import GroupCreatePage from "./groupCreate";
 import Header from "../../components/users/Header";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
+import Search from "./search";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
@@ -81,6 +82,7 @@ const UserPage = () => {
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
           <Route path="/reservation" component={Reservation} />
+          <Route path="/search" component={Search} />
         </Switch>
       </StyledUserPage>
     </UserContext.Provider>
