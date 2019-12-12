@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
 import Subtitle from "../groupCard/Subtitle";
@@ -6,8 +6,7 @@ import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
 import ApplyButtons from "../groupDetail/ApplyButtons";
-import {} from "../../../reducer/users/groupDetail";
-import { UserContext } from "../../../pages/users/index";
+import { toggle_recruit } from "../../../reducer/users/groupDetail";
 
 const StyledMain = styled.div`
   width: 100%;
@@ -56,9 +55,8 @@ const StyledMain = styled.div`
   padding: 1.2rem;
 `;
 
-const Main = ({ groupData }) => {
+const Main = ({ groupData, dispatch }) => {
   const {
-    isRecruiting,
     thumbnail,
     location,
     startTime,
@@ -68,10 +66,12 @@ const Main = ({ groupData }) => {
     subtitle,
     min_personnel,
     now_personnel,
-    max_personnel,
-    leader,
-    members
+    max_personnel
   } = groupData;
+
+  const onToggleReservation = useCallback(isRecruiting => {
+    dispatch(toggle_recruit(isRecruiting));
+  }, []);
 
   return (
     <StyledMain className="columns">
@@ -92,7 +92,10 @@ const Main = ({ groupData }) => {
         <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
-        <ApplyButtons groupData={groupData} />
+        <ApplyButtons
+          groupData={groupData}
+          onToggleReservation={onToggleReservation}
+        />
       </div>
     </StyledMain>
   );

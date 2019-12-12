@@ -10,7 +10,7 @@ const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
 const StyledApplyButtons = styled.div``;
 
-const ApplyButtons = ({ groupData }) => {
+const ApplyButtons = ({ groupData, onToggleReservation }) => {
   const {
     _id,
     members,
@@ -20,6 +20,7 @@ const ApplyButtons = ({ groupData }) => {
     max_personnel,
     min_personnel
   } = groupData;
+
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
@@ -41,13 +42,13 @@ const ApplyButtons = ({ groupData }) => {
   const onToggleRecruit = useCallback(async () => {
     // 그룹 DB에 isRecruiting을 true로 만든다.
     // now가 min max에 충족하면 예약하기 버튼을 활성화한다.
-    const { status } = await request("patch", "/studygroup/recruit", {
-      data: { isRecruiting: !isRecruiting, id: _id }
-    });
-    if (status !== 200) return alert("서버 에러 발생");
-    // dispatch => isRecruiting 토글
+    // const { status } = await request("patch", "/studygroup/recruit", {
+    //   data: { isRecruiting, id: _id }
+    // });
+    // if (status !== 200) return alert("서버 에러 발생");
+    onToggleReservation(isRecruiting);
     isSatisfyPersonnel && setIsCanReserve(true);
-  }, []);
+  }, [isRecruiting, isSatisfyPersonnel]);
   const onReservate = useCallback(() => {
     // 에헤잉
   }, []);
