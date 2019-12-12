@@ -82,6 +82,7 @@ const UserPage = () => {
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
           <Route path="/reservation" component={Reservation} />
+          <Route path="/search/tags" component={Search} />
           <Route path="/search" component={Search} />
         </Switch>
       </StyledUserPage>
