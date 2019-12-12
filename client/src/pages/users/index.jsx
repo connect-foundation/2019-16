@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useReducer, createContext } from "react";
-import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -16,8 +15,7 @@ import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
-
-const StyledUserPage = styled.div``;
+const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 export const UserContext = createContext();
 
@@ -53,13 +51,13 @@ const UserPage = () => {
   useEffect(() => {
     const parsedUserInfo = jwtParser();
     if (parsedUserInfo) {
-      const url = `${REQUEST_URL}/auth/users/accounts?email=${parsedUserInfo.email}`;
+      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
       const options = { method: "GET" };
 
       fetch(url, options)
         .then(r => r.json())
-        .then(res => {
-          setUserInfo({ ...userInfo, res });
+        .then(result => {
+          setUserInfo(result);
         })
         .catch(console.error);
     } else {
@@ -85,7 +83,7 @@ const UserPage = () => {
         getApiAxiosState
       }}
     >
-      <StyledUserPage>
+      <div>
         <Header />
         <Switch>
           <Route exact path="/" component={MainPage} />
@@ -93,7 +91,7 @@ const UserPage = () => {
           <Route path="/group/detail/:id" component={GroupDetailPage} />
           <Route path="/reservation" component={Reservation} />
         </Switch>
-      </StyledUserPage>
+      </div>
     </UserContext.Provider>
   );
 };
