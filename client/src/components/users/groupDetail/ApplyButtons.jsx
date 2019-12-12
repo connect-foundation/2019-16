@@ -8,7 +8,11 @@ import { UserContext } from "../../../pages/users";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
-const StyledApplyButtons = styled.div``;
+const StyledApplyButtons = styled.div`
+  .button:not(:last-child) {
+    margin-right: 0.4rem;
+  }
+`;
 
 const ApplyButtons = ({ groupData, onToggleReservation }) => {
   const {
@@ -90,7 +94,7 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
                 <button className="button" onClick={onToggleRecruit}>
                   {isRecruiting ? "마감하기" : "모집하기"}
                 </button>
-                {isCanReserve && (
+                {isCanReserve && !isRecruiting && (
                   <button className="button" onClick={onReservate}>
                     예약하기
                   </button>
