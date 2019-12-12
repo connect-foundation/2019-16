@@ -1,9 +1,9 @@
 name: SERVER DEPLOY
 
-on: 
+on:
   push:
     branches:
-      - service/develop
+      - develop/server
 
 jobs:
   DetectMerged:
@@ -16,18 +16,21 @@ jobs:
       - name: ssh 접속
         uses: appleboy/ssh-action@master
         with:
-          host:  ${{ secrets.DEV_HOST }}
+          host: ${{ secrets.DEV_HOST }}
           username: ${{ secrets.DEV_USER }}
           password: ${{ secrets.DEV_PWD }}
           port: ${{ secrets.DEV_PORT }}
           script: |
+            echo ifconfig
             cd /www/2019-16/server
-            git pull origin develop/integration
-            pm2 delete all
-            sh startServices_deploy_ver.sh
-         # key: ${{ secrets.KEY }}
+            echo ${{ secrets.DEV_PWD }} | sudo -S git checkout develop/server
+            echo ${{ secrets.DEV_PWD }} | sudo -S git pull
+            echo ${{ secrets.DEV_PWD }} | sudo -S pm2 delete api-gateway applistmanager logs search studygroup studyroom
+            echo ${{ secrets.DEV_PWD }} | sudo -S sh startServices_deploy_ver.sh
+          # key: ${{ secrets.KEY }}
+
 #      - name: ssh 접속
-#       env: 
+#       env:
 #          DEV_HOST: ${{ secrets.DEV_HOST }}
 #          DEV_PORT: ${{ secrets.DEV_PORT }}
 #          DEV_PWD: ${{ secrets.DEV_PWD }}
