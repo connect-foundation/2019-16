@@ -20,7 +20,7 @@
 - Content-type : `application/json`
 - Body
 
-|             Fields             |    Type    |              Description               |
+|             Field              |    Type    |              Description               |
 | :----------------------------: | :--------: | :------------------------------------: |
 |         `accessToken`          |  `String`  |         `사용자 access_token`          |
 |       `paymentInfo.cid`        |  `String`  |          `가맹점 코드. 10자`           |
@@ -42,15 +42,21 @@
 - Request Example
 - Res
 
+
+
+---
+
 ### 2. Auth
 
 인증에 사용되는 API
 
-| No. | Method |                        Url                         |
-| :-: | :----: | :------------------------------------------------: |
-|  1  | `GET`  | [`/auth/users/accounts/:email`](#21-get-authusers) |
+| No.  | Method |                            Url                             |
+| :--: | :----: | :--------------------------------------------------------: |
+|  1   | `GET`  |     [`/auth/users/accounts/:email`](#21-get-authusers)     |
+|  2   | `POST` |    [`/auth/users/accounts`](#22-post-authusersaccounts)    |
+|  3   | `PUT`  | [`/auth/users/accounts/:email`](#23-put-authusersaccounts) |
 
-#### 2.1 `GET /auth/users/
+#### 2.1 `GET /auth/users/accounts/:email`
 
 사용자 정보 조회
 
@@ -67,6 +73,46 @@
 // 사용자가 없을 때
 null
 ```
+
+#### 2.2 `POST /auth/users/accounts`
+
+처음 방문한 사용자 등록
+
+- Content-type : `application/json`
+- Body
+
+|      Field       |  Type  |       Description       |
+| :--------------: | :----: | :---------------------: |
+|      email       | String |         이메일          |
+|       name       | String |          이름           |
+|      gender      | String |     male or female      |
+|     ageRange     | Number |       n (n0 ~ n9)       |
+|   location.lat   | Number |    사는 지역의 위도     |
+|   location.lon   | Number |    사는 지역의 경도     |
+| kakaoAccessToken | String | 카카오 API access token |
+
+- Res
+  - 성공 : `res.sendStatus(200)`
+  - 실패 : `res.sendStatus(500)`
+
+#### 2.3 `Patch /auth/users/accounts/:email`
+
+사용자의 카카오 API access token을 업데이트
+
+- Content-type: `application/json`
+- Body
+
+|      Field       |  Type  |       Description       |
+| :--------------: | :----: | :---------------------: |
+| kakaoAccessToken | String | 카카오 API access token |
+
+- Res
+  - 성공 : `res.sendStatus(200)`
+  - 실패 : `res.sendStatus(500)`
+
+
+
+---
 
 ## Database Schema
 
@@ -88,8 +134,9 @@ null
 {
   "_id": ObjectId,
   "email": String,
+  "name": String,
   "gender": String,
-  "ageRange": String,
+  "ageRange": Number,
 	"location": {
 		"lat": Number,
 		"lon": Number
