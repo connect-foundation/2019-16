@@ -1,6 +1,7 @@
 import React, { useCallback, useReducer, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import _ from "fxjs/Strict";
 import { REQUEST_URL } from "../../config.json";
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
@@ -112,7 +113,7 @@ const GroupCreate = ({ history }) => {
   }, []);
 
   const onSubmit = useCallback(
-    e => {
+    async e => {
       const { data } = state;
       const form = new FormData();
 
@@ -125,7 +126,10 @@ const GroupCreate = ({ history }) => {
       if (!(validationObj = validation(data)).isProper)
         return alert(validationObj.reason);
 
-      form.append("image", data.thumbnail);
+      const image =
+        data.thumbnail && (await resizeImage(data.thumbnail, 304, 200));
+
+      form.append("image", image, `${userEmail}.jpeg`);
       delete data.during;
       delete data.thumbnail;
 
@@ -229,6 +233,76 @@ const validation = data => {
   if (!data.location || Object.values(data.location).length !== 2)
     return { isProper: false, reason: "위치를 선택해주세요" };
   return { isProper: true };
+};
+
+const resizeImage = (image, width, height) =>
+  _.go(
+    image,
+    readImage,
+    convertSize(width, height),
+    _.reduce.bind(null, (f, x) => f(x), resizedDataUrl),
+    dataURItoBlob
+  );
+
+const dataURItoBlob = dataURI => {
+  const bytes =
+    dataURI.split(",")[0].indexOf("base64") >= 0
+      ? atob(dataURI.split(",")[1])
+      : unescape(dataURI.split(",")[1]);
+
+  const mime = dataURI
+    .split(",")[0]
+    .split(":")[1]
+    .split(";")[0];
+
+  const max = bytes.length;
+  let ia = new Uint8Array(max);
+  for (let i = 0; i < max; i++) ia[i] = bytes.charCodeAt(i);
+
+  return new Blob([ia], { type: mime });
+};
+
+const convertSize = _.curryN(2, (maxWidth, maxHeight, image) => {
+  let width = image.width;
+  let height = image.height;
+
+  if (width > height) {
+    if (width > maxWidth) {
+      height *= maxWidth / width;
+      width = maxWidth;
+    }
+  } else {
+    if (height > maxHeight) {
+      width *= maxHeight / height;
+      height = maxHeight;
+    }
+  }
+
+  return [width, height, image];
+});
+
+const resizedDataUrl = _.curryN(2, (width, height, image) => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg");
+});
+
+const readImage = originalImage => {
+  const reader = new FileReader();
+  const image = new Image();
+
+  return new Promise((resolve, reject) => {
+    if (!originalImage.type.match(/image.*/)) reject(new Error("Not an image"));
+
+    reader.onload = readerEvent => {
+      image.onload = () => resolve(image);
+      image.src = readerEvent.target.result;
+    };
+
+    reader.readAsDataURL(originalImage);
+  });
 };
 
 export default GroupCreate;
