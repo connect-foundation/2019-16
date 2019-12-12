@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import TagButtons from "../common/TagButtons";
 import Location from "../common/Location";
 import TimeInfo from "./Time";
 import Personnel from "./Personnel";
 
 const StyledFooter = styled.div`
-  margin-top: 1rem;
+  height: 6rem;
+  margin-top: 0.4rem;
   padding: 0 1rem;
 `;
 
@@ -23,7 +23,6 @@ const Footer = ({
 }) => {
   return (
     <StyledFooter>
-      <TagButtons tags={tags} />
       <Location location={location} />
       <TimeInfo days={days} startTime={startTime} endTime={endTime} />
       <Personnel now_personnel={now_personnel} max_personnel={max_personnel} />

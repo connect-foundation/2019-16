@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useReducer, createContext } from "react";
 import styled from "styled-components";
 import { Route, Switch } from "react-router-dom";
@@ -9,8 +10,9 @@ import useAxios from "../../lib/useAxios";
 import { REQUEST_URL } from "../../config.json";
 
 import MainPage from "./Main";
-import GroupDetailPage from "./groupDetail";
 import GroupCreatePage from "./groupCreate";
+import GroupUpdatePage from "./groupUpdate";
+import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
@@ -79,6 +81,7 @@ const UserPage = () => {
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
+          <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
           <Route path="/reservation" component={Reservation} />
         </Switch>
