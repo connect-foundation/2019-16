@@ -12,7 +12,16 @@ exports.makeKey = async socket => {
   return hashedKey;
 };
 
-exports.makePacket = (method, curQuery, endQuery, params, body, key, info) => {
+exports.makePacket = (
+  method,
+  curQuery,
+  nextQuery,
+  endQuery,
+  params,
+  body,
+  key,
+  info
+) => {
   const packet = {
     method,
     curQuery,
