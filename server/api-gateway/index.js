@@ -3,6 +3,7 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 const App = require("../lib/tcp/App");
@@ -68,6 +69,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
+server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
 
@@ -75,6 +77,8 @@ server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 
 server.use(gatewayLogger);
+
+server.use(require("./middleware/auth/token-parser"));
 server.use("/auth", authRouter);
 server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
