@@ -10,6 +10,7 @@ import { REQUEST_URL } from "../../config.json";
 import MainPage from "./Main";
 import GroupDetailPage from "./groupDetail";
 import GroupCreatePage from "./groupCreate";
+import Notice from "../../components/users/Notice";
 import Header from "../../components/users/Header";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
@@ -50,7 +51,7 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
-    if (parsedUserInfo.email && parsedUserInfo.role) {
+    if (parsedUserInfo) {
       const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
       const options = { method: "GET" };
 
@@ -87,6 +88,7 @@ const UserPage = () => {
       }}
     >
       <div>
+        <Notice />
         <Header />
         <Switch>
           <Route exact path="/" component={MainPage} />
