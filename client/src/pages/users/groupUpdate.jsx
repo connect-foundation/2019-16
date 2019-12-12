@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
 import useAxios from "../../lib/useAxios";
+import imageResize from "../../lib/imageResize";
 
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
@@ -118,7 +119,7 @@ const GroupUpdate = ({ match, history }) => {
   });
 
   const onSubmit = useCallback(
-    e => {
+    async e => {
       const { data } = state;
       const form = new FormData();
       data.leader = userEmail;
@@ -131,8 +132,9 @@ const GroupUpdate = ({ match, history }) => {
         return alert(validationObj.reason);
 
       if (!isURL(data.thumbnail)) {
-        form.append("image", data.thumbnail);
+        const resizedImage = await imageResize(data.thumbnail, 304);
         delete data.thumbnail;
+        form.append("image", resizedImage, ".jpeg");
       }
 
       delete data.during;

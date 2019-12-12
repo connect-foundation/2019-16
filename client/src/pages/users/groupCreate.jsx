@@ -129,7 +129,7 @@ const GroupCreate = ({ history }) => {
 
       const image = data.thumbnail && (await resizeImage(data.thumbnail, 304));
 
-      form.append("image", image, `${userEmail}.jpeg`);
+      form.append("image", image, ".jpeg");
       delete data.during;
       delete data.thumbnail;
 
