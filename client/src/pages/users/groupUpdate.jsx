@@ -134,6 +134,8 @@ const GroupUpdate = ({ match, history }) => {
       if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
+      data.days.sort((a, b) => a - b);
+
       if (!isURL(image)) {
         const imageName = image.name;
         const resizedImage = await imageResize(image, 304, imageName);
