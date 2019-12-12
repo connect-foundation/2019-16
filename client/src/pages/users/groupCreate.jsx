@@ -118,6 +118,8 @@ const GroupCreate = ({ history }) => {
     async e => {
       const { data } = state;
       const form = new FormData();
+      const image = data.thumbnail;
+      const imageName = image.name;
 
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
@@ -128,9 +130,9 @@ const GroupCreate = ({ history }) => {
       if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
-      const image = data.thumbnail && (await resizeImage(data.thumbnail, 304));
+      const resizedImage = image && (await resizeImage(image, 304));
 
-      form.append("image", image, ".jpeg");
+      form.append("image", resizedImage, imageName);
       delete data.during;
       delete data.thumbnail;
 

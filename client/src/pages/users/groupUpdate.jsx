@@ -123,6 +123,8 @@ const GroupUpdate = ({ match, history }) => {
     async e => {
       const { data } = state;
       const form = new FormData();
+      const image = data.thumbnail;
+
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
       data.endTime = data.startTime + data.during;
@@ -132,8 +134,9 @@ const GroupUpdate = ({ match, history }) => {
       if (!(validationObj = isProperGroupDataFormat(data)).isProper)
         return alert(validationObj.reason);
 
-      if (!isURL(data.thumbnail)) {
-        const resizedImage = await imageResize(data.thumbnail, 304);
+      if (!isURL(image)) {
+        const imageName = image.name;
+        const resizedImage = await imageResize(image, 304, imageName);
         delete data.thumbnail;
         form.append("image", resizedImage, ".jpeg");
       }
