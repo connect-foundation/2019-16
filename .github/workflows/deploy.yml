@@ -3,7 +3,7 @@ name: SERVER DEPLOY
 on: 
   push:
     branches:
-      - service/develop
+      - develop/server
 
 jobs:
   DetectMerged:
