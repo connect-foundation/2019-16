@@ -29,8 +29,8 @@ const StyledGroupDetail = styled.div`
     flex-direction: row;
     justify-content: flex-end;
 
-    .button {
-      margin-left: 1.7rem;
+    .button:not(:first-child) {
+      margin-left: 0.5rem;
     }
   }
 `;

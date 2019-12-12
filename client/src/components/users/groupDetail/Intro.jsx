@@ -16,6 +16,7 @@ const StyledIntro = styled.div`
     padding: 3rem;
     width: 100%;
     background-color: whitesmoke;
+    white-space: pre-wrap;
   }
 `;
 
