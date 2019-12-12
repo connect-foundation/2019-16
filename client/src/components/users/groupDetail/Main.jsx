@@ -72,25 +72,6 @@ const Main = ({ groupData, dispatch }) => {
     leader
   } = groupData;
 
-  // const isMember = members.some(memberId => memberId === userEmail);
-  // const isLeader = leader === userEmail;
-
-  // const isMemberClass = classnames("button", {
-  //   "is-primary": !isMember,
-  //   "is-success": isMember
-  // });
-  // const isMemberText = isMember ? "취소하기" : "신청하기";
-
-  // const isRecruitingClass = classnames({
-  //   disable:
-  //     isRecruiting ||
-  //     now_personnel > max_personnel ||
-  //     now_personnel < min_personnel
-  // });
-  // const isRecruitingText = isRecruiting ? "마감하기" : "모집 재개";
-
-  // const registerEvent = useCallback(() => {}, [dispatch]);
-
   return (
     <StyledMain className="columns">
       <div className="column imageDiv is-half">
@@ -110,29 +91,6 @@ const Main = ({ groupData, dispatch }) => {
         <p> 최대 인원: {max_personnel} </p>
 
         <TagButtons tags={tags} />
-
-        {/* <div className="buttons">
-          {userEmail &&
-            (isLeader || (
-              <button className={isMemberClass} onClick={registerEvent}>
-                {" "}
-                {isMemberText}{" "}
-              </button>
-            ))}
-
-          {isLeader && isMember && (
-            <>
-              <button className={`button is-danger ${!isRecruitingClass}`}>
-                {isRecruitingText}
-              </button>
-
-              <button className={`button is-warning ${isRecruitingClass}`}>
-                {" "}
-                예약하기{" "}
-              </button>
-            </>
-          )}
-        </div> */}
       </div>
     </StyledMain>
   );
