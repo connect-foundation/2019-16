@@ -65,13 +65,19 @@
 ```json
 // 사용자가 존재할 때
 {
-  "userGender": user.gender || null,
-  "userAgeRange": user.ageRange || null,
-  "userLocation": user.location || { "lat": null, "lon": null }
+  userEmail: user.email,
+  userName: user.name,
+  userGender: user.gender,
+  userAgeRange: user.ageRange,
+  userLocation: user.location,
+  profileImage: user.profileImage
 }
 
 // 사용자가 없을 때
 null
+
+// 에러
+res.sendStatus(500);
 ```
 
 #### 2.2 `POST /auth/users/accounts`
@@ -109,6 +115,7 @@ null
 - Res
   - 성공 : `res.sendStatus(200)`
   - 실패 : `res.sendStatus(500)`
+  - 권한 없음 : `res.redirect("http://studycombined.shop/unauthorized")`
 
 
 
