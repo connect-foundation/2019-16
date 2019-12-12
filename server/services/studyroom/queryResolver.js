@@ -34,13 +34,12 @@ async function searchNearbyRooms(params) {
 }
 async function queryResolver(query, params) {
   if (query === "availableRooms") {
-    const studyRooms = await searchNearbyRooms(params);
+    const filteredRooms = await searchNearbyRooms(params);
 
     return {
       method: "GET",
-      curQuery: query,
-      nextQuery: "filterStudyGroup",
-      params: { studyRooms, studyGroup: { ...params } },
+      curQuery: "filterStudyGroup",
+      params: { filteredRooms, studyGroupInfo: { ...params } },
       body: {}
     };
   }

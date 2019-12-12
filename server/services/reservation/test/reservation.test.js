@@ -90,18 +90,13 @@ const testReservations = [
     dates: [
       {
         reservedDate: new Date("2019-12-17"),
-        start: 21,
-        end: 23
-      },
-      {
-        reservedDate: new Date("2019-12-17"),
-        start: 14,
+        start: 15,
         end: 17
       },
       {
         reservedDate: new Date("2019-12-17"),
-        start: 23,
-        end: 25
+        start: 20,
+        end: 23
       },
       {
         reservedDate: new Date("2019-12-20"),
@@ -110,8 +105,8 @@ const testReservations = [
       },
       {
         reservedDate: new Date("2019-12-23"),
-        start: 10,
-        end: 14
+        start: 16,
+        end: 18
       }
     ]
   },
@@ -122,13 +117,13 @@ const testReservations = [
     dates: [
       {
         reservedDate: new Date("2019-12-20"),
-        start: 26,
-        end: 30
+        start: 16,
+        end: 18
       },
       {
         reservedDate: new Date("2019-12-23"),
-        start: 19,
-        end: 23
+        start: 16,
+        end: 18
       }
     ]
   }
@@ -144,135 +139,69 @@ const clearDb = async () => {
 };
 
 beforeAll(async () => {
-  await initializeDb();
+  return await initializeDb();
 });
 
 afterAll(async () => {
-  await clearDb();
+  return await clearDb();
 });
-
-// const _studyGroup = {
-//   _id: studyGroup._id,
-//   dates: [
-//     {
-//       date: new Date("2019-12-20"),
-//       start: 28,
-//       end: 31
-//     },
-//     {
-//       date: new Date("2019-12-23"),
-//       start: 7,
-//       end: 8
-//     }
-//   ]
-// };
-// const studyRooms = [studyRoom, studyRoom2];
-
-// filterStudyGroup({
-//   studyGroup: _studyGroup,
-//   studyRooms
-// }).then(res => {
-//   console.log(res);
-// });
 
 /**
  * filterStudyGroup
  */
 test("filterStudyGroup Test1", async () => {
   const _studyGroup = {
-    _id: studyGroup.id,
-    dates: [
-      {
-        date: new Date("2019-12-17"),
-        start: 11,
-        end: 15
-      },
-      {
-        date: new Date("2019-12-23"),
-        start: 26,
-        end: 28
-      }
-    ]
+    _id: studyGroup._id,
+    dates: {
+      date: [new Date("2019-12-17"), new Date("2019-12-18")],
+      start: 15,
+      end: 16
+    }
   };
   const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
-
-  console.log(result);
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
   expect(result).toEqual([studyRooms[1]]);
 });
 
 test("filterStudyGroup Test2", async () => {
   const _studyGroup = {
     _id: studyGroup._id,
-    dates: [
-      {
-        date: new Date("2019-12-16"),
-        start: 16,
-        end: 18
-      },
-      {
-        date: new Date("2019-12-24"),
-        start: 16,
-        end: 18
-      }
-    ]
+    dates: {
+      date: [new Date("2019-12-17"), new Date("2019-12-18")],
+      start: 16,
+      end: 18
+    }
   };
   const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
-  expect(result).toEqual(studyRooms);
+  expect(result).toEqual([studyRooms[1]]);
 });
 test("filterStudyGroup Test3", async () => {
   const _studyGroup = {
     _id: studyGroup._id,
-    dates: [
-      {
-        date: new Date("2019-12-17"),
-        start: 11,
-        end: 13
-      },
-      {
-        date: new Date("2019-12-23"),
-        start: 16,
-        end: 21
-      }
-    ]
+    dates: {
+      date: [new Date("2019-12-17"), new Date("2019-12-18")],
+      start: 14,
+      end: 18
+    }
   };
   const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
-  expect(result).toEqual([studyRooms[0]]);
+  expect(result).toEqual([studyRooms[1]]);
 });
 test("filterStudyGroup Test", async () => {
   const _studyGroup = {
     _id: studyGroup._id,
-    dates: [
-      {
-        date: new Date("2019-12-17"),
-        start: 15,
-        end: 19
-      },
-      {
-        date: new Date("2019-12-18"),
-        start: 21,
-        end: 22
-      }
-    ]
+    dates: {
+      date: [new Date("2019-12-17"), new Date("2019-12-18")],
+      start: 21,
+      end: 22
+    }
   };
   const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([studyRooms[1]]);
 });
@@ -280,51 +209,14 @@ test("filterStudyGroup Test", async () => {
 test("filterStudyGroup Test4", async () => {
   const _studyGroup = {
     _id: studyGroup._id,
-    dates: [
-      {
-        date: new Date("2019-12-17"),
-        start: 16,
-        end: 18
-      },
-      {
-        date: new Date("2019-12-23"),
-        start: 15,
-        end: 31
-      }
-    ]
+    dates: {
+      date: [new Date("2019-12-17"), new Date("2019-12-20")],
+      start: 16,
+      end: 18
+    }
   };
-
   const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
-
-  expect(result).toEqual([]);
-});
-
-test("filterStudyGroup Test5", async () => {
-  const _studyGroup = {
-    _id: studyGroup._id,
-    dates: [
-      {
-        date: new Date("2019-12-17"),
-        start: 15,
-        end: 18
-      },
-      {
-        date: new Date("2019-12-23"),
-        start: 18,
-        end: 24
-      }
-    ]
-  };
-
-  const studyRooms = [studyRoom, studyRoom2];
-  const result = await filterStudyGroup({
-    studyGroup: _studyGroup,
-    studyRooms
-  });
+  const result = await filterStudyGroup(_studyGroup, studyRooms);
 
   expect(result).toEqual([]);
 });

@@ -1,5 +1,4 @@
 const path = require("path");
-
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
@@ -63,7 +62,7 @@ const authRouter = require("./routes/auth");
 const gatewayLogger = require("./middleware/middleware-logger")(apigateway);
 const searchRouter = require("./routes/search")(apigateway);
 const studyGroupRouter = require("./routes/api/studyGroup")(apigateway);
-const studyRoomRouter = require("./routes/api/studyroom")(apigateway);
+const studyRoomRouter = require("./routes/studyRoom")(apigateway);
 const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
@@ -135,7 +134,20 @@ async function makeAppClient(name) {
         apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
-      () => {},
+      data => {
+        // // data이벤트 함수
+        // if (data.method === "REPLY") {
+        //   apigateway.resMap[data.key].json(data.body);
+        // }
+        // if (data.method === "ERROR") {
+        //   let error = new Error("서비스에서 에러가 발생했습니다.");
+        //   apigateway.resMap[data.key].status(error.status || 500);
+        //   apigateway.resMap[data.key].send(
+        //     error.message || "서비스에서 에러가 발생했습니다."
+        //   );
+        // }
+        // delete apigateway.resMap[data.key];
+      },
       () => {
         apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
