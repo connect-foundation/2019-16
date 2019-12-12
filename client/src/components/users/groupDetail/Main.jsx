@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import styled from "styled-components";
 import classnames from "classnames";
+import Subtitle from "../groupCard/Subtitle";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
@@ -11,7 +12,11 @@ const StyledMain = styled.div`
   width: 100%;
   height: 23rem;
   background-color: whitesmoke;
-  font-family: "Nanum Gothic", sans-serif;
+
+  * {
+    font-family: "Nanum Gothic", sans-serif;
+    font-size: 1rem;
+  }
 
   .imageDiv {
     display: flex;
@@ -28,7 +33,7 @@ const StyledMain = styled.div`
   .content {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-around;
 
     font-weight: bold;
 
@@ -60,12 +65,11 @@ const Main = ({ groupData, dispatch }) => {
     days,
     endTime,
     tags,
+    subtitle,
     min_personnel,
     now_personnel,
     max_personnel,
-    leader,
-    isRecruiting,
-    members
+    leader
   } = groupData;
 
   // const isMember = members.some(memberId => memberId === userEmail);
@@ -94,6 +98,7 @@ const Main = ({ groupData, dispatch }) => {
       </div>
 
       <div className="column content">
+        <Subtitle subtitle={subtitle} />
         <Location location={location} />
 
         <h4>

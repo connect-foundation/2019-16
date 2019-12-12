@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 const StyledIntro = styled.div`
   margin: 0.3rem 0;
-  font-family: "Nanum Gothic", sans-serif;
 
   h3 {
     margin: 2rem 0;
@@ -11,8 +10,9 @@ const StyledIntro = styled.div`
     font-weight: bold;
   }
   .description {
-    font-size: 1.3rem;
-    line-height: 1.5rem;
+    font-family: "Nanum Gothic", sans-serif;
+    font-size: 1.5rem;
+    line-height: 2.7rem;
     padding: 3rem;
     width: 100%;
     background-color: whitesmoke;
@@ -23,7 +23,7 @@ const Intro = ({ intro }) => {
   return (
     <StyledIntro>
       <h3> 스터디 소개 </h3>
-      <div className="description">{intro}</div>
+      <pre className="description">{intro}</pre>
     </StyledIntro>
   );
 };
