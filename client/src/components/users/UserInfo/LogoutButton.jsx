@@ -1,12 +1,13 @@
 import React from "react";
-import { REQUEST_URL } from "../../../config.json";
+import Cookies from "js-cookie";
 
 const LogoutButton = () => {
   return (
     <button
       className="button is-rounded is-warning"
       onClick={() => {
-        window.location.href = `${REQUEST_URL}/auth/users/logout`;
+        Cookies.remove("access_token");
+        window.location.href = "/";
       }}
     >
       로그아웃
