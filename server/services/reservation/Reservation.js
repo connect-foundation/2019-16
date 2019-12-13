@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const mongoose = require("mongoose");
 const App = require("../../lib/tcp/App");
 const { filterStudyGroup } = require("./query/queries");
@@ -20,6 +21,11 @@ mongoose
 const queryMap = {
   filterStudyGroup
 };
+=======
+const App = require("../../lib/tcp/App");
+
+const queryMap = {};
+>>>>>>> ece76e3... feat: reservation class 기본구성
 
 async function doJob(socket, data) {
   const { params, curQuery } = data;
