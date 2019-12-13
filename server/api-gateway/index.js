@@ -2,6 +2,7 @@ const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 const App = require("../lib/tcp/App");
@@ -66,6 +67,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
+server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
 
@@ -77,6 +79,12 @@ server.use(setResponseKey);
 // server.use("/api/search", gatewayLogger, searchRouter);
 
 server.use(gatewayLogger);
+<<<<<<< HEAD
+=======
+
+server.use(require("./middleware/auth/token-parser"));
+server.use("/auth", authRouter);
+>>>>>>> 448dd4a... feat(server/gateway): 들어오는 요청에 대해서 req 객체에 role 필드를 추가하는 미들웨어
 server.use("/api/search", searchRouter);
 server.use("/auth", authRouter);
 server.use("/api/studyGroup", studyGroupRouter);
