@@ -3,9 +3,11 @@ import styled from "styled-components";
 import useWindowSize from "../../lib/useWindowSize";
 import { makeOverlay, markerImage, hoverImage } from "../../lib/kakaoMapUtils";
 import axios from "axios";
-
+import StudyRoomList from "../../components/users/studyRoomList";
+let studyRoomMap;
+let selectedMarker = null;
+let currentOverlay = null;
 const { kakao } = window;
-var bounds = new kakao.maps.LatLngBounds();
 
 const MapView = styled.div`
   position: absolute;
@@ -15,14 +17,10 @@ const MapView = styled.div`
 const MapSidebar = styled.div`
   width: 408px;
   position: absolute;
-  background-color: black;
+  overflow-y: scroll;
 `;
 
 const Reservation = () => {
-  let studyRoomMap;
-  let selectedMarker = null;
-  let currentOverlay = null;
-
   const addMarkerEvent = marker => {
     kakao.maps.event.addListener(marker, "click", function() {
       marker.setImage(hoverImage);
@@ -86,9 +84,10 @@ const Reservation = () => {
   };
 
   const [width, height] = useWindowSize();
-  // const [studyRooms, setStudyRooms] = useState([]);
+  const [studyRooms, setStudyRooms] = useState([]);
 
   useEffect(() => {
+    console.log(`useEffect mount`);
     let el = document.querySelector("#map");
     var options = {
       center: new kakao.maps.LatLng(37.503077, 127.021947),
@@ -106,7 +105,7 @@ const Reservation = () => {
     });
     // axios로 스터디룸 데이터 요청
     axios
-      .post("http://106.10.41.25:8000/api/studyroom/availableRooms", {
+      .post("https://106.10.41.25:8000/api/studyroom/availableRooms", {
         geopoint: { longitude: 127.021947, latitude: 37.503077 },
         personnel: 5,
         startTime: 20,
@@ -120,17 +119,29 @@ const Reservation = () => {
         ]
       })
       .then(res => {
-        const studyRooms = res.data;
-        drawMarker(studyRooms, studyRoomMap);
+        console.log("1", studyRooms);
+        setStudyRooms(res.data);
       })
       .catch(err => {
         console.log("axios err", err);
       });
   }, []);
 
+  useEffect(() => {
+    console.log(`useEffect studyRooms`);
+    if (!studyRoomMap) {
+      console.log(`map is undefined`);
+      return;
+    }
+    console.log("2", studyRooms, studyRoomMap);
+    drawMarker(studyRooms, studyRoomMap);
+  }, [studyRooms]);
+
   return (
     <Fragment>
-      <MapSidebar style={{ height: height - 146 }}></MapSidebar>
+      <MapSidebar style={{ height: height - 146 }}>
+        <StudyRoomList data={studyRooms}></StudyRoomList>
+      </MapSidebar>
       <MapView
         id="map"
         style={{ width: width - 408, height: height - 146 }}
