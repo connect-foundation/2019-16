@@ -12,6 +12,7 @@ const Navbar = styled.div`
   .navbar-start {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     width: 100%;
   }
 
@@ -43,11 +44,7 @@ const StudySearchNavbar = () => {
         role="navigation"
         aria-label="dropdown navigation"
       >
-        <div
-          id="navbarExampleTransparentExample"
-          className="navbar-menu"
-          style={{ width: "100%" }}
-        >
+        <div id="navbarExampleTransparentExample" className="navbar-menu">
           <div className="navbar-start">
             <Link to="/">
               <span className="navbar-item" onClick={searchAllGroups}>

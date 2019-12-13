@@ -2,19 +2,23 @@ import React from "react";
 import styled from "styled-components";
 
 const Thumbnail = styled.div`
-  height: 50%;
+  width: 272px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   overflow: hidden;
+
   img {
-    width: 100%;
-    height: 100%;
     border-top-left-radius: 0.2rem;
     border-top-right-radius: 0.2rem;
   }
 `;
 
-const StudyThumbnail = ({ src, alt }) => (
+const StudyThumbnail = ({ src }) => (
   <Thumbnail>
-    <img src={src} alt={alt} />
+    <img src={src} alt="groupThumbnail" />
   </Thumbnail>
 );
 
