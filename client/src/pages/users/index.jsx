@@ -16,6 +16,7 @@ import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
+import Search from "./search";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
@@ -69,10 +70,7 @@ const UserPage = () => {
     } else {
       getCurrentPosition
         .then(pos => {
-          // const lat = pos.lat;
-          // const lon = pos.lon;
-          const lat = 41.12;
-          const lon = -50.34;
+          const { lat, lon } = pos;
           setUserInfo({ ...userInfo, userLocation: { lat, lon } });
         })
         .catch(console.error);
@@ -91,13 +89,15 @@ const UserPage = () => {
     >
       <div>
         <Notice />
-        <Header />
+        <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
           <Route path="/reservation" component={Reservation} />
+          <Route path="/search/tags" component={Search} />
+          <Route path="/search" component={Search} />
         </Switch>
       </div>
     </UserContext.Provider>
