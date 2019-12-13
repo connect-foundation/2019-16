@@ -32,8 +32,7 @@ const StudySearchNavbar = () => {
   const { primaryCategories, secondaryCategories } = userIndexState;
   const { request } = getApiAxiosState;
   const searchAllGroups = useCallback(() => {
-    // const { lat, lon } = userInfo.userLocation;
-    const { lat, lon } = { lat: 41.12, lon: -50.34 };
+    const { lat, lon } = userInfo.userLocation;
     request("get", `search/all/location/${lat}/${lon}/true`);
   }, [userInfo]);
 
