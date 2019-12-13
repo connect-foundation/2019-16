@@ -26,7 +26,7 @@ export default axiosInstance => {
         })
         .catch(error => {
           setState({ ...state, error, loading: false });
-          throw new Error(error);
+          return error;
         });
     }
   };

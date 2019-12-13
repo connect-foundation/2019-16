@@ -63,8 +63,7 @@ const Header = ({ history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
   const [keyword, setKeyword] = useState("");
 
-  // const { lat, lon} = userInfo.userLocation;
-  const { lat, lon } = { lat: 41.24, lon: -50.34 };
+  const { lat, lon } = userInfo.userLocation;
   const { request } = getApiAxiosState;
 
   const onChange = useCallback(e => {
@@ -79,17 +78,8 @@ const Header = ({ history }) => {
       isTagSearch(keyword)
         ? history.push(`/search/tags?query=${keyword.slice(1)}`)
         : history.push(`/search?query=${keyword}`);
-
-      // isTagSearch(keyword)
-      //   ? request("post", "/search/tags", {
-      //       data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
-      //     })
-      //   : request(
-      //       "get",
-      //       `/search/query/${keyword}/location/${lat}/${lon}/true`
-      //     );
     },
-    [lat, lon, request, keyword],
+    [lat, lon, request, keyword]
   );
 
   return (
