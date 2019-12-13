@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import TextInfo from "./TextInfo";
 
 const Card = styled.div`
   width: 373px;
