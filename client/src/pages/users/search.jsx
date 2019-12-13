@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import queryString from "query-string";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 
 import StudyGroupCard from "../../components/users/groupCard";
 
@@ -62,12 +61,12 @@ const Search = ({ location, match }) => {
     userInfo,
     getApiAxiosState
   } = useContext(UserContext);
-  const { myGroups, searchList } = userIndexState;
-  const { userEmail, userLocation } = userInfo;
+  const { searchList } = userIndexState;
+  const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
-
+  debugger;
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
       request("get", `/search/query/${query}/location/${lat}/${lon}/true`);
