@@ -27,4 +27,4 @@ jobs:
             echo ${{ secrets.DEV_PWD }} | sudo -S git pull
             cd ./client
             npm install
-            echo ${{ secrets.DEV_PWD }} | sudo yarn build && sudo rm -rf ../../build && sudo mv build ../../ && sudo rm -rf node_modules/ package-lock.json
+            echo ${{ secrets.DEV_PWD }} | sudo yarn build && sudo rm -rf ../../build && sudo mv build ../../
