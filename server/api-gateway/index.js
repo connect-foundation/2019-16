@@ -7,7 +7,12 @@ const cors = require("cors");
 const express = require("express");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
-
+const fs = require("fs");
+const https = require("https");
+const options = {
+  key: fs.readFileSync("./keys/"),
+  cert: fs.readFileSync("./keys/")
+};
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
 
@@ -85,7 +90,7 @@ server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
 server.use(writePacket);
 
-server.listen(GATEWAY_EXPRESS_PORT, async () => {
+https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
