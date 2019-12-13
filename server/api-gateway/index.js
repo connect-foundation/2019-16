@@ -10,10 +10,10 @@ const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
 const fs = require("fs");
 const https = require("https");
-const options = {
-  key: fs.readFileSync("./keys/"),
-  cert: fs.readFileSync("./keys/")
-};
+// const options = {
+//   key: fs.readFileSync("./keys/"),
+//   cert: fs.readFileSync("./keys/")
+// };
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
 
@@ -74,7 +74,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
-server.use(express.static(path.join(__dirname, "build")));
+// server.use(express.static(path.join(__dirname, "build")));
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
@@ -92,14 +92,17 @@ server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
 server.use("/api", writePacket);
 
-server.get("/*", function(req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// server.get("/*", function(req, res) {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
-https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
+// https.createServer(server).listen(GATEWAY_EXPRESS_PORT, async () => {
+//   connectToAllApps();
+// });
+
+server.listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
-
 /**
  * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
  */
@@ -114,7 +117,7 @@ async function setResponseKey(req, res, next) {
 function writePacket(req, res, next) {
   try {
     if (req.path !== "/favicon.ico") {
-      const appName = req.path.split("/")[2];
+      const appName = req.path.split("/")[1];
 
       apigateway.appClientMap[appName].write(req.packet);
     }
