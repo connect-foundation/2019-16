@@ -6,7 +6,8 @@ module.exports = function(req, res, next) {
     const role = getRoleFromToken(jwt);
 
     req.role = role;
-  } catch () {
+  } catch (e) {
+    console.error(e);
   } finally {
     next();
   }
