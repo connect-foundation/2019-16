@@ -1,0 +1,38 @@
+$OVERLAY_WIDTH: 400px;
+$OVERLAY_HEIHGT: 195px;
+$BODY_HEIGHT: 145px;
+$BOTTOM_HEIGHT: 45px;
+.overlay {
+  position: absolute;
+  margin: -34px 0 0 -11px;
+  // z-index: 0;
+  left: -($OVERLAY_WIDTH / 2 - 8);
+  top: -($OVERLAY_HEIHGT + 8);
+  display: block;
+  width: $OVERLAY_WIDTH;
+  height: $OVERLAY_HEIHGT;
+
+  .body {
+    padding: 1em;
+    width: 100%;
+    height: $BODY_HEIGHT;
+    background: center / contain no-repeat
+      url(https://user-images.githubusercontent.com/39212304/70638842-e6af6c00-1c7c-11ea-8efc-297a84d1b6da.png);
+    .cafe-name {
+      padding: 0 0 0.2em 0;
+    }
+    .info-and-btn-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+    .reservation-btn {
+      margin: 0 20px 0 0;
+    }
+  }
+  .bottom {
+    width: 100%;
+    height: $BOTTOM_HEIGHT;
+    background: center / contain no-repeat
+      url(https://user-images.githubusercontent.com/39212304/70640087-c2ed2580-1c7e-11ea-852f-ea13c99190a5.png);
+  }
+}

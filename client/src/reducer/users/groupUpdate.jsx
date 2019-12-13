@@ -1,13 +1,14 @@
 import classnames from "classnames";
 
-const CATEGORY_CLICK = "groupCreate/CATEGORY_CLICK";
-const ADD_TAG = "groupCreate/ADD_TAG";
-const CLICK_DAY = "groupCreate/CLICK_DAY";
-const CHANGE_HOUR = "groupCreate/CHANGE_HOUR";
-const CHANGE_DURING = "groupCreate/CHANGE_DURING";
-const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
-const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
-const CHANGE_PERSONNEL = "groupCreate/CHANGE_PERSONNEL";
+const CATEGORY_CLICK = "groupUpdate/CATEGORY_CLICK";
+const ADD_TAG = "groupUpdate/ADD_TAG";
+const CLICK_DAY = "groupUpdate/CLICK_DAY";
+const CHANGE_HOUR = "groupUpdate/CHANGE_HOUR";
+const CHANGE_DURING = "groupUpdate/CHANGE_DURING";
+const INPUT_CONTENT = "groupUpdate/INPUT_CONTENT";
+const ATTACH_IMAGE = "groupUpdate/ATTACH_IMAGE";
+const CHANGE_PERSONNEL = "groupUpdate/CHANGE_PERSONNEL";
+const SET_INITIAL_DATA = "groupUpdate/SET_INITIAL_DATA";
 
 export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
@@ -52,6 +53,11 @@ export const change_personnel = (min_personnel, max_personnel) => ({
   max_personnel
 });
 
+export const set_initial_data = groupData => ({
+  type: SET_INITIAL_DATA,
+  groupData
+});
+
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
 const daysInfo = daysStr.map(str => ({
   isSelected: false,
@@ -87,9 +93,25 @@ export const initialState = {
   }
 };
 
-export const groupCreateReducer = (state, action) => {
+export const groupUpdateReducer = (state, action) => {
   let data = state.data;
   switch (action.type) {
+    case SET_INITIAL_DATA:
+      const { groupData } = action;
+      const initialDays = [...groupData.days];
+
+      data = groupData;
+
+      data.during = groupData.endTime - groupData.startTime;
+      delete data.endTime;
+
+      initialDays.forEach(day => {
+        state.daysInfo[day].isSelected = true;
+        state.daysInfo[day].class = classnames({ "is-focused": true });
+      });
+
+      return { ...state, data };
+
     case CATEGORY_CLICK:
       const { categoryType, categoryName } = action;
       if (categoryType === "primary") {

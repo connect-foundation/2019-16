@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { category_click } from "../../../reducer/users/groupCreate";
 
 const StyledCategory = styled.ul`
   display: flex;
@@ -16,12 +15,15 @@ const StyledCategory = styled.ul`
 `;
 
 const Category = props => {
-  const { categories, dispatch, type } = props;
+  const { categories, onCategoryClick, categoryType } = props;
 
-  const categoryEvent = useCallback(e => {
-    const categoryName = e.target.textContent.trim();
-    dispatch(category_click({ categoryType: type, categoryName }));
-  }, []);
+  const categoryEvent = useCallback(
+    e => {
+      const categoryName = e.target.textContent.trim();
+      onCategoryClick(categoryType, categoryName);
+    },
+    [categoryType, onCategoryClick]
+  );
 
   return (
     <StyledCategory>

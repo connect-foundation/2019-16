@@ -1,10 +1,12 @@
-import React, { useCallback, useReducer, useContext } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useReducer, useContext, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import resizeImage from "../../lib/imageResize";
-import { isProperGroupDataFormat } from "../../lib/utils";
-
 import { REQUEST_URL } from "../../config.json";
+import useAxios from "../../lib/useAxios";
+import imageResize from "../../lib/imageResize";
+import { isURL, isProperGroupDataFormat } from "../../lib/utils";
+
 import Category from "../../components/users/groupCreate/Category";
 import ImageUploader from "../../components/users/groupCreate/ImageUploader";
 import TagInput from "../../components/users/groupCreate/TagInput";
@@ -12,22 +14,22 @@ import ScheduleInput from "../../components/users/groupCreate/ScheduleInput";
 import RangeSlider from "../../components/users/common/RangeSlider";
 import { UserContext } from "./index";
 import {
-  groupCreateReducer,
+  groupUpdateReducer,
   initialState,
   input_content,
   change_personnel,
   category_click,
-  click_day,
   change_hour,
+  click_day,
   change_during,
   add_tag,
+  set_initial_data,
   attach_image
-} from "../../reducer/users/groupCreate";
-import useAxios from "../../lib/useAxios.jsx";
+} from "../../reducer/users/groupUpdate";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
-const StyledGroupCreate = styled.div`
+const StyledGroupUpdate = styled.div`
   width: 60%;
   margin: 2rem auto;
 
@@ -62,24 +64,31 @@ const StyledGroupCreate = styled.div`
   }
 `;
 
-const GroupCreate = ({ history }) => {
+const GroupUpdate = ({ match, history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
   const { userEmail } = userInfo;
+  const { id } = match.params;
 
-  const [state, dispatch] = useReducer(groupCreateReducer, initialState);
+  const [state, dispatch] = useReducer(groupUpdateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
+
   const { category, tags, title, subtitle, intro } = state.data;
 
-  const onCategoryClick = useCallback((categoryType, categoryName) => {
-    dispatch(category_click(categoryType, categoryName));
-  }, []);
-
+  const onAttachImage = useCallback(file => dispatch(attach_image(file)), []);
   const onChangeContent = useCallback(e => {
     const contentType = e.target.name;
     const description = e.target.value;
 
     dispatch(input_content(contentType, description));
+  }, []);
+
+  const onChangeSlider = useCallback((min, max) => {
+    dispatch(change_personnel(min, max));
+  }, []);
+
+  const onCategoryClick = useCallback((categoryType, categoryName) => {
+    dispatch(category_click(categoryType, categoryName));
   }, []);
 
   const onDayDispatch = useCallback(
@@ -89,7 +98,7 @@ const GroupCreate = ({ history }) => {
     },
     []
   );
-  const onAttachImage = useCallback(file => dispatch(attach_image(file)), []);
+
   const onChangeTagInput = useCallback(tagArr => {
     dispatch(add_tag(tagArr));
   }, []);
@@ -110,16 +119,11 @@ const GroupCreate = ({ history }) => {
     dispatch(change_during(during));
   });
 
-  const onChangeSlider = useCallback((min, max) => {
-    dispatch(change_personnel(min, max));
-  }, []);
-
   const onSubmit = useCallback(
     async e => {
       const { data } = state;
       const form = new FormData();
       const image = data.thumbnail;
-      const imageName = image.name;
 
       data.leader = userEmail;
       data.location = { lat: 41.12, lon: -50.34 };
@@ -132,34 +136,48 @@ const GroupCreate = ({ history }) => {
 
       data.days.sort((a, b) => a - b);
 
-      const resizedImage = image && (await resizeImage(image, 272));
+      if (!isURL(image)) {
+        const imageName = image.name;
+        const resizedImage = await imageResize(image, 272, imageName);
+        delete data.thumbnail;
+        form.append("image", resizedImage, ".jpeg");
+      }
 
-      form.append("image", resizedImage, imageName);
       delete data.during;
-      delete data.thumbnail;
-
       form.append("data", JSON.stringify(data));
 
-      request("post", "/studygroup/register", {
+      request("put", "/studygroup/detail", {
         data: form,
         headers: {
           "Content-Type": "multipart/form-data"
         }
       })
-        .then(({ status, id }) => {
-          if (status === 400) return alert("요청 데이터가 잘못됨");
+        .then(data => {
+          const { id, status, reason } = data;
+          if (status === 400) return alert(reason);
           if (status === 200) history.push(`/group/detail/${id}`);
         })
         .catch(err => {
-          alert("서버 에러 발생");
+          alert("에러 발생");
           console.error(err);
         });
     },
     [state, userEmail]
   );
 
+  useEffect(() => {
+    request("get", `/studygroup/detail/${id}`)
+      .then(data => {
+        dispatch(set_initial_data(data));
+      })
+      .catch(err => {
+        console.error(err);
+        alert("요청 에러");
+      });
+  }, []);
+
   return (
-    <StyledGroupCreate>
+    <StyledGroupUpdate>
       <div className="is-centered categories">
         <Category
           categories={primaryCategories}
@@ -193,7 +211,10 @@ const GroupCreate = ({ history }) => {
       />
 
       <div className="introduction">
-        <ImageUploader onAttachImage={onAttachImage} />
+        <ImageUploader
+          thumbnail={state.data.thumbnail}
+          onAttachImage={onAttachImage}
+        />
         <textarea
           className="textarea"
           name="intro"
@@ -207,8 +228,10 @@ const GroupCreate = ({ history }) => {
 
       <ScheduleInput
         daysInfo={daysInfo}
-        onDayDispatch={onDayDispatch}
+        startTime={state.data.startTime}
+        during={state.data.during}
         onTimeDispatch={onTimeDispatch}
+        onDayDispatch={onDayDispatch}
         onChangeDuring={onChangeDuring}
       />
 
@@ -216,14 +239,16 @@ const GroupCreate = ({ history }) => {
         minRange={1}
         maxRange={10}
         step={1}
+        min_personnel={state.data.min_personnel}
+        max_personnel={state.data.max_personnel}
         onChangeSlider={onChangeSlider}
       />
       <button type="submit" className="button" onClick={onSubmit}>
         {" "}
-        등록하기{" "}
+        수정하기{" "}
       </button>
-    </StyledGroupCreate>
+    </StyledGroupUpdate>
   );
 };
 
-export default GroupCreate;
+export default GroupUpdate;
