@@ -1,4 +1,5 @@
-import React, { useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext } from "react";
+import { createBrowserHistory } from "history";
 import styled from "styled-components";
 
 import UserInfo from "./UserInfo";
@@ -58,28 +59,37 @@ const LeftHeader = styled.div`
   }
 `;
 
-const Header = () => {
+const Header = ({ history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
+  const [keyword, setKeyword] = useState("");
+
   // const { lat, lon} = userInfo.userLocation;
   const { lat, lon } = { lat: 41.24, lon: -50.34 };
   const { request } = getApiAxiosState;
-  const onKeyUp = useCallback(
-    e => {
-      const keyword = e.target.value;
 
+  const onChange = useCallback(e => {
+    setKeyword(e.target.value);
+  });
+
+  const onKeyDown = useCallback(
+    e => {
       if (e.key !== "Enter") return;
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
       isTagSearch(keyword)
-        ? request("post", "/search/tags", {
-            data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
-          })
-        : request(
-            "get",
-            `/search/query/${keyword}/location/${lat}/${lon}/true`
-          );
+        ? history.push(`/search/tags?query=${keyword.slice(1)}`)
+        : history.push(`/search?query=${keyword}`);
+
+      // isTagSearch(keyword)
+      //   ? request("post", "/search/tags", {
+      //       data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
+      //     })
+      //   : request(
+      //       "get",
+      //       `/search/query/${keyword}/location/${lat}/${lon}/true`
+      //     );
     },
-    [lat, lon, request]
+    [lat, lon, request, keyword],
   );
 
   return (
@@ -93,12 +103,15 @@ const Header = () => {
               className="logo"
             />
           </a>
+
           <div className={`search-box`}>
             <input
               className="input is-rounded"
               type="text"
               placeholder="스터디그룹 검색"
-              onKeyUp={onKeyUp}
+              value={keyword}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
             />
           </div>
           <StudySearchNavbar />
