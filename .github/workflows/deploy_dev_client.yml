@@ -25,4 +25,5 @@ jobs:
             cd /www/2019-16/client
             echo ${{ secrets.DEV_PWD }} | sudo -S git checkout develop/client
             echo ${{ secrets.DEV_PWD }} | sudo -S git pull
+            echo ${{ secrets.DEV_PWD }} | npm install
             echo ${{ secrets.DEV_PWD }} | sudo yarn build && rm -rf ../server/api-gateway/build && mv build ../server/api-gateway
