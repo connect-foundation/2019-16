@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import styled from "styled-components";
 import useWindowSize from "../../lib/useWindowSize";
 import { makeOverlay, markerImage, hoverImage } from "../../lib/kakaoMapUtils";
+import axios from "axios";
 
 const { kakao } = window;
 var bounds = new kakao.maps.LatLngBounds();
@@ -25,7 +26,13 @@ const Reservation = () => {
   const addMarkerEvent = marker => {
     kakao.maps.event.addListener(marker, "click", function() {
       marker.setImage(hoverImage);
-
+      if (selectedMarker === marker) {
+        marker.setImage(markerImage);
+        currentOverlay.setMap(null);
+        currentOverlay = null;
+        selectedMarker = null;
+        return;
+      }
       if (selectedMarker !== marker) {
         // selectedMarker가 null이 아닌 경우
         if (!!selectedMarker) {
@@ -37,9 +44,10 @@ const Reservation = () => {
         const overlay = makeOverlay(marker);
         overlay.setMap(studyRoomMap);
         currentOverlay = overlay;
+        selectedMarker = marker;
+        studyRoomMap.panTo(marker.getPosition());
+        return;
       }
-      selectedMarker = marker;
-      studyRoomMap.panTo(marker.getPosition());
     });
 
     kakao.maps.event.addListener(marker, "mouseout", function() {
