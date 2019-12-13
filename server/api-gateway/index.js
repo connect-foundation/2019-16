@@ -8,7 +8,12 @@ const cors = require("cors");
 const express = require("express");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
-
+const fs = require("fs");
+const https = require("https");
+const options = {
+  key: fs.readFileSync("./keys/"),
+  cert: fs.readFileSync("./keys/")
+};
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
 
@@ -69,6 +74,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
+server.use(express.static(path.join(__dirname, "build")));
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
@@ -78,15 +84,19 @@ server.use(setResponseKey);
 
 server.use(gatewayLogger);
 
-server.use(require("./middleware/auth/token-parser"));
+// server.use(require("./middleware/auth/token-parser"));
 server.use("/auth", authRouter);
 server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
 server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
-server.use(writePacket);
+server.use("/api", writePacket);
 
-server.listen(GATEWAY_EXPRESS_PORT, async () => {
+server.get("/*", function(req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
