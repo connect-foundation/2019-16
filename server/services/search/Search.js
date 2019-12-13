@@ -36,8 +36,6 @@ function emptyStudyGroupPeriodically(timer) {
 async function doJob(socket, data) {
   const { params, nextQuery } = data;
 
-  this.tcpLogSender(nextQuery);
-
   let replyData;
   let method = "REPLY";
   let params_ = {};
