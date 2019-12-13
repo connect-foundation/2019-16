@@ -45,6 +45,19 @@ class StudyGroup extends App {
         }
         break;
 
+      case "removeGroup":
+        try {
+          const { id } = params;
+          await StudyGroups.findByIdAndDelete(id);
+
+          replyData.method = "REPLY";
+          replyData.body = { status: 200 };
+        } catch (e) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
+        }
+
       default:
         break;
     }

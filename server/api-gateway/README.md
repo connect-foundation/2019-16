@@ -19,20 +19,26 @@
 - Content-type : `application/json`
 - Body
 
-|       Fields       |   Type   |              Description               |                      Example                      |
-| :----------------: | :------: | :------------------------------------: | :-----------------------------------------------: |
-|    `accessToken`    | `String` |         `사용자 access_token`          | `SztNydsasdd3tt4h_dY_tus9D68CJudskajfdsasdftV7Aw` |
-|       `cid`        | `String` |          `가맹점 코드. 10자`           |                   `TC0ONETIME`                    |
-| `partner_order_id` | `String` |     `가맹점 주문번호. 최대 100자`      |                                                   |
-| `partner_user_id`  | `String` |      `가맹점 회원 id. 최대 100자`      |                                                   |
-|    `item_name`     | `String` |          `상품명. 최대 100자`          |      `20191205-20200120 201호 월수 8시-10시`      |
-|     `quantity`     | `Number` |              `상품 수량`               |                        `1`                        |
-|   `total_amount`   | `Number` |              `상품 총액`               |                      `50000`                      |
-| `tax_free_amount`  | `Number` |           `상품 비과세 금액`           |                        `0`                        |
-|   `approval_url`   | `String` | `결제 성공시 redirect url. 최대 255자` | `https://studycombined:8000/api/payment/approval` |
-|    `cancel_url`    | `String` | `결제 취소시 redirect url. 최대 255자` |  `https://studycombined:8000/api/payment/cancel`  |
-|     `fail_url`     | `String` | `결제 실패시 redirect url. 최대 255자` |   `https://studycombined:8000/api/payment/fail`   |
+|       Fields       |   Type   |              Description               |
+| :----------------: | :------: | :------------------------------------: |
+|    `accessToken`    | `String` |         `사용자 access_token`          |
+|       `paymentInfo.cid`       | `String` |          `가맹점 코드. 10자`           |
+| `paymentInfo.partner_order_id` | `String` |     `가맹점 주문번호. 최대 100자`      |
+| `paymentInfo.partner_user_id` | `String` |      `가맹점 회원 id. 최대 100자`      |
+| `paymentInfo.item_name` | `String` |          `상품명. 최대 100자`          |
+|     `paymentInfo.quantity`     | `Number` |              `상품 수량`               |
+|   `paymentInfo.total_amount`   | `Number` |              `상품 총액`               |
+| `paymentInfo.tax_free_amount` | `Number` |           `상품 비과세 금액`           |
+|   `paymentInfo.approval_url`   | `String` | `결제 성공시 redirect url. 최대 255자` |
+|    `paymentInfo.cancel_url`    | `String` | `결제 취소시 redirect url. 최대 255자` |
+|     `paymentInfo.fail_url`     | `String` | `결제 실패시 redirect url. 최대 255자` |
+| `reservationInfo.day` | `Number[]` | 예약 요일 |
+| `reservationInfo.startTime` | `Number[]` | 요일별 시작 시간을 저장 |
+| `reservationInfo.endTime` | `Number[]` | 요일별 끝나는 시간을 저장 |
+| `reservationInfo.roomId` | `ObjectId` | 결제하려는 스터디룸의 id |
+| `reservationInfo.buyerEmail` | `String` | 결제하는 사용자의 이메일 |
 
+- Request Example
 - Res
 
 ## Database Schema

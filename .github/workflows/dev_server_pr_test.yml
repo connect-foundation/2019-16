@@ -1,0 +1,78 @@
+name: PR Test [Develop]
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - develop/server
+
+jobs:
+  TestService:
+    name: Test All Services
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@master
+      - name: run test
+        run: |
+          cd server
+          npm install
+          npm test --detectOpenHandles --forceExit
+        env:
+          GATEWAY_NAME: apigateway
+          GATEWAY_HOST: 127.0.0.1
+          GATEWAY_EXPRESS_PORT: 8000
+          GATEWAY_TCP_PORT: 8001
+          ALM_HOST: 127.0.0.1
+          ALM_PORT: 8100
+          SEARCH_NAME: search
+          SEARCH_HOST: 127.0.0.1
+          SEARCH_PORT: 8002
+          SEARCH_ELASTIC_HOST: 106.10.41.25
+          SEARCH_ELASTIC_PORT: 9200
+          SEARCH_INDEX_STUDYGROUP: test
+          STUDYGROUP_NAME: studygroup
+          STUDYGROUP_HOST: 127.0.0.1
+          STUDYGROUP_PORT: 8003
+          LOG_NAME: log
+          LOG_HOST: 127.0.0.1
+          LOG_PORT: 8004
+          LOG_ELASTIC_HOST: 210.89.189.171
+          LOG_ELASTIC_PORT: 9200
+          RESERVATION_NAME: reservation
+          RESERVATION_HOST: 127.0.0.1
+          RESERVATION_PORT: 8005
+          STUDYROOM_NAME: studyroom
+          STUDYROOM_HOST: 127.0.0.1
+          STUDYROOM_PORT: 8006
+          PAYMENT_NAME: payment
+          PAYMENT_HOST: 127.0.0.1
+          PAYMENT_PORT: 8007
+          ACCOUNTS_MONGO_URL: mongodb://106.10.41.25:8101/Accounts
+          STUDYGROUPS_MONGO_URL: mongodb://106.10.41.25:8102/StudyGroups
+          RESERVATIONS_MONGO_URL: mongodb://106.10.41.25:8104/Reservations
+          STUDYROOMS_MONGO_URL: mongodb://106.10.41.25:8105/StudyRooms
+          PAYMENTS_MONGO_URL: mongodb://106.10.41.25:8106/Payments
+          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      - name: if fail
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const ref = "${{github.ref}}"
+            const pull_number = Number(ref.split("/")[2])
+            await github.pulls.createReview({
+              ...context.repo,
+              pull_number,
+              body:"테스트코드를 다시 확인해주세요. ",
+              event: "REQUEST_CHANGES"
+            })
+            await github.pulls.update({
+              ...context.repo,
+              pull_number,
+              state: "closed"
+            })
+        if: failure()

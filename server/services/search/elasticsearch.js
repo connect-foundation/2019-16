@@ -153,7 +153,7 @@ exports.searchStudyGroupWithCategory = async info => {
           {
             query_string: {
               query: `*${searchWord}*`,
-              fields: ["title", "intro"]
+              fields: ["title", "intro", "subtitle"]
             }
           }
         ],
@@ -207,7 +207,7 @@ exports.tagStudyGroup = async info => {
             }
           }
         ],
-        should: prefixs
+        filter: prefixs
       }
     }
   };
@@ -226,7 +226,7 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => {};
+exports.tagStudyGroupWithCategory = async () => { };
 
 exports.searchAllStudyGroup = async info => {
   const { lat, lon, isRecruit } = info;
@@ -307,6 +307,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
 };
 
 exports.bulkStudyGroups = async groups => {
+
   if (!Array.isArray(groups)) groups = [groups];
   const body = groups.flatMap(group => {
     const objGroup = JSON.parse(group);
