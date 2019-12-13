@@ -126,7 +126,7 @@ const GroupUpdate = ({ match, history }) => {
       const image = data.thumbnail;
 
       data.leader = userEmail;
-      data.location = { lat: 41.12, lon: -50.34 };
+      data.location = userInfo.userLocation;
       data.endTime = data.startTime + data.during;
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
