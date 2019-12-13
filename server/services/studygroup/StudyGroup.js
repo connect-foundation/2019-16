@@ -9,8 +9,6 @@ class StudyGroup extends App {
   async onRead(socket, data) {
     const { params, nextQuery } = data;
 
-    this.tcpLogSender(nextQuery);
-
     let replyData = data;
 
     switch (nextQuery) {
@@ -23,7 +21,7 @@ class StudyGroup extends App {
           await pushStudyGroups(result);
 
           replyData.method = "REPLY";
-          replyData.body = { id: result.id };
+          replyData.body = { status: 200, id: result.id };
         } catch (e) {
           console.error(e);
           replyData.method = "ERROR";
@@ -53,6 +51,23 @@ class StudyGroup extends App {
           replyData.method = "REPLY";
           replyData.body = { status: 200 };
         } catch (e) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
+        }
+        break;
+
+      case "updateGroup":
+        try {
+          const groupData = params;
+          const id = groupData._id;
+
+          delete groupData._id;
+          const result = await StudyGroups.findByIdAndUpdate(id, groupData);
+          console.log(result);
+          replyData.method = "REPLY";
+          replyData.body = { status: 200, id };
+        } catch (err) {
           console.error(e);
           replyData.method = "ERROR";
           replyData.body = e;
