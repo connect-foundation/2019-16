@@ -39,14 +39,15 @@ const Reservation = () => {
 
     kakao.maps.event.addListener(marker, "mouseover", function() {
       marker.setImage(hoverImage);
+      // infowindow.open(studyRoomMap, marker);
     });
   };
 
   const drawMarker = (studyRoomData, map) => {
     const bounds = new kakao.maps.LatLngBounds();
 
-    studyRoomData.forEach(studyRoom => {
-      const location = studyRoom.location.coordinates;
+    studyRoomData.forEach(room => {
+      const location = room.location.coordinates;
       const studyRoomlat = location[1];
       const studyRoomlng = location[0];
       const kakaoPosition = new kakao.maps.LatLng(studyRoomlat, studyRoomlng);
@@ -55,13 +56,12 @@ const Reservation = () => {
       const marker = new kakao.maps.Marker({
         map,
         position: kakaoPosition,
-        title: studyRoom.title,
+        title: room.title,
         image: markerImage
       });
 
-      marker.data = studyRoom;
-
-      addMarkerEvent(marker);
+      room.marker = marker;
+      addMarkerEvent(marker, room);
     });
 
     map.setBounds(bounds);
