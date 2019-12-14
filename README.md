@@ -13,7 +13,7 @@
 
 > ✏ 스터디원을 모집하고 원하는 지역에 이용 가능한 스터디룸을 예약할 수 있도록 검색해주는 플랫폼입니다.
 
-### [🏠 Homepage](http://studycombined.shop) (준비중입니다.)
+### [🏠 Homepage](http://studycombined.shop)
 
 ### [📖 Wiki](https://github.com/connect-foundation/2019-16/wiki)
 
