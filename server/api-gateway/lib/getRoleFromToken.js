@@ -10,6 +10,6 @@ module.exports = function(token) {
 
     return verified.role;
   } catch (e) {
-    console.error("Unverified Token");
+    throw Error("Unverified Token");
   }
 };
