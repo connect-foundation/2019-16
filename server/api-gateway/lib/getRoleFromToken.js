@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = function(token) {
+module.exports = function (token) {
   try {
     const decoded = jwt.decode(token);
     const unverifiedRole = decoded.role;

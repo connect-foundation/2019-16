@@ -1,6 +1,17 @@
 const path = require("path");
 
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
+
+const {
+  GATEWAY_EXPRESS_PORT,
+  GATEWAY_TCP_PORT,
+  GATEWAY_NAME,
+  ACCOUNTS_MONGO_URL,
+  GATEWAY_HOST,
+  HTTPS_PRIVKEY_PATH,
+  HTTPS_CERTKEY_PATH
+} = process.env;
+
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
 const cookieParser = require("cookie-parser");
@@ -11,14 +22,6 @@ const { makeKey } = require("../lib/tcp/util");
 
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
-
-const {
-  GATEWAY_EXPRESS_PORT,
-  GATEWAY_TCP_PORT,
-  GATEWAY_NAME,
-  ACCOUNTS_MONGO_URL,
-  GATEWAY_HOST
-} = process.env;
 
 mongoose
   .connect(ACCOUNTS_MONGO_URL, {
@@ -69,6 +72,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
+server.use(express.static(path.join(__dirname, "build")));
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
@@ -86,7 +90,8 @@ server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
 server.use(writePacket);
 
-server.listen(GATEWAY_EXPRESS_PORT, async () => {
+https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
+
   connectToAllApps();
 });
 
@@ -139,7 +144,7 @@ async function makeAppClient(name) {
         apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
-      () => {},
+      () => { },
       () => {
         apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
