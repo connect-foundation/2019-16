@@ -306,10 +306,11 @@ exports.searchAllStudyGroupWithCategory = async info => {
   return result;
 };
 
-exports.bulkStudyGroups = async groups => {
+exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove) => {
 
-  if (!Array.isArray(groups)) groups = [groups];
-  const body = groups.flatMap(group => {
+  if (!Array.isArray(groupsForAdd)) groupsForAdd = [groupsForAdd];
+
+  const addBody = groupsForAdd.flatMap(group => {
     const objGroup = JSON.parse(group);
     const id = objGroup._id;
 
@@ -320,6 +321,31 @@ exports.bulkStudyGroups = async groups => {
       objGroup
     ];
   });
+
+  const updateBody = groupsForUpdate.flatMap(group => {
+    const objGroup = JSON.parse(group);
+    const id = objGroup._id;
+
+    delete objGroup._id;
+
+    return [
+      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
+      objGroup
+    ];
+  });
+
+  const removeBody = groupsForRemove.flatMap(group => {
+    const objGroup = JSON.parse(group);
+    const id = objGroup._id;
+
+    delete objGroup._id;
+
+    return [
+      { delete: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } }
+    ];
+  });
+
+  const body = addBody.concat(updateBody).concat(removeBody)
 
   const { body: bulkResponse } = await client.bulk({ refresh: true, body });
 
@@ -338,6 +364,6 @@ exports.bulkStudyGroups = async groups => {
         });
       }
     });
-    console.log(erroredDocuments);
+    throw new Error(erroredDocuments)
   }
 };
