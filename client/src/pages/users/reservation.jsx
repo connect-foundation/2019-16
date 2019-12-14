@@ -6,7 +6,8 @@ import {
   markerImage,
   hoverImage,
   mapOptions,
-  setHoverImage
+  setHoverImage,
+  makeOverlay
 } from "../../lib/kakaoMapUtils";
 import StudyRoomList from "../../components/users/studyRoomList";
 const { kakao } = window;
@@ -50,7 +51,30 @@ const Reservation = () => {
     marker.infowindow_over = makeOverListener(studyRoomMap, marker, infowindow);
     marker.infowindow_out = makeOutListener(infowindow);
     kakao.maps.event.addListener(marker, "click", function() {
-      setHoverImage(marker, selectedMarker, currentOverlay, studyRoomMap);
+      // setHoverImage(marker, data, selectedMarker, currentOverlay, studyRoomMap);
+
+      marker.setImage(hoverImage);
+      if (selectedMarker === marker) {
+        marker.setImage(markerImage);
+        currentOverlay.setMap(null);
+        currentOverlay = null;
+        selectedMarker = null;
+        return;
+      }
+      if (selectedMarker !== marker) {
+        // selectedMarker가 null이 아닌 경우
+        if (!!selectedMarker) {
+          selectedMarker.setImage(markerImage);
+          !!currentOverlay && currentOverlay.setMap(null);
+        }
+        marker.setImage(hoverImage);
+        const overlay = makeOverlay(marker, data);
+        overlay.setMap(studyRoomMap);
+        currentOverlay = overlay;
+        selectedMarker = marker;
+        studyRoomMap.panTo(marker.getPosition());
+        return;
+      }
     });
 
     kakao.maps.event.addListener(marker, "mouseout", function() {
@@ -61,8 +85,8 @@ const Reservation = () => {
     });
 
     kakao.maps.event.addListener(marker, "mouseover", function() {
-      marker.setImage(hoverImage);
       infowindow.open(studyRoomMap, marker);
+      marker.setImage(hoverImage);
     });
   };
 
