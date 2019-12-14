@@ -75,7 +75,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
-server.use(express.static(path.join(__dirname, "build")));
+
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
