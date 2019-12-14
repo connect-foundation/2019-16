@@ -27,32 +27,28 @@ jobs:
             })
             if(reviews.data.length <= 0) throw("You need to get other's review!")
             else return true
-  Automerge:
-    name: automerge
+  CheckLabel:
     runs-on: [ubuntu-latest]
     steps:
-      - name: checkout repo
-        uses: actions/checkout@master
-      - name: start merge
-        uses: "pascalgn/automerge-action@733fcc62d711705eae9cd66fcf49c93c1d1a98c6"
-        env:
-          GITHUB_TOKEN: "${{secrets.GITHUB_TOKENS}}"
-          MERGE_LABELS: "automerge"
-          MERGE_COMMIT_MESSAGE: "automatic"
-        # if: success()
-    needs: RunTest
-  SendSlack:
-    name: run slack bot
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@master
-        env:
-          SLACK_MESSAGE: "PR Merge 성공! :rocket:"
-          SLACK_TITLE: Message
-          SLACK_USERNAME: mergeBot
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: 16team
-          SLACK_ICON: http://newsimg.hankookilbo.com/2019/09/30/201909301390722067_1.jpg
-        # if: success()
-    needs: [RunTest, Automerge]
+      - name: GitHub Script
+        uses: actions/github-script@0.3.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            const ref = "${{github.ref}}"
+            const pull_number = Number(ref.split("/")[2])
+            console.log(ref);
+            const pr = await github.pulls.get({
+              ...context.repo,
+              pull_number
+            })
+            const labels = pr.data.labels;
+            console.log(labels);
+            const hasAutomerge = labels.some(label=> label.name === "automerge")
+            console.log("result is", hasAutomerge)
+            if(hasAutomerge){
+              github.pulls.merge({
+                ...context.repo,
+                pull_number
+              })
+            }
