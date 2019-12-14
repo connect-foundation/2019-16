@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useRef, useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import useWindowSize from "../../lib/useWindowSize";
@@ -27,6 +27,7 @@ const MapSidebar = styled.div`
 
 const Reservation = () => {
   const addMarkerEvent = marker => {
+  const mapElement = useRef();
     kakao.maps.event.addListener(marker, "click", function() {
       setHoverImage(marker, selectedMarker, currentOverlay, studyRoomMap);
     });
@@ -70,6 +71,7 @@ const Reservation = () => {
   const [studyRooms, setStudyRooms] = useState([]);
 
   useEffect(() => {
+    studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
       console.log(`map click`);
       if (currentOverlay && selectedMarker) {
@@ -120,6 +122,7 @@ const Reservation = () => {
       </MapSidebar>
       <MapView
         id="map"
+        ref={mapElement}
         style={{ width: width - 408, height: height - 146 }}
       ></MapView>
     </Fragment>
