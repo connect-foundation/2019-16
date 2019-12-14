@@ -98,9 +98,7 @@ https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
-// server.listen(GATEWAY_EXPRESS_PORT, async () => {
-//   connectToAllApps();
-// });
+
 /**
  * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
  */
@@ -150,7 +148,7 @@ async function makeAppClient(name) {
         apigateway.isConnectMap[name] = true;
         console.log(`${name} service connect`);
       },
-      () => {},
+      () => { },
       () => {
         apigateway.isConnectMap[name] = false;
         console.log(`${name} service end`);
