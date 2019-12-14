@@ -49,7 +49,15 @@ const ListCard = ({ data, index }) => {
 
   return (
     <CardBackground className="card-background" onMouseOver={connectWithMarker}>
-      <Card className="card-item">
+      <Card
+        className="card-item"
+        onMouseOver={() => {
+          data.marker.infowindow_over.call();
+        }}
+        onMouseOut={() => {
+          data.marker.infowindow_out.call();
+        }}
+      >
         <div className="card-head">
           <span className="item-index ">{String.fromCharCode(index)}</span>
           <span
