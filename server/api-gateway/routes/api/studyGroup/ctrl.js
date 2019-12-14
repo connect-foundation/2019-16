@@ -17,14 +17,19 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
   next
 ) => {
   const image = req.file;
-
-  if (!image) {
+  const payload = JSON.parse(req.body.data);
+  const { thumbnail } = payload;
+  if (!image && !thumbnail) {
     req.imageLink =
       "https://kr.object.ncloudstorage.com/studycombined/groupImage/no_img.png";
     next();
     return;
   }
-
+  if (!image) {
+    req.imageLink = thumbnail;
+    next();
+    return;
+  }
   const imageSrc = `${path}/${Date.now()}${image.originalname}`;
   const imageLink = bucketLink + imageSrc;
 
@@ -96,6 +101,7 @@ exports.sendDeleteGroupPacket = apigateway => (req, res, next) => {
 
   const packet = makePacket(
     "GET",
+    "apigateway",
     "removeGroup",
     "removeGroup",
     { id },
@@ -107,7 +113,25 @@ exports.sendDeleteGroupPacket = apigateway => (req, res, next) => {
   req.packet = packet;
   next();
 };
+exports.sendUpdateGroupPacket = apigateway => (req, res, next) => {
+  const payload = JSON.parse(req.body.data);
 
+  payload.thumbnail = req.imageLink;
+
+  const packet = makePacket(
+    "POST",
+    "apigateway",
+    "updateGroup",
+    "updateGroup",
+    { ...payload },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
 function validation(data) {
   if (data.category.length !== 2 || data.category.some(v => v === null))
     return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
