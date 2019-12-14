@@ -1,8 +1,13 @@
 import React, { useEffect, useState, Fragment } from "react";
 import styled from "styled-components";
-import useWindowSize from "../../lib/useWindowSize";
-import { makeOverlay, markerImage, hoverImage } from "../../lib/kakaoMapUtils";
 import axios from "axios";
+import useWindowSize from "../../lib/useWindowSize";
+import {
+  markerImage,
+  hoverImage,
+  mapOptions,
+  setHoverImage
+} from "../../lib/kakaoMapUtils";
 import StudyRoomList from "../../components/users/studyRoomList";
 let studyRoomMap;
 let selectedMarker = null;
@@ -23,29 +28,7 @@ const MapSidebar = styled.div`
 const Reservation = () => {
   const addMarkerEvent = marker => {
     kakao.maps.event.addListener(marker, "click", function() {
-      marker.setImage(hoverImage);
-      if (selectedMarker === marker) {
-        marker.setImage(markerImage);
-        currentOverlay.setMap(null);
-        currentOverlay = null;
-        selectedMarker = null;
-        return;
-      }
-      if (selectedMarker !== marker) {
-        // selectedMarker가 null이 아닌 경우
-        if (!!selectedMarker) {
-          selectedMarker.setImage(markerImage);
-          !!currentOverlay && currentOverlay.setMap(null);
-        }
-        marker.setImage(hoverImage);
-
-        const overlay = makeOverlay(marker);
-        overlay.setMap(studyRoomMap);
-        currentOverlay = overlay;
-        selectedMarker = marker;
-        studyRoomMap.panTo(marker.getPosition());
-        return;
-      }
+      setHoverImage(marker, selectedMarker, currentOverlay, studyRoomMap);
     });
 
     kakao.maps.event.addListener(marker, "mouseout", function() {

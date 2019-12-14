@@ -25,4 +25,30 @@ const hoverImage = new kakao.maps.MarkerImage(
   new kakao.maps.Size(34, 45)
 );
 
-export { makeOverlay, markerImage, hoverImage };
+function setHoverImage(marker, selectedMarker, currentOverlay, map) {
+  marker.setImage(hoverImage);
+  if (selectedMarker === marker) {
+    marker.setImage(markerImage);
+    currentOverlay.setMap(null);
+    currentOverlay = null;
+    selectedMarker = null;
+    return;
+  }
+  if (selectedMarker !== marker) {
+    // selectedMarker가 null이 아닌 경우
+    if (!!selectedMarker) {
+      selectedMarker.setImage(markerImage);
+      !!currentOverlay && currentOverlay.setMap(null);
+    }
+    marker.setImage(hoverImage);
+
+    const overlay = makeOverlay(marker);
+    overlay.setMap(map);
+    currentOverlay = overlay;
+    selectedMarker = marker;
+    map.panTo(marker.getPosition());
+    return;
+  }
+}
+
+export { makeOverlay, markerImage, hoverImage, mapOptions, setHoverImage };
