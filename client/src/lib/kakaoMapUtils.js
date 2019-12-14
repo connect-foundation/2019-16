@@ -3,6 +3,11 @@ import CustomOverlay from "../components/users/customOverlay/";
 import { renderToString } from "react-dom/server";
 const { kakao } = window;
 
+const mapOptions = {
+  center: new kakao.maps.LatLng(37.503077, 127.021947),
+  level: 3
+};
+
 const makeOverlay = marker => {
   const content = renderToString(
     <CustomOverlay data={marker.data}></CustomOverlay>

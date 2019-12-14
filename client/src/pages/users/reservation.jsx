@@ -70,13 +70,6 @@ const Reservation = () => {
   const [studyRooms, setStudyRooms] = useState([]);
 
   useEffect(() => {
-    console.log(`useEffect mount`);
-    let el = document.querySelector("#map");
-    var options = {
-      center: new kakao.maps.LatLng(37.503077, 127.021947),
-      level: 3
-    };
-    studyRoomMap = new kakao.maps.Map(el, options);
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
       console.log(`map click`);
       if (currentOverlay && selectedMarker) {
