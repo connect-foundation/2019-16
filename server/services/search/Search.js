@@ -1,5 +1,5 @@
 const App = require("../../lib/tcp/App");
-const { popStudyGroups, getStudyGroupsLength } = require("../../lib/redis/studygroup");
+const { popStudyGroups, getStudyGroupsLength, emptyStudyGroups } = require("../../lib/redis/studygroup");
 
 const {
   searchAllStudyGroupWithCategory,
@@ -28,8 +28,17 @@ function emptyStudyGroupPeriodically(timer) {
     const groupsForUpdate = await popStudyGroups("update", 1000);
     const groupsForRemove = await popStudyGroups("remove", 1000);
 
-    if (groupsForAdd.length !== 0 || groupsForUpdate.length !== 0 || groupsForRemove.length !== 0)
-      bulkStudyGroups(groupsForAdd, groupsForUpdate, groupsForRemove);
+    if (groupsForAdd.length !== 0 || groupsForUpdate.length !== 0 || groupsForRemove.length !== 0) {
+      try {
+        await bulkStudyGroups(groupsForAdd, groupsForUpdate, groupsForRemove);
+        emptyStudyGroups("add", 1000)
+        emptyStudyGroups("update", 1000)
+        emptyStudyGroups("remove", 1000)
+      } catch{
+        console.log(e)
+      }
+    }
+
     let len = await getStudyGroupsLength("add") + await getStudyGroupsLength("update") + await getStudyGroupsLength("remove");
 
     if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
