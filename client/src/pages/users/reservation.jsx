@@ -73,7 +73,6 @@ const Reservation = () => {
   useEffect(() => {
     studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
-      console.log(`map click`);
       if (currentOverlay && selectedMarker) {
         currentOverlay.setMap(null);
         selectedMarker.setImage(markerImage);
@@ -97,7 +96,6 @@ const Reservation = () => {
         ]
       })
       .then(res => {
-        console.log("1", studyRooms);
         setStudyRooms(res.data);
       })
       .catch(err => {
@@ -106,12 +104,8 @@ const Reservation = () => {
   }, []);
 
   useEffect(() => {
-    console.log(`useEffect studyRooms`);
-    if (!studyRoomMap) {
-      console.log(`map is undefined`);
-      return;
-    }
-    console.log("2", studyRooms, studyRoomMap);
+    if (!studyRoomMap) return;
+
     drawMarker(studyRooms, studyRoomMap);
   }, [studyRooms]);
 
