@@ -6,9 +6,9 @@ module.exports = function(req, res, next) {
     const role = getRoleFromToken(jwt);
 
     req.role = role;
-    next();
   } catch (e) {
     console.error(e);
-    res.redirect("http://studycombined.shop/unauthorized");
+  } finally {
+    next();
   }
 };

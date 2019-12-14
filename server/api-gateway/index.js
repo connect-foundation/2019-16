@@ -1,6 +1,17 @@
 const path = require("path");
 
 require("dotenv").config({ path: path.join(__dirname, "/../.env") });
+
+const {
+  GATEWAY_EXPRESS_PORT,
+  GATEWAY_TCP_PORT,
+  GATEWAY_NAME,
+  ACCOUNTS_MONGO_URL,
+  GATEWAY_HOST,
+  HTTPS_PRIVKEY_PATH,
+  HTTPS_CERTKEY_PATH
+} = process.env;
+
 const mongoose = require("mongoose");
 const favicon = require("express-favicon");
 const cookieParser = require("cookie-parser");
@@ -8,17 +19,14 @@ const cors = require("cors");
 const express = require("express");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
-
+const fs = require("fs");
+const https = require("https");
+const options = {
+  key: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_PRIVKEY_PATH}`)),
+  cert: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_CERTKEY_PATH}`))
+};
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
-
-const {
-  GATEWAY_EXPRESS_PORT,
-  GATEWAY_TCP_PORT,
-  GATEWAY_NAME,
-  ACCOUNTS_MONGO_URL,
-  GATEWAY_HOST
-} = process.env;
 
 mongoose
   .connect(ACCOUNTS_MONGO_URL, {
@@ -84,12 +92,15 @@ server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
 server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
-server.use(writePacket);
+server.use("/api", writePacket);
 
-server.listen(GATEWAY_EXPRESS_PORT, async () => {
+https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
   connectToAllApps();
 });
 
+// server.listen(GATEWAY_EXPRESS_PORT, async () => {
+//   connectToAllApps();
+// });
 /**
  * 연결 가능한 모든 서비스들에 대한 tcp 클라이언트 생성
  */
@@ -104,7 +115,7 @@ async function setResponseKey(req, res, next) {
 function writePacket(req, res, next) {
   try {
     if (req.path !== "/favicon.ico") {
-      const appName = req.path.split("/")[2];
+      const appName = req.path.split("/")[1];
 
       apigateway.appClientMap[appName].write(req.packet);
     }
