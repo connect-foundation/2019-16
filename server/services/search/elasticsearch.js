@@ -308,8 +308,6 @@ exports.searchAllStudyGroupWithCategory = async info => {
 
 exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove) => {
 
-  if (!Array.isArray(groupsForAdd)) groupsForAdd = [groupsForAdd];
-
   const addBody = groupsForAdd.flatMap(group => {
     const objGroup = JSON.parse(group);
     const id = objGroup._id;
@@ -364,6 +362,7 @@ exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove)
         });
       }
     });
-    throw new Error(erroredDocuments)
+    // return new Promise((res, rej) => { rej(erroredDocuments) })
+    throw new Error(erroredDocuments.toString())
   }
 };
