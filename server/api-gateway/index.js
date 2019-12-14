@@ -20,6 +20,13 @@ const express = require("express");
 const App = require("../lib/tcp/App");
 const { makeKey } = require("../lib/tcp/util");
 
+const fs = require("fs");
+const https = require("https");
+const options = {
+  key: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_PRIVKEY_PATH}`)),
+  cert: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_CERTKEY_PATH}`))
+};
+
 const server = express();
 const { makeLogSender } = require("../lib/tcp/logUtils");
 
@@ -72,7 +79,7 @@ const apiRouter = require("./routes/api");
 
 apigateway.connectToLogService();
 
-server.use(express.static(path.join(__dirname, "build")));
+
 server.use(cookieParser());
 server.use(express.json());
 server.use(cors());
@@ -88,7 +95,7 @@ server.use("/api/search", searchRouter);
 server.use("/api/studygroup", studyGroupRouter);
 server.use("/api/studyroom", studyRoomRouter);
 server.use("/api", apiRouter);
-server.use(writePacket);
+server.use("/api", writePacket);
 
 https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
 
@@ -109,7 +116,7 @@ async function setResponseKey(req, res, next) {
 function writePacket(req, res, next) {
   try {
     if (req.path !== "/favicon.ico") {
-      const appName = req.path.split("/")[2];
+      const appName = req.path.split("/")[1];
 
       apigateway.appClientMap[appName].write(req.packet);
     }
