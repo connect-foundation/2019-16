@@ -44,7 +44,7 @@ const Reservation = () => {
 
   const addMarkerEvent = (marker, data) => {
     const infowindow = new kakao.maps.InfoWindow({
-      content: data["cafe_name"] // 인포윈도우에 표시할 내용
+      content: data["cafe_name"]
     });
 
     marker.infowindow_over = makeOverListener(studyRoomMap, marker, infowindow);
@@ -54,13 +54,15 @@ const Reservation = () => {
     });
 
     kakao.maps.event.addListener(marker, "mouseout", function() {
-      if (!selectedMarker || selectedMarker !== marker)
+      if (!selectedMarker || selectedMarker !== marker) {
         marker.setImage(markerImage);
+      }
+      infowindow.close();
     });
 
     kakao.maps.event.addListener(marker, "mouseover", function() {
       marker.setImage(hoverImage);
-      // infowindow.open(studyRoomMap, marker);
+      infowindow.open(studyRoomMap, marker);
     });
   };
 
