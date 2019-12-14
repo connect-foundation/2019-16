@@ -9,10 +9,8 @@ import {
   setHoverImage
 } from "../../lib/kakaoMapUtils";
 import StudyRoomList from "../../components/users/studyRoomList";
-let studyRoomMap;
-let selectedMarker = null;
-let currentOverlay = null;
 const { kakao } = window;
+let studyRoomMap;
 
 const MapView = styled.div`
   position: absolute;
@@ -25,9 +23,32 @@ const MapSidebar = styled.div`
   overflow-y: scroll;
 `;
 
+function makeOverListener(map, marker, infowindow) {
+  return function() {
+    infowindow.open(map, marker);
+  };
+}
+function makeOutListener(infowindow) {
+  return function() {
+    infowindow.close();
+  };
+}
+
 const Reservation = () => {
-  const addMarkerEvent = marker => {
   const mapElement = useRef();
+  let selectedMarker = null;
+  let currentOverlay = null;
+
+  const [width, height] = useWindowSize();
+  const [studyRooms, setStudyRooms] = useState([]);
+
+  const addMarkerEvent = (marker, data) => {
+    const infowindow = new kakao.maps.InfoWindow({
+      content: data["cafe_name"] // 인포윈도우에 표시할 내용
+    });
+
+    marker.infowindow_over = makeOverListener(studyRoomMap, marker, infowindow);
+    marker.infowindow_out = makeOutListener(infowindow);
     kakao.maps.event.addListener(marker, "click", function() {
       setHoverImage(marker, selectedMarker, currentOverlay, studyRoomMap);
     });
@@ -66,9 +87,6 @@ const Reservation = () => {
 
     map.setBounds(bounds);
   };
-
-  const [width, height] = useWindowSize();
-  const [studyRooms, setStudyRooms] = useState([]);
 
   useEffect(() => {
     studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
