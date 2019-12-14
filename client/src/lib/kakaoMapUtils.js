@@ -8,10 +8,8 @@ const mapOptions = {
   level: 3
 };
 
-const makeOverlay = marker => {
-  const content = renderToString(
-    <CustomOverlay data={marker.data}></CustomOverlay>
-  );
+const makeOverlay = (marker, data) => {
+  const content = renderToString(<CustomOverlay data={data}></CustomOverlay>);
 
   const overlay = new kakao.maps.CustomOverlay({
     position: marker.getPosition(),
@@ -30,7 +28,7 @@ const hoverImage = new kakao.maps.MarkerImage(
   new kakao.maps.Size(34, 45)
 );
 
-function setHoverImage(marker, selectedMarker, currentOverlay, map) {
+function setHoverImage(marker, data, selectedMarker, currentOverlay, map) {
   marker.setImage(hoverImage);
   if (selectedMarker === marker) {
     marker.setImage(markerImage);
@@ -46,8 +44,7 @@ function setHoverImage(marker, selectedMarker, currentOverlay, map) {
       !!currentOverlay && currentOverlay.setMap(null);
     }
     marker.setImage(hoverImage);
-
-    const overlay = makeOverlay(marker);
+    const overlay = makeOverlay(marker, data);
     overlay.setMap(map);
     currentOverlay = overlay;
     selectedMarker = marker;
