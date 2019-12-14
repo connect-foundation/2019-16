@@ -7,8 +7,7 @@ const {
   uploadToImage,
   sendGroupCreationPacket,
   sendGetGroupDetailPacket,
-  sendDeleteGroupPacket,
-  sendUpdateGroupPacket
+  sendDeleteGroupPacket
 } = require("./ctrl");
 
 const {
@@ -36,13 +35,6 @@ module.exports = function(apigateway) {
   );
 
   router.get("/detail/:id", sendGetGroupDetailPacket(apigateway));
-  router.put(
-    "/detail",
-    upload.single("image"),
-    registerValidation,
-    uploadToImage(studyCombinedStorage, "groupImage", bucketName, bucketLink),
-    sendUpdateGroupPacket(apigateway)
-  );
   router.delete("/detail/:id", sendDeleteGroupPacket(apigateway));
 
   return router;

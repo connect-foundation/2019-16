@@ -25,7 +25,7 @@ jobs:
             cd /www/2019-16/server
             echo ${{ secrets.DEV_PWD }} | sudo -S git checkout develop/server
             echo ${{ secrets.DEV_PWD }} | sudo -S git pull
-            echo ${{ secrets.DEV_PWD }} | sudo -S pm2 delete api-gateway applistmanager logs search studygroup studyroom reservation
+            echo ${{ secrets.DEV_PWD }} | sudo -S pm2 delete api-gateway applistmanager logs search studygroup studyroom
             echo ${{ secrets.DEV_PWD }} | sudo -S sh startServices_deploy_ver.sh
           # key: ${{ secrets.KEY }}
 
