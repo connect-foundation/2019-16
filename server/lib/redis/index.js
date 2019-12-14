@@ -1,6 +1,6 @@
 const { client, multi } = require("./client");
 
-exports.returnRedisPromise = (command, ...params) => {
+function returnRedisPromise(command, ...params) {
   return new Promise((res, rej) => {
     client[command](...params, (err, reply) => {
       if (err) rej(err);
