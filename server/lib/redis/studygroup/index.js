@@ -1,4 +1,13 @@
-const { returnRedisPromise } = require("../index");
+const { client, multi } = require("../client");
+
+function returnRedisPromise(command, ...params) {
+    return new Promise((res, rej) => {
+        client[command](...params, (err, reply) => {
+            if (err) rej(err);
+            res(reply);
+        });
+    });
+};
 
 exports.pushStudyGroups = studyGroup => {
     return returnRedisPromise("rpush", "studygroup:add", JSON.stringify(studyGroup));
@@ -20,12 +29,14 @@ exports.popStudyGroups = async (command, count) => {
             res([]);
         });
     }
-
-    returnRedisPromise("ltrim", `studygroup:${command}`, count - 1, -1);
     return new Promise(res => {
         res(groups);
     });
 };
+
+exports.emptyStudyGroups = async (command, count) => {
+    return returnRedisPromise("ltrim", `studygroup:${command}`, count - 1, -1);
+}
 
 exports.getStudyGroupsLength = async (command) => {
     return returnRedisPromise("llen", `studygroup:${command}`);
