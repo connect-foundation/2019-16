@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useCallback, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
@@ -65,6 +65,8 @@ const Main = styled.div`
   }
 `;
 
+const takeCardAmount = 15;
+
 const MainPage = () => {
   const {
     userIndexState,
@@ -73,10 +75,66 @@ const MainPage = () => {
     getApiAxiosState
   } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
+  const [scrollState, setScrollState] = useState({
+    loading: false,
+    curLastIndex: takeCardAmount - 1,
+    isLastItems: false
+  });
   const { userEmail, userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
+
+  const infiniteScroll = useCallback(() => {
+    if (scrollState.loading) return;
+    if (scrollState.isLastItems) return;
+
+    const scrollHeight = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight
+    );
+    const scrollTop = Math.max(
+      document.documentElement.scrollTop,
+      document.body.scrollTop
+    );
+    const clientHeight = document.documentElement.clientHeight;
+
+    if (scrollTop + clientHeight + 1 >= scrollHeight) {
+      // setScrollState({...scrollState, loading: true});
+      // axios
+      //   .get(`${REQUEST_URL}/api/search.../${scrollState.curLastIndex + 1}`)
+      //   .then(({ data }) => {
+      //     const { takenGroups } = data;
+      //     const { curLastIndex } = scrollState;
+      //     const takenLength = takenGroups.length || 0;
+      //     const changedScrollState = {
+      //       isLastItems: false,
+      //       curLastIndex: curLastIndex + takenLength,
+      //       loading: false
+      //     };
+      //     if (!takenGroups || !takenLength || takenLength < takeCardAmount)
+      //       changedScrollState.isLastItems = true;
+      //     dispatch(
+      //       set_additional_groups(
+      //         takenGroups,
+      //         setScrollState,
+      //         changedScrollState
+      //       )
+      //     );
+      //     // 다음 15개 가져오기 axios 후, then에서 가져온 데이터 data를
+      //     // state 리스트에 합쳐서 dispatch
+      //     // setScrollState로 curLastIndex를 +15해서 변경
+      //     // 가져온 데이터가 마지막일 경우 isLastItems를 true로 변경
+      //   });
+    }
+  }, [scrollState]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", infiniteScroll);
+    return () => {
+      window.removeEventListener("scroll", infiniteScroll);
+    };
+  }, []);
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
@@ -84,8 +142,18 @@ const MainPage = () => {
   }, [userLocation]);
 
   useEffect(() => {
-    isHaveCardDataWhenLoaded(loading, data) &&
-      userIndexDispatch(set_groups(data));
+    if (!isHaveCardDataWhenLoaded(loading, data)) return;
+
+    userIndexDispatch(set_groups(data));
+    if (data.length < takeCardAmount) {
+      setScrollState({
+        ...scrollState,
+        curLastIndex: data.length - 1,
+        isLastItems: true
+      });
+      return;
+    }
+    setScrollState({ ...scrollState, curLastIndex: data.length - 1 });
   }, [data]);
 
   return (
