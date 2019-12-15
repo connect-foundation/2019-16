@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import TextInfo from "./TextInfo";
 
@@ -43,20 +43,20 @@ const Card = styled.div`
   }
 `;
 
-const connectWithMarker = () => {};
 const ListCard = ({ data, index }) => {
   const { images, cafe_name } = data;
-
+  const openInfowindow = useCallback(() => {
+    data.marker.infowindow_over.call();
+  }, []);
+  const closeInfowindow = useCallback(() => {
+    data.marker.infowindow_out.call();
+  }, []);
   return (
-    <CardBackground className="card-background" onMouseOver={connectWithMarker}>
+    <CardBackground className="card-background">
       <Card
         className="card-item"
-        onMouseOver={() => {
-          data.marker.infowindow_over.call();
-        }}
-        onMouseOut={() => {
-          data.marker.infowindow_out.call();
-        }}
+        onMouseOver={openInfowindow}
+        onMouseOut={closeInfowindow}
       >
         <div className="card-head">
           <span className="item-index ">{String.fromCharCode(index)}</span>
