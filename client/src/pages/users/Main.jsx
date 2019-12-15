@@ -65,7 +65,7 @@ const Main = styled.div`
   }
 `;
 
-const takeCardAmount = 15;
+const takeCardAmount = 21;
 
 const MainPage = () => {
   const {
@@ -77,7 +77,7 @@ const MainPage = () => {
   const { myGroups, searchList } = userIndexState;
   const [scrollState, setScrollState] = useState({
     loading: false,
-    curLastIndex: takeCardAmount - 1,
+    curLastIndex: 0,
     isLastItems: false
   });
   const { userEmail, userLocation } = userInfo;
@@ -102,18 +102,19 @@ const MainPage = () => {
     if (scrollTop + clientHeight + 1 >= scrollHeight) {
       // setScrollState({...scrollState, loading: true});
       // axios
-      //   .get(`${REQUEST_URL}/api/search.../${scrollState.curLastIndex + 1}`)
+      //   .get(`${REQUEST_URL}/api/search.../${scrollState.curLastIndex}`)
       //   .then(({ data }) => {
       //     const { takenGroups } = data;
       //     const { curLastIndex } = scrollState;
       //     const takenLength = takenGroups.length || 0;
       //     const changedScrollState = {
       //       isLastItems: false,
-      //       curLastIndex: curLastIndex + takenLength,
+      //       curLastIndex: curLastIndex + 1,
       //       loading: false
       //     };
       //     if (!takenGroups || !takenLength || takenLength < takeCardAmount)
       //       changedScrollState.isLastItems = true;
+
       //     dispatch(
       //       set_additional_groups(
       //         takenGroups,
@@ -138,7 +139,7 @@ const MainPage = () => {
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
-      request("get", `/search/all/location/${lat}/${lon}/true`);
+      // request("get", `/search/all/location/${lat}/${lon}/true`);
   }, [userLocation]);
 
   useEffect(() => {
@@ -153,7 +154,8 @@ const MainPage = () => {
       });
       return;
     }
-    setScrollState({ ...scrollState, curLastIndex: data.length - 1 });
+    setScrollState((prev))
+    setScrollState({ ...scrollState, curLastIndex: cur + 1 });
   }, [data]);
 
   return (
