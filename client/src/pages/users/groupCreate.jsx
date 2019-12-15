@@ -119,7 +119,7 @@ const GroupCreate = ({ history }) => {
       const { data } = state;
       const form = new FormData();
       const image = data.thumbnail;
-      const imageName = image.name;
+      const imageName = image && image.name;
 
       data.leader = userEmail;
       data.location = userInfo.userLocation;
@@ -134,7 +134,7 @@ const GroupCreate = ({ history }) => {
 
       const resizedImage = image && (await resizeImage(image, 272));
 
-      form.append("image", resizedImage, imageName);
+      image && form.append("image", resizedImage, imageName);
       delete data.during;
       delete data.thumbnail;
 
