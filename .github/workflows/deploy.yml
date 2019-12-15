@@ -1,0 +1,45 @@
+name: SERVER DEPLOY
+
+on:
+  push:
+    branches:
+      - develop/server
+
+jobs:
+  DetectMerged:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Setup Node.js for use with actions
+        uses: actions/setup-node@v1.1.0
+        with:
+          version: 12.x
+      - name: ssh 접속
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
+          password: ${{ secrets.DEV_PWD }}
+          port: ${{ secrets.DEV_PORT }}
+          script: |
+            echo ifconfig
+            cd /www/2019-16/server
+            echo ${{ secrets.DEV_PWD }} | sudo -S git checkout develop/server
+            echo ${{ secrets.DEV_PWD }} | sudo -S git pull
+            echo ${{ secrets.DEV_PWD }} | sudo -S pm2 delete api-gateway applistmanager logs search studygroup studyroom reservation
+            echo ${{ secrets.DEV_PWD }} | sudo -S sh startServices_deploy_ver.sh
+          # key: ${{ secrets.KEY }}
+
+#      - name: ssh 접속
+#       env:
+#          DEV_HOST: ${{ secrets.DEV_HOST }}
+#          DEV_PORT: ${{ secrets.DEV_PORT }}
+#          DEV_PWD: ${{ secrets.DEV_PWD }}
+#          DEV_USER: ${{ secrets.DEV_USER }}
+#        run: |
+#          ifconfig
+#          ip addr | grep "inet "
+#          sudo apt-get install expect
+#          echo user: $DEV_USER / port: $DEV_PORT / host: $DEV_HOST / pwd: $DEV_PWD
+#          ssh -t -t -l $DEV_USER -p $DEV_PORT $DEV_HOST
+#          expect "assword:"
+#
