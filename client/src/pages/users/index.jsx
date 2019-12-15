@@ -37,7 +37,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     kakaoAccessToken: "",
-    userEmail: "",
+    userEmail: "dlatns0201@naver.com",
     userName: "",
     userAgeRange: null,
     userGender: "",
