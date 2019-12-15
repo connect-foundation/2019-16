@@ -5,16 +5,16 @@ const { makePacket } = require("../../lib/tcp/util");
 
 module.exports = function(apigateway) {
   router.get(
-    "/query/:searchWord/location/:lat/:lon/:isRecruit",
+    "/query/:searchWord/location/:lat/:lon/page/:page/:isRecruit",
     async (req, res, next) => {
-      const { searchWord, lat, lon, isRecruit = true } = req.params;
+      const { searchWord, lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
         "POST",
+        "apigateway",
         "searchStudyGroup",
         "searchStudyGroup",
-        "searchStudyGroup",
-        { searchWord, lat, lon, isRecruit },
+        { searchWord, lat, lon, page, isRecruit },
         {},
         req.resKey,
         apigateway.context
@@ -24,16 +24,16 @@ module.exports = function(apigateway) {
   );
 
   router.get(
-    "/query/:searchWord/category/:category/location/:lat/:lon/:isRecruit",
+    "/query/:searchWord/category/:category/location/:lat/:lon/page/:page/:isRecruit",
     async (req, res, next) => {
-      const { searchWord, category, lat, lon, isRecruit } = req.params;
+      const { searchWord, category, lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
         "POST",
+        "apigateway",
         "searchStudyGroupWithCategory",
         "searchStudyGroupWithCategory",
-        "searchStudyGroupWithCategory",
-        { searchWord, category, lat, lon, isRecruit },
+        { searchWord, category, lat, lon, page, isRecruit },
         {},
         req.resKey,
         apigateway.context
@@ -44,15 +44,15 @@ module.exports = function(apigateway) {
   );
 
   router.post("/tags", async (req, res, next) => {
-    const { tags, category, lat, lon, isRecruit } = req.body;
+    const { tags, category, lat, lon, page, isRecruit } = req.body;
 
     if (category === undefined)
       req.packet = makePacket(
         "POST",
+        "apigateway",
         "tagStudyGroup",
         "tagStudyGroup",
-        "tagStudyGroup",
-        { tags, lat, lon, isRecruit },
+        { tags, lat, lon, page, isRecruit },
         {},
         req.resKey,
         apigateway.context
@@ -61,10 +61,10 @@ module.exports = function(apigateway) {
     if (category !== undefined)
       req.packet = makePacket(
         "POST",
+        "apigateway",
         "tagStudyGroupWithCategory",
         "tagStudyGroupWithCategory",
-        "tagStudyGroupWithCategory",
-        { tags, isRecruit, lat, lon, category },
+        { tags, isRecruit, lat, lon, page, category },
         {},
         req.resKey,
         apigateway.context
@@ -73,34 +73,37 @@ module.exports = function(apigateway) {
     next();
   });
 
-  router.get("/all/location/:lat/:lon/:isRecruit", async (req, res, next) => {
-    const { lat, lon, isRecruit } = req.params;
-
-    req.packet = makePacket(
-      "POST",
-      "searchAllStudyGroup",
-      "searchAllStudyGroup",
-      "searchAllStudyGroup",
-      { lat, lon, isRecruit },
-      {},
-      req.resKey,
-      apigateway.context
-    );
-
-    next();
-  });
-
   router.get(
-    "/all/category/:category/location/:lat/:lon/:isRecruit",
+    "/all/location/:lat/:lon/page/:page/:isRecruit",
     async (req, res, next) => {
-      const { category, lat, lon, isRecruit } = req.params;
+      const { lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
         "POST",
+        "apigateway",
+        "searchAllStudyGroup",
+        "searchAllStudyGroup",
+        { lat, lon, page, isRecruit },
+        {},
+        req.resKey,
+        apigateway.context
+      );
+
+      next();
+    }
+  );
+
+  router.get(
+    "/all/category/:category/location/:lat/:lon/page/:page/:isRecruit",
+    async (req, res, next) => {
+      const { category, lat, lon, page, isRecruit } = req.params;
+
+      req.packet = makePacket(
+        "POST",
+        "apigateway",
         "searchAllStudyGroupWithCategory",
         "searchAllStudyGroupWithCategory",
-        "searchAllStudyGroupWithCategory",
-        { category, lat, lon, isRecruit },
+        { category, lat, lon, page, isRecruit },
         {},
         req.resKey,
         apigateway.context
