@@ -114,7 +114,6 @@ const MainPage = () => {
       //     };
       //     if (!takenGroups || !takenLength || takenLength < takeCardAmount)
       //       changedScrollState.isLastItems = true;
-
       //     dispatch(
       //       set_additional_groups(
       //         takenGroups,
@@ -139,7 +138,7 @@ const MainPage = () => {
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
-      // request("get", `/search/all/location/${lat}/${lon}/true`);
+      request("get", `/search/all/location/${lat}/${lon}/true`);
   }, [userLocation]);
 
   useEffect(() => {
@@ -154,8 +153,10 @@ const MainPage = () => {
       });
       return;
     }
-    setScrollState((prev))
-    setScrollState({ ...scrollState, curLastIndex: cur + 1 });
+    setScrollState({
+      ...scrollState,
+      curLastIndex: scrollState.curLastIndex + 1
+    });
   }, [data]);
 
   return (
