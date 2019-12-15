@@ -7,7 +7,7 @@ function returnRedisPromise(command, ...params) {
       res(reply);
     });
   });
-}
+};
 
 exports.setAppbyKey = async (key, { name, host, port }) => {
   const isAlreadyExist = await returnRedisPromise("exists", `name:${name}`);
@@ -72,30 +72,6 @@ exports.getAllApps = async () => {
   }, Promise.resolve([]));
 
   return apps;
-};
-
-exports.pushStudyGroups = studyGroup => {
-  return returnRedisPromise("rpush", "studygroup", JSON.stringify(studyGroup));
-
-};
-
-exports.popStudyGroups = async count => {
-  const groups = await returnRedisPromise("lrange", "studygroup", 0, count - 1);
-
-  if (groups.length === 0) {
-    return new Promise(res => {
-      res([]);
-    });
-  }
-
-  returnRedisPromise("ltrim", "studygroup", count - 1, -1);
-  return new Promise(res => {
-    res(groups);
-  });
-};
-
-exports.getStudyGroupsLength = async () => {
-  return returnRedisPromise("llen", "studygroup");
 };
 
 exports.pushMessage = async (appName, packet) => {
