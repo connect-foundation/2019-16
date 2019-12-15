@@ -42,9 +42,6 @@ class App extends TcpServer {
   }
 
   send(appClient, data) {
-    // if (Object.prototype.hasOwnProperty.call(data, "curQuery")) {
-    //   this.sendTcpLog(data.curQuery);
-    // }
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -84,7 +81,7 @@ class App extends TcpServer {
       this.appClients[name] = client;
       return client;
     } catch (e) {
-      return e;
+      throw new Error(e);
     }
   }
 
@@ -94,7 +91,7 @@ class App extends TcpServer {
 
       return apps;
     } catch (e) {
-      return e;
+      throw new Error(e);
     }
   }
 
