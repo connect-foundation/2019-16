@@ -18,12 +18,16 @@ export default axiosInstance => {
 
       setState({ loading: true, data: null, error: null });
 
-      axiosInstance(option)
+      return axiosInstance(option)
         .then(result => {
           const { data } = result;
           setState({ ...state, data, loading: false });
+          return data;
         })
-        .catch(error => setState({ ...state, error, loading: false }));
+        .catch(error => {
+          setState({ ...state, error, loading: false });
+          return error;
+        });
     }
   };
 };

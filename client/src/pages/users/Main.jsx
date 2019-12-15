@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -54,8 +55,9 @@ const Main = styled.div`
       justify-content: space-evenly;
 
       background-color: #f8f0ee;
-      width: 75rem;
+      width: 68rem;
       flex-wrap: wrap;
+      padding: 0 1rem;
       margin:0 10%;
       .study-group-card{
           margin: 2em;
@@ -84,7 +86,7 @@ const MainPage = () => {
   useEffect(() => {
     isHaveCardDataWhenLoaded(loading, data) &&
       userIndexDispatch(set_groups(data));
-  }, [data, userLocation]);
+  }, [data]);
 
   return (
     <Main>

@@ -1,4 +1,5 @@
-import React, { useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext } from "react";
+import { createBrowserHistory } from "history";
 import styled from "styled-components";
 
 import UserInfo from "./UserInfo";
@@ -7,17 +8,25 @@ import StudySearchNavbar from "./studySearchNavbar";
 import { UserContext } from "../../pages/users/index";
 
 const StyledHeader = styled.header`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-bottom: 1.5px solid #dfdfdf;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+
   .header-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1.5px solid #dfdfdf;
-    padding: 1% 10%;
-    margin-bottom: 2.3rem;
+    justify-content: space-evenly;
+    padding: 0.7% 0 0% 0;
+    width: 80%;
 
     .logo {
-      width: 64px;
-      height: 64px;
+      width: 85px;
+      height: 68px;
     }
     .search-box {
       .input {
@@ -43,32 +52,34 @@ const StyledHeader = styled.header`
 const LeftHeader = styled.div`
   display: flex;
   align-items: center;
-  width: 50%;
-  justify-content: space-around;
+  width: 100%;
+
+  & > * {
+    margin-right: 2rem;
+  }
 `;
 
-const Header = () => {
+const Header = ({ history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
-  // const { lat, lon} = userInfo.userLocation;
-  const { lat, lon } = { lat: 41.24, lon: -50.34 };
-  const { request } = getApiAxiosState;
-  const onKeyUp = useCallback(
-    e => {
-      const keyword = e.target.value;
+  const [keyword, setKeyword] = useState("");
 
+  const { lat, lon } = userInfo.userLocation;
+  const { request } = getApiAxiosState;
+
+  const onChange = useCallback(e => {
+    setKeyword(e.target.value);
+  });
+
+  const onKeyDown = useCallback(
+    e => {
       if (e.key !== "Enter") return;
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
       isTagSearch(keyword)
-        ? request("post", "/search/tags", {
-            data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
-          })
-        : request(
-            "get",
-            `/search/query/${keyword}/location/${lat}/${lon}/true`
-          );
+        ? history.push(`/search/tags?query=${keyword.slice(1)}`)
+        : history.push(`/search?query=${keyword}`);
     },
-    [lat, lon, request]
+    [lat, lon, request, keyword]
   );
 
   return (
@@ -77,17 +88,20 @@ const Header = () => {
         <LeftHeader>
           <a href="/">
             <img
-              src="/image/logo-mini.png"
+              src="/image/new-logo-mini.png"
               alt="study combined"
               className="logo"
             />
           </a>
+
           <div className={`search-box`}>
             <input
               className="input is-rounded"
               type="text"
               placeholder="스터디그룹 검색"
-              onKeyUp={onKeyUp}
+              value={keyword}
+              onChange={onChange}
+              onKeyDown={onKeyDown}
             />
           </div>
           <StudySearchNavbar />

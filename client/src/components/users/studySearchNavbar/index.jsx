@@ -12,6 +12,7 @@ const Navbar = styled.div`
   .navbar-start {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     width: 100%;
   }
 
@@ -31,8 +32,7 @@ const StudySearchNavbar = () => {
   const { primaryCategories, secondaryCategories } = userIndexState;
   const { request } = getApiAxiosState;
   const searchAllGroups = useCallback(() => {
-    // const { lat, lon } = userInfo.userLocation;
-    const { lat, lon } = { lat: 41.12, lon: -50.34 };
+    const { lat, lon } = userInfo.userLocation;
     request("get", `search/all/location/${lat}/${lon}/true`);
   }, [userInfo]);
 
@@ -43,11 +43,7 @@ const StudySearchNavbar = () => {
         role="navigation"
         aria-label="dropdown navigation"
       >
-        <div
-          id="navbarExampleTransparentExample"
-          className="navbar-menu"
-          style={{ width: "100%" }}
-        >
+        <div id="navbarExampleTransparentExample" className="navbar-menu">
           <div className="navbar-start">
             <Link to="/">
               <span className="navbar-item" onClick={searchAllGroups}>

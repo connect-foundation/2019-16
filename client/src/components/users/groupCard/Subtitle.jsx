@@ -5,7 +5,7 @@ const StyledCardSubtitle = styled.div`
   font-family: "Nanum Gothic", sans-serif;
   font-weight: bold;
   font-size: 1rem;
-  line-height: 1.3rem;
+  line-height: 2.4rem;
   color: gray;
 `;
 
