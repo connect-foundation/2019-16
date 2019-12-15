@@ -1,89 +1,40 @@
 const App = require("../../lib/tcp/App");
-const StudyGroups = require("./models/StudyGroups");
-const {
-  pushStudyGroups,
-  removeStudyGroup,
-  updateStudyGroup
-} = require("../../lib/redis/studygroup");
+const queryMap = require("./query");
+
+const doAndResponse = async (params, packetData, cb) => {
+  const replyData = { ...packetData };
+
+  replyData.curQuery = packetData.nextQuery;
+  try {
+    const result = await cb(params);
+
+    replyData.method = "REPLY";
+    replyData.body = result;
+  } catch (e) {
+    console.error(e);
+    replyData.method = "ERROR";
+    replyData.body = { error: e, status: 400 };
+    throw replyData;
+  }
+
+  return replyData;
+};
 
 class StudyGroup extends App {
   constructor(name, host, port) {
     super(name, host, port);
   }
+
   async onRead(socket, data) {
     const { params, nextQuery } = data;
+    let replyData;
 
-    let replyData = data;
-
-    switch (nextQuery) {
-      case "addGroup":
-        try {
-          const groupInfo = params;
-
-          const result = await StudyGroups.create(groupInfo);
-
-          await pushStudyGroups(result);
-
-          replyData.method = "REPLY";
-          replyData.body = { status: 200, id: result.id };
-        } catch (e) {
-          console.error(e);
-          replyData.method = "ERROR";
-          replyData.body = e;
-        }
-        break;
-
-      case "getGroupDetail":
-        try {
-          const { id } = params;
-          const result = await StudyGroups.findById(id);
-
-          replyData.method = "REPLY";
-          replyData.body = result;
-        } catch (e) {
-          console.error(e);
-          replyData.method = "ERROR";
-          replyData.body = e;
-        }
-        break;
-
-      case "removeGroup":
-        try {
-          const { id } = params;
-          const group = await StudyGroups.findByIdAndDelete(id);
-          await removeStudyGroup(group);
-
-          replyData.method = "REPLY";
-          replyData.body = { status: 200 };
-        } catch (e) {
-          console.error(e);
-          replyData.method = "ERROR";
-          replyData.body = e;
-        }
-        break;
-
-      case "updateGroup":
-        try {
-          const groupData = params;
-          const id = groupData._id;
-
-          delete groupData._id;
-          const group = await StudyGroups.findByIdAndUpdate(id, groupData);
-
-          await updateStudyGroup(group);
-
-          replyData.method = "REPLY";
-          replyData.body = { status: 200, id };
-        } catch (e) {
-          console.error(e);
-          replyData.method = "ERROR";
-          replyData.body = e;
-        }
-
-      default:
-        break;
+    try {
+      replyData = await doAndResponse(params, data, queryMap[nextQuery]);
+    } catch (errReplyData) {
+      replyData = errReplyData;
     }
-    replyData.curQuery = nextQuery;
+
     this.send(socket, replyData);
   }
 }
