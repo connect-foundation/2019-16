@@ -10,6 +10,8 @@ import {
   makeOverlay
 } from "../../lib/kakaoMapUtils";
 import StudyRoomList from "../../components/users/studyRoomList";
+import { REQUEST_URL } from "../../config.json";
+
 const { kakao } = window;
 let studyRoomMap;
 
@@ -124,9 +126,9 @@ const Reservation = () => {
         selectedMarker = null;
       }
     });
-    // axios로 스터디룸 데이터 요청
+
     axios
-      .post("https://106.10.41.25:8000/api/studyroom/availableRooms", {
+      .post(`${REQUEST_URL}/api/studyroom/availableRooms`, {
         geopoint: { longitude: 127.021947, latitude: 37.503077 },
         personnel: 5,
         startTime: 20,
