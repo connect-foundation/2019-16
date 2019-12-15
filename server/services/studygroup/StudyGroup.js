@@ -1,6 +1,10 @@
 const App = require("../../lib/tcp/App");
 const StudyGroups = require("./models/StudyGroups");
-const { pushStudyGroups } = require("../../lib/redis");
+const {
+  pushStudyGroups,
+  removeStudyGroup,
+  updateStudyGroup
+} = require("../../lib/redis/studygroup");
 
 class StudyGroup extends App {
   constructor(name, host, port) {
@@ -46,7 +50,8 @@ class StudyGroup extends App {
       case "removeGroup":
         try {
           const { id } = params;
-          await StudyGroups.findByIdAndDelete(id);
+          const group = await StudyGroups.findByIdAndDelete(id);
+          await removeStudyGroup(group);
 
           replyData.method = "REPLY";
           replyData.body = { status: 200 };
@@ -63,7 +68,9 @@ class StudyGroup extends App {
           const id = groupData._id;
 
           delete groupData._id;
-          const result = await StudyGroups.findByIdAndUpdate(id, groupData);
+          const group = await StudyGroups.findByIdAndUpdate(id, groupData);
+
+          await updateStudyGroup(group);
 
           replyData.method = "REPLY";
           replyData.body = { status: 200, id };
