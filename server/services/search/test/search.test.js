@@ -1,57 +1,143 @@
-const { searchAllStudyGroup, bulkStudyGroups } = require("../elasticsearch");
+require("dotenv").config({ path: ".env" });
+const { SEARCH_ELASTIC_HOST, SEARCH_ELASTIC_PORT } = process.env;
+
+const { Client } = require("@elastic/elasticsearch");
+const client = new Client({
+  node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
+});
+
+const {
+  searchStudyGroup,
+  searchStudyGroupWithCategory,
+  tagStudyGroup,
+  searchAllStudyGroup,
+  searchAllStudyGroupWithCategory,
+  bulkStudyGroups
+} = require("../elasticsearch");
+
+const testGroups = [
+  {
+    _id: "1",
+    title: "test",
+    subtitle: "subtitle1",
+    intro: "intro1",
+    isRecruiting: true,
+    category: ["프로그래밍", "파이썬"],
+    tags: ["알고리즘 ", "파이썬 ", "python ", "algorithm"],
+    days: [0, 4],
+    leader: "test1@gmail.com",
+    startTime: 17,
+    min_personnel: 4,
+    max_personnel: 8,
+    location: { lat: 41.12, lon: -50.34 },
+    endTime: 19,
+    thumbnail:
+      "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png",
+    members: []
+  },
+  {
+    _id: "2",
+    title: "test",
+    subtitle: "subtitle2",
+    intro: "intro2",
+    isRecruiting: true,
+    category: ["프로그래밍", "자바"],
+    tags: ["알고리즘 ", "java ", "자바 ", "algorithm"],
+    days: [0, 4],
+    leader: "test1@gmail.com",
+    startTime: 17,
+    min_personnel: 4,
+    max_personnel: 8,
+    location: { lat: 41.12, lon: -50.34 },
+    endTime: 19,
+    thumbnail:
+      "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png",
+    members: []
+  }
+];
+
+const String_testGroups = [
+  `{"_id":"1", "title": "test", "subtitle": "subtitle1", "intro" : "intro1", "isRecruiting" : true, "category" : [ "프로그래밍", "파이썬"] , "tags" : ["알고리즘 ","파이썬 ","python ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`,
+  `{"_id":"2", "title": "test", "subtitle": "subtitle2", "intro" : "intro2", "isRecruiting" : true, "category" : [ "프로그래밍", "자바"], "tags" : ["알고리즘 ","java ","자바 ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`
+];
+
+const initializeElastic = async () => {
+  await bulkStudyGroups(String_testGroups);
+};
+const clearElastic = async () => {
+  await client.delete({ index: "test", id: 1 });
+  await client.delete({ index: "test", id: 2 });
+};
+
+beforeAll(async () => {
+  return await initializeElastic();
+});
+
+afterAll(async () => {
+  return await clearElastic();
+});
+
+/**
+ * searchStudyGroup
+ */
+test("searchStudyGroup Test", async () => {
+  const result = await searchStudyGroup({
+    searchWord: "test",
+    lat: "41.12",
+    lon: "-50.34",
+    isRecruit: true
+  });
+  expect(result).toEqual([testGroups[1], testGroups[0]]);
+});
+/**
+ * searchStudyGroupWithCategory
+ */
+test("searchStudyGroupWithCategory Test", async () => {
+  const result = await searchStudyGroupWithCategory({
+    searchWord: "test",
+    category: "파이썬",
+    lat: "41.12",
+    lon: "-50.34",
+    isRecruit: true
+  });
+  expect(result).toEqual([testGroups[0]]);
+});
+/**
+ * tagStudyGroup
+ */
+test("tagStudyGroup Test", async () => {
+  const result = await tagStudyGroup({
+    tags: ["자바"],
+    lat: "41.12",
+    lon: "-50.34",
+    isRecruit: true
+  });
+  expect(result).toEqual([testGroups[1]]);
+});
 
 /**
  * searchAllStudyGroup test
  */
-// test("searchAllStudyGroup Test", async () => {
-//   const testGroups = [
-//     {
-//       _index: "studygroup",
-//       _type: "_doc",
-//       _id: "n4vftW4BY419Z4XnlPvY",
-//       _score: 1.0,
-//       _source: {
-//         category: ["외국어", "영어"],
-//         leader: "숩",
-//         tags: ["토익 ", "스터디 ", "TOEIC "],
-//         title: "토익 900 목표 스터디",
-//         subtitle: "900이상을 위한 심화 스터디 진행합니다",
-//         intro: `
-// 토익 공부 같이해요!
-// 800점대 분들 900점대로 올리기위한 심화 스터디로 진행 예정입니다.
-// 카톡으로 항상 공부시간도 인증해요.
-// `,
-//         startTime: 0,
-//         during: 2,
-//         isRecruiting: true,
-//         min_personnel: 0,
-//         max_personnel: 0,
-//         thumbnail:
-//           "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575009353771경찰공무원_가산점_2-5점까지_받을수_있는_토익.jpg",
-//         members: [],
-//         now_personnel: 1,
-//         days: [4, 2],
-//         location: {
-//           lat: 41.12,
-//           lon: -50.34
-//         }
-//       }
-//     }
-//   ];
-//   const result = await searchAllStudyGroup({
-//     lat: 41.0,
-//     lon: -50.34,
-//     isRecruit: true
-//   });
+test("searchAllStudyGroup Test", async () => {
+  const result = await searchAllStudyGroup({
+    lat: "41.12",
+    lon: "-50.34",
+    isRecruit: true
+  });
 
-//   console.log(result);
-//   expect(testGroups).toEqual(result);
-// });
+  expect(result).toEqual([testGroups[1], testGroups[0]]);
+});
 
-searchAllStudyGroup({
-  lat: 41.0,
-  lon: -50.34,
-  isRecruit: true
-}).then(res => {
-  console.log(res);
+/**
+ * searchAllStudyGroupWithCategory
+ */
+test("searchAllStudyGroupWithCategory Test", async () => {
+  const result = await searchAllStudyGroupWithCategory({
+    category: "파이썬",
+    lat: "41.12",
+    lon: "-50.34",
+    isRecruit: true
+  });
+
+  expect(result).toEqual([testGroups[0]]);
 });

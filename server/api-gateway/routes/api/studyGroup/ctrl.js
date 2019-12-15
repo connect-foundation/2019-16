@@ -17,10 +17,18 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
   next
 ) => {
   const image = req.file;
+  const payload = JSON.parse(req.body.data);
+  const { thumbnail } = payload;
 
-  if (!image) {
+  if (!image && !thumbnail) {
     req.imageLink =
       "https://kr.object.ncloudstorage.com/studycombined/groupImage/no_img.png";
+    next();
+    return;
+  }
+
+  if (!image) {
+    req.imageLink = thumbnail;
     next();
     return;
   }
@@ -82,6 +90,44 @@ exports.sendGetGroupDetailPacket = apigateway => (req, res, next) => {
     "getGroupDetail",
     "getGroupDetail",
     { id },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
+exports.sendDeleteGroupPacket = apigateway => (req, res, next) => {
+  const { id } = req.params;
+
+  const packet = makePacket(
+    "GET",
+    "apigateway",
+    "removeGroup",
+    "removeGroup",
+    { id },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
+exports.sendUpdateGroupPacket = apigateway => (req, res, next) => {
+  const payload = JSON.parse(req.body.data);
+
+  payload.thumbnail = req.imageLink;
+
+  const packet = makePacket(
+    "POST",
+    "apigateway",
+    "updateGroup",
+    "updateGroup",
+    { ...payload },
     {},
     req.resKey,
     apigateway.context

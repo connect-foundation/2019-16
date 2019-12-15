@@ -16,6 +16,7 @@ jobs:
       - name: run test
         run: |
           cd server
+          npm install
           npm test --detectOpenHandles --forceExit
         env:
           GATEWAY_NAME: apigateway
