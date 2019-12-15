@@ -30,8 +30,16 @@ function filterInDistance(maxResult, cur, accumulatedCount, res) {
   }, 0);
 }
 
-async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
+async function reSearchInDistance(
+  index,
+  body,
+  lat,
+  lon,
+  page,
+  maxDistance = 20
+) {
   let distance = 2;
+  const pageSize = 21;
 
   body.sort = {
     _script: {
@@ -86,7 +94,8 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
       }
     }
   };
-  body.size = 10000;
+  body.from = page;
+  body.size = pageSize;
   const search = {
     index,
     body
@@ -106,7 +115,7 @@ async function reSearchInDistance(index, body, lat, lon, maxDistance = 20) {
 }
 
 exports.searchStudyGroup = async info => {
-  const { searchWord, lat, lon, isRecruit } = info;
+  const { searchWord, lat, lon, page, isRecruit } = info;
   const body = {
     query: {
       bool: {
@@ -133,6 +142,7 @@ exports.searchStudyGroup = async info => {
     body,
     lat,
     lon,
+    page,
     20
   );
   const result = searchResult.map(hit => {
@@ -144,7 +154,7 @@ exports.searchStudyGroup = async info => {
 };
 
 exports.searchStudyGroupWithCategory = async info => {
-  const { searchWord, category, lat, lon, isRecruit } = info;
+  const { searchWord, category, lat, lon, page, isRecruit } = info;
 
   const body = {
     query: {
@@ -179,6 +189,7 @@ exports.searchStudyGroupWithCategory = async info => {
     body,
     lat,
     lon,
+    page,
     20
   );
 
@@ -191,7 +202,7 @@ exports.searchStudyGroupWithCategory = async info => {
 };
 
 exports.tagStudyGroup = async info => {
-  const { tags, lat, lon, isRecruit } = info;
+  const { tags, lat, lon, page, isRecruit } = info;
 
   const prefixs = tags.reduce((acc, tag) => {
     acc.push({ prefix: { tags: { value: tag } } });
@@ -216,6 +227,7 @@ exports.tagStudyGroup = async info => {
     body,
     lat,
     lon,
+    page,
     20
   );
   const result = searchResult.map(hit => {
@@ -226,10 +238,10 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => { };
+exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
-  const { lat, lon, isRecruit } = info;
+  const { lat, lon, page, isRecruit } = info;
 
   const body = {
     query: {
@@ -254,6 +266,7 @@ exports.searchAllStudyGroup = async info => {
     body,
     lat,
     lon,
+    page,
     20
   );
   const result = searchResult.map(hit => {
@@ -265,7 +278,7 @@ exports.searchAllStudyGroup = async info => {
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
-  const { category, lat, lon, isRecruit } = info;
+  const { category, lat, lon, page, isRecruit } = info;
 
   const body = {
     query: {
@@ -296,6 +309,7 @@ exports.searchAllStudyGroupWithCategory = async info => {
     body,
     lat,
     lon,
+    page,
     20
   );
   const result = searchResult.map(hit => {
@@ -306,8 +320,11 @@ exports.searchAllStudyGroupWithCategory = async info => {
   return result;
 };
 
-exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove) => {
-
+exports.bulkStudyGroups = async (
+  groupsForAdd,
+  groupsForUpdate,
+  groupsForRemove
+) => {
   const addBody = groupsForAdd.flatMap(group => {
     const objGroup = JSON.parse(group);
     const id = objGroup._id;
@@ -343,7 +360,7 @@ exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove)
     ];
   });
 
-  const body = addBody.concat(updateBody).concat(removeBody)
+  const body = addBody.concat(updateBody).concat(removeBody);
 
   const { body: bulkResponse } = await client.bulk({ refresh: true, body });
 
@@ -363,6 +380,6 @@ exports.bulkStudyGroups = async (groupsForAdd, groupsForUpdate, groupsForRemove)
       }
     });
     // return new Promise((res, rej) => { rej(erroredDocuments) })
-    throw new Error(erroredDocuments.toString())
+    throw new Error(erroredDocuments.toString());
   }
 };
