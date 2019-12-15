@@ -7,22 +7,21 @@ class StudyGroup extends App {
     super(name, host, port);
   }
   async onRead(socket, data) {
-    const { params, curQuery } = data;
-
-    this.tcpLogSender(curQuery);
+    const { params, nextQuery } = data;
 
     let replyData = data;
 
-    switch (curQuery) {
+    switch (nextQuery) {
       case "addGroup":
         try {
           const groupInfo = params;
 
           const result = await StudyGroups.create(groupInfo);
+
           await pushStudyGroups(result);
 
           replyData.method = "REPLY";
-          replyData.body = { id: result.id };
+          replyData.body = { status: 200, id: result.id };
         } catch (e) {
           console.error(e);
           replyData.method = "ERROR";
@@ -44,10 +43,40 @@ class StudyGroup extends App {
         }
         break;
 
+      case "removeGroup":
+        try {
+          const { id } = params;
+          await StudyGroups.findByIdAndDelete(id);
+
+          replyData.method = "REPLY";
+          replyData.body = { status: 200 };
+        } catch (e) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
+        }
+        break;
+
+      case "updateGroup":
+        try {
+          const groupData = params;
+          const id = groupData._id;
+
+          delete groupData._id;
+          const result = await StudyGroups.findByIdAndUpdate(id, groupData);
+          console.log(result);
+          replyData.method = "REPLY";
+          replyData.body = { status: 200, id };
+        } catch (err) {
+          console.error(e);
+          replyData.method = "ERROR";
+          replyData.body = e;
+        }
+
       default:
         break;
     }
-
+    replyData.curQuery = nextQuery;
     this.send(socket, replyData);
   }
 }

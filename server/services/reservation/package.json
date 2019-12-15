@@ -1,0 +1,16 @@
+{
+  "name": "reservation",
+  "version": "1.0.0",
+  "description": "예약 서비스",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "soob",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "jest": "^24.9.0",
+    "mongoose": "^5.8.0"
+  }
+}

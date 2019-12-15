@@ -42,13 +42,13 @@ class AppListManager extends TcpServer {
     }
   }
   async onRead(socket, data) {
-    const { method, curQuery, info } = data;
+    const { method, nextQuery, info } = data;
     const key = await makeKey(socket);
     let result;
 
     try {
       if (method === "POST") {
-        switch (curQuery) {
+        switch (nextQuery) {
           case "add":
             result = await setAppbyKey(key, info);
             break;
@@ -63,7 +63,7 @@ class AppListManager extends TcpServer {
         }
       }
       if (method === "GET") {
-        switch (curQuery) {
+        switch (nextQuery) {
           case "get":
             result = await getAppbyKey(key);
             break;
@@ -75,6 +75,7 @@ class AppListManager extends TcpServer {
         }
         const packet = makePacket(
           "REPLY",
+          "apps",
           "apps",
           "apps",
           {},
