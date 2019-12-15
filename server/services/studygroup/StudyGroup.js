@@ -64,10 +64,10 @@ class StudyGroup extends App {
 
           delete groupData._id;
           const result = await StudyGroups.findByIdAndUpdate(id, groupData);
-          console.log(result);
+
           replyData.method = "REPLY";
           replyData.body = { status: 200, id };
-        } catch (err) {
+        } catch (e) {
           console.error(e);
           replyData.method = "ERROR";
           replyData.body = e;
