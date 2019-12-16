@@ -23,6 +23,7 @@ const LoginButton = () => {
     const { kakao_account, properties } = profile;
 
     return {
+      userId: profile.id,
       kakaoAccessToken: response.access_token,
       userAgeRange: +kakao_account.age_range[0] || null,
       userName: properties.nickname,
@@ -34,51 +35,79 @@ const LoginButton = () => {
   }, []);
 
   const onSuccess = async ({ response, profile }) => {
-    const email = profile.kakao_account.email || "blank";
-    const url = `${REQUEST_URL}/auth/users/accounts/${email}`;
+    // 카카오 로그인 성공 후
+    const { daum, kakao } = window;
+    const geocoder = new kakao.maps.services.Geocoder();
+    const userId = profile.id;
+    const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
     const options = { method: "GET" };
 
     fetch(url, options)
-      .then(r => r.json())
-      .then(result => {
+      .then(getRes => getRes.json())
+      .then(async result => {
         if (result === null) {
-          const locationInput = prompt(
-            "처음 오셨군요! 사는 지역을 말씀해 주세요"
-          );
-          const url = `${REQUEST_URL}/auth/users/register`;
-          const data = {
-            kakaoAccessToken: response.access_token,
-            userEmail: profile.kakao_account.email || "",
-            userName: profile.properties.nickname,
-            userGender: profile.kakao_account.gender || "",
-            userAgeRange: +profile.kakao_account.age_range[0] || null,
-            profileImage:
-              response.properties.profile_image || DEFAULT_PROFILE_IMAGE,
-            userLocation: { lat: 37.4986832, lon: 127.0280951 }
+          let address;
+          const oncomplete = data => {
+            address = data.address;
           };
+          const onclose = async state => {
+            if (state === "FORCE_CLOSE") {
+              alert("필수 입력 사항입니다. 다시 로그인 해주세요");
+              window.location.reload();
+            } else if (state === "COMPLETE_CLOSE") {
+              geocoder.addressSearch(
+                address,
+                (locationResult, locationStatus) => {
+                  const userLocation = {
+                    lat: +locationResult[0].x,
+                    lon: +locationResult[0].y
+                  };
+                  const url = `${REQUEST_URL}/auth/users/accounts`;
+                  const data = {
+                    kakaoAccessToken: response.access_token,
+                    userId: profile.id,
+                    userEmail: profile.kakao_account.email || "",
+                    userName: profile.properties.nickname,
+                    userGender: profile.kakao_account.gender || "",
+                    userAgeRange: +profile.kakao_account.age_range[0] || null,
+                    profileImage:
+                      profile.properties.profile_image || DEFAULT_PROFILE_IMAGE,
+                    userLocation
+                  };
+                  const options = {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json;charset=utf-8"
+                    },
+                    body: data
+                  };
+
+                  fetch(url, options).then(postRes => {
+                    console.log(posrRes);
+                    if (postRes.ok) {
+                      setUserInfo(data);
+                    }
+                  });
+                }
+              );
+            }
+          };
+
+          new daum.Postcode({ oncomplete, onclose }).open();
+        } else {
+          const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
           const options = {
-            method: "POST",
-            headers: { "Content-Type": "application/json;charset=utf-8" },
-            body: data
+            method: "PATCH",
+            headers: { "Content-Type": "application/json;charset:utf-8" },
+            body: { kakaoAccessToken: response.access_token }
           };
 
           fetch(url, options).then(() => {
-            alert("반갑습니다! 로그인을 다시 시도해 주세요");
+            setUserInfo({
+              ...result
+            });
           });
         }
-
-        const url = `${REQUEST_URL}/auth/users/kakao-access-token`;
-        const options = {
-          method: "PUT",
-          headers: { "Content-Type": "application/json;charset:utf-8" },
-          body: { kakaoAccessToken: response.access_token }
-        };
-
-        fetch(url, options).then(() => {
-          setUserInfo({
-            ...result
-          });
-        });
       })
       .catch(e => {
         alert("데이터 요청을 할 수 없습니다.");

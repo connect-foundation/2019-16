@@ -10,9 +10,9 @@ const StyledUserInfo = styled.div`
   justify-content: flex-start;
 
   .profile-image {
-    borderradius: 50%;
+    border-radius: 50%;
     height: 2.5rem;
-    marginright: 1rem;
+    margin-right: 1rem;
   }
 
   .right-block {

@@ -19,7 +19,6 @@ import Reservation from "./reservation";
 import Search from "./search";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
-const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 export const UserContext = createContext();
 
@@ -37,7 +36,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     kakaoAccessToken: "",
-    userEmail: "dlatns0201@naver.com",
+    userEmail: "",
     userName: "",
     userAgeRange: null,
     userGender: "",
@@ -61,7 +60,9 @@ const UserPage = () => {
       fetch(url, options)
         .then(r => {
           if (r.ok) return r.json();
-          throw new Error("fetch error");
+
+          alert("로그인 오류 입니다");
+          window.location.href = "/";
         })
         .then(result => {
           setUserInfo(result);
