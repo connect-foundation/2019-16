@@ -34,7 +34,9 @@ exports.updateGroup = async params => {
   const id = groupData._id;
 
   delete groupData._id;
-  const updatedGroupInfo = await StudyGroups.findByIdAndUpdate(id, groupData);
+  const updatedGroupInfo = await StudyGroups.findByIdAndUpdate(id, groupData, {
+    new: true
+  });
 
   await updateStudyGroup(updatedGroupInfo);
 
