@@ -1,4 +1,5 @@
 const User = require("../../models/user");
+const { jwtGenerator } = require("./util");
 
 module.exports = async function(req, res) {
   const { userId } = req.params;
@@ -16,14 +17,20 @@ module.exports = async function(req, res) {
     userLocation
   } = result;
 
-  res.json({
-    userId,
-    userEmail,
-    userGender,
-    userAgeRange,
-    userName,
-    kakaoAccessToken,
-    profileImage,
-    userLocation
-  });
+  res
+    .cookie("access_token", jwtGenerator({ email: userEmail, role: "user" }), {
+      httpOnly: true,
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000 // 1일
+    })
+    .json({
+      userId,
+      userEmail,
+      userGender,
+      userAgeRange,
+      userName,
+      kakaoAccessToken,
+      profileImage,
+      userLocation
+    });
 };
