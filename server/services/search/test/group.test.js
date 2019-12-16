@@ -1,11 +1,4 @@
-require("dotenv").config({ path: ".env" });
-const { SEARCH_ELASTIC_HOST, SEARCH_ELASTIC_PORT } = process.env;
-
-const { Client } = require("@elastic/elasticsearch");
-const client = new Client({
-  node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
-});
-
+const client = require("../elastic/client");
 const {
   searchStudyGroup,
   searchStudyGroupWithCategory,
@@ -56,13 +49,21 @@ const testGroups = [
   }
 ];
 
-const String_testGroups = [
+const ADD_testGroups = [
   `{"_id":"1", "title": "test", "subtitle": "subtitle1", "intro" : "intro1", "isRecruiting" : true, "category" : [ "프로그래밍", "파이썬"] , "tags" : ["알고리즘 ","파이썬 ","python ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`,
   `{"_id":"2", "title": "test", "subtitle": "subtitle2", "intro" : "intro2", "isRecruiting" : true, "category" : [ "프로그래밍", "자바"], "tags" : ["알고리즘 ","java ","자바 ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`
 ];
 
+const UPDATE_testGroups = [
+  `{"_id":"1", "title": "update", "subtitle": "update", "intro" : "update", "isRecruiting" : true, "category" : [ "프로그래밍", "파이썬"] , "tags" : ["알고리즘 ","파이썬 ","python ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`
+];
+
+const REMOVE_testGroups = [
+  `{"_id":"2", "title": "test", "subtitle": "subtitle2", "intro" : "intro2", "isRecruiting" : true, "category" : [ "프로그래밍", "자바"], "tags" : ["알고리즘 ","java ","자바 ","algorithm"],"days" : [0, 4], "leader" : "test1@gmail.com", "startTime" : 17, "min_personnel" : 4, "max_personnel" : 8, "location" : { "lat" : 41.12, "lon" : -50.34 },"endTime" : 19,"thumbnail" : "https://kr.object.ncloudstorage.com/studycombined/groupImage/1575602565910algorith.png","members" : [ ]}`
+];
+
 const initializeElastic = async () => {
-  await bulkStudyGroups(String_testGroups);
+  await bulkStudyGroups(ADD_testGroups, [], []);
 };
 const clearElastic = async () => {
   await client.delete({ index: "test", id: 1 });
@@ -144,3 +145,7 @@ test("searchAllStudyGroupWithCategory Test", async () => {
 
   expect(result).toEqual([testGroups[0]]);
 });
+
+/**
+ *
+ */
