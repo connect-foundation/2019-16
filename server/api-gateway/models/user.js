@@ -3,13 +3,14 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
-    email: String,
-    gender: String,
-    ageRange: Number,
-    name: String,
+    userId: String,
+    userEmail: String,
+    userGender: String,
+    userAgeRange: Number,
+    userName: String,
     kakaoAccessToken: String,
     profileImage: String,
-    location: { lat: Number, lon: Number },
+    userLocation: { lat: Number, lon: Number },
     history: [mongoose.Types.ObjectId],
     ownGroups: [mongoose.Types.ObjectId],
     partipatedGroups: [mongoose.Types.ObjectId]
