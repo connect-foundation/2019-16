@@ -84,7 +84,8 @@ const LoginButton = () => {
             method: "PATCH",
             headers: { "Content-Type": "application/json;charset:utf-8" },
             body: { kakaoAccessToken: response.access_token },
-            credentials: "include"
+            credentials: "include",
+            mode: "cors"
           };
 
           fetch(url, options).then(() => {
