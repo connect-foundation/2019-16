@@ -10,7 +10,6 @@ import { REQUEST_URL } from "../../config.json";
 
 import MainPage from "./Main";
 import GroupCreatePage from "./groupCreate";
-import Notice from "../../components/users/Notice";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
@@ -91,7 +90,6 @@ const UserPage = () => {
       }}
     >
       <div>
-        <Notice />
         <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
