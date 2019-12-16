@@ -24,7 +24,7 @@ const LoginButton = () => {
     const geocoder = new kakao.maps.services.Geocoder();
     const userId = profile.id;
     const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
-    const options = { method: "GET" };
+    const options = { method: "GET", credentials: "include" };
 
     fetch(url, options)
       .then(getRes => getRes.json())
@@ -65,6 +65,7 @@ const LoginButton = () => {
                       "Content-Type": "application/json;charset=utf-8"
                     },
                     mode: "cors",
+                    credentials: "include",
                     body: JSON.stringify(data)
                   };
 
@@ -82,7 +83,8 @@ const LoginButton = () => {
           const options = {
             method: "PATCH",
             headers: { "Content-Type": "application/json;charset:utf-8" },
-            body: { kakaoAccessToken: response.access_token }
+            body: { kakaoAccessToken: response.access_token },
+            credentials: "include"
           };
 
           fetch(url, options).then(() => {
