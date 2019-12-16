@@ -42,3 +42,26 @@ exports.suggestQueries = async info => {
 
   return result;
 };
+
+exports.updateQueriesValue = async info => {
+  const { searchWord, contentsCount } = info;
+  const query = generateQuery(searchWord);
+  const body = {
+    script: {
+      source:
+        "ctx._source.value = (ctx._source.count++)*0.6 +  params.contentsCount * 0.4",
+      lang: "painless",
+      params: {
+        contentsCount
+      }
+    },
+    query
+  };
+
+  const update = {
+    index: "suggestedquery",
+    body
+  };
+
+  client.updateByQuery(update);
+};
