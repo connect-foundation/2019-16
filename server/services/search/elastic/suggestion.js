@@ -43,28 +43,6 @@ exports.suggestQueries = async info => {
   return result;
 };
 
-exports.updateQueriesValue = async info => {
-  const { searchWord, contentsCount } = info;
-  const query = generateQuery(searchWord);
-  const body = {
-    script: {
-      source:
-        "ctx._source.value = (ctx._source.count++)*0.6 +  params.contentsCount * 0.4",
-      lang: "painless",
-      params: {
-        contentsCount
-      }
-    },
-    query
-  };
-
-  const update = {
-    index: "suggestedquery",
-    body
-  };
-
-  client.updateByQuery(update);
-};
 exports.addFirstQuery = async info => {
   const { searchWord } = info;
   const body = {
@@ -90,7 +68,29 @@ exports.getQueryCount = async info => {
     body
   };
 
-  const result = client.count(count);
+  const result = await client.count(count);
 
   return result.count;
+};
+
+exports.updateQueriesValue = async (searchWord, contentsCount) => {
+  const query = generateQuery(searchWord);
+  const body = {
+    script: {
+      source:
+        "ctx._source.value = (ctx._source.count++)*0.6 +  params.contentsCount * 0.4",
+      lang: "painless",
+      params: {
+        contentsCount
+      }
+    },
+    query
+  };
+
+  const update = {
+    index: "suggestedquery",
+    body
+  };
+
+  client.updateByQuery(update);
 };
