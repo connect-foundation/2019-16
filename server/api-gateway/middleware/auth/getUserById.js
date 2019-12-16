@@ -19,7 +19,7 @@ module.exports = async function(req, res) {
 
   res
     .cookie("access_token", jwtGenerator({ id: userId, role: "user" }), {
-      httpOnly: true,
+      httpOnly: false,
       domain: "studycombined.shop",
       secure: true,
       maxAge: 24 * 60 * 60 * 1000 // 1일
