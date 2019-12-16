@@ -79,6 +79,7 @@ const LoginButton = () => {
                     headers: {
                       "Content-Type": "application/json;charset=utf-8"
                     },
+                    mode: "no-cors",
                     body: data
                   };
 
