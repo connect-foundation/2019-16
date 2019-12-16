@@ -11,7 +11,6 @@ async function registerFirstTimeUser(req, res) {
       httpOnly: true,
       domain: "studycombined.shop",
       secure: true,
-      sameSite: true,
       maxAge: 24 * 60 * 60 * 1000 // 1일
     })
     .sendStatus(200);

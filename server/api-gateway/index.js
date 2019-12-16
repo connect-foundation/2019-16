@@ -14,7 +14,7 @@ const httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_PRIVKEY_PATH}`)),
   cert: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_CERTKEY_PATH}`))
 };
-const corsOptions = { origin: "https://studycombined.shop" };
+const corsOptions = { origin: "https://studycombined.shop", credentials: true };
 const mongoose = require("mongoose");
 
 mongoose
