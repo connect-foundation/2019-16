@@ -1,0 +1,44 @@
+const client = require("./client");
+
+const generateQuery = searchWord => {
+  return {
+    bool: {
+      must: [
+        {
+          query_string: {
+            query: `*${searchWord}*`,
+            fields: ["query"]
+          }
+        }
+      ]
+    }
+  };
+};
+
+exports.suggestQueries = async info => {
+  const { searchWord } = info;
+  const query = generateQuery(searchWord);
+  const body = {
+    query,
+    sort: [
+      {
+        value: {
+          order: "desc"
+        }
+      }
+    ],
+    size: 5
+  };
+  const search = {
+    index: "suggestedquery",
+    body
+  };
+  let searchResult = await client.search(search);
+
+  const result = searchResult.body.hits.hits.map(hit => {
+    hit._source._id = hit._id;
+    return hit._source;
+  });
+
+  return result;
+};
