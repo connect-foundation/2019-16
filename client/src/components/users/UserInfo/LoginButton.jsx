@@ -79,12 +79,11 @@ const LoginButton = () => {
                     headers: {
                       "Content-Type": "application/json;charset=utf-8"
                     },
-                    mode: "cors",
                     body: data
                   };
 
                   fetch(url, options).then(postRes => {
-                    debugger;
+                    console.log(posrRes);
                     if (postRes.ok) {
                       setUserInfo(data);
                     }
