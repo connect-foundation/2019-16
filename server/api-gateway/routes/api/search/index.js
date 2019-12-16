@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const { makePacket } = require("../../lib/tcp/util");
+const { makePacket } = require("../../../../lib/tcp/util");
 
-module.exports = function(apigateway) {
+module.exports = function(apiGateway) {
   router.get(
     "/query/:searchWord/location/:lat/:lon/:isRecruit",
     async (req, res, next) => {
@@ -17,7 +17,7 @@ module.exports = function(apigateway) {
         { searchWord, lat, lon, isRecruit },
         {},
         req.resKey,
-        apigateway.context
+        apiGateway.context
       );
       next();
     }
@@ -36,7 +36,7 @@ module.exports = function(apigateway) {
         { searchWord, category, lat, lon, isRecruit },
         {},
         req.resKey,
-        apigateway.context
+        apiGateway.context
       );
 
       next();
@@ -55,7 +55,7 @@ module.exports = function(apigateway) {
         { tags, lat, lon, isRecruit },
         {},
         req.resKey,
-        apigateway.context
+        apiGateway.context
       );
 
     if (category !== undefined)
@@ -67,7 +67,7 @@ module.exports = function(apigateway) {
         { tags, isRecruit, lat, lon, category },
         {},
         req.resKey,
-        apigateway.context
+        apiGateway.context
       );
 
     next();
@@ -84,7 +84,7 @@ module.exports = function(apigateway) {
       { lat, lon, isRecruit },
       {},
       req.resKey,
-      apigateway.context
+      apiGateway.context
     );
 
     next();
@@ -103,7 +103,7 @@ module.exports = function(apigateway) {
         { category, lat, lon, isRecruit },
         {},
         req.resKey,
-        apigateway.context
+        apiGateway.context
       );
 
       next();
