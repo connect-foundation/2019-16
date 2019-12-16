@@ -1,3 +1,5 @@
+const { SEARCH_INDEX_STUDYGROUP } = process.env;
+
 const client = require("./client");
 
 function filterInDistance(maxResult, cur, accumulatedCount, res) {
