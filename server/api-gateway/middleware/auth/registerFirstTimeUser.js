@@ -8,7 +8,7 @@ async function registerFirstTimeUser(req, res) {
   if (errors) res.sendStatus(500);
   res
     .cookie("access_token", jwtGenerator({ id: data.userId, role: "user" }), {
-      httpOnly: true,
+      httpOnly: false,
       domain: "studycombined.shop",
       secure: true,
       maxAge: 24 * 60 * 60 * 1000 // 1일
