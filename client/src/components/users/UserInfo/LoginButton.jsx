@@ -7,12 +7,10 @@ import { REQUEST_URL, KAKAO_JS_KEY } from "../../../config.json";
 const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 const KakaoLoginButton = styled(KakaoLogin)`
-  img {
-    height: 24px;
-    width: 24px;
-  }
-  span {
-    font-weight: bold;
+  border-style: hidden;
+
+  img:hover {
+    cursor: pointer;
   }
 `;
 
@@ -103,14 +101,12 @@ const LoginButton = () => {
 
   return (
     <KakaoLoginButton
-      className="button is-warning is-rounded"
       jsKey={KAKAO_JS_KEY}
       onSuccess={onSuccess}
       onFailure={console.error}
       getProfile="true"
     >
-      <img src="/image/kakao-talk.png" alt="kakao-talk" />
-      <span>&nbsp; 카카오톡으로 로그인하기</span>
+      <img src="/image/login-button.png" alt="login-button" />
     </KakaoLoginButton>
   );
 };
