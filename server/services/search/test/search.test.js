@@ -13,7 +13,7 @@ const {
   searchAllStudyGroup,
   searchAllStudyGroupWithCategory,
   bulkStudyGroups
-} = require("../elasticsearch");
+} = require("../elastic/group");
 
 const testGroups = [
   {
@@ -87,6 +87,7 @@ test("searchStudyGroup Test", async () => {
     lon: "-50.34",
     isRecruit: true
   });
+
   expect(result).toEqual([testGroups[1], testGroups[0]]);
 });
 /**
@@ -100,6 +101,7 @@ test("searchStudyGroupWithCategory Test", async () => {
     lon: "-50.34",
     isRecruit: true
   });
+
   expect(result).toEqual([testGroups[0]]);
 });
 /**
@@ -112,6 +114,7 @@ test("tagStudyGroup Test", async () => {
     lon: "-50.34",
     isRecruit: true
   });
+
   expect(result).toEqual([testGroups[1]]);
 });
 

@@ -13,7 +13,7 @@ const {
   searchStudyGroup,
   searchStudyGroupWithCategory,
   bulkStudyGroups
-} = require("./elasticsearch");
+} = require("./elastic/group");
 
 const queryMap = {
   searchStudyGroup,
