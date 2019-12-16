@@ -65,3 +65,18 @@ exports.updateQueriesValue = async info => {
 
   client.updateByQuery(update);
 };
+exports.addFirstQuery = async info => {
+  const { searchWord } = info;
+  const body = {
+    query: searchWord,
+    count: 1,
+    value: 0
+  };
+  const index = {
+    index: "suggestedquery",
+    type: "_doc",
+    body
+  };
+
+  client.index(index);
+};
