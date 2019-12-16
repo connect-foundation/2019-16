@@ -57,7 +57,7 @@ const UserPage = () => {
 
     if (parsedUserInfo) {
       const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.id}`;
-      const options = { method: "GET", mode: "cors" };
+      const options = { method: "GET", mode: "cors", credentials: "include" };
 
       fetch(url, options)
         .then(r => {
