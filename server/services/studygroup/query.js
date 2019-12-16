@@ -10,14 +10,14 @@ exports.addGroup = async params => {
   const resultAfterStore = await StudyGroups.create(groupInfo);
 
   await pushStudyGroups(resultAfterStore);
-  return { data: resultAfterStore._id, status: 200 };
+  return { id: resultAfterStore._id, status: 200 };
 };
 
 exports.getGroupDetail = async params => {
   const { id } = params;
   const findResult = await StudyGroups.findById(id);
 
-  return { data: findResult, status: 200 };
+  return { detailInfo: findResult, status: 200 };
 };
 
 exports.removeGroup = async params => {
@@ -38,5 +38,5 @@ exports.updateGroup = async params => {
 
   await updateStudyGroup(updatedGroupInfo);
 
-  return { status: 200, data: id };
+  return { status: 200, id };
 };
