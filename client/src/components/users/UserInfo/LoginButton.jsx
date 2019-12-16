@@ -30,6 +30,7 @@ const LoginButton = () => {
       .then(getRes => getRes.json())
       .then(result => {
         if (result === null) {
+          // 처음 방문한 사용자
           let address;
           const oncomplete = data => {
             address = data.address;
@@ -41,7 +42,7 @@ const LoginButton = () => {
             } else if (state === "COMPLETE_CLOSE") {
               geocoder.addressSearch(
                 address,
-                (locationResult, locationStatus) => {
+                async (locationResult, locationStatus) => {
                   const userLocation = {
                     lat: +locationResult[0].x,
                     lon: +locationResult[0].y
@@ -63,16 +64,12 @@ const LoginButton = () => {
                     headers: {
                       "Content-Type": "application/json;charset=utf-8"
                     },
-                    mode: "no-cors",
-                    body: data
+                    mode: "cors",
+                    body: JSON.stringify(data)
                   };
 
-                  fetch(url, options).then(postRes => {
-                    console.log(postRes);
-                    if (postRes.ok) {
-                      setUserInfo(data);
-                    }
-                  });
+                  await fetch(url, options);
+                  setUserInfo({ ...data });
                 }
               );
             }
@@ -80,6 +77,7 @@ const LoginButton = () => {
 
           new daum.Postcode({ oncomplete, onclose }).open();
         } else {
+          // 이전에 방문한 적이 있는 사용자
           const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
           const options = {
             method: "PATCH",
