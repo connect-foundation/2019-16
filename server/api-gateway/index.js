@@ -10,11 +10,11 @@ const {
 } = process.env;
 const fs = require("fs");
 const https = require("https");
-const options = {
+const httpsOptions = {
   key: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_PRIVKEY_PATH}`)),
   cert: fs.readFileSync(path.join(__dirname, `/../keys/${HTTPS_CERTKEY_PATH}`))
 };
-
+const corsOptions = { origin: "https://studycombined.shop" };
 const mongoose = require("mongoose");
 
 mongoose
@@ -46,7 +46,7 @@ apiGateway.connectToLogService();
 
 server.use(cookieParser());
 server.use(express.json());
-server.use(cors());
+server.use(cors(corsOptions));
 server.use(favicon(path.join(__dirname, "/favicon.ico")));
 server.use(setResponseKey);
 server.use(gatewayLogger);
@@ -54,9 +54,11 @@ server.use("/auth", authRouter);
 server.use("/api", apiRouter);
 server.use("/api", writePacket);
 
-https.createServer(options, server).listen(GATEWAY_EXPRESS_PORT, async () => {
-  connectToAllApps();
-});
+https
+  .createServer(httpsOptions, server)
+  .listen(GATEWAY_EXPRESS_PORT, async () => {
+    connectToAllApps();
+  });
 
 async function connectToAllApps() {
   const apps = await apiGateway.getAllApps();
