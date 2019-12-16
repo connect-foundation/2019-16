@@ -1,16 +1,29 @@
 const User = require("../../models/user");
 
-module.exports = function(req, res) {
+module.exports = async function(req, res) {
   const { userId } = req.params;
+  const result = await User.findOne({ userId });
 
-  User.findOne(
-    { userId },
-    { _id: false, history: false, ownGroups: false, partipatedGroups: false },
-    (err, user) => {
-      if (err) return res.sendStatus(500);
-      if (user === null) return res.json(user);
+  if (result === null) res.json(null);
 
-      return res.json(user);
-    }
-  );
+  const {
+    userEmail,
+    userGender,
+    userAgeRange,
+    userName,
+    kakaoAccessToken,
+    profileImage,
+    userLocation
+  } = result;
+
+  res.json({
+    userId,
+    userEmail,
+    userGender,
+    userAgeRange,
+    userName,
+    kakaoAccessToken,
+    profileImage,
+    userLocation
+  });
 };
