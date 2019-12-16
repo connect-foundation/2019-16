@@ -36,6 +36,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     kakaoAccessToken: "",
+    userId: "",
     userEmail: "",
     userName: "",
     userAgeRange: null,
@@ -54,8 +55,8 @@ const UserPage = () => {
   useEffect(() => {
     const parsedUserInfo = jwtParser();
     if (parsedUserInfo) {
-      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
-      const options = { method: "GET" };
+      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.userId}`;
+      const options = { method: "GET", mode: "cors" };
 
       fetch(url, options)
         .then(r => {
