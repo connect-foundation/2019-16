@@ -83,7 +83,7 @@ const LoginButton = () => {
                   };
 
                   fetch(url, options).then(postRes => {
-                    console.log(posrRes);
+                    console.log(postRes);
                     if (postRes.ok) {
                       setUserInfo(data);
                     }
