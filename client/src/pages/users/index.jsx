@@ -54,8 +54,9 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
+
     if (parsedUserInfo) {
-      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.userId}`;
+      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.id}`;
       const options = { method: "GET", mode: "cors" };
 
       fetch(url, options)
