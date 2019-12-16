@@ -1,11 +1,22 @@
 const User = require("../../models/user");
+const { jwtGenerator } = require("./util");
 
 async function registerFirstTimeUser(req, res) {
   const data = req.body;
   const { errors } = await User.create(data);
 
   if (errors) res.sendStatus(500);
-  res.sendStatus(200);
+  res
+    .cookie(
+      "access_token",
+      jwtGenerator({ email: data.userEmail, role: "user" }),
+      {
+        httpOnly: true,
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000 // 1일
+      }
+    )
+    .sendStatus(200);
 }
 
 module.exports = registerFirstTimeUser;
