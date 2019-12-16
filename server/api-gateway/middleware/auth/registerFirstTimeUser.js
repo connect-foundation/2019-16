@@ -7,15 +7,13 @@ async function registerFirstTimeUser(req, res) {
 
   if (errors) res.sendStatus(500);
   res
-    .cookie(
-      "access_token",
-      jwtGenerator({ email: data.userEmail, role: "user" }),
-      {
-        httpOnly: true,
-        secure: false,
-        maxAge: 24 * 60 * 60 * 1000 // 1일
-      }
-    )
+    .cookie("access_token", jwtGenerator({ id: data.userId, role: "user" }), {
+      httpOnly: true,
+      domain: "studycombined.shop",
+      secure: true,
+      sameSite: true,
+      maxAge: 24 * 60 * 60 * 1000 // 1일
+    })
     .sendStatus(200);
 }
 

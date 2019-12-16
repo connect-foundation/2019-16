@@ -20,7 +20,7 @@ const mongoose = require("mongoose");
 mongoose
   .connect(ACCOUNTS_MONGO_URL, {
     useNewUrlParser: true,
-    useFindAndModify: true,
+    useFindAndModify: false,
     useUnifiedTopology: true
   })
   .then(() => {

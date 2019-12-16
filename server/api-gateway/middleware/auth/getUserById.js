@@ -18,9 +18,11 @@ module.exports = async function(req, res) {
   } = result;
 
   res
-    .cookie("access_token", jwtGenerator({ email: userEmail, role: "user" }), {
+    .cookie("access_token", jwtGenerator({ id: userId, role: "user" }), {
       httpOnly: true,
-      secure: false,
+      domain: "studycombined.shop",
+      secure: true,
+      sameSite: true,
       maxAge: 24 * 60 * 60 * 1000 // 1일
     })
     .json({
