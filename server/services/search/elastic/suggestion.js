@@ -80,3 +80,17 @@ exports.addFirstQuery = async info => {
 
   client.index(index);
 };
+exports.getQueryCount = async info => {
+  const { searchWord } = info;
+  const query = generateQuery(searchWord);
+  const body = { query };
+  const count = {
+    index: "suggestedquery",
+    type: "_doc",
+    body
+  };
+
+  const result = client.count(count);
+
+  return result.count;
+};
