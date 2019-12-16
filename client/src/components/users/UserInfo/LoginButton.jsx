@@ -18,22 +18,6 @@ const KakaoLoginButton = styled(KakaoLogin)`
 
 const LoginButton = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
-
-  const userInfoParser = useCallback(({ profile, response }) => {
-    const { kakao_account, properties } = profile;
-
-    return {
-      userId: profile.id,
-      kakaoAccessToken: response.access_token,
-      userAgeRange: +kakao_account.age_range[0] || null,
-      userName: properties.nickname,
-      userEmail: kakao_account.email || "blank",
-      userGender: kakao_account.gender || "",
-      profileImage: properties.profile_image || DEFAULT_PROFILE_IMAGE,
-      userLocation: { lat: null, lon: null }
-    };
-  }, []);
-
   const onSuccess = async ({ response, profile }) => {
     // 카카오 로그인 성공 후
     const { daum, kakao } = window;
@@ -44,13 +28,13 @@ const LoginButton = () => {
 
     fetch(url, options)
       .then(getRes => getRes.json())
-      .then(async result => {
+      .then(result => {
         if (result === null) {
           let address;
           const oncomplete = data => {
             address = data.address;
           };
-          const onclose = async state => {
+          const onclose = state => {
             if (state === "FORCE_CLOSE") {
               alert("필수 입력 사항입니다. 다시 로그인 해주세요");
               window.location.reload();
@@ -72,7 +56,7 @@ const LoginButton = () => {
                     userAgeRange: +profile.kakao_account.age_range[0] || null,
                     profileImage:
                       profile.properties.profile_image || DEFAULT_PROFILE_IMAGE,
-                    userLocation
+                    userLocation: userLocation
                   };
                   const options = {
                     method: "POST",
