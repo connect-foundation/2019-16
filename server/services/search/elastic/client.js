@@ -10,4 +10,4 @@ const client = new Client({
   node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
 });
 
-module.exports = { client };
+module.exports = client;
