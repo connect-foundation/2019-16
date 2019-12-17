@@ -2,9 +2,11 @@ const uuidv1 = require("uuid/v1");
 const { makePacket } = require("./util");
 
 const generateId = Epoch => {
-  const timestampId = uuidv1({ msecs: Epoch });
+  return new Promise(res => {
+    const uuid = uuidv1({ msecs: Epoch });
 
-  return timestampId;
+    res(uuid);
+  });
 };
 
 /**
@@ -17,11 +19,17 @@ function makeLogSender(networkType) {
 
   switch (networkType) {
     case "tcp":
-      return function send(query, ...parentData) {
-        const timestamp = Math.floor(Date.now() / 1);
+      return async function send(query, ...possessedSpanId) {
+        const timestamp = Date.now();
+        let spanId;
+
+        if (possessedSpanId[0]) spanId = possessedSpanId[0];
+        else {
+          spanId = await generateId(timestamp);
+        }
         const logData = {
           query,
-          spanId: generateId(timestamp),
+          spanId,
           service: name,
           timestamp
         };
@@ -38,6 +46,7 @@ function makeLogSender(networkType) {
             this.context
           )
         );
+        return spanId;
       };
     case "http":
       return function send(httpPathandMethod) {
