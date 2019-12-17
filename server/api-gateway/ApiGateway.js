@@ -12,16 +12,32 @@ class ApiGateway extends App {
   }
   onRead(socket, data) {
     // data이벤트 함수
+    const res = this.resMap[data.key];
+    const traceId = res.getHeaders()["trace-id"];
     if (data.method === "REPLY") {
-      this.resMap[data.key].json(data.body);
+      res.json(data.body);
+      this.httpLogSender({
+        traceId: traceId,
+        spanId: traceId,
+        response: 200
+      });
     }
     if (data.method === "ERROR") {
       let error = new Error("서비스에서 에러가 발생했습니다.");
 
-      this.resMap[data.key].status(error.status || 500);
-      this.resMap[data.key].send(
-        error.message || "서비스에서 에러가 발생했습니다."
-      );
+      const status = error.status || 500;
+      console.log("http error status ", status);
+
+      res.status(error.status || 500);
+      res.send(error.message || "서비스에서 에러가 발생했습니다.");
+
+      this.httpLogSender({
+        traceId: traceId,
+        spanId: traceId,
+        errors: status,
+        errorMsg: error.message,
+        response: Number(status)
+      });
     }
     delete this.resMap[data.key];
   }
