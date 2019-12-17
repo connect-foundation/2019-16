@@ -62,12 +62,11 @@ const ApplyButtons = ({
   }, [userInfo.userId]);
 
   const onToggleRecruit = useCallback(async () => {
-    // 그룹 DB에 isRecruiting을 true로 만든다.
-    // now가 min max에 충족하면 예약하기 버튼을 활성화한다.
-    // const { status } = await request("patch", "/studygroup/recruit", {
-    //   data: { isRecruiting, id: _id }
-    // });
-    // if (status !== 200) return alert("서버 에러 발생");
+    const { status } = await request("patch", "/studygroup/recruit", {
+      data: { isRecruiting, groupId: _id }
+    });
+
+    if (status === 400) return alert("서버 에러 발생");
     onToggleReservation(isRecruiting);
     isSatisfyPersonnelAtReservation && setIsCanReserve(true);
   }, [isRecruiting, isSatisfyPersonnelAtReservation]);
