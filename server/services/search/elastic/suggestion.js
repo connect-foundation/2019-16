@@ -44,6 +44,9 @@ exports.suggestQueries = async ({ searchWord }) => {
 };
 
 exports.addFirstQuery = async ({ searchWord }) => {
+  const count = await this.getSuggestionCount(searchWord);
+
+  if (count > 0) return;
   const body = {
     query: searchWord,
     count: 1,
@@ -57,6 +60,21 @@ exports.addFirstQuery = async ({ searchWord }) => {
 
   client.index(index);
 };
+exports.getSuggestionCount = async searchWord => {
+  const query = generateQuery(searchWord);
+
+  const body = { query };
+  const count = {
+    index: SEARCH_INDEX_STUDYGROUP,
+    type: "_doc",
+    body
+  };
+
+  const result = await client.count(count);
+
+  return result.body.count;
+};
+
 exports.getQueryCount = async searchWord => {
   const query = {
     bool: {
