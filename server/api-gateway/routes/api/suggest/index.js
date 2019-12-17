@@ -4,7 +4,7 @@ const router = express.Router();
 const { makePacket } = require("../../../../lib/tcp/util");
 
 module.exports = function(apiGateway) {
-  router.post("/availableRooms", (req, res, next) => {
+  router.post("/suggestQueries", (req, res, next) => {
     const { searchWord } = req.params;
 
     req.packet = makePacket(
