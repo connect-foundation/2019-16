@@ -61,7 +61,7 @@ const Search = ({ location, match }) => {
     userIndexState,
     userIndexDispatch,
     userInfo,
-    getApiAxiosState
+    getApiAxiosState,
   } = useContext(UserContext);
   const { searchList } = userIndexState;
   const { userLocation } = userInfo;
@@ -69,26 +69,15 @@ const Search = ({ location, match }) => {
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
 
-  // useEffect(() => {
-  //   console.log(query);
-  // }, [userLocation]);
+  useEffect(() => {
+    if (isSetPositionDuringLoading(loading, lat, lon)) {
+    }
+  }, [userLocation]);
 
   useEffect(() => {
-    if (isHaveCardDataWhenLoaded(loading, data)) {
-      if (pathname === "/search")
-        request(
-          "get",
-          `/search/query/${query}/location/${lat}/${lon}/page/0/true`
-        );
-
-      if (pathname === "/search/tags")
-        request("post", "/search/tags/page/0", {
-          data: { tags: [query], isRecruit: true, lat, lon }
-        });
-      userIndexDispatch(set_groups(data));
-    }
-  }, [data, userLocation]);
-
+    if (!isHaveCardDataWhenLoaded(loading, data)) return;
+    userIndexDispatch(set_groups(data));
+  }, [data]);
   return (
     <StyledSearch>
       <div className="study-group-list">
