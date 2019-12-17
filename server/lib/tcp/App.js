@@ -1,6 +1,6 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
-const { makePacket, isLogService } = require("../tcp/util");
+const { makePacket, isLogService, isErrorPacket } = require("../tcp/util");
 const { getAppbyName, getAllApps, popMessageQueue } = require("../redis");
 const { makeLogSender } = require("./logUtils");
 
@@ -62,6 +62,14 @@ class App extends TcpServer {
       appClient.write(packet);
     }
     if (!isLogService(data.info.name) && data.spanId) {
+      if (isErrorPacket(data.method)) {
+        await this.sendTcpLog(data.curQuery, {
+          spanId: data.spanId,
+          error: data.method,
+          errorMsg: data.body.msg
+        });
+        return;
+      }
       await this.sendTcpLog(data.curQuery, data.spanId);
     }
   }
