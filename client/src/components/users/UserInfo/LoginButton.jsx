@@ -26,7 +26,7 @@ const LoginButton = () => {
 
     fetch(url, options)
       .then(getRes => getRes.json())
-      .then(result => {
+      .then(async result => {
         if (result === null) {
           // 처음 방문한 사용자
           let address;
@@ -73,24 +73,27 @@ const LoginButton = () => {
               );
             }
           };
-
+          alert("주소를 입력 해주세요");
           new daum.Postcode({ oncomplete, onclose }).open();
         } else {
           // 이전에 방문한 적이 있는 사용자
           const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
           const options = {
             method: "PATCH",
-            headers: { "Content-Type": "application/json;charset:utf-8" },
-            body: { kakaoAccessToken: response.access_token },
+            headers: {
+              "Content-Type": "application/json;charset=utf-8"
+            },
+            mode: "cors",
             credentials: "include",
-            mode: "cors"
+            body: JSON.stringify({ kakaoAccessToken: response.access_token })
           };
+          const patchResult = await fetch(url, options);
 
-          fetch(url, options).then(() => {
+          if (patchResult.ok)
             setUserInfo({
-              ...result
+              ...result,
+              ...{ kakaoAccessToken: response.access_token }
             });
-          });
         }
       })
       .catch(e => {
