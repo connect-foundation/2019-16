@@ -37,12 +37,8 @@ function calculateDuration(spanId, durationEndData) {
 
   console.log(`--------------------------- duration is ${duration}`);
 
-  const logPacket = { ...durationStartData, duration };
+  const logPacket = { ...durationEndData, ...durationStartData, duration };
 
-  if (durationEndData.hasOwnProperty("errorMsg")) {
-    logPacket.errorMsg = durationEndData.errorMsg;
-    logPacket.errors = durationEndData.error;
-  }
   sendLog.call(this, logPacket, spanId);
 }
 
