@@ -1,8 +1,9 @@
 const { Types, Schema, model } = require("mongoose");
 
 const UserSchema = new Schema({
-  email: { type: String, required: true },
-  name: { type: String, required: true }
+  id: { type: String, required: true },
+  email: { type: String },
+  name: { type: String }
 });
 
 exports.schema = UserSchema;
