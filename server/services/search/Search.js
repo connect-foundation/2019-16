@@ -15,7 +15,7 @@ const {
   bulkStudyGroups
 } = require("./elastic/group");
 
-const { suggestQueries, addFirstQuery } = require("./elastic/suggestion");
+const { suggestQueries } = require("./elastic/suggestion");
 
 const queryMap = {
   searchStudyGroup,
@@ -24,8 +24,7 @@ const queryMap = {
   tagStudyGroupWithCategory,
   searchAllStudyGroup,
   searchAllStudyGroupWithCategory,
-  suggestQueries,
-  addFirstQuery
+  suggestQueries
 };
 
 function emptyStudyGroupPeriodically(timer) {
