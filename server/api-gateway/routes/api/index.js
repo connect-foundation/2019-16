@@ -5,11 +5,12 @@ const searchRouter = require("./search");
 const studyGroupRouter = require("./studyGroup");
 const studyRoomRouter = require("./studyRoom");
 
-function apiRouter(apigateway) {
-  router.use("/payment", paymentRouter());
-  router.use("/search", searchRouter(apigateway));
-  router.use("/studygroup", studyGroupRouter(apigateway));
-  router.use("/studyroom", studyRoomRouter(apigateway));
+function apiRouter(apiGateway) {
+  router.use("/payment", paymentRouter(apiGateway));
+  router.use("/search", searchRouter(apiGateway));
+  router.use("/studygroup", studyGroupRouter(apiGateway));
+  router.use("/studyroom", studyRoomRouter(apiGateway));
+
   return router;
 }
 
