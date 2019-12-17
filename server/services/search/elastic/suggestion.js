@@ -65,7 +65,7 @@ exports.getSuggestionCount = async searchWord => {
 
   const body = { query };
   const count = {
-    index: SEARCH_INDEX_STUDYGROUP,
+    index: SEARCH_INDEX_QUERY,
     type: "_doc",
     body
   };
