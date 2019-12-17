@@ -13,7 +13,7 @@ const doAndResponse = async (params, packetData, cb) => {
   } catch (e) {
     console.error(e);
     replyData.method = "ERROR";
-    replyData.body = { error: e, status: 400 };
+    replyData.body = { msg: e, status: 400 };
     throw replyData;
   }
 
