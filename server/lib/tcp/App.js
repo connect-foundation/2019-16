@@ -16,6 +16,7 @@ class App extends TcpServer {
 
     this.sendTcpLog = makeLogSender.call(this, "tcp");
     (async () => {
+      if (name === process.env.LOG_NAME) return;
       await new Promise(res => this.connectToLogService(res));
       this.doMessageJob();
     })();
