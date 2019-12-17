@@ -4,7 +4,7 @@
   "description": "스터디컴바인 결제 서비스",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "form-urlencoded": "^4.1.1",
+    "jest": "^24.9.0",
     "mongoose": "^5.8.1",
     "node-fetch": "^2.6.0"
   }
