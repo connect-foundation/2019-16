@@ -45,8 +45,8 @@ const ApplyButtons = ({
     const {
       status,
       changedMemberType,
-      msg,
-      changedNowPersonnel
+      changedNowPersonnel,
+      failReason
     } = await request("post", "/studygroup/toggleRegistration", {
       data: { userId: userInfo.userId, groupId: _id }
     });
@@ -55,9 +55,9 @@ const ApplyButtons = ({
       setMemberType(changedMemberType);
       onChangedNowPersonnel(changedNowPersonnel);
     }
+
     if (status === 400) {
-      console.error(msg);
-      alert("소속 상태 변경 중, 에러발생");
+      alert(failReason);
     }
   }, [userInfo.userId]);
 
