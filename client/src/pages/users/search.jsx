@@ -55,6 +55,7 @@ const isHaveCardDataWhenLoaded = (loading, data) =>
 
 const Search = ({ location, match }) => {
   const query = queryString.parse(location.search).query;
+
   const pathname = location.pathname;
   const {
     userIndexState,
@@ -68,24 +69,22 @@ const Search = ({ location, match }) => {
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
 
-  useEffect(() => {
-    if (pathname === "/search") debugger;
-    request("get", `/search/query/${query}/location/${lat}/${lon}/page/0/true`);
-
-    if (pathname === "/search/tags")
-      request("post", "/search/tags/page/0", {
-        data: { tags: [query], isRecruit: true, lat, lon }
-      });
-    userIndexDispatch(set_groups(data));
-  }, []);
-
-  useEffect(() => {
-    if (isSetPositionDuringLoading(loading, lat, lon)) {
-    }
-  }, [userLocation]);
+  // useEffect(() => {
+  //   console.log(query);
+  // }, [userLocation]);
 
   useEffect(() => {
     if (isHaveCardDataWhenLoaded(loading, data)) {
+      if (pathname === "/search")
+        request(
+          "get",
+          `/search/query/${query}/location/${lat}/${lon}/page/0/true`
+        );
+
+      if (pathname === "/search/tags")
+        request("post", "/search/tags/page/0", {
+          data: { tags: [query], isRecruit: true, lat, lon }
+        });
       userIndexDispatch(set_groups(data));
     }
   }, [data, userLocation]);
