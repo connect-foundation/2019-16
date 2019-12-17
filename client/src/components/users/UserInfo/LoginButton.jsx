@@ -8,6 +8,7 @@ const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 const KakaoLoginButton = styled(KakaoLogin)`
   border-style: hidden;
+  background-color: white;
 
   img:hover {
     cursor: pointer;
