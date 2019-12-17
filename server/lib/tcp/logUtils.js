@@ -59,12 +59,12 @@ function makeLogSender(networkType) {
         return spanId;
       };
     case "http":
-      return function send(httpPathandMethod) {
-        const timestamp = Math.floor(Date.now() / 1);
+      return async function send(httpLogData) {
+        const timestamp = Date.now();
+
         const logData = {
-          ...httpPathandMethod,
-          spanId: generateId(timestamp),
-          service: this.name,
+          ...httpLogData,
+          service: "gateway",
           timestamp
         };
 
