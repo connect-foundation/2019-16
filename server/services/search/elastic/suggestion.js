@@ -1,4 +1,4 @@
-const { SEARCH_INDEX_STUDYGROUP } = process.env;
+const { SEARCH_INDEX_STUDYGROUP, SEARCH_INDEX_QUERY } = process.env;
 const client = require("./client");
 
 const generateQuery = searchWord => {
@@ -30,7 +30,7 @@ exports.suggestQueries = async ({ searchWord }) => {
     size: 5
   };
   const search = {
-    index: "suggestedquery",
+    index: SEARCH_INDEX_QUERY,
     body
   };
   let searchResult = await client.search(search);
@@ -44,7 +44,7 @@ exports.suggestQueries = async ({ searchWord }) => {
     return hit._source;
   });
 
-  return { count, result };
+  return result;
 };
 
 exports.addFirstQuery = async ({ searchWord }) => {
@@ -54,7 +54,7 @@ exports.addFirstQuery = async ({ searchWord }) => {
     value: 0
   };
   const index = {
-    index: "suggestedquery",
+    index: SEARCH_INDEX_QUERY,
     type: "_doc",
     body
   };
@@ -101,7 +101,7 @@ exports.updateQueriesValue = async (searchWord, contentsCount) => {
   };
 
   const update = {
-    index: "suggestedquery",
+    index: SEARCH_INDEX_QUERY,
     body
   };
 

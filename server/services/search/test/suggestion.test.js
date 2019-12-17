@@ -3,58 +3,68 @@ const client = require("../elastic/client");
 const {
   suggestQueries,
   updateQueriesValue,
-  addFirstQuery
+  addFirstQuery,
+  getQueryCount
 } = require("../elastic/suggestion");
 
 const testQuries = [
   {
     query: "자바",
-    count: 0,
-    value: 0
+    count: 1,
+    value: 1
   },
   {
     query: "자바스크립트",
-    count: 0,
+    count: 1,
     value: 0
   }
 ];
 
-// const initializeElastic = async () => {
-//   // await client.index({
-//   //   index: "suggesttest",
-//   //   type: "_doc",
-//   //   body: testQuries[0]
-//   // });
-//   // await client.index({
-//   //   index: "suggesttest",
-//   //   type: "_doc",
-//   //   body: testQuries[1]
-//   // });
-// };
-// const clearElastic = async () => {
-//   // await client.delete({ index: "suggesttest", id: 1 });
-//   // await client.delete({ index: "suggesttest", id: 2 });
-// };
+const initializeElastic = async () => {
+  await client.index({
+    index: "suggestedquery",
+    id: 0,
+    type: "_doc",
+    body: testQuries[0]
+  });
+  await client.index({
+    index: "suggestedquery",
+    id: 1,
+    type: "_doc",
+    body: testQuries[1]
+  });
+};
+const clearElastic = async () => {
+  await client.delete({ index: "suggestedquery", id: 0 });
+  await client.delete({ index: "suggestedquery", id: 1 });
+};
 
-// beforeAll(async () => {
-//   return await initializeElastic();
-// });
+beforeAll(async () => {
+  // await initializeElastic();
+});
 
-// afterAll(async () => {
-//   return await clearElastic();
-// });
+afterAll(async () => {
+  // await clearElastic();
+});
 
-// /**
-//  * suggestQueries
-//  */
-// test("suggestQueries Test", async () => {
-//   const result = await suggestQueries({
-//     searchWord: "자바"
-//   });
+/**
+ * suggestQueries
+ */
+test("suggestQueries Test", async () => {
+  const result = await suggestQueries({
+    searchWord: "자바"
+  });
+  const result_exeptId = result.map(res => {
+    delete res._id;
+    return res;
+  });
 
-//   expect(result).toEqual([testQuries[1], testQuries[0]]);
-// });
+  console.log(result_exeptId);
+  expect(result_exeptId).toEqual(testQuries);
+});
 
-// addFirstQuery({ searchWord: "파이썬" }).then(res => {
+// suggestQueries({
+//   searchWord: "자바"
+// }).then(res => {
 //   console.log(res);
 // });
