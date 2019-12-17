@@ -32,23 +32,23 @@ class LogService extends require("../../lib/tcp/App") {
         body: jsonData,
         id: timestamp
       });
-    }
-    // const replyPacket = makePacket(
-    //   "REPLY",
-    //   "log",
-    //   {},
-    //   { data: "it's finall data" },
-    //   key,
-    //   this.context
-    // );
+async function doJob(_socket, data) {
+  const { method, nextQuery, body } = data;
 
-    // socket.write(replyPacket);
+  const { timestamp, spanId } = body.data;
+
+  if (nextQuery === "log" && method === "POST") {
+    if (durationEndDataIsCome.call(this, spanId)) {
+      calculateDuration.call(this, spanId, body.data);
+    } else {
+      this.logMap[spanId] = body.data;
+    }
   }
 }
 
 class LogService extends App {
   constructor(name, host, port) {
-    super(name, host, port, jobEexcutor);
+    super(name, host, port, doJob);
     this.logMap = {};
   }
 }
