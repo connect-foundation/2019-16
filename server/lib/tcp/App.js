@@ -70,7 +70,7 @@ class App extends TcpServer {
         });
         return;
       }
-      await this.sendTcpLog(data.curQuery, data.spanId);
+      await this.sendTcpLog(data.curQuery, { spanId: data.spanId });
     }
   }
 
