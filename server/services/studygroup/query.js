@@ -54,6 +54,14 @@ exports.toggleRegistration = async params => {
     groupInfo.now_personnel--;
   }
   if (!isJoiner) {
+    const { now_personnel, max_personnel, isRecruiting } = groupInfo;
+    let failReason = null;
+
+    if (now_personnel > max_personnel) failReason = "인원이 꽉 찼습니다.";
+    if (!isRecruiting) failReason = "모집 중이 아닙니다.";
+
+    if (failReason) return { status: 400, failReason };
+
     groupInfo.members.push({ id: userId });
     groupInfo.now_personnel++;
   }
