@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 import UserInfo from "./UserInfo";
 import StudySearchNavbar from "./studySearchNavbar";
+import SuggestDropDown from "./suggestDropDown";
 
 import { UserContext } from "../../pages/users/index";
+import { REQUEST_URL } from "../../config.json";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -28,6 +30,9 @@ const StyledHeader = styled.header`
       height: 68px;
     }
     .search-box {
+      display: block;
+      position: relative;
+      top: auto;
       .input {
         border-color: #53d0ec;
       }
@@ -61,12 +66,18 @@ const LeftHeader = styled.div`
 const Header = ({ history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
   const [keyword, setKeyword] = useState("");
-
+  const [suggestions, setSuggestion] = useState([]);
   const { lat, lon } = userInfo.userLocation;
   const { request } = getApiAxiosState;
 
-  const onChange = useCallback(e => {
-    setKeyword(e.target.value);
+  const onChange = useCallback(async e => {
+    const query = e.target.value;
+    setKeyword(query);
+    const url = `${REQUEST_URL}/api/search/suggest/${query}`;
+    const response = await fetch(url);
+    const jsonRes = await response.json();
+    const suggestions = jsonRes.map(jsonRes => jsonRes.query);
+    setSuggestion(suggestions);
   });
 
   const onKeyDown = useCallback(
@@ -94,14 +105,17 @@ const Header = ({ history }) => {
           </a>
 
           <div className={`search-box`}>
-            <input
-              className="input is-rounded"
-              type="text"
-              placeholder="스터디그룹 검색"
-              value={keyword}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-            />
+            <div>
+              <input
+                className="input is-rounded"
+                type="text"
+                placeholder="스터디그룹 검색"
+                value={keyword}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+              />
+              <SuggestDropDown suggestions={suggestions} />
+            </div>
           </div>
           <StudySearchNavbar />
         </LeftHeader>
