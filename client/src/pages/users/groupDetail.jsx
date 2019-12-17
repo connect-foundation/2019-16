@@ -42,6 +42,9 @@ const GroupDetail = ({ match }) => {
   const { id } = match.params;
 
   const requestDelete = useCallback(async () => {
+    if (!groupData.isRecruiting)
+      return alert("마감(예약)상태에서 그룹을 삭제할 수 없습니다.");
+
     try {
       const { status } = await request("delete", `/studygroup/detail/${id}`);
       if (status === 200) window.location.href = "/";

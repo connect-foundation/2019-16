@@ -168,6 +168,10 @@ const GroupUpdate = ({ match, history }) => {
   useEffect(() => {
     request("get", `/studygroup/detail/${id}`)
       .then(({ detailInfo, status }) => {
+        if (!detailInfo.isRecruiting) {
+          alert("마감(예약) 상태에서 그룹 정보를 수정할 수 없습니다.");
+          history.push(`/group/detail/${id}`);
+        }
         if (status === 200) dispatch(set_initial_data(detailInfo));
       })
       .catch(err => {
