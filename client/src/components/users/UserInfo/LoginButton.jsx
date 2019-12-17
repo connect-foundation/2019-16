@@ -7,78 +7,94 @@ import { REQUEST_URL, KAKAO_JS_KEY } from "../../../config.json";
 const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 const KakaoLoginButton = styled(KakaoLogin)`
-  img {
-    height: 24px;
-    width: 24px;
-  }
-  span {
-    font-weight: bold;
+  border-style: hidden;
+
+  img:hover {
+    cursor: pointer;
   }
 `;
 
 const LoginButton = () => {
   const { userInfo, setUserInfo } = useContext(UserContext);
-
-  const userInfoParser = useCallback(({ profile, response }) => {
-    const { kakao_account, properties } = profile;
-
-    return {
-      kakaoAccessToken: response.access_token,
-      userAgeRange: +kakao_account.age_range[0] || null,
-      userName: properties.nickname,
-      userEmail: kakao_account.email || "blank",
-      userGender: kakao_account.gender || "",
-      profileImage: properties.profile_image || DEFAULT_PROFILE_IMAGE,
-      userLocation: { lat: null, lon: null }
-    };
-  }, []);
-
   const onSuccess = async ({ response, profile }) => {
-    const email = profile.kakao_account.email || "blank";
-    const url = `${REQUEST_URL}/auth/users/accounts/${email}`;
-    const options = { method: "GET" };
+    // 카카오 로그인 성공 후
+    const { daum, kakao } = window;
+    const geocoder = new kakao.maps.services.Geocoder();
+    const userId = profile.id;
+    const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
+    const options = { method: "GET", credentials: "include" };
 
     fetch(url, options)
-      .then(r => r.json())
-      .then(result => {
+      .then(getRes => getRes.json())
+      .then(async result => {
         if (result === null) {
-          const locationInput = prompt(
-            "처음 오셨군요! 사는 지역을 말씀해 주세요"
-          );
-          const url = `${REQUEST_URL}/auth/users/register`;
-          const data = {
-            kakaoAccessToken: response.access_token,
-            userEmail: profile.kakao_account.email || "",
-            userName: profile.properties.nickname,
-            userGender: profile.kakao_account.gender || "",
-            userAgeRange: +profile.kakao_account.age_range[0] || null,
-            profileImage:
-              response.properties.profile_image || DEFAULT_PROFILE_IMAGE,
-            userLocation: { lat: 37.4986832, lon: 127.0280951 }
+          // 처음 방문한 사용자
+          let address;
+          const oncomplete = data => {
+            address = data.address;
           };
+          const onclose = state => {
+            if (state === "FORCE_CLOSE") {
+              alert("필수 입력 사항입니다. 다시 로그인 해주세요");
+              window.location.reload();
+            } else if (state === "COMPLETE_CLOSE") {
+              geocoder.addressSearch(
+                address,
+                async (locationResult, locationStatus) => {
+                  const userLocation = {
+                    lat: +locationResult[0].x,
+                    lon: +locationResult[0].y
+                  };
+                  const url = `${REQUEST_URL}/auth/users/accounts`;
+                  const data = {
+                    kakaoAccessToken: response.access_token,
+                    userId: profile.id,
+                    userEmail: profile.kakao_account.email || "",
+                    userName: profile.properties.nickname,
+                    userGender: profile.kakao_account.gender || "",
+                    userAgeRange: +profile.kakao_account.age_range[0] || null,
+                    profileImage:
+                      profile.properties.profile_image || DEFAULT_PROFILE_IMAGE,
+                    userLocation: userLocation
+                  };
+                  const options = {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json;charset=utf-8"
+                    },
+                    mode: "cors",
+                    credentials: "include",
+                    body: JSON.stringify(data)
+                  };
+
+                  await fetch(url, options);
+                  setUserInfo({ ...data });
+                }
+              );
+            }
+          };
+          alert("주소를 입력 해주세요");
+          new daum.Postcode({ oncomplete, onclose }).open();
+        } else {
+          // 이전에 방문한 적이 있는 사용자
+          const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
           const options = {
-            method: "POST",
-            headers: { "Content-Type": "application/json;charset=utf-8" },
-            body: data
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8"
+            },
+            mode: "cors",
+            credentials: "include",
+            body: JSON.stringify({ kakaoAccessToken: response.access_token })
           };
+          const patchResult = await fetch(url, options);
 
-          fetch(url, options).then(() => {
-            alert("반갑습니다! 로그인을 다시 시도해 주세요");
-          });
+          if (patchResult.ok)
+            setUserInfo({
+              ...result,
+              ...{ kakaoAccessToken: response.access_token }
+            });
         }
-
-        const url = `${REQUEST_URL}/auth/users/kakao-access-token`;
-        const options = {
-          method: "PUT",
-          headers: { "Content-Type": "application/json;charset:utf-8" },
-          body: { kakaoAccessToken: response.access_token }
-        };
-
-        fetch(url, options).then(() => {
-          setUserInfo({
-            ...result
-          });
-        });
       })
       .catch(e => {
         alert("데이터 요청을 할 수 없습니다.");
@@ -88,14 +104,12 @@ const LoginButton = () => {
 
   return (
     <KakaoLoginButton
-      className="button is-warning is-rounded"
       jsKey={KAKAO_JS_KEY}
       onSuccess={onSuccess}
       onFailure={console.error}
       getProfile="true"
     >
-      <img src="/image/kakao-talk.png" alt="kakao-talk" />
-      <span>&nbsp; 카카오톡으로 로그인하기</span>
+      <img src="/image/login-button.png" alt="login-button" />
     </KakaoLoginButton>
   );
 };

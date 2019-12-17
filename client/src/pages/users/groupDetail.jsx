@@ -57,7 +57,7 @@ const GroupDetail = ({ match }) => {
   }, [id]);
 
   useEffect(() => {
-    !loading && data && dispatch(set_detail_data(data));
+    !loading && data && dispatch(set_detail_data(data.detailInfo));
   }, [data, loading]);
   const isHaveGroupData = Object.keys(groupData).length;
   const { intro } = groupData;

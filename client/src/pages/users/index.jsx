@@ -10,7 +10,6 @@ import { REQUEST_URL } from "../../config.json";
 
 import MainPage from "./Main";
 import GroupCreatePage from "./groupCreate";
-import Notice from "../../components/users/Notice";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
@@ -19,7 +18,6 @@ import Reservation from "./reservation";
 import Search from "./search";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
-const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 export const UserContext = createContext();
 
@@ -37,6 +35,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     kakaoAccessToken: "",
+    userId: "",
     userEmail: "",
     userName: "",
     userAgeRange: null,
@@ -54,14 +53,17 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
+
     if (parsedUserInfo) {
-      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
-      const options = { method: "GET" };
+      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.id}`;
+      const options = { method: "GET", mode: "cors", credentials: "include" };
 
       fetch(url, options)
         .then(r => {
           if (r.ok) return r.json();
-          throw new Error("fetch error");
+
+          alert("로그인 오류 입니다");
+          window.location.href = "/";
         })
         .then(result => {
           setUserInfo(result);
@@ -70,10 +72,7 @@ const UserPage = () => {
     } else {
       getCurrentPosition
         .then(pos => {
-          // const lat = pos.lat;
-          // const lon = pos.lon;
-          const lat = 41.12;
-          const lon = -50.34;
+          const { lat, lon } = pos;
           setUserInfo({ ...userInfo, userLocation: { lat, lon } });
         })
         .catch(console.error);
@@ -91,7 +90,6 @@ const UserPage = () => {
       }}
     >
       <div>
-        <Notice />
         <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
