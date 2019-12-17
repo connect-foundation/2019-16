@@ -33,7 +33,7 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
   const isSatisfyPersonnel =
     min_personnel <= now_personnel && now_personnel <= max_personnel;
 
-  const onRegister = useCallback(() => {
+  const onToggleRegister = useCallback(() => {
     // 사용자 DB에 해당 그룹 정보를 넣는다
     // request('post', '/studygroup/toggleRegister', { data: { id: userInfo.}})
     setMemberType("joiner");
@@ -76,13 +76,13 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
         switch (memberType) {
           case "searcher":
             return (
-              <button className="button" onClick={onRegister}>
+              <button className="button" onClick={onToggleRegister}>
                 신청하기
               </button>
             );
           case "joiner":
             return (
-              <button className="button" onClick={onCancel}>
+              <button className="button" onClick={onToggleRegister}>
                 취소하기
               </button>
             );
