@@ -39,13 +39,17 @@ function calculateDuration(spanId, durationEndData) {
 
   const logPacket = { ...durationStartData, duration };
 
+  if (durationEndData.hasOwnProperty("errorMsg")) {
+    logPacket.errorMsg = durationEndData.errorMsg;
+    logPacket.errors = durationEndData.error;
+  }
   sendLog.call(this, logPacket, spanId);
 }
 
 async function doJob(_socket, data) {
   const { method, nextQuery, body } = data;
 
-  const { timestamp, spanId } = body.data;
+  const { spanId } = body.data;
 
   if (nextQuery === "log" && method === "POST") {
     if (durationEndDataIsCome.call(this, spanId)) {
