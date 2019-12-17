@@ -13,10 +13,12 @@ const StyledSuggestDropDown = styled.header`
 
 const SuggestDropDown = ({ suggestions }) => {
   const navItems = suggestions.map(suggestion => (
-    <a class="navbar-item">{suggestion}</a>
+    <a className="navbar-item">{suggestion}</a>
   ));
   return navItems.length ? (
-    <div class="navbar-dropdown">{navItems}</div>
+    <StyledSuggestDropDown>
+      <div className="navbar-dropdown">{navItems}</div>
+    </StyledSuggestDropDown>
   ) : (
     <></>
   );
