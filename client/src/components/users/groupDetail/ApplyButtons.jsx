@@ -40,7 +40,8 @@ const ApplyButtons = ({
 
   const onToggleRegister = useCallback(async () => {
     if (isPersonnelHigherThanMax) return alert("인원이 꽉 찼습니다");
-    if (!isRecruiting) return alert("모집 중이 아닙니다.");
+    if (memberType !== "joiner" && !isRecruiting)
+      return alert("모집 중이 아닙니다.");
     // 사용자 DB에 해당 그룹 정보를 넣는다
     const {
       status,
@@ -62,11 +63,16 @@ const ApplyButtons = ({
   }, [userInfo.userId]);
 
   const onToggleRecruit = useCallback(async () => {
-    const { status } = await request("patch", "/studygroup/recruit", {
-      data: { isRecruiting, groupId: _id }
-    });
+    const { status, failReason } = await request(
+      "patch",
+      "/studygroup/recruit",
+      {
+        data: { isRecruiting, groupId: _id }
+      }
+    );
 
-    if (status === 400) return alert("서버 에러 발생");
+    if (status === 400) return alert(failReason);
+
     onToggleReservation(isRecruiting);
     isSatisfyPersonnelAtReservation && setIsCanReserve(true);
   }, [isRecruiting, isSatisfyPersonnelAtReservation]);
