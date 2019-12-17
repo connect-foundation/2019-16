@@ -60,21 +60,21 @@ const Search = ({ location, match }) => {
     userIndexState,
     userIndexDispatch,
     userInfo,
-    getApiAxiosState,
+    getApiAxiosState
   } = useContext(UserContext);
   const { searchList } = userIndexState;
   const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
-  debugger;
+
   useEffect(() => {
-    if (pathname === "/search")
-      request("get", `/search/query/${query}/location/${lat}/${lon}/true`);
+    if (pathname === "/search") debugger;
+    request("get", `/search/query/${query}/location/${lat}/${lon}/page/0/true`);
 
     if (pathname === "/search/tags")
-      request("post", "/search/tags", {
-        data: { tags: [query], isRecruit: true, lat, lon },
+      request("post", "/search/tags/page/0", {
+        data: { tags: [query], isRecruit: true, lat, lon }
       });
     userIndexDispatch(set_groups(data));
   }, []);
