@@ -36,4 +36,15 @@ exports.makePacket = (
   return JSON.stringify(packet) + PACKET_SPLITTER;
 };
 
+exports.isLogService = name => {
+  if (name === process.env.LOG_NAME) return true;
+  return false;
+};
+
+exports.isErrorPacket = method => {
+  if (method === this.ERROR_PACKET_CODE) return true;
+  return false;
+};
 exports.PACKET_SPLITTER = PACKET_SPLITTER;
+
+exports.ERROR_PACKET_CODE = "ERROR";

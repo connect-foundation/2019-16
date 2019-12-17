@@ -2,9 +2,11 @@ const uuidv1 = require("uuid/v1");
 const { makePacket } = require("./util");
 
 const generateId = Epoch => {
-  const timestampId = uuidv1({ msecs: Epoch });
+  return new Promise(res => {
+    const uuid = uuidv1({ msecs: Epoch });
 
-  return timestampId;
+    res(uuid);
+  });
 };
 
 /**
@@ -17,13 +19,29 @@ function makeLogSender(networkType) {
 
   switch (networkType) {
     case "tcp":
-      return function send(query, ...parentData) {
-        const timestamp = Math.floor(Date.now() / 1);
+      return async function send(query, ...restData) {
+        const timestamp = Date.now();
+        let spanId;
+        let errorMsg;
+        let error;
+
+        if (restData[0]) {
+          const restObject = restData[0];
+          if (restObject.hasOwnProperty("spanId")) spanId = restObject.spanId;
+          if (restObject.hasOwnProperty("error")) {
+            error = restObject.error;
+            errorMsg = restObject.errorMsg;
+          }
+        } else {
+          spanId = await generateId(timestamp);
+        }
         const logData = {
           query,
-          spanId: generateId(timestamp),
+          spanId,
           service: name,
-          timestamp
+          timestamp,
+          error,
+          errorMsg
         };
 
         this.logService.write(
@@ -38,14 +56,15 @@ function makeLogSender(networkType) {
             this.context
           )
         );
+        return spanId;
       };
     case "http":
-      return function send(httpPathandMethod) {
-        const timestamp = Math.floor(Date.now() / 1);
+      return async function send(httpLogData) {
+        const timestamp = Date.now();
+
         const logData = {
-          ...httpPathandMethod,
-          spanId: generateId(timestamp),
-          service: this.name,
+          ...httpLogData,
+          service: "gateway",
           timestamp
         };
 

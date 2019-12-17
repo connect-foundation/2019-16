@@ -8,12 +8,21 @@ module.exports = function(apiGateway) {
       }
     } catch (e) {
       let error = new Error("잘못된 라우터로 요청이 들어왔습니다. ");
+      const response = apiGateway.resMap[req.resKey];
+      const traceId = response.getHeaders()["trace-id"];
+      const status = error.status || 500;
 
-      apiGateway.resMap[req.resKey].status(error.status || 500);
-      apiGateway.resMap[req.resKey].send(
-        error.message || "잘못된 라우터로 요청이 들어왔습니다."
-      );
+      response.status(status);
+      response.send(error.message || "잘못된 라우터로 요청이 들어왔습니다.");
       delete apiGateway.resMap[req.resKey];
+
+      apiGateway.httpLogSender({
+        traceId: traceId,
+        spanId: traceId,
+        errors: status,
+        errorMsg: error.message,
+        response: Number(status)
+      });
     }
   };
 };
