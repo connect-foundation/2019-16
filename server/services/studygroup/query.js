@@ -99,9 +99,11 @@ exports.toggleRecruitment = async params => {
   groupInfo.isRecruiting = !groupInfo.isRecruiting;
   return groupInfo
     .save()
-    .then(() => ({
-      status: 200
-    }))
+    .then(async () => {
+      await updateStudyGroup(groupInfo);
+
+      return { status: 200 };
+    })
     .catch(err => {
       throw new Error(err);
     });
