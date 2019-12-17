@@ -35,10 +35,6 @@ exports.suggestQueries = async ({ searchWord }) => {
   };
   let searchResult = await client.search(search);
 
-  const count = searchResult.body.hits.total;
-
-  if (count <= 0) this.addFirstQuery({ searchWord });
-
   const result = searchResult.body.hits.hits.map(hit => {
     hit._source._id = hit._id;
     return hit._source;

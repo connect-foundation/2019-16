@@ -1,10 +1,15 @@
 const { SEARCH_INDEX_STUDYGROUP } = process.env;
 const client = require("./client");
-const { getQueryCount, updateQueriesValue } = require("./suggestion");
+const {
+  getQueryCount,
+  updateQueriesValue,
+  addFirstQuery
+} = require("./suggestion");
 
 async function AccumulateSuggestionData({ searchWord }) {
   const count = await getQueryCount(searchWord);
 
+  if (count <= 0) addFirstQuery({ searchWord });
   updateQueriesValue(searchWord, count);
 }
 
