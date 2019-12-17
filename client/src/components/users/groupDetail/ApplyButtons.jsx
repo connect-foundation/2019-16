@@ -34,10 +34,13 @@ const ApplyButtons = ({
   const { userId } = userInfo;
   const [memberType, setMemberType] = useState(null); // guest, searcher, joiner, leader
   const [isCanReserve, setIsCanReserve] = useState(false);
-  const isSatisfyPersonnel =
+  const isSatisfyPersonnelAtReservation =
     min_personnel <= now_personnel && now_personnel <= max_personnel;
+  const isPersonnelHigherThanMax = now_personnel > max_personnel;
 
   const onToggleRegister = useCallback(async () => {
+    if (isPersonnelHigherThanMax) return alert("인원이 꽉 찼습니다");
+    if (!isRecruiting) return alert("모집 중이 아닙니다.");
     // 사용자 DB에 해당 그룹 정보를 넣는다
     const {
       status,
@@ -66,8 +69,8 @@ const ApplyButtons = ({
     // });
     // if (status !== 200) return alert("서버 에러 발생");
     onToggleReservation(isRecruiting);
-    isSatisfyPersonnel && setIsCanReserve(true);
-  }, [isRecruiting, isSatisfyPersonnel]);
+    isSatisfyPersonnelAtReservation && setIsCanReserve(true);
+  }, [isRecruiting, isSatisfyPersonnelAtReservation]);
   const onReservate = useCallback(() => {
     // 에헤잉
   }, []);
@@ -81,7 +84,7 @@ const ApplyButtons = ({
     if (!isJoiner) type = "searcher";
     if (userId === leader) {
       type = "leader";
-      isSatisfyPersonnel && setIsCanReserve(true);
+      isSatisfyPersonnelAtReservation && setIsCanReserve(true);
     }
     setMemberType(type);
   }, [userId]);
