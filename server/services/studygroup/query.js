@@ -47,13 +47,19 @@ exports.toggleRegistration = async params => {
   const { userId, groupId } = params;
   const groupInfo = await StudyGroups.findById(groupId);
   const members = groupInfo.members;
-  const isJoiner = members.some(userId);
+  const isJoiner = members.some(m => m.id === userId);
 
-  if (isJoiner) groupInfo.members = members.filter(m => m !== userId);
-  if (!isJoiner) groupInfo.members.push(userId);
+  if (isJoiner) {
+    groupInfo.members = members.filter(m => m.id !== userId);
+    groupInfo.now_personnel--;
+  }
+  if (!isJoiner) {
+    groupInfo.members.push({ id: userId });
+    groupInfo.now_personnel++;
+  }
 
   try {
-    const changedMemberType = groupInfo
+    const changedMemberType = await groupInfo
       .save()
       .then(() => {
         return isJoiner ? "searcher" : "joiner";
@@ -62,8 +68,12 @@ exports.toggleRegistration = async params => {
         throw new Error(err);
       });
 
-    return { status: 200, changedMemberType };
+    return {
+      status: 200,
+      changedMemberType,
+      changedNowPersonnel: groupInfo.now_personnel
+    };
   } catch (error) {
-    return { status: 400, error };
+    throw error;
   }
 };
