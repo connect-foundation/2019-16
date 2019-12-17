@@ -63,7 +63,6 @@ const Header = ({ history }) => {
   const [keyword, setKeyword] = useState("");
 
   const { lat, lon } = userInfo.userLocation;
-
   const { request } = getApiAxiosState;
 
   const onChange = useCallback(e => {

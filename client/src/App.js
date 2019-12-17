@@ -8,7 +8,6 @@ const GlobalStyle = createGlobalStyle`
   @import "bulmaCarousel.sass";
   @import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css");
   @import url('https://fonts.googleapis.com/css?family=Black+Han+Sans&display=swap');
-  font-family: "Nanum Gothic", sans-serif;
 `;
 
 function App() {

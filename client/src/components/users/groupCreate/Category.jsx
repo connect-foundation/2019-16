@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 
 const StyledCategory = styled.ul`
@@ -11,24 +11,40 @@ const StyledCategory = styled.ul`
     font-weight: bold;
     font-size: 1.4rem;
     margin: 0.2rem 1rem;
+
+    &.selected {
+      color: red;
+    }
   }
 `;
 
 const Category = props => {
   const { categories, onCategoryClick, categoryType } = props;
+  const [categoryIdx, setCategoryIdx] = useState(-1);
+  const isSelectedIdx = useCallback(idx => categoryIdx === idx, [categoryIdx]);
 
   const categoryEvent = useCallback(
-    e => {
+    idx => e => {
       const categoryName = e.target.textContent.trim();
       onCategoryClick(categoryType, categoryName);
+      setCategoryIdx(idx);
     },
     [categoryType, onCategoryClick]
   );
 
+  useEffect(() => {
+    if (categoryType !== "secondary") return;
+    setCategoryIdx(-1);
+  }, [categories]);
+
   return (
     <StyledCategory>
-      {categories.map(category => (
-        <li key={category} onClick={categoryEvent}>
+      {categories.map((category, idx) => (
+        <li
+          key={category}
+          className={isSelectedIdx(idx) ? "selected" : ""}
+          onClick={categoryEvent(idx)}
+        >
           {category}
         </li>
       ))}
