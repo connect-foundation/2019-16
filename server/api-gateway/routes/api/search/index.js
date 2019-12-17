@@ -6,7 +6,7 @@ const { makePacket } = require("../../../../lib/tcp/util");
 module.exports = function(apiGateway) {
   router.get(
     "/query/:searchWord/location/:lat/:lon/page/:page/:isRecruit",
-    async (req, res, next) => {
+    (req, res, next) => {
       const { searchWord, lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
@@ -25,7 +25,7 @@ module.exports = function(apiGateway) {
 
   router.get(
     "/query/:searchWord/category/:category/location/:lat/:lon/page/:page/:isRecruit",
-    async (req, res, next) => {
+    (req, res, next) => {
       const { searchWord, category, lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
@@ -43,7 +43,7 @@ module.exports = function(apiGateway) {
     }
   );
 
-  router.post("/tags", async (req, res, next) => {
+  router.post("/tags", (req, res, next) => {
     const { tags, category, lat, lon, page, isRecruit } = req.body;
 
     if (category === undefined)
@@ -75,7 +75,7 @@ module.exports = function(apiGateway) {
 
   router.get(
     "/all/location/:lat/:lon/page/:page/:isRecruit",
-    async (req, res, next) => {
+    (req, res, next) => {
       const { lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
@@ -95,7 +95,7 @@ module.exports = function(apiGateway) {
 
   router.get(
     "/all/category/:category/location/:lat/:lon/page/:page/:isRecruit",
-    async (req, res, next) => {
+    (req, res, next) => {
       const { category, lat, lon, page, isRecruit } = req.params;
 
       req.packet = makePacket(
