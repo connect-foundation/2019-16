@@ -1,14 +1,12 @@
-require("dotenv").config({ path: ".env" });
-const {
-  SEARCH_ELASTIC_HOST,
-  SEARCH_ELASTIC_PORT,
-  SEARCH_INDEX_STUDYGROUP
-} = process.env;
+const { SEARCH_INDEX_STUDYGROUP } = process.env;
+const client = require("./client");
+const { getQueryCount, updateQueriesValue } = require("./suggestion");
 
-const { Client } = require("@elastic/elasticsearch");
-const client = new Client({
-  node: `http://${SEARCH_ELASTIC_HOST}:${SEARCH_ELASTIC_PORT}`
-});
+async function AccumulateSuggestionData({ searchWord }) {
+  const count = await getQueryCount(searchWord);
+
+  updateQueriesValue(searchWord, count);
+}
 
 function filterInDistance(maxResult, cur, accumulatedCount, res) {
   setTimeout(() => {
@@ -115,7 +113,9 @@ async function reSearchInDistance(
 }
 
 exports.searchStudyGroup = async info => {
+  AccumulateSuggestionData(info);
   const { searchWord, lat, lon, page, isRecruit } = info;
+
   const body = {
     query: {
       bool: {
@@ -154,6 +154,7 @@ exports.searchStudyGroup = async info => {
 };
 
 exports.searchStudyGroupWithCategory = async info => {
+  AccumulateSuggestionData(info);
   const { searchWord, category, lat, lon, page, isRecruit } = info;
 
   const body = {
@@ -241,6 +242,7 @@ exports.tagStudyGroup = async info => {
 exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
+  AccumulateSuggestionData(info);
   const { lat, lon, page, isRecruit } = info;
 
   const body = {
@@ -278,6 +280,7 @@ exports.searchAllStudyGroup = async info => {
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
+  AccumulateSuggestionData(info);
   const { category, lat, lon, page, isRecruit } = info;
 
   const body = {
