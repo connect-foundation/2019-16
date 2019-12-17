@@ -50,7 +50,7 @@ const ApplyButtons = ({
       changedNowPersonnel,
       failReason
     } = await request("post", "/studygroup/toggleRegistration", {
-      data: { userId: userInfo.userId, groupId: _id }
+      data: { userId, groupId: _id }
     });
 
     if (status === 200) {
@@ -61,7 +61,7 @@ const ApplyButtons = ({
     if (status === 400) {
       alert(failReason);
     }
-  }, [userInfo.userId]);
+  }, [userInfo.userId, memberType, isRecruiting]);
 
   const onToggleRecruit = useCallback(async () => {
     const { status, failReason } = await request(
@@ -91,6 +91,7 @@ const ApplyButtons = ({
     }
     setMemberType(type);
   }, [userId]);
+
   return (
     <StyledApplyButtons>
       {(() => {
