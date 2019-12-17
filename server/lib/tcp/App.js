@@ -44,7 +44,7 @@ class App extends TcpServer {
     this.job(socket, data);
   }
 
-  send(appClient, data) {
+  async send(appClient, data) {
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -60,6 +60,9 @@ class App extends TcpServer {
       this.ApiGateway.write(packet);
     } else {
       appClient.write(packet);
+    }
+    if (!isLogService(data.info.name) && data.spanId) {
+      await this.sendTcpLog(data.curQuery, data.spanId);
     }
   }
 
