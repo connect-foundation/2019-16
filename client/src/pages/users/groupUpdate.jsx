@@ -167,8 +167,8 @@ const GroupUpdate = ({ match, history }) => {
 
   useEffect(() => {
     request("get", `/studygroup/detail/${id}`)
-      .then(data => {
-        dispatch(set_initial_data(data));
+      .then(({ detailInfo, status }) => {
+        if (status === 200) dispatch(set_initial_data(detailInfo));
       })
       .catch(err => {
         console.error(err);

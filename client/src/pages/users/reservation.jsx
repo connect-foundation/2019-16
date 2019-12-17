@@ -1,11 +1,19 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useRef, useMemo } from "react";
 import styled from "styled-components";
-import useWindowSize from "../../lib/useWindowSize";
-import { makeOverlay, markerImage, hoverImage } from "../../lib/kakaoMapUtils";
 import axios from "axios";
+import useWindowSize from "../../lib/useWindowSize";
+import {
+  markerImage,
+  hoverImage,
+  mapOptions,
+  setHoverImage,
+  makeOverlay
+} from "../../lib/kakaoMapUtils";
+import StudyRoomList from "../../components/users/studyRoomList";
+import { REQUEST_URL } from "../../config.json";
 
 const { kakao } = window;
-var bounds = new kakao.maps.LatLngBounds();
+let studyRoomMap;
 
 const MapView = styled.div`
   position: absolute;
@@ -15,16 +23,38 @@ const MapView = styled.div`
 const MapSidebar = styled.div`
   width: 408px;
   position: absolute;
-  background-color: black;
+  overflow-y: scroll;
 `;
 
+function makeOverListener(map, marker, infowindow) {
+  return function() {
+    infowindow.open(map, marker);
+  };
+}
+function makeOutListener(infowindow) {
+  return function() {
+    infowindow.close();
+  };
+}
+
 const Reservation = () => {
-  let studyRoomMap;
+  const mapElement = useRef();
   let selectedMarker = null;
   let currentOverlay = null;
 
-  const addMarkerEvent = marker => {
+  const [width, height] = useWindowSize();
+  const [studyRooms, setStudyRooms] = useState([]);
+
+  const addMarkerEvent = (marker, data) => {
+    const infowindow = new kakao.maps.InfoWindow({
+      content: data["cafe_name"]
+    });
+
+    marker.infowindow_over = makeOverListener(studyRoomMap, marker, infowindow);
+    marker.infowindow_out = makeOutListener(infowindow);
     kakao.maps.event.addListener(marker, "click", function() {
+      // setHoverImage(marker, data, selectedMarker, currentOverlay, studyRoomMap);
+
       marker.setImage(hoverImage);
       if (selectedMarker === marker) {
         marker.setImage(markerImage);
@@ -40,8 +70,7 @@ const Reservation = () => {
           !!currentOverlay && currentOverlay.setMap(null);
         }
         marker.setImage(hoverImage);
-
-        const overlay = makeOverlay(marker);
+        const overlay = makeOverlay(marker, data);
         overlay.setMap(studyRoomMap);
         currentOverlay = overlay;
         selectedMarker = marker;
@@ -51,11 +80,14 @@ const Reservation = () => {
     });
 
     kakao.maps.event.addListener(marker, "mouseout", function() {
-      if (!selectedMarker || selectedMarker !== marker)
+      if (!selectedMarker || selectedMarker !== marker) {
         marker.setImage(markerImage);
+      }
+      infowindow.close();
     });
 
     kakao.maps.event.addListener(marker, "mouseover", function() {
+      infowindow.open(studyRoomMap, marker);
       marker.setImage(hoverImage);
     });
   };
@@ -63,8 +95,8 @@ const Reservation = () => {
   const drawMarker = (studyRoomData, map) => {
     const bounds = new kakao.maps.LatLngBounds();
 
-    studyRoomData.forEach(studyRoom => {
-      const location = studyRoom.location.coordinates;
+    studyRoomData.forEach(room => {
+      const location = room.location.coordinates;
       const studyRoomlat = location[1];
       const studyRoomlng = location[0];
       const kakaoPosition = new kakao.maps.LatLng(studyRoomlat, studyRoomlng);
@@ -73,30 +105,20 @@ const Reservation = () => {
       const marker = new kakao.maps.Marker({
         map,
         position: kakaoPosition,
-        title: studyRoom.title,
+        title: room.title,
         image: markerImage
       });
 
-      marker.data = studyRoom;
-
-      addMarkerEvent(marker);
+      room.marker = marker;
+      addMarkerEvent(marker, room);
     });
 
     map.setBounds(bounds);
   };
 
-  const [width, height] = useWindowSize();
-  // const [studyRooms, setStudyRooms] = useState([]);
-
   useEffect(() => {
-    let el = document.querySelector("#map");
-    var options = {
-      center: new kakao.maps.LatLng(37.503077, 127.021947),
-      level: 3
-    };
-    studyRoomMap = new kakao.maps.Map(el, options);
+    studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
-      console.log(`map click`);
       if (currentOverlay && selectedMarker) {
         currentOverlay.setMap(null);
         selectedMarker.setImage(markerImage);
@@ -104,9 +126,9 @@ const Reservation = () => {
         selectedMarker = null;
       }
     });
-    // axios로 스터디룸 데이터 요청
+
     axios
-      .post("http://106.10.41.25:8000/api/studyroom/availableRooms", {
+      .post(`${REQUEST_URL}/api/studyroom/availableRooms`, {
         geopoint: { longitude: 127.021947, latitude: 37.503077 },
         personnel: 5,
         startTime: 20,
@@ -120,19 +142,27 @@ const Reservation = () => {
         ]
       })
       .then(res => {
-        const studyRooms = res.data;
-        drawMarker(studyRooms, studyRoomMap);
+        setStudyRooms(res.data);
       })
       .catch(err => {
         console.log("axios err", err);
       });
   }, []);
 
+  useEffect(() => {
+    if (!studyRoomMap) return;
+
+    drawMarker(studyRooms, studyRoomMap);
+  }, [studyRooms]);
+
   return (
     <Fragment>
-      <MapSidebar style={{ height: height - 146 }}></MapSidebar>
+      <MapSidebar style={{ height: height - 146 }}>
+        <StudyRoomList data={studyRooms}></StudyRoomList>
+      </MapSidebar>
       <MapView
         id="map"
+        ref={mapElement}
         style={{ width: width - 408, height: height - 146 }}
       ></MapView>
     </Fragment>
