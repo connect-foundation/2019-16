@@ -138,7 +138,7 @@ const MainPage = () => {
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat, lon) &&
-      request("get", `/search/all/location/${lat}/${lon}/true`);
+      request("get", `/search/all/location/${lat}/${lon}/page/0/true`);
   }, [userLocation]);
 
   useEffect(() => {
