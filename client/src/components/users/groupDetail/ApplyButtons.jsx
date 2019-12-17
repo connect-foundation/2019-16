@@ -35,10 +35,19 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   const onToggleRegister = useCallback(async () => {
     // 사용자 DB에 해당 그룹 정보를 넣는다
-    const changedType = await request("post", "/studygroup/toggleRegister", {
-      data: { id: userInfo.userId }
-    });
-    setMemberType(changedType);
+    const { status, changedMemberType, error } = await request(
+      "post",
+      "/studygroup/toggleRegister",
+      {
+        data: { userId: userInfo.userId, groupId: groupData._id }
+      }
+    );
+
+    if (status === 200) setMemberType(changedMemberType);
+    if (status === 400) {
+      console.error(error);
+      alert("소속 상태 변경 중, 에러발생");
+    }
   }, [userInfo.userId]);
 
   const onToggleRecruit = useCallback(async () => {
