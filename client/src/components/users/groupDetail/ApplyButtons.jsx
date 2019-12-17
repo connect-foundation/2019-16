@@ -33,16 +33,14 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
   const isSatisfyPersonnel =
     min_personnel <= now_personnel && now_personnel <= max_personnel;
 
-  const onToggleRegister = useCallback(() => {
+  const onToggleRegister = useCallback(async () => {
     // 사용자 DB에 해당 그룹 정보를 넣는다
-    // request('post', '/studygroup/toggleRegister', { data: { id: userInfo.}})
-    setMemberType("joiner");
-  }, []);
-  const onCancel = useCallback(() => {
-    // 사용자 DB에 해당 그룹 정보를 지운다.
-    // 그룹 DB에 해당 유저 정보를 지운다.
-    setMemberType("searcher");
-  }, []);
+    const changedType = await request("post", "/studygroup/toggleRegister", {
+      data: { id: userInfo.userId }
+    });
+    setMemberType(changedType);
+  }, [userInfo.userId]);
+
   const onToggleRecruit = useCallback(async () => {
     // 그룹 DB에 isRecruiting을 true로 만든다.
     // now가 min max에 충족하면 예약하기 버튼을 활성화한다.
