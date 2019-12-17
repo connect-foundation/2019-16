@@ -1,3 +1,4 @@
+const { SEARCH_INDEX_STUDYGROUP } = process.env;
 const client = require("./client");
 
 const generateQuery = searchWord => {
@@ -15,8 +16,7 @@ const generateQuery = searchWord => {
   };
 };
 
-exports.suggestQueries = async info => {
-  const { searchWord } = info;
+exports.suggestQueries = async ({ searchWord }) => {
   const query = generateQuery(searchWord);
   const body = {
     query,
@@ -35,16 +35,19 @@ exports.suggestQueries = async info => {
   };
   let searchResult = await client.search(search);
 
+  const count = searchResult.body.hits.total;
+
+  if (count <= 0) this.addFirstQuery({ searchWord });
+
   const result = searchResult.body.hits.hits.map(hit => {
     hit._source._id = hit._id;
     return hit._source;
   });
 
-  return result;
+  return { count, result };
 };
 
-exports.addFirstQuery = async info => {
-  const { searchWord } = info;
+exports.addFirstQuery = async ({ searchWord }) => {
   const body = {
     query: searchWord,
     count: 1,
@@ -58,19 +61,29 @@ exports.addFirstQuery = async info => {
 
   client.index(index);
 };
-exports.getQueryCount = async info => {
-  const { searchWord } = info;
-  const query = generateQuery(searchWord);
+exports.getQueryCount = async searchWord => {
+  const query = {
+    bool: {
+      must: [
+        {
+          query_string: {
+            query: `*${searchWord}*`,
+            fields: ["title", "intro", "subtitle"]
+          }
+        }
+      ]
+    }
+  };
   const body = { query };
   const count = {
-    index: "suggestedquery",
+    index: SEARCH_INDEX_STUDYGROUP,
     type: "_doc",
     body
   };
 
   const result = await client.count(count);
 
-  return result.count;
+  return result.body.count;
 };
 
 exports.updateQueriesValue = async (searchWord, contentsCount) => {
