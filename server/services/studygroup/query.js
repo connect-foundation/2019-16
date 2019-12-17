@@ -89,12 +89,13 @@ exports.toggleRecruitment = async params => {
     min_personnel,
     isRecruiting
   } = groupInfo;
-  if (
+  const isNotProperPersonnelWhenClosing =
     isRecruiting &&
-    !(min_personnel <= now_personnel && now_personnel <= max_personnel)
-  ) {
+    !(min_personnel <= now_personnel && now_personnel <= max_personnel);
+
+  if (isNotProperPersonnelWhenClosing)
     return { status: 400, failReason: "인원이 충족되지 않았습니다." };
-  }
+
   groupInfo.isRecruiting = !groupInfo.isRecruiting;
   return groupInfo
     .save()
