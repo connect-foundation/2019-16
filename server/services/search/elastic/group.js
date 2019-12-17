@@ -9,7 +9,7 @@ const {
 async function AccumulateSuggestionData({ searchWord }) {
   const count = await getQueryCount(searchWord);
 
-  if (count <= 0) addFirstQuery({ searchWord });
+  addFirstQuery({ searchWord });
   updateQueriesValue(searchWord, count);
 }
 
