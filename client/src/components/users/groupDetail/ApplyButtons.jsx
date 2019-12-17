@@ -14,7 +14,11 @@ const StyledApplyButtons = styled.div`
   }
 `;
 
-const ApplyButtons = ({ groupData, onToggleReservation }) => {
+const ApplyButtons = ({
+  groupData,
+  onToggleReservation,
+  onChangedNowPersonnel
+}) => {
   const {
     _id,
     members,
@@ -35,17 +39,21 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   const onToggleRegister = useCallback(async () => {
     // 사용자 DB에 해당 그룹 정보를 넣는다
-    const { status, changedMemberType, error } = await request(
-      "post",
-      "/studygroup/toggleRegister",
-      {
-        data: { userId: userInfo.userId, groupId: groupData._id }
-      }
-    );
+    const {
+      status,
+      changedMemberType,
+      msg,
+      changedNowPersonnel
+    } = await request("post", "/studygroup/toggleRegistration", {
+      data: { userId: userInfo.userId, groupId: _id }
+    });
 
-    if (status === 200) setMemberType(changedMemberType);
+    if (status === 200) {
+      setMemberType(changedMemberType);
+      onChangedNowPersonnel(changedNowPersonnel);
+    }
     if (status === 400) {
-      console.error(error);
+      console.error(msg);
       alert("소속 상태 변경 중, 에러발생");
     }
   }, [userInfo.userId]);
@@ -66,7 +74,7 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   useEffect(() => {
     if (!userId) return;
-    const isJoiner = members.map(m => m.userId).some(email => email === userId);
+    const isJoiner = members.map(m => m.id).some(id => id === userId);
     let type;
 
     if (isJoiner) type = "joiner";
