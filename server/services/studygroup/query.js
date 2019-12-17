@@ -42,3 +42,28 @@ exports.updateGroup = async params => {
 
   return { status: 200, id };
 };
+
+exports.toggleRegistration = async params => {
+  const { userId, groupId } = params;
+  const groupInfo = await StudyGroups.findById(groupId);
+  const members = groupInfo.members;
+  const isJoiner = members.some(userId);
+
+  if (isJoiner) groupInfo.members = members.filter(m => m !== userId);
+  if (!isJoiner) groupInfo.members.push(userId);
+
+  try {
+    const changedMemberType = groupInfo
+      .save()
+      .then(() => {
+        return isJoiner ? "searcher" : "joiner";
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
+
+    return { status: 200, changedMemberType };
+  } catch (error) {
+    return { status: 400, error };
+  }
+};
