@@ -13,6 +13,7 @@ import GroupCreatePage from "./groupCreate";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
+import Footer from "../../components/Footer";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
 import Search from "./search";
@@ -89,18 +90,19 @@ const UserPage = () => {
         getApiAxiosState
       }}
     >
-      <div>
+      <div className="app-wrapper">
         <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
-          <Route path="/reservation" component={Reservation} />
+          <Route path="/reservation/:id" component={Reservation} />
           <Route path="/search/tags" component={Search} />
           <Route path="/search" component={Search} />
         </Switch>
       </div>
+      <Footer />
     </UserContext.Provider>
   );
 };
