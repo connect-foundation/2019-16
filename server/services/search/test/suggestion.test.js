@@ -62,9 +62,3 @@ test("suggestQueries Test", async () => {
   console.log(result_exeptId);
   expect(result_exeptId).toEqual(testQuries);
 });
-
-// suggestQueries({
-//   searchWord: "자바"
-// }).then(res => {
-//   console.log(res);
-// });
