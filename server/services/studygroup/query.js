@@ -58,22 +58,31 @@ exports.toggleRegistration = async params => {
     groupInfo.now_personnel++;
   }
 
-  try {
-    const changedMemberType = await groupInfo
-      .save()
-      .then(() => {
-        return isJoiner ? "searcher" : "joiner";
-      })
-      .catch(err => {
-        throw new Error(err);
-      });
+  const changedMemberType = await groupInfo
+    .save()
+    .then(() => (isJoiner ? "searcher" : "joiner"))
+    .catch(err => {
+      throw new Error(err);
+    });
 
-    return {
-      status: 200,
-      changedMemberType,
-      changedNowPersonnel: groupInfo.now_personnel
-    };
-  } catch (error) {
-    throw error;
-  }
+  return {
+    status: 200,
+    changedMemberType,
+    changedNowPersonnel: groupInfo.now_personnel
+  };
+};
+
+exports.toggleRecruitment = async params => {
+  const { groupId } = params;
+  const groupInfo = await StudyGroups.findById(groupId);
+
+  groupInfo.isRecruiting = !groupInfo.isRecruiting;
+  return groupInfo
+    .save()
+    .then(() => ({
+      status: 200
+    }))
+    .catch(err => {
+      throw new Error(err);
+    });
 };

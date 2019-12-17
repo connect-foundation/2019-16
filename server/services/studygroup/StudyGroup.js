@@ -10,14 +10,13 @@ const doAndResponse = async (params, packetData, cb) => {
 
     replyData.method = "REPLY";
     replyData.body = result;
+    return replyData;
   } catch (e) {
     console.error(e);
     replyData.method = "ERROR";
     replyData.body = { msg: e, status: 400 };
-    throw replyData;
+    return replyData;
   }
-
-  return replyData;
 };
 
 class StudyGroup extends App {
