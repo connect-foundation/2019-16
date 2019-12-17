@@ -67,7 +67,7 @@ const StyledGroupUpdate = styled.div`
 const GroupUpdate = ({ match, history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
   const { id } = match.params;
 
   const [state, dispatch] = useReducer(groupUpdateReducer, initialState);
@@ -125,7 +125,7 @@ const GroupUpdate = ({ match, history }) => {
       const form = new FormData();
       const image = data.thumbnail;
 
-      data.leader = userEmail;
+      data.leader = userId;
       data.location = userInfo.userLocation;
       data.endTime = data.startTime + data.during;
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
@@ -162,7 +162,7 @@ const GroupUpdate = ({ match, history }) => {
           console.error(err);
         });
     },
-    [state, userEmail]
+    [state, userId]
   );
 
   useEffect(() => {

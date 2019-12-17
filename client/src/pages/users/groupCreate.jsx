@@ -65,7 +65,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = ({ history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -121,7 +121,7 @@ const GroupCreate = ({ history }) => {
       const image = data.thumbnail;
       const imageName = image && image.name;
 
-      data.leader = userEmail;
+      data.leader = userId;
       data.location = userInfo.userLocation;
       data.endTime = data.startTime + data.during;
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
@@ -155,7 +155,7 @@ const GroupCreate = ({ history }) => {
           console.error(err);
         });
     },
-    [state, userEmail]
+    [state, userId]
   );
 
   return (

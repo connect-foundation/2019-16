@@ -68,7 +68,7 @@ const GroupDetail = ({ match }) => {
         if (loading) return <h2>로딩 중... </h2>;
         if (error) return <h2> 에러 발생 </h2>;
         if (isHaveGroupData) {
-          const isMyGroup = groupData.leader === userInfo.userEmail;
+          const isMyGroup = groupData.leader === userInfo.userId;
           return (
             <>
               <Header groupData={groupData}></Header>

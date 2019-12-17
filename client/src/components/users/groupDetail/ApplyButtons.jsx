@@ -27,7 +27,7 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
   const [memberType, setMemberType] = useState(null); // guest, searcher, joiner, leader
   const [isCanReserve, setIsCanReserve] = useState(false);
   const isSatisfyPersonnel =
@@ -35,7 +35,7 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   const onRegister = useCallback(() => {
     // 사용자 DB에 해당 그룹 정보를 넣는다
-    // 그룹 DB에 해당 유저 정보를 넣는다.
+    // request('post', '/studygroup/toggleRegister', { data: { id: userInfo.}})
     setMemberType("joiner");
   }, []);
   const onCancel = useCallback(() => {
@@ -58,20 +58,18 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
   }, []);
 
   useEffect(() => {
-    if (!userEmail) return;
-    const isJoiner = members
-      .map(m => m.userEmail)
-      .some(email => email === userEmail);
+    if (!userId) return;
+    const isJoiner = members.map(m => m.userId).some(email => email === userId);
     let type;
 
     if (isJoiner) type = "joiner";
     if (!isJoiner) type = "searcher";
-    if (userEmail === leader) {
+    if (userId === leader) {
       type = "leader";
       isSatisfyPersonnel && setIsCanReserve(true);
     }
     setMemberType(type);
-  }, [userEmail]);
+  }, [userId]);
   return (
     <StyledApplyButtons>
       {(() => {
