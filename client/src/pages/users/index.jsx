@@ -70,10 +70,8 @@ const UserPage = () => {
     } else {
       getCurrentPosition
         .then(pos => {
-          // const lat = pos.lat;
-          // const lon = pos.lon;
-          const lat = 41.12;
-          const lon = -50.34;
+          const lat = pos.lat;
+          const lon = pos.lon;
           setUserInfo({ ...userInfo, userLocation: { lat, lon } });
         })
         .catch(console.error);
