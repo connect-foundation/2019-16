@@ -33,7 +33,7 @@ const StudySearchNavbar = () => {
   const { request } = getApiAxiosState;
   const searchAllGroups = useCallback(() => {
     const { lat, lon } = userInfo.userLocation;
-    request("get", `search/all/location/${lat}/${lon}/true`);
+    request("get", `search/all/location/${lat}/${lon}/page/0/true`);
   }, [userInfo]);
 
   return (
