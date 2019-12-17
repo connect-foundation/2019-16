@@ -9,7 +9,8 @@ const {
   sendGetGroupDetailPacket,
   sendDeleteGroupPacket,
   sendUpdateGroupPacket,
-  requestToggleRegistration
+  requestToggleRegistration,
+  requestToggleRecruitingState
 } = require("./ctrl");
 
 const {
@@ -47,6 +48,8 @@ module.exports = function(apiGateway) {
   router.delete("/detail/:id", sendDeleteGroupPacket(apiGateway));
 
   router.post("/toggleRegistration", requestToggleRegistration(apiGateway));
+
+  router.patch("/recruit", requestToggleRecruitingState(apiGateway));
 
   return router;
 };
