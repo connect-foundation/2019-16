@@ -1,4 +1,5 @@
 require("dotenv").config({ path: ".env" });
+const App = require("../../lib/tcp/App");
 const { LOG_PORT, LOG_HOST, LOG_NAME } = process.env;
 const elasticsearch = require("elasticsearch");
 const elasticClient = new elasticsearch.Client({
@@ -45,6 +46,11 @@ class LogService extends require("../../lib/tcp/App") {
   }
 }
 
-const logService = new LogService(LOG_NAME, LOG_HOST, LOG_PORT);
+class LogService extends App {
+  constructor(name, host, port) {
+    super(name, host, port, jobEexcutor);
+    this.logMap = {};
+  }
+}
 
-// logService.connectToAppListManager();
+const logService = new LogService(LOG_NAME, LOG_HOST, LOG_PORT);
