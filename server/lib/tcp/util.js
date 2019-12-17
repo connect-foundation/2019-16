@@ -41,4 +41,10 @@ exports.isLogService = name => {
   return false;
 };
 
+exports.isErrorPacket = method => {
+  if (method === this.ERROR_PACKET_CODE) return true;
+  return false;
+};
 exports.PACKET_SPLITTER = PACKET_SPLITTER;
+
+exports.ERROR_PACKET_CODE = "ERROR";
