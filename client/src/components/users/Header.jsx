@@ -85,11 +85,20 @@ const Header = ({ history }) => {
       if (e.key !== "Enter") return;
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
-      isTagSearch(keyword)
-        ? history.push(`/search/tags?query=${keyword.slice(1)}`)
-        : history.push(`/search?query=${keyword}`);
+      if (isTagSearch(keyword)) {
+        request("post", "/search/tags/page/0", {
+          data: { tags: [keyword], isRecruit: true, lat, lon },
+        });
+        history.push(`/search?query=${keyword}`);
+      } else {
+        request(
+          "get",
+          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`,
+        );
+        history.push(`/search/tags?query=${keyword.slice(1)}`);
+      }
     },
-    [lat, lon, request, keyword]
+    [lat, lon, request, keyword],
   );
 
   return (
