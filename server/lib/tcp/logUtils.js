@@ -19,19 +19,29 @@ function makeLogSender(networkType) {
 
   switch (networkType) {
     case "tcp":
-      return async function send(query, ...possessedSpanId) {
+      return async function send(query, ...restData) {
         const timestamp = Date.now();
         let spanId;
+        let errorMsg;
+        let error;
 
-        if (possessedSpanId[0]) spanId = possessedSpanId[0];
-        else {
+        if (restData[0]) {
+          const restObject = restData[0];
+          if (restObject.hasOwnProperty("spanId")) spanId = restObject.spanId;
+          if (restObject.hasOwnProperty("error")) {
+            error = restObject.error;
+            errorMsg = restObject.errorMsg;
+          }
+        } else {
           spanId = await generateId(timestamp);
         }
         const logData = {
           query,
           spanId,
           service: name,
-          timestamp
+          timestamp,
+          error,
+          errorMsg
         };
 
         this.logService.write(
