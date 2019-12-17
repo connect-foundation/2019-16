@@ -4,6 +4,23 @@ const router = express.Router();
 const { makePacket } = require("../../../../lib/tcp/util");
 
 module.exports = function(apiGateway) {
+  router.get("/suggest/:searchWord", (req, res, next) => {
+    const { searchWord } = req.params;
+
+    req.packet = makePacket(
+      "GET",
+      "apigateway",
+      "suggestQueries",
+      "suggestQueries",
+      { searchWord },
+      {},
+      req.resKey,
+      apiGateway.context
+    );
+
+    next();
+  });
+
   router.get(
     "/query/:searchWord/location/:lat/:lon/page/:page/:isRecruit",
     (req, res, next) => {
