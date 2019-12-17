@@ -60,8 +60,9 @@ module.exports = function(apiGateway) {
     }
   );
 
-  router.post("/tags", (req, res, next) => {
-    const { tags, category, lat, lon, page, isRecruit } = req.body;
+  router.post("/tags/page/:page", (req, res, next) => {
+    const page = req.params.page;
+    const { tags, category, lat, lon, isRecruit } = req.body;
 
     if (category === undefined)
       req.packet = makePacket(
