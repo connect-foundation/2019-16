@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -76,9 +77,6 @@ const ApplyButtons = ({
     onToggleReservation(isRecruiting);
     isSatisfyPersonnelAtReservation && setIsCanReserve(true);
   }, [isRecruiting, isSatisfyPersonnelAtReservation]);
-  const onReservate = useCallback(() => {
-    // 에헤잉
-  }, []);
 
   useEffect(() => {
     if (!userId) return;
@@ -116,9 +114,9 @@ const ApplyButtons = ({
                   {isRecruiting ? "마감하기" : "모집하기"}
                 </button>
                 {isCanReserve && !isRecruiting && (
-                  <button className="button" onClick={onReservate}>
-                    예약하기
-                  </button>
+                  <Link to={`/reservation/${_id}`}>
+                    <button className="button"> 예약하기 </button>
+                  </Link>
                 )}
               </>
             );
