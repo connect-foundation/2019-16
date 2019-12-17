@@ -19,21 +19,30 @@ mongoose
   });
 
 async function doJob(socket, data) {
-  const { params, nextQuery } = data;
-  let result, method, replyData;
+  const { nextQuery, params } = data;
+  let headers;
+  let body;
 
   try {
-    result = await queryMap[nextQuery](params);
+    let result = await queryMap[nextQuery](params);
+
+    headers = result.headers;
+    body = result.body;
   } catch (e) {
-    method = "ERROR";
-    result = e;
-  } finally {
-    replyData = {
-      ...data,
-      method,
+    headers = {
+      method: "ERROR",
       curQuery: nextQuery,
-      params: params_,
-      body: result
+      nextQuery: "gateway",
+      endQuery: "gateway",
+      params: {}
+    };
+    body = e;
+  } finally {
+    const replyData = {
+      ...data,
+      ...headers,
+      body,
+      info: this.context
     };
     const appClient = {};
 

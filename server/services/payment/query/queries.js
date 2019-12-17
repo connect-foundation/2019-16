@@ -21,7 +21,7 @@ exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
     sameRoomIdInPayQueue.length === 0 ||
     avoidReservationCollision({ day, startTime, endTime }, sameRoomIdInPayQueue)
   ) {
-    nextUrl = await getNextUrl(kakaoAccessToken, paymentInfo);
+    nextUrl = await getNextUrl({ kakaoAccessToken, paymentInfo });
 
     if (nextUrl) {
       payQueue[roomId].push({
@@ -33,5 +33,14 @@ exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
     }
   }
 
-  return { nextUrl };
+  return {
+    headers: {
+      method: "REPLY",
+      curQuery: "inspectQueue",
+      nextQuery: "gateway",
+      endQuery: "inspectQueue",
+      params: {}
+    },
+    body: { nextUrl }
+  };
 };
