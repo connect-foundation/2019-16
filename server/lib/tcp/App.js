@@ -1,6 +1,6 @@
 const TcpServer = require("./tcpServer");
 const TcpClient = require("./tcpClient");
-const { makePacket } = require("../tcp/util");
+const { makePacket, isLogService } = require("../tcp/util");
 const { getAppbyName, getAllApps, popMessageQueue } = require("../redis");
 const { makeLogSender } = require("./logUtils");
 
@@ -16,7 +16,7 @@ class App extends TcpServer {
 
     this.sendTcpLog = makeLogSender.call(this, "tcp");
     (async () => {
-      if (name === process.env.LOG_NAME) return;
+      if (isLogService(name)) return;
       await new Promise(res => this.connectToLogService(res));
       this.doMessageJob();
     })();
