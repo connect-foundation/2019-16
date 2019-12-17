@@ -8,7 +8,8 @@ const {
   sendGroupCreationPacket,
   sendGetGroupDetailPacket,
   sendDeleteGroupPacket,
-  sendUpdateGroupPacket
+  sendUpdateGroupPacket,
+  requestToggleRegistration
 } = require("./ctrl");
 
 const {
@@ -44,6 +45,8 @@ module.exports = function(apiGateway) {
     sendUpdateGroupPacket(apiGateway)
   );
   router.delete("/detail/:id", sendDeleteGroupPacket(apiGateway));
+
+  router.post("/toggleRegistration", requestToggleRegistration(apiGateway));
 
   return router;
 };
