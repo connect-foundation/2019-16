@@ -4,6 +4,7 @@ const formurlencoded = require("form-urlencoded").default;
 const avoidTimeCollision = weekTable => compareElement =>
   compareElement.day.every((d, idx) => {
     if (!weekTable[0][d]) return true;
+
     return (
       weekTable[1][d] <= compareElement.startTime[idx] ||
       compareElement.endTime[idx] <= weekTable[0][d]
@@ -36,9 +37,15 @@ async function getNextUrl({ kakaoAccessToken, paymentInfo }) {
     body: form
   };
 
-  const result = await fetch(url, options);
-  debugger;
-  return result;
+  const fetchResult = await fetch(url, options);
+
+  if (fetchResult.ok) {
+    const response = await fetchResult.json();
+
+    return response.next_redirect_pc_url;
+  }
+
+  return "";
 }
 
 module.exports = { avoidReservationCollision, getNextUrl };
