@@ -1,4 +1,11 @@
-const { avoidReservationCollision, getNextUrl } = require(".//util");
+const {
+  avoidReservationCollision,
+  getNextUrl,
+  requestPaymentApproval,
+  getQueueByUserId
+} = require(".//util");
+const Payment = require("../model/payment");
+
 const payQueue = {};
 
 function getElementsHaveSameRoomId(roomId) {
@@ -43,5 +50,46 @@ exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
       params: {}
     },
     body: { nextUrl }
+  };
+};
+
+exports.approvePayment = async ({ pg_token, userId, roomId }) => {
+  const { paymentInfo, reservationInfo } = getQueueByUserId(
+    payQueue[roomId],
+    userId
+  )[0];
+
+  const receipt = await requestPaymentApproval({ paymentInfo, pg_token });
+
+  if (receipt === null) {
+    const idxToDelete = payQueue[roomId].findIndex(
+      element => element.userId === userId
+    );
+
+    payQueue[roomId].splice(idxToDelete, 1);
+
+    return {
+      headers: {
+        method: "REPLY",
+        curQuery: "approvePayment",
+        nextQuery: "gateway",
+        endQuery: "gateway",
+        params: {}
+      },
+      body: {}
+    };
+  }
+
+  const dbResult = await Payment.create({ ...receipt, userId });
+
+  return {
+    headers: {
+      method: "REPLY",
+      curQuery: "approvePayment",
+      nextQuery: "addReservation",
+      endQuery: "removeInQueue",
+      params: { reservationInfo, userId }
+    },
+    body: {}
   };
 };
