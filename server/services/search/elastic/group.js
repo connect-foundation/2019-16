@@ -388,6 +388,6 @@ exports.bulkStudyGroups = async (
       }
     });
     // return new Promise((res, rej) => { rej(erroredDocuments) })
-    throw new Error(erroredDocuments.toString());
+    throw new Error(erroredDocuments[0].error);
   }
 };

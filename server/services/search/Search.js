@@ -45,18 +45,18 @@ function emptyStudyGroupPeriodically(timer) {
         emptyStudyGroups("add", 1000);
         emptyStudyGroups("update", 1000);
         emptyStudyGroups("remove", 1000);
+        let len =
+          (await getStudyGroupsLength("add")) +
+          (await getStudyGroupsLength("update")) +
+          (await getStudyGroupsLength("remove"));
+
+        if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
+        else emptyStudyGroupPeriodically(timer);
       } catch (e) {
         console.log(e);
+        emptyStudyGroupPeriodically(1000);
       }
     }
-
-    let len =
-      (await getStudyGroupsLength("add")) +
-      (await getStudyGroupsLength("update")) +
-      (await getStudyGroupsLength("remove"));
-
-    if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
-    else emptyStudyGroupPeriodically(timer);
   }, timer);
 }
 
