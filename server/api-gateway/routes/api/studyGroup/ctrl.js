@@ -137,6 +137,42 @@ exports.sendUpdateGroupPacket = apigateway => (req, res, next) => {
   next();
 };
 
+exports.requestToggleRegistration = apigateway => (req, res, next) => {
+  const { userId, groupId } = req.body;
+
+  const packet = makePacket(
+    "POST",
+    "apigateway",
+    "toggleRegistration",
+    "toggleRegistration",
+    { userId, groupId },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
+exports.requestToggleRecruitingState = apigateway => (req, res, next) => {
+  const { groupId } = req.body;
+
+  const packet = makePacket(
+    "PATCH",
+    "apigateway",
+    "toggleRecruitment",
+    "toggleRecruitment",
+    { groupId },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
 function validation(data) {
   if (data.category.length !== 2 || data.category.some(v => v === null))
     return { isProper: false, reason: "카테고리 두 개를 선택해주세요" };
