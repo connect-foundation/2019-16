@@ -97,7 +97,7 @@ async function reSearchInDistance(
       }
     }
   };
-  body.from = page;
+  body.from = page * pageSize;
   body.size = pageSize;
   const search = {
     index,
