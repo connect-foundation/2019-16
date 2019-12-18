@@ -244,10 +244,9 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => {};
+exports.tagStudyGroupWithCategory = async () => { };
 
 exports.searchAllStudyGroup = async info => {
-  AccumulateSuggestionData(info);
   const { lat, lon, page, isRecruit } = info;
 
   const body = {
@@ -285,7 +284,6 @@ exports.searchAllStudyGroup = async info => {
 };
 
 exports.searchAllStudyGroupWithCategory = async info => {
-  AccumulateSuggestionData(info);
   const { category, lat, lon, page, isRecruit } = info;
 
   const body = {
