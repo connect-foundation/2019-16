@@ -80,7 +80,7 @@ const MainPage = () => {
     curLastIndex: 0,
     isLastItems: false
   });
-  const { userEmail, userLocation } = userInfo;
+  const { userId, userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
@@ -162,7 +162,7 @@ const MainPage = () => {
   return (
     <Main>
       <div className="main-jumbotron">
-        {userEmail ? (
+        {userId ? (
           <>
             {myGroups.length ? (
               <MyStudyCarousel></MyStudyCarousel>

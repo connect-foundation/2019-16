@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -14,7 +15,11 @@ const StyledApplyButtons = styled.div`
   }
 `;
 
-const ApplyButtons = ({ groupData, onToggleReservation }) => {
+const ApplyButtons = ({
+  groupData,
+  onToggleReservation,
+  onChangedNowPersonnel
+}) => {
   const {
     _id,
     members,
@@ -27,64 +32,79 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
 
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
   const [memberType, setMemberType] = useState(null); // guest, searcher, joiner, leader
   const [isCanReserve, setIsCanReserve] = useState(false);
-  const isSatisfyPersonnel =
+  const isSatisfyPersonnelAtReservation =
     min_personnel <= now_personnel && now_personnel <= max_personnel;
+  const isPersonnelHigherThanMax = now_personnel > max_personnel;
 
-  const onRegister = useCallback(() => {
+  const onToggleRegister = useCallback(async () => {
+    if (isPersonnelHigherThanMax) return alert("인원이 꽉 찼습니다");
+    if (memberType !== "joiner" && !isRecruiting)
+      return alert("모집 중이 아닙니다.");
     // 사용자 DB에 해당 그룹 정보를 넣는다
-    // 그룹 DB에 해당 유저 정보를 넣는다.
-    setMemberType("joiner");
-  }, []);
-  const onCancel = useCallback(() => {
-    // 사용자 DB에 해당 그룹 정보를 지운다.
-    // 그룹 DB에 해당 유저 정보를 지운다.
-    setMemberType("searcher");
-  }, []);
+    const {
+      status,
+      changedMemberType,
+      changedNowPersonnel,
+      failReason
+    } = await request("post", "/studygroup/toggleRegistration", {
+      data: { userId, groupId: _id }
+    });
+
+    if (status === 200) {
+      setMemberType(changedMemberType);
+      onChangedNowPersonnel(changedNowPersonnel);
+    }
+
+    if (status === 400) {
+      alert(failReason);
+    }
+  }, [userInfo.userId, memberType, isRecruiting]);
+
   const onToggleRecruit = useCallback(async () => {
-    // 그룹 DB에 isRecruiting을 true로 만든다.
-    // now가 min max에 충족하면 예약하기 버튼을 활성화한다.
-    // const { status } = await request("patch", "/studygroup/recruit", {
-    //   data: { isRecruiting, id: _id }
-    // });
-    // if (status !== 200) return alert("서버 에러 발생");
+    const { status, failReason } = await request(
+      "patch",
+      "/studygroup/recruit",
+      {
+        data: { isRecruiting, groupId: _id }
+      }
+    );
+
+    if (status === 400) return alert(failReason);
+
     onToggleReservation(isRecruiting);
-    isSatisfyPersonnel && setIsCanReserve(true);
-  }, [isRecruiting, isSatisfyPersonnel]);
-  const onReservate = useCallback(() => {
-    // 에헤잉
-  }, []);
+    isSatisfyPersonnelAtReservation && setIsCanReserve(true);
+  }, [isRecruiting, isSatisfyPersonnelAtReservation]);
 
   useEffect(() => {
-    if (!userEmail) return;
-    const isJoiner = members
-      .map(m => m.userEmail)
-      .some(email => email === userEmail);
+    if (!userId) return;
+    const isJoiner = members.map(m => m.id).some(id => id === userId);
     let type;
 
     if (isJoiner) type = "joiner";
     if (!isJoiner) type = "searcher";
-    if (userEmail === leader) {
+    if (userId === leader) {
       type = "leader";
-      isSatisfyPersonnel && setIsCanReserve(true);
+      isSatisfyPersonnelAtReservation && setIsCanReserve(true);
     }
     setMemberType(type);
-  }, [userEmail]);
+  }, [userId]);
+
   return (
     <StyledApplyButtons>
       {(() => {
         switch (memberType) {
           case "searcher":
             return (
-              <button className="button" onClick={onRegister}>
+              <button className="button" onClick={onToggleRegister}>
                 신청하기
               </button>
             );
           case "joiner":
             return (
-              <button className="button" onClick={onCancel}>
+              <button className="button" onClick={onToggleRegister}>
                 취소하기
               </button>
             );
@@ -95,9 +115,9 @@ const ApplyButtons = ({ groupData, onToggleReservation }) => {
                   {isRecruiting ? "마감하기" : "모집하기"}
                 </button>
                 {isCanReserve && !isRecruiting && (
-                  <button className="button" onClick={onReservate}>
-                    예약하기
-                  </button>
+                  <Link to={`/reservation/${_id}`}>
+                    <button className="button"> 예약하기 </button>
+                  </Link>
                 )}
               </>
             );

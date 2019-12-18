@@ -46,7 +46,7 @@ const StyledCard = styled.div`
 
 const StudyGroupCardMini = ({ groupData }) => {
   const { userInfo } = useContext(UserContext);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
   const { leader, title, img, id } = groupData;
 
   return (
@@ -54,7 +54,7 @@ const StudyGroupCardMini = ({ groupData }) => {
       <StyledCard className={`card study-mini-card`}>
         <div
           className="group-leader-bedge"
-          style={{ display: leader === userEmail ? "block" : "none" }}
+          style={{ display: leader === userId ? "block" : "none" }}
         >
           그룹장
         </div>
