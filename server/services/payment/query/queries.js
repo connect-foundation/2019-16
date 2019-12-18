@@ -20,7 +20,10 @@ exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
     sameRoomIdInPayQueue.length === 0 ||
     avoidReservationCollision({ day, startTime, endTime }, sameRoomIdInPayQueue)
   ) {
-    nextUrl = await getNextUrl(roomId, userId, paymentInfo);
+    const res = await getNextUrl(roomId, userId, paymentInfo);
+
+    nextUrl = res.nextUrl;
+    paymentInfo.tid = res.tid;
 
     if (nextUrl) {
       payQueue[roomId].push({
