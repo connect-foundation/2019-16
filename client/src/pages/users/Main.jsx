@@ -49,6 +49,7 @@ const Main = styled.div`
 
   .study-group-list{
       align-self:center;
+      min-height: 200px;
 
       display: flex;
       flex-direction: row;
