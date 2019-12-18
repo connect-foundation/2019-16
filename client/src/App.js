@@ -6,7 +6,7 @@ import PartnerPage from "./pages/partners";
 
 const GlobalStyle = createGlobalStyle`
   @import "bulmaCarousel.sass";
-  @import url("http://fonts.googleapis.com/earlyaccess/nanumgothic.css");
+  @import url("https://fonts.googleapis.com/earlyaccess/nanumgothic.css");
   @import url('https://fonts.googleapis.com/css?family=Black+Han+Sans&display=swap');
 `;
 
