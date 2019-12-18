@@ -42,7 +42,7 @@ async function reSearchInDistance(
   maxDistance = 20
 ) {
   let distance = 2;
-  const pageSize = 21;
+  const pageSize = 6;
 
   body.sort = {
     _script: {
