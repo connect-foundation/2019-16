@@ -51,12 +51,11 @@ function emptyStudyGroupPeriodically(timer) {
           (await getStudyGroupsLength("remove"));
 
         if (len !== 0) process.nextTick(emptyStudyGroupPeriodically, 0);
-        else emptyStudyGroupPeriodically(timer);
       } catch (e) {
         console.log(e);
         emptyStudyGroupPeriodically(1000);
       }
-    }
+    } else emptyStudyGroupPeriodically(timer);
   }, timer);
 }
 
@@ -89,7 +88,7 @@ async function doJob(socket, data) {
 class Search extends App {
   constructor(name, host, port) {
     super(name, host, port, doJob);
-    emptyStudyGroupPeriodically(30000);
+    emptyStudyGroupPeriodically(10000);
   }
 }
 module.exports = Search;
