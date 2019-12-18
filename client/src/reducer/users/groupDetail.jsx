@@ -1,5 +1,6 @@
 const SET_DETAIL_DATA = "groupDetail/SET_DEATIL_DATA";
 const TOGGLE_RECRUIT = "groupDetail/TOGGLE_RECRUIT";
+const TOGGLE_REGISTERATION = "groupDetail/TOGGLE_REGISTERATION";
 
 export const set_detail_data = groupData => ({
   type: SET_DETAIL_DATA,
@@ -9,6 +10,11 @@ export const set_detail_data = groupData => ({
 export const toggle_recruit = isRecruiting => ({
   type: TOGGLE_RECRUIT,
   isRecruiting
+});
+
+export const toggle_registeration = changedNowPersonnel => ({
+  type: TOGGLE_REGISTERATION,
+  changedNowPersonnel
 });
 
 export const initialState = {
@@ -37,6 +43,10 @@ export const groupDetail = (state, action) => {
     case TOGGLE_RECRUIT:
       const isRecruiting = !action.isRecruiting;
       return { ...state, isRecruiting };
+
+    case TOGGLE_REGISTERATION:
+      const { changedNowPersonnel } = action;
+      return { ...state, now_personnel: changedNowPersonnel };
 
     default:
       return state;
