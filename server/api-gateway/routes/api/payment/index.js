@@ -30,8 +30,8 @@ function paymentRouter(apiGateway) {
     req.packet = makePacket(
       "POST",
       "apigateway",
-      "deleteInQueue",
-      "addReservation",
+      "approvePayment",
+      "removeInQueue",
       {
         pg_token,
         userId,
