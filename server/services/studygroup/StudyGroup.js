@@ -19,22 +19,21 @@ const doAndResponse = async (params, packetData, cb) => {
   }
 };
 
-class StudyGroup extends App {
-  constructor(name, host, port) {
-    super(name, host, port);
+async function doJob(socket, data) {
+  const { params, nextQuery } = data;
+  let replyData;
+
+  try {
+    replyData = await doAndResponse(params, data, queryMap[nextQuery]);
+  } catch (errReplyData) {
+    replyData = errReplyData;
   }
 
-  async onRead(socket, data) {
-    const { params, nextQuery } = data;
-    let replyData;
-
-    try {
-      replyData = await doAndResponse(params, data, queryMap[nextQuery]);
-    } catch (errReplyData) {
-      replyData = errReplyData;
-    }
-
-    this.send(socket, replyData);
+  this.send(socket, replyData);
+}
+class StudyGroup extends App {
+  constructor(name, host, port) {
+    super(name, host, port, doJob);
   }
 }
 
