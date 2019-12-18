@@ -1,7 +1,13 @@
 const SET_GROUPS = "userIndex/SET_GROUPS";
+const SET_ADDTIONAL_GROUPS = "userIndex/SET_ADDTIONAL_GROUPS";
 
 export const set_groups = searchList => ({
   type: SET_GROUPS,
+  searchList
+});
+
+export const set_additional_groups = searchList => ({
+  type: SET_ADDTIONAL_GROUPS,
   searchList
 });
 
@@ -46,6 +52,11 @@ export const userIndexReducer = (state, action) => {
       return {
         ...state,
         searchList
+      };
+    case SET_ADDTIONAL_GROUPS:
+      return {
+        ...state,
+        searchList: [...state.searchList, ...searchList]
       };
 
     default:
