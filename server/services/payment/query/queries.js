@@ -11,8 +11,7 @@ function getElementsHaveSameRoomId(roomId) {
   return payQueue[roomId];
 }
 
-exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
-  const { userId, kakaoAccessToken } = userInfo;
+exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
   const { roomId, day, startTime, endTime } = reservationInfo;
   const sameRoomIdInPayQueue = getElementsHaveSameRoomId(roomId);
   let nextUrl = "";
@@ -21,13 +20,12 @@ exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
     sameRoomIdInPayQueue.length === 0 ||
     avoidReservationCollision({ day, startTime, endTime }, sameRoomIdInPayQueue)
   ) {
-    nextUrl = await getNextUrl({ kakaoAccessToken, paymentInfo });
+    nextUrl = await getNextUrl(roomId, userId, paymentInfo);
 
     if (nextUrl) {
       payQueue[roomId].push({
-        day,
-        startTime,
-        endTime,
+        reservationInfo,
+        paymentInfo,
         userId
       });
     }
