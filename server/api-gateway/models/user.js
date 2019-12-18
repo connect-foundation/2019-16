@@ -13,7 +13,7 @@ const UserSchema = new Schema({
   userLocation: { lat: Number, lon: Number },
   history: [StudyGroupSchema],
   ownGroups: [StudyGroupSchema],
-  partipatedGroups: [StudyGroupSchema]
+  joiningGroups: [StudyGroupSchema]
 });
 
 const User = mongoose.model("User", UserSchema);
