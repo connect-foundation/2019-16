@@ -70,14 +70,21 @@ const Header = ({ history }) => {
   const { lat, lon } = userInfo.userLocation;
   const { request } = getApiAxiosState;
 
+  let onChangeTimer;
+
   const onChange = useCallback(async e => {
     const query = e.target.value;
     setKeyword(query);
     const url = `${REQUEST_URL}/api/search/suggest/${query}`;
-    const response = await fetch(url);
-    const jsonRes = await response.json();
-    const suggestions = jsonRes.map(jsonRes => jsonRes.query);
-    setSuggestion(suggestions);
+    if (onChangeTimer) {
+      clearTimeout(onChangeTimer);
+    }
+    onChangeTimer = setTimeout(async () => {
+      const response = await fetch(url);
+      const jsonRes = await response.json();
+      const suggestions = jsonRes.map(jsonRes => jsonRes.query);
+      setSuggestion(suggestions);
+    }, 200);
   });
 
   const onKeyDown = useCallback(
@@ -87,18 +94,18 @@ const Header = ({ history }) => {
 
       if (isTagSearch(keyword)) {
         request("post", "/search/tags/page/0", {
-          data: { tags: [keyword], isRecruit: true, lat, lon },
+          data: { tags: [keyword], isRecruit: true, lat, lon }
         });
-        history.push(`/search?query=${keyword}`);
+        history.push(`/search/tags?query=${keyword.slice(1)}`);
       } else {
         request(
           "get",
-          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`,
+          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`
         );
-        history.push(`/search/tags?query=${keyword.slice(1)}`);
+        history.push(`/search?query=${keyword}`);
       }
     },
-    [lat, lon, request, keyword],
+    [lat, lon, request, keyword]
   );
 
   return (
@@ -123,7 +130,7 @@ const Header = ({ history }) => {
                 onChange={onChange}
                 onKeyDown={onKeyDown}
               />
-              <SuggestDropDown suggestions={suggestions} />
+              <SuggestDropDown suggestions={suggestions} history={history} />
             </div>
           </div>
           <StudySearchNavbar />
