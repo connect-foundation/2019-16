@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback } from "react";
-
 import styled from "styled-components";
+import { UserContext } from "../../../pages/users/index";
 
 const StyledSuggestDropDown = styled.header`
   .navbar-dropdown {
@@ -9,11 +9,31 @@ const StyledSuggestDropDown = styled.header`
     width: 100%;
     left: inherit;
   }
+  .navbar-item {
+    cursor: pointer;
+  }
+  .navbar-item:hover {
+    background: #53d0ec;
+  }
 `;
 
-const SuggestDropDown = ({ suggestions }) => {
+const SuggestDropDown = ({ suggestions, history }) => {
+  const { userInfo, getApiAxiosState } = useContext(UserContext);
+  const { lat, lon } = userInfo.userLocation;
+  const { request } = getApiAxiosState;
+
+  const onClick = useCallback(e => {
+    request(
+      "get",
+      `/search/query/${e.target.innerText}/location/${lat}/${lon}/page/0/true`
+    );
+    history.push(`/search?query=${e.target.innerText}`);
+  });
+
   const navItems = suggestions.map(suggestion => (
-    <a className="navbar-item">{suggestion}</a>
+    <div className="navbar-item" onClick={onClick}>
+      {suggestion}
+    </div>
   ));
   return navItems.length ? (
     <StyledSuggestDropDown>
