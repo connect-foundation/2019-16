@@ -1,12 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useContext, useCallback, useState } from "react";
+import React, {
+  useEffect,
+  useContext,
+  useCallback,
+  useState,
+  useRef
+} from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { REQUEST_URL } from "../../config.json";
+import axios from "axios";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
-import { set_groups } from "../../reducer/users";
+import { set_groups, set_additional_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 
 const Main = styled.div`
@@ -65,7 +73,13 @@ const Main = styled.div`
   }
 `;
 
-const takeCardAmount = 21;
+const takeCardAmount = 6;
+
+function isLastPagenation(takenGroups) {
+  const takenLength = takenGroups.length || 0;
+  if (!takenGroups || !takenLength || takenLength < takeCardAmount) return true;
+  return false;
+}
 
 const MainPage = () => {
   const {
@@ -75,19 +89,28 @@ const MainPage = () => {
     getApiAxiosState
   } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
+  const { userEmail, userLocation } = userInfo;
   const [scrollState, setScrollState] = useState({
     loading: false,
-    curLastIndex: 0,
+    pageIndex: 1,
     isLastItems: false
   });
-  const { userEmail, userLocation } = userInfo;
-
-  let { lat, lon } = userLocation;
+  const scrollStateRef = useRef(scrollState);
+  const lat = useRef();
+  const lon = useRef();
+  lat.current = userLocation.lat;
+  lon.current = userLocation.lon;
   let { loading, data, error, request } = getApiAxiosState;
 
+  function updateScrollState(newState) {
+    setScrollState(scrollState => {
+      return { ...scrollState, ...newState };
+    });
+  }
+
   const infiniteScroll = useCallback(() => {
-    if (scrollState.loading) return;
-    if (scrollState.isLastItems) return;
+    if (scrollStateRef.current.loading) return;
+    if (scrollStateRef.current.isLastItems) return;
 
     const scrollHeight = Math.max(
       document.documentElement.scrollHeight,
@@ -100,32 +123,27 @@ const MainPage = () => {
     const clientHeight = document.documentElement.clientHeight;
 
     if (scrollTop + clientHeight + 1 >= scrollHeight) {
-      // setScrollState({...scrollState, loading: true});
-      // axios
-      //   .get(`${REQUEST_URL}/api/search.../${scrollState.curLastIndex}`)
-      //   .then(({ data }) => {
-      //     const { takenGroups } = data;
-      //     const { curLastIndex } = scrollState;
-      //     const takenLength = takenGroups.length || 0;
-      //     const changedScrollState = {
-      //       isLastItems: false,
-      //       curLastIndex: curLastIndex + 1,
-      //       loading: false
-      //     };
-      //     if (!takenGroups || !takenLength || takenLength < takeCardAmount)
-      //       changedScrollState.isLastItems = true;
-      //     dispatch(
-      //       set_additional_groups(
-      //         takenGroups,
-      //         setScrollState,
-      //         changedScrollState
-      //       )
-      //     );
-      //     // 다음 15개 가져오기 axios 후, then에서 가져온 데이터 data를
-      //     // state 리스트에 합쳐서 dispatch
-      //     // setScrollState로 curLastIndex를 +15해서 변경
-      //     // 가져온 데이터가 마지막일 경우 isLastItems를 true로 변경
-      //   });
+      updateScrollState({ ...scrollState, loading: true });
+      axios
+        .get(
+          `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`
+        )
+        .then(({ data }) => {
+          const takenGroups = data;
+
+          const { pageIndex } = scrollState;
+          const changedScrollState = {
+            isLastItems: false,
+            pageIndex: pageIndex + 1,
+            loading: false
+          };
+
+          if (isLastPagenation(takenGroups))
+            changedScrollState.isLastItems = true;
+
+          userIndexDispatch(set_additional_groups(takenGroups));
+          updateScrollState(changedScrollState);
+        });
     }
   }, [scrollState]);
 
@@ -137,27 +155,33 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    isSetPositionDuringLoading(loading, lat, lon) &&
-      request("get", `/search/all/location/${lat}/${lon}/page/0/true`);
+    isSetPositionDuringLoading(loading, lat.current, lon.current) &&
+      request(
+        "get",
+        `/search/all/location/${lat.current}/${lon.current}/page/0/true`
+      );
   }, [userLocation]);
 
   useEffect(() => {
     if (!isHaveCardDataWhenLoaded(loading, data)) return;
-
     userIndexDispatch(set_groups(data));
     if (data.length < takeCardAmount) {
       setScrollState({
         ...scrollState,
-        curLastIndex: data.length - 1,
+        pageIndex: data.length - 1,
         isLastItems: true
       });
       return;
     }
     setScrollState({
       ...scrollState,
-      curLastIndex: scrollState.curLastIndex + 1
+      pageIndex: scrollState.pageIndex + 1
     });
   }, [data]);
+
+  useEffect(() => {
+    scrollStateRef.current = scrollState;
+  }, [scrollState]);
 
   return (
     <Main>
@@ -170,7 +194,6 @@ const MainPage = () => {
               "현재 소속된 스터디 그룹이 없습니다."
             )}
             <Link to="/group/create" className="group-create-button">
-              {" "}
               <button className="button"> 그룹 생성 </button>
             </Link>
           </>
