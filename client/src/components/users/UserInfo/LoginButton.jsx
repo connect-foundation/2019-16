@@ -53,7 +53,11 @@ const LoginButton = () => {
                     userEmail: profile.kakao_account.email || "",
                     userName: profile.properties.nickname,
                     userGender: profile.kakao_account.gender || "",
-                    userAgeRange: +profile.kakao_account.age_range[0] || null,
+                    userAgeRange: profile.kakao_account.hasOwnProperty(
+                      "age_range"
+                    )
+                      ? +profile.kakao_account.age_range[0]
+                      : null,
                     profileImage:
                       profile.properties.profile_image || DEFAULT_PROFILE_IMAGE,
                     userLocation: userLocation
