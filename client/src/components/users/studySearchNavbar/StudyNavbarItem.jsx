@@ -25,44 +25,27 @@ const Category = styled.div`
 `;
 
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
-  const { userInfo, getApiAxiosState, userIndexDispatch } = useContext(
-    UserContext
-  );
+  const {
+    userInfo,
+    getApiAxiosState,
+    pageNationState,
+    setPageNationState
+  } = useContext(UserContext);
   const { request } = getApiAxiosState;
-  const scrollStateRef = useRef({
-    loading: false,
-    pageIndex: 1,
-    isLastItems: false,
-    category: null
-  });
-  // scrollStateRef.current = {
-  //   loading: false,
-  //   pageIndex: 1,
-  //   isLastItems: false
-  // };
-  const category = useRef();
+
   const searchGroups = useCallback(
     e => {
       const categoryName = e.target.textContent.trim();
-      scrollStateRef.current.category = categoryName;
-
       const { lat, lon } = userInfo.userLocation;
+      const changedPageNationState = {
+        ...pageNationState,
+        page_idx: 1,
+        category: categoryName
+      };
+      setPageNationState(changedPageNationState);
       request(
         "get",
         `/search/all/category/${categoryName}/location/${lat}/${lon}/page/0/true`
-      );
-
-      console.log(categoryName);
-      window.addEventListener(
-        "scroll",
-        infiniteScrollEventHandler.bind(
-          null,
-          lat,
-          lon,
-          userIndexDispatch,
-          scrollStateRef,
-          category.current
-        )
       );
     },
     [userInfo]

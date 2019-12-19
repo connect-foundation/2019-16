@@ -4,8 +4,7 @@ import styled from "styled-components";
 
 import StudyNavbarItem from "./StudyNavbarItem";
 import { UserContext } from "../../../pages/users/index";
-import infiniteScrollEventHandler from "../../../lib/infiniteScrollEventHandler";
-import { useEffect } from "react";
+
 const Navbar = styled.div`
   .navbar {
     align-items: center;
@@ -27,41 +26,24 @@ const Navbar = styled.div`
 `;
 
 const StudySearchNavbar = () => {
-  const scrollStateRef = useRef({
-    loading: false,
-    pageIndex: 1,
-    isLastItems: false,
-    imheader: true
-  });
-  // scrollStateRef.current = {
-  //   loading: false,
-  //   pageIndex: 1,
-  //   isLastItems: false
-  // };
-
   const {
     userIndexState,
     userInfo,
     getApiAxiosState,
-    userIndexDispatch
+    pageNationState,
+    setPageNationState
   } = useContext(UserContext);
   const { primaryCategories, secondaryCategories } = userIndexState;
   const { request } = getApiAxiosState;
-  const { lat, lon } = userInfo.userLocation;
 
   const searchAllGroups = () => {
     const { lat, lon } = userInfo.userLocation;
+    const changedPageNationState = {
+      ...pageNationState,
+      page_idx: 1
+    };
+    setPageNationState(changedPageNationState);
     request("get", `search/all/location/${lat}/${lon}/page/0/true`);
-    window.addEventListener(
-      "scroll",
-      infiniteScrollEventHandler.bind(
-        null,
-        lat,
-        lon,
-        userIndexDispatch,
-        scrollStateRef
-      )
-    );
   };
 
   return (
