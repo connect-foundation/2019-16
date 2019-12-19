@@ -4,7 +4,7 @@ const { makePacket } = require("../../../../lib/tcp/util");
 
 function paymentRouter(apiGateway) {
   router.post("/ready", (req, res, next) => {
-    const { userInfo, paymentInfo, reservationInfo } = req.body;
+    const { userId, paymentInfo, reservationInfo } = req.body;
 
     req.packet = makePacket(
       "POST",
@@ -12,15 +12,34 @@ function paymentRouter(apiGateway) {
       "inspectQueue",
       "inspectQueue",
       {
-        userInfo,
+        userId,
         paymentInfo,
         reservationInfo
       },
       {},
-      req.reskey,
+      req.resKey,
       apiGateway.context
     );
+    next();
+  });
 
+  router.get("/approval/:roomId/:userId", (req, res, next) => {
+    const { pg_token } = req.query;
+    const { roomId, userId } = req.params;
+
+    req.packet = makePacket(
+      "POST",
+      "apigateway",
+      "approvePayment",
+      "removeInQueue",
+      {
+        pg_token,
+        userId,
+        roomId
+      },
+      req.resKey,
+      apiGateway.context
+    );
     next();
   });
 
