@@ -1,10 +1,11 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import StudyNavbarItem from "./StudyNavbarItem";
 import { UserContext } from "../../../pages/users/index";
-
+import infiniteScrollEventHandler from "../../../lib/infiniteScrollEventHandler";
+import { useEffect } from "react";
 const Navbar = styled.div`
   .navbar {
     align-items: center;
@@ -26,16 +27,42 @@ const Navbar = styled.div`
 `;
 
 const StudySearchNavbar = () => {
-  const { userIndexState, userInfo, getApiAxiosState } = useContext(
-    UserContext
-  );
+  const scrollStateRef = useRef({
+    loading: false,
+    pageIndex: 1,
+    isLastItems: false,
+    imheader: true
+  });
+  // scrollStateRef.current = {
+  //   loading: false,
+  //   pageIndex: 1,
+  //   isLastItems: false
+  // };
+
+  const {
+    userIndexState,
+    userInfo,
+    getApiAxiosState,
+    userIndexDispatch
+  } = useContext(UserContext);
   const { primaryCategories, secondaryCategories } = userIndexState;
   const { request } = getApiAxiosState;
-  const { lat, lon, loading } = userInfo.userLocation;
-  const searchAllGroups = useCallback(() => {
+  const { lat, lon } = userInfo.userLocation;
+
+  const searchAllGroups = () => {
     const { lat, lon } = userInfo.userLocation;
     request("get", `search/all/location/${lat}/${lon}/page/0/true`);
-  }, [userInfo]);
+    window.addEventListener(
+      "scroll",
+      infiniteScrollEventHandler.bind(
+        null,
+        lat,
+        lon,
+        userIndexDispatch,
+        scrollStateRef
+      )
+    );
+  };
 
   return (
     <Navbar>

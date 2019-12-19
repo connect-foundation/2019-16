@@ -1,20 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useEffect,
-  useContext,
-  useCallback,
-  useState,
-  useRef
-} from "react";
+import React, { useEffect, useContext, useRef } from "react";
+
+import infiniteScrollEventHandler from "../../lib/infiniteScrollEventHandler";
+import useInfiniteScroll from "../../lib/useInfiniteScroll";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { REQUEST_URL } from "../../config.json";
-import axios from "axios";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
-import { set_groups, set_additional_groups } from "../../reducer/users";
+import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 
 const Main = styled.div`
@@ -76,12 +71,6 @@ const Main = styled.div`
 
 const takeCardAmount = 6;
 
-function isLastPagenation(takenGroups) {
-  const takenLength = takenGroups.length || 0;
-  if (!takenGroups || !takenLength || takenLength < takeCardAmount) return true;
-  return false;
-}
-
 const MainPage = () => {
   const {
     userIndexState,
@@ -96,57 +85,54 @@ const MainPage = () => {
     pageIndex: 1,
     isLastItems: false
   });
+  scrollStateRef.current = {
+    loading: false,
+    pageIndex: 1,
+    isLastItems: false
+  };
   const lat = useRef();
   const lon = useRef();
   lat.current = userLocation.lat;
   lon.current = userLocation.lon;
   let { loading, data, error, request } = getApiAxiosState;
 
-  const infiniteScroll = () => {
-    if (scrollStateRef.current.loading) return;
-    if (scrollStateRef.current.isLastItems) return;
+  const [isFetching, setIsFetching] = useInfiniteScroll();
 
-    const scrollHeight = Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight
-    );
-    const scrollTop = Math.max(
-      document.documentElement.scrollTop,
-      document.body.scrollTop
-    );
-    const clientHeight = document.documentElement.clientHeight;
+  // function fetchMoreListItems() {
+  //   let url = `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`;
+  //   if (category === String)
+  //     url = `${REQUEST_URL}/api/search/all/category/${category}location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`;
 
-    if (scrollTop + clientHeight + 200 >= scrollHeight) {
-      console.log(scrollStateRef.current);
+  //   axios.get(url).then(({ data }) => {
+  //     const takenGroups = data;
 
-      scrollStateRef.current = { ...scrollStateRef.current, loading: true };
-      axios
-        .get(
-          `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`
-        )
-        .then(({ data }) => {
-          const takenGroups = data;
+  //     const { pageIndex } = scrollStateRef.current;
+  //     const changedScrollState = {
+  //       isLastItems: false,
+  //       pageIndex: pageIndex + 1,
+  //       loading: false
+  //     };
 
-          const { pageIndex } = scrollStateRef.current;
-          const changedScrollState = {
-            isLastItems: false,
-            pageIndex: pageIndex + 1,
-            loading: false
-          };
+  //     if (isLastPagenation(takenGroups)) changedScrollState.isLastItems = true;
 
-          if (isLastPagenation(takenGroups))
-            changedScrollState.isLastItems = true;
-
-          userIndexDispatch(set_additional_groups(takenGroups));
-          scrollStateRef.current = changedScrollState;
-        });
-    }
-  };
-
+  //     userIndexDispatch(set_additional_groups(takenGroups));
+  //     scrollStateRef.current = changedScrollState;
+  //   });
+  // }
   useEffect(() => {
-    window.addEventListener("scroll", infiniteScroll);
+    console.log(`add event`);
+    window.addEventListener(
+      "scroll",
+      infiniteScrollEventHandler.bind(
+        null,
+        lat,
+        lon,
+        userIndexDispatch,
+        scrollStateRef
+      )
+    );
     return () => {
-      window.removeEventListener("scroll", infiniteScroll);
+      window.removeEventListener("scroll", infiniteScrollEventHandler);
     };
   }, []);
 
@@ -159,6 +145,7 @@ const MainPage = () => {
   }, [userLocation]);
 
   useEffect(() => {
+    console.log("data", data);
     if (!isHaveCardDataWhenLoaded(loading, data)) return;
     userIndexDispatch(set_groups(data));
     if (data.length < takeCardAmount) {
