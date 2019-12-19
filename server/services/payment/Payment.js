@@ -1,8 +1,8 @@
 const App = require("../../lib/tcp/App");
 const mongoose = require("mongoose");
 const { PAYMENTS_MONGO_URL } = process.env;
-const { inspectQueue } = require("./query/queries");
-const queryMap = { inspectQueue };
+const { inspectQueue, approvePayment } = require("./query/queries");
+const queryMap = { inspectQueue, approvePayment };
 
 mongoose
   .connect(PAYMENTS_MONGO_URL, {

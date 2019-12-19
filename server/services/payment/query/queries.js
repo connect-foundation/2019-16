@@ -1,4 +1,11 @@
-const { avoidReservationCollision, getNextUrl } = require(".//util");
+const {
+  avoidReservationCollision,
+  getNextUrl,
+  requestPaymentApproval,
+  getQueueByUserId
+} = require(".//util");
+const Payment = require("../model/payment");
+
 const payQueue = {};
 
 function getElementsHaveSameRoomId(roomId) {
@@ -11,8 +18,7 @@ function getElementsHaveSameRoomId(roomId) {
   return payQueue[roomId];
 }
 
-exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
-  const { userId, kakaoAccessToken } = userInfo;
+exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
   const { roomId, day, startTime, endTime } = reservationInfo;
   const sameRoomIdInPayQueue = getElementsHaveSameRoomId(roomId);
   let nextUrl = "";
@@ -21,13 +27,15 @@ exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
     sameRoomIdInPayQueue.length === 0 ||
     avoidReservationCollision({ day, startTime, endTime }, sameRoomIdInPayQueue)
   ) {
-    nextUrl = await getNextUrl({ kakaoAccessToken, paymentInfo });
+    const res = await getNextUrl(roomId, userId, paymentInfo);
+
+    nextUrl = res.nextUrl;
+    paymentInfo.tid = res.tid;
 
     if (nextUrl) {
       payQueue[roomId].push({
-        day,
-        startTime,
-        endTime,
+        reservationInfo,
+        paymentInfo,
         userId
       });
     }
@@ -41,6 +49,67 @@ exports.inspectQueue = async ({ userInfo, paymentInfo, reservationInfo }) => {
       endQuery: "inspectQueue",
       params: {}
     },
-    body: { nextUrl }
+    body: { nextUrl, status: 200 }
+  };
+};
+
+exports.approvePayment = async ({ pg_token, userId, roomId }) => {
+  const { paymentInfo, reservationInfo } = getQueueByUserId(
+    payQueue[roomId],
+    userId
+  )[0];
+
+  const receipt = await requestPaymentApproval({ paymentInfo, pg_token });
+
+  if (receipt === null) {
+    const idxToDelete = payQueue[roomId].findIndex(
+      element => element.userId === userId
+    );
+
+    payQueue[roomId].splice(idxToDelete, 1);
+
+    return {
+      headers: {
+        method: "REPLY",
+        curQuery: "approvePayment",
+        nextQuery: "apigateway",
+        endQuery: "apigateway",
+        params: {}
+      },
+      body: { err: true, msg: "결제 승인 에러", status: 400 }
+    };
+  }
+
+  const dbResult = await Payment.create({ ...receipt, userId });
+
+  return {
+    headers: {
+      method: "REPLY",
+      curQuery: "approvePayment",
+      nextQuery: "addReservation",
+      endQuery: "removeInQueue",
+      params: { reservationInfo, userId }
+    },
+    body: {}
+  };
+};
+
+exports.removeInQueue = ({ roomId, userId }) => {
+  const idxToDelete = payQueue[roomId].findIndex(
+    element => element.userId === userId
+  );
+  const { reservationInfo, paymentInfo } = payQueue[roomId][idxToDelete];
+
+  payQueue[roomId].splice(idxToDelete, 1);
+
+  return {
+    headers: {
+      method: "REDIRECT",
+      curQuery: "removeInQueue",
+      nextQuery: "apigateway",
+      endQuery: "apigateway",
+      params: {}
+    },
+    body: { reservationInfo, paymentInfo, status: 200 }
   };
 };

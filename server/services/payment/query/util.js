@@ -1,20 +1,21 @@
 const fetch = require("node-fetch");
 const formurlencoded = require("form-urlencoded").default;
+const { KAKAO_PAY_CALLBACK_URL, KAKAO_ADMIN_KEY } = process.env;
 
 const avoidTimeCollision = weekTable => compareElement =>
-  compareElement.day.every((d, idx) => {
+  compareElement.reservationInfo.day.every((d, idx) => {
     if (!weekTable[0][d]) return true;
 
     return (
-      weekTable[1][d] <= compareElement.startTime[idx] ||
-      compareElement.endTime[idx] <= weekTable[0][d]
+      weekTable[1][d] <= compareElement.reservationInfo.startTime[idx] ||
+      compareElement.reservationInfo.endTime[idx] <= weekTable[0][d]
     );
   });
 
-function avoidReservationCollision(
+exports.avoidReservationCollision = (
   { day, startTime, endTime },
   sameRoomIdInPayQueue
-) {
+) => {
   const weekTable = [[], []];
 
   day.forEach((d, idx) => {
@@ -23,16 +24,21 @@ function avoidReservationCollision(
   });
 
   return sameRoomIdInPayQueue.every(avoidTimeCollision(weekTable));
-}
+};
 
-async function getNextUrl({ kakaoAccessToken, paymentInfo }) {
-  const form = formurlencoded(paymentInfo);
+exports.getNextUrl = async (roomId, userId, paymentInfo) => {
+  const callbackUrls = {
+    approval_url: KAKAO_PAY_CALLBACK_URL + `/approval/${roomId}/${userId}`,
+    cancel_url: KAKAO_PAY_CALLBACK_URL + `/cancel/${roomId}/${userId}`,
+    fail_url: KAKAO_PAY_CALLBACK_URL + `/fail/${roomId}/${userId}`
+  };
+  const form = formurlencoded({ ...paymentInfo, ...callbackUrls });
   const url = "https://kapi.kakao.com/v1/payment/ready";
   const options = {
     method: "POST",
     headers: {
       "Content-type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${kakaoAccessToken}`
+      Authorization: `KakaoAK ${KAKAO_ADMIN_KEY}`
     },
     body: form
   };
@@ -42,10 +48,41 @@ async function getNextUrl({ kakaoAccessToken, paymentInfo }) {
   if (fetchResult.ok) {
     const response = await fetchResult.json();
 
-    return response.next_redirect_pc_url;
+    return { tid: response.tid, nextUrl: response.next_redirect_pc_url };
   }
 
-  return "";
-}
+  return { tid: "", nextUrl: "" };
+};
 
-module.exports = { avoidReservationCollision, getNextUrl };
+exports.requestPaymentApproval = async ({ paymentInfo, pg_token }) => {
+  const { cid, tid, partner_order_id, partner_user_id } = paymentInfo;
+  const form = formurlencoded({
+    cid,
+    tid,
+    partner_order_id,
+    partner_user_id,
+    pg_token
+  });
+  const url = "https://kapi.kakao.com/v1/payment/approve";
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded",
+      Authorization: `KakaoAK ${KAKAO_ADMIN_KEY}`
+    },
+    body: form
+  };
+
+  const responsePaymentApproval = await fetch(url, options);
+
+  if (responsePaymentApproval.ok) {
+    const response = await responsePaymentApproval.json();
+
+    return response;
+  }
+  return null;
+};
+
+exports.getQueueByUserId = (queue, userId) => {
+  return queue.filter(payment => payment.userId === userId);
+};

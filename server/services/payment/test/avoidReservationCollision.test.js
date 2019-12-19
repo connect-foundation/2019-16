@@ -7,21 +7,27 @@ const myReservation = {
 };
 
 const case1 = {
-  day: [1, 2, 3],
-  startTime: [10, 10, 10],
-  endTime: [12, 12, 12]
+  reservationInfo: {
+    day: [1, 2, 3],
+    startTime: [10, 10, 10],
+    endTime: [12, 12, 12]
+  }
 };
 
 const case2 = {
-  day: [0, 1, 2],
-  startTime: [12, 14, 18],
-  endTime: [14, 16, 20]
+  reservationInfo: {
+    day: [0, 1, 2],
+    startTime: [12, 14, 18],
+    endTime: [14, 16, 20]
+  }
 };
 
 const case3 = {
-  day: [0, 4, 5],
-  startTime: [13, 17, 21],
-  endTime: [14, 18, 22]
+  reservationInfo: {
+    day: [0, 4, 5],
+    startTime: [13, 17, 21],
+    endTime: [14, 18, 22]
+  }
 };
 
 test("날짜가 하나도 겹치지 않을 때 True", () => {
