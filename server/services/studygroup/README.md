@@ -11,7 +11,7 @@
 
 - Params
 
-```json
+```
 {
   "category": [ String, String ], // 제목, 부제목
   "leader": String, // 사용자 이메일 형태
@@ -36,7 +36,7 @@
 
 - Response
 
-```json
+```
 {
   "id": String // ObjectId 형태로, 그룹 상세페이지로 redirect하기 위해 응답하는 데이터
 }
@@ -46,7 +46,7 @@
 
 - Params
 
-```json
+```
 {
   "id": String // ObjectId 형태로, findById로 접근하기 위한 식별자
 }
@@ -54,7 +54,7 @@
 
 - Response
 
-```json
+```
 {
  "location": { lat: Number, lon: Number },
   "isRecruiting": Boolean,
@@ -80,7 +80,7 @@
 
 ### 1. 스터디 그룹 모델
 
-```json
+```
 {
   "title": { "type": String, "required": true },
   "subtitle": { "type": String, "required": true },
@@ -108,7 +108,7 @@
 
 - 스터디 그룹 모델 스키마에 적용하기 위해 정의된 스키마
 
-```json
+```
 {
   "email": { "type": String, "required": true },
   "name": { "type": String, "required": true }
