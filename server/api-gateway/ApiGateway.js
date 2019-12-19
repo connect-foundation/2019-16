@@ -14,6 +14,7 @@ class ApiGateway extends App {
     // data이벤트 함수
     const res = this.resMap[data.key];
     const traceId = res.getHeaders()["trace-id"];
+
     if (data.method === "REPLY") {
       res.json(data.body);
       this.httpLogSender({
@@ -24,13 +25,11 @@ class ApiGateway extends App {
     }
     if (data.method === "ERROR") {
       let error = new Error("서비스에서 에러가 발생했습니다.");
-
       const status = error.status || 500;
-      console.log("http error status ", status);
 
+      console.log("http error status ", status);
       res.status(error.status || 500);
       res.send(error.message || "서비스에서 에러가 발생했습니다.");
-
       this.httpLogSender({
         traceId: traceId,
         spanId: traceId,
