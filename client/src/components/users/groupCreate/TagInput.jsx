@@ -57,9 +57,9 @@ const TagInput = props => {
   return (
     <StyledTagInput className="input">
       {tags.map((tag, idx) => (
-        <button key={idx} className="tag">
+        <span key={idx} className="tag is-warning is-light">
           {tag}
-        </button>
+        </span>
       ))}
       <input
         type="text"
