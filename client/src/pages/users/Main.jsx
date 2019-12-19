@@ -69,6 +69,20 @@ const Main = styled.div`
           margin: 2em;
       }
   }
+  .no-groups{
+    padding: 1% 22% 0;
+    background-color: #fafafa;
+    height: 178px;
+    width: 100%;
+    border-radius: 5px;
+    margin: 2em 0 0.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight:bold;
+}
 `;
 
 const takeCardAmount = 6;
@@ -89,6 +103,7 @@ const MainPage = () => {
   const lon = useRef();
   lat.current = userLocation.lat;
   lon.current = userLocation.lon;
+
   let { loading, data, error, request } = getApiAxiosState;
 
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
@@ -139,10 +154,13 @@ const MainPage = () => {
             {myGroups.length ? (
               <MyStudyCarousel></MyStudyCarousel>
             ) : (
-              "현재 소속된 스터디 그룹이 없습니다."
+              <div className="no-groups">
+                <div>현재 참여중인 스터디 그룹이 없네요🤔 </div>
+                <div>👫👬👭 새로운 스터디에 참여해봐요!</div>
+              </div>
             )}
             <Link to="/group/create" className="group-create-button">
-              <button className="button"> 그룹 생성 </button>
+              <button className="button is-danger"> 🔥그룹 생성🔥 </button>
             </Link>
           </>
         ) : (
@@ -197,7 +215,7 @@ const isHaveCardDataWhenLoaded = (loading, data) =>
 
 function isLastPagenation(takenGroups) {
   const takenLength = takenGroups.length || 0;
-  if (!takenGroups || !takenLength || takenLength < 6) return true;
+  if (!takenGroups || !takenLength || takenLength < takeCardAmount) return true;
   return false;
 }
 
