@@ -10,7 +10,7 @@ exports.addGroup = async params => {
   const resultAfterStore = await StudyGroups.create(groupInfo);
 
   await pushStudyGroups(resultAfterStore);
-  return { id: resultAfterStore._id, status: 200 };
+  return { id: resultAfterStore._id, status: 200, userId, ownGroup: groupInfo };
 };
 
 exports.getGroupDetail = async params => {
@@ -76,7 +76,9 @@ exports.toggleRegistration = async params => {
   return {
     status: 200,
     changedMemberType,
-    changedNowPersonnel: groupInfo.now_personnel
+    changedNowPersonnel: groupInfo.now_personnel,
+    userId,
+    joiningGroup: groupInfo
   };
 };
 
