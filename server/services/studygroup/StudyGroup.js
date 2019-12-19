@@ -42,7 +42,7 @@ async function doJob(data, appName_) {
         userId: replyData.body.userId,
         joiningGroup: replyData.body.joiningGroup,
         ownGroup: replyData.body.ownGroup,
-        mode: replyData.body.isJoiner
+        addMode: !replyData.body.isJoiner
       };
       appName = "user";
     }
