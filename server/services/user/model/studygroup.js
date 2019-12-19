@@ -7,6 +7,7 @@ const UserSchema = new Schema({
 
 const GroupSchema = new Schema(
   {
+    group_id: { type: String },
     title: { type: String },
     subtitle: { type: String },
     leader: { type: String },
