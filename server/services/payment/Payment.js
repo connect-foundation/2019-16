@@ -1,8 +1,7 @@
 const App = require("../../lib/tcp/App");
 const mongoose = require("mongoose");
 const { PAYMENTS_MONGO_URL } = process.env;
-const { inspectQueue, approvePayment } = require("./query/queries");
-const queryMap = { inspectQueue, approvePayment };
+const queryMap = require("./queries");
 
 mongoose
   .connect(PAYMENTS_MONGO_URL, {
@@ -33,7 +32,7 @@ async function doJob(socket, data) {
       method: "ERROR",
       curQuery: nextQuery,
       nextQuery: "gateway",
-      endQuery: "gateway",
+      endQuery: nextQuery,
       params: {}
     };
     body = e;
@@ -44,7 +43,10 @@ async function doJob(socket, data) {
       body,
       info: this.context
     };
-    const appClient = {};
+    let appClient = {};
+
+    if (replyData.nextQuery === "addReservation")
+      appClient = this.appClients.reservation;
 
     this.send(appClient, replyData);
   }
