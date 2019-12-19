@@ -26,25 +26,25 @@ class App extends TcpServer {
     const packets = await popMessageQueue(this.context.name, 1000);
 
     if (!Array.isArray(packets)) {
-      this.job({}, JSON.parse(packets));
+      this.job(JSON.parse(packets), null);
     } else {
       packets.forEach(packet => {
-        this.job({}, JSON.parse(packet));
+        this.job(JSON.parse(packet), null);
       });
     }
   }
 
-  async onRead(socket, data) {
+  async onRead(data, socket) {
     if (!isLogService(this.context.name) && data.hasOwnProperty("nextQuery")) {
       const spanId = await this.sendTcpLog(data.nextQuery);
 
       data.spanId = spanId;
     }
 
-    this.job(socket, data);
+    this.job(data, socket);
   }
 
-  async send(appClient, data) {
+  async send(data, appName) {
     const packet = makePacket(
       data.method,
       data.curQuery,
@@ -58,8 +58,9 @@ class App extends TcpServer {
 
     if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
-    } else {
-      appClient.write(packet);
+    }
+    if (!appName) {
+      this.appClients[appName].write(packet);
     }
     if (!isLogService(data.info.name) && data.spanId) {
       if (isErrorPacket(data.method)) {
