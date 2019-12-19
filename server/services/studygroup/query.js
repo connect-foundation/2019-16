@@ -6,7 +6,7 @@ const {
 } = require("../../lib/redis/studygroup");
 
 exports.addGroup = async params => {
-  const groupInfo = params;
+  const { groupInfo, userId } = params;
   const resultAfterStore = await StudyGroups.create(groupInfo);
 
   await pushStudyGroups(resultAfterStore);
