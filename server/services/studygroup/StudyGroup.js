@@ -8,8 +8,16 @@ const doAndResponse = async (params, packetData, cb) => {
   try {
     const result = await cb(params);
 
+    if (packetData.curQuery === "toggleRegistration") {
+      packetData.nextQuery = "updateJoiningGroups";
+    }
+    if (packetData.curQuery === "addGroup") {
+      packetData.nextQuery = "updateOwnGroups";
+    }
+
     replyData.method = "REPLY";
     replyData.body = result;
+
     return replyData;
   } catch (e) {
     console.error(e);
@@ -19,17 +27,28 @@ const doAndResponse = async (params, packetData, cb) => {
   }
 };
 
-async function doJob(socket, data) {
+async function doJob(data, appName) {
   const { params, nextQuery } = data;
   let replyData;
 
   try {
     replyData = await doAndResponse(params, data, queryMap[nextQuery]);
+    if (
+      nextQuery === "updateJoiningGroups" ||
+      nextQuery === "updateOwnGroups"
+    ) {
+      replyData.params = {
+        userId: replyData.body.userId,
+        joiningGroup: replyData.body.joiningGroup,
+        ownGroup: replyData.body.ownGroup
+      };
+      appName = "user";
+    }
   } catch (errReplyData) {
     replyData = errReplyData;
+  } finally {
+    this.send(replyData, appName);
   }
-
-  this.send(socket, replyData);
 }
 class StudyGroup extends App {
   constructor(name, host, port) {
