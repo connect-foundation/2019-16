@@ -44,7 +44,7 @@ async function doJob(socket, data) {
     };
     const appClient = {};
 
-    this.send(appClient, replyData);
+    // this.send(appClient, replyData);
   }
 }
 

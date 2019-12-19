@@ -1,22 +1,21 @@
 const Users = require("../model/user");
 
 exports.updateJoiningGroups = async ({ userId, joiningGroup }) => {
-  console.log("updateJoiningGroups" + userId + joiningGroup);
-  Users.findOneAndUpdate(
+  Users.updateOne(
     { userId: userId },
     { $push: { joiningGroups: joiningGroup } },
     err => {
-      throw new Error(err);
+      if (err) throw new Error(err);
     }
   );
 };
 
 exports.updateOwnGroups = async ({ userId, ownGroup }) => {
-  Users.findOneAndUpdate(
+  Users.updateOne(
     { userId: userId },
     { $push: { ownGroups: ownGroup } },
     err => {
-      throw new Error(err);
+      if (err) throw new Error(err);
     }
   );
 };
