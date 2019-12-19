@@ -1,5 +1,7 @@
 const SET_GROUPS = "userIndex/SET_GROUPS";
 const SET_ADDTIONAL_GROUPS = "userIndex/SET_ADDTIONAL_GROUPS";
+const SET_MY_GROUPS = "userIndex/SET_MY_GROUPS";
+const SET_JOIN_GROUPS = "userIndex/SET_JOIN_GROUPS";
 
 export const set_groups = searchList => ({
   type: SET_GROUPS,
@@ -11,13 +13,44 @@ export const set_additional_groups = searchList => ({
   searchList
 });
 
+export const set_my_group = myGroups => ({ type: SET_MY_GROUPS, myGroups });
+
+export const set_join_group = joinedGroups => ({
+  type: SET_JOIN_GROUPS,
+  joinedGroups
+});
+
 export const initalState = {
+  joinedGroups: [
+    // {
+    //   id: 0,
+    //   days: [],
+    //   startTime: 0,
+    //   during: 0,
+    //   //location: { lat: 0, lon: 0 },
+    //   max_personnel: 0,
+    //   now_personnel: 0,
+    //   // min_personnel: 0,
+    //   title: "",
+    //   subtitle: "",
+    //   thumbnail: "",
+    //   tags: []
+    // }
+  ],
   myGroups: [
     // {
-    //   id: "",
-    //   img: "",
+    //   id: 0,
+    //   days: [],
+    //   startTime: 0,
+    //   during: 0,
+    //   //location: { lat: 0, lon: 0 },
+    //   max_personnel: 0,
+    //   now_personnel: 0,
+    //   // min_personnel: 0,
     //   title: "",
-    //   leader: ""
+    //   subtitle: "",
+    //   thumbnail: "",
+    //   tags: []
     // }
   ],
   searchList: [
@@ -74,7 +107,7 @@ export const initalState = {
 };
 
 export const userIndexReducer = (state, action) => {
-  const { searchList } = action;
+  const { searchList, myGroups, joinedGroups } = action;
   switch (action.type) {
     case SET_GROUPS:
       return {
@@ -86,7 +119,16 @@ export const userIndexReducer = (state, action) => {
         ...state,
         searchList: [...state.searchList, ...searchList]
       };
-
+    case SET_MY_GROUPS:
+      return {
+        ...state,
+        myGroups
+      };
+    case SET_JOIN_GROUPS:
+      return {
+        ...state,
+        joinedGroups
+      };
     default:
       return state;
   }
