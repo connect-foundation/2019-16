@@ -33,7 +33,7 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
       const { lat, lon } = userInfo.userLocation;
       request(
         "get",
-        `/search/all/category/${categoryName}/location/${lat}/${lon}/true`
+        `/search/all/category/${categoryName}/location/${lat}/${lon}/page/0/true`
       );
     },
     [userInfo]

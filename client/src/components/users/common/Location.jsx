@@ -1,6 +1,9 @@
 import React, { memo } from "react";
 import styled from "styled-components";
+import { useState } from "react";
+import useCoord2String from "../../../lib/coord2string";
 
+const { kakao } = window;
 const StyledLocation = styled.div`
   width: 100%;
   height: 2rem;
@@ -32,19 +35,16 @@ const StyledLocation = styled.div`
     vertical-align: middle;
   }
 `;
-
 const Location = ({ location }) => {
   const { lat, lon } = location;
+  const [locationString] = useCoord2String(kakao, lat, lon);
 
   return (
     <StyledLocation>
       <div className="imageWrapper">
         <img src="/image/location-icon.png" alt="location-icon" />
       </div>
-      <div className="locationName">
-        {" "}
-        위도: {lat} 경도: {lon}
-      </div>
+      <div className="locationName">{locationString}</div>
     </StyledLocation>
   );
 };

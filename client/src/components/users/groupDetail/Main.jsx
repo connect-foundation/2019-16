@@ -6,7 +6,10 @@ import Location from "../common/Location";
 import Time from "../groupCard/Time";
 import TagButtons from "../common/TagButtons";
 import ApplyButtons from "../groupDetail/ApplyButtons";
-import { toggle_recruit } from "../../../reducer/users/groupDetail";
+import {
+  toggle_recruit,
+  toggle_registeration
+} from "../../../reducer/users/groupDetail";
 
 const StyledMain = styled.div`
   width: 100%;
@@ -73,6 +76,10 @@ const Main = ({ groupData, dispatch }) => {
     dispatch(toggle_recruit(isRecruiting));
   }, []);
 
+  const onChangedNowPersonnel = useCallback(changedNowPersonnel => {
+    dispatch(toggle_registeration(changedNowPersonnel));
+  }, []);
+
   return (
     <StyledMain className="columns">
       <div className="column imageDiv is-half">
@@ -95,6 +102,7 @@ const Main = ({ groupData, dispatch }) => {
         <ApplyButtons
           groupData={groupData}
           onToggleReservation={onToggleReservation}
+          onChangedNowPersonnel={onChangedNowPersonnel}
         />
       </div>
     </StyledMain>
