@@ -40,7 +40,7 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   );
 
   const itemList = secondaryCategories.map((category, idx) => (
-    <Link to={`/search?query=${category}`}>
+    <Link to="/">
       <span key={idx} className="navbar-item" onClick={searchGroups}>
         {category}
       </span>
