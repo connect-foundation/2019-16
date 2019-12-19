@@ -6,7 +6,7 @@ module.exports = async function(req, res) {
   const result = await User.findOne({ userId });
 
   if (result === null) res.json(null);
-
+  console.log("fdafasfakjehfh");
   const {
     userEmail,
     userGender,
@@ -14,7 +14,10 @@ module.exports = async function(req, res) {
     userName,
     kakaoAccessToken,
     profileImage,
-    userLocation
+    userLocation,
+    ownGroups,
+    joiningGroups,
+    history
   } = result;
 
   res
@@ -32,6 +35,9 @@ module.exports = async function(req, res) {
       userName,
       kakaoAccessToken,
       profileImage,
-      userLocation
+      userLocation,
+      ownGroups,
+      joiningGroups,
+      history
     });
 };
