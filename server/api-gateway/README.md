@@ -9,7 +9,7 @@
 |  No.  | Method |                       Url                        |
 | :---: | :----: | :----------------------------------------------: |
 |   1   | `POST` | [`/api/payment/ready`](#11-post-apipaymentready) |
-|   2   | `GET`  |             `/api/payment/approval`              |
+|   2   | `GET`  |     `/api/payment/approval/:roomId/:userId`      |
 |   3   | `GET`  |              `/api/payment/cancel`               |
 |   4   | `GET`  |               `/api/payment/fail`                |
 
@@ -22,8 +22,7 @@
 
 |             Field              |    Type    |          Description           |
 | :----------------------------: | :--------: | :----------------------------: |
-|  `userInfo.kakaoAccessToken`   |  `String`  |       `사용자 access_token`       |
-|       `userInfo.userId`        |  `String`  |            `사용자 id`            |
+|            `userId`            |  `String`  |            `사용자 id`            |
 |       `paymentInfo.cid`        |  `String`  |         `가맹점 코드. 10자`          |
 | `paymentInfo.partner_order_id` |  `String`  |      `가맹점 주문번호. 최대 100자`       |
 | `paymentInfo.partner_user_id`  |  `String`  |      `가맹점 회원 id. 최대 100자`      |
