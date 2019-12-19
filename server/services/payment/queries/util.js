@@ -84,5 +84,6 @@ exports.requestPaymentApproval = async ({ paymentInfo, pg_token }) => {
 };
 
 exports.getQueueByUserId = (queue, userId) => {
+  if (!queue) return null;
   return queue.filter(payment => payment.userId === userId);
 };
