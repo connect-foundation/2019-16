@@ -8,11 +8,11 @@ const doAndResponse = async (params, packetData, cb) => {
   try {
     const result = await cb(params);
 
-    if (packetData.curQuery === "toggleRegistration") {
-      packetData.nextQuery = "updateJoiningGroups";
+    if (replyData.curQuery === "toggleRegistration") {
+      replyData.nextQuery = "updateJoiningGroups";
     }
-    if (packetData.curQuery === "addGroup") {
-      packetData.nextQuery = "updateOwnGroups";
+    if (replyData.curQuery === "addGroup") {
+      replyData.nextQuery = "updateOwnGroups";
     }
 
     replyData.method = "REPLY";
@@ -35,8 +35,8 @@ async function doJob(data, appName_) {
   try {
     replyData = await doAndResponse(params, data, queryMap[nextQuery]);
     if (
-      nextQuery === "updateJoiningGroups" ||
-      nextQuery === "updateOwnGroups"
+      replyData.nextQuery === "updateJoiningGroups" ||
+      replyData.nextQuery === "updateOwnGroups"
     ) {
       replyData.params = {
         userId: replyData.body.userId,

@@ -59,7 +59,8 @@ class App extends TcpServer {
     if (data.curQuery === data.endQuery) {
       this.ApiGateway.write(packet);
     }
-    if (!appName) {
+
+    if (appName) {
       this.appClients[appName].write(packet);
     }
     if (!isLogService(data.info.name) && data.spanId) {
