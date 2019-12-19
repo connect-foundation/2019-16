@@ -1,11 +1,14 @@
-import React, { useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import queryString from "query-string";
 import styled from "styled-components";
 
 import StudyGroupCard from "../../components/users/groupCard";
+import useInfiniteScroll from "../../lib/useInfiniteScroll";
 
+import { REQUEST_URL } from "../../config.json";
 import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
+import axios from "axios";
 
 const StyledSearch = styled.div`
   display: flex;
@@ -32,14 +35,16 @@ const StyledSearch = styled.div`
 
   .study-group-list{
       align-self:center;
+      min-height: 200px;
 
       display: flex;
       flex-direction: row;
       justify-content: space-evenly;
 
       background-color: #f8f0ee;
-      width: 75rem;
+      width: 68rem;
       flex-wrap: wrap;
+      padding: 0 1rem;
       margin:0 10%;
       .study-group-card{
           margin: 2em;
@@ -53,10 +58,17 @@ const isSetPositionDuringLoading = (loading, lat, lon) =>
 const isHaveCardDataWhenLoaded = (loading, data) =>
   !loading && data && data.length;
 
+function isLastPagenation(takenGroups) {
+  const takenLength = takenGroups.length || 0;
+  if (!takenGroups || !takenLength || takenLength < 6) return true;
+  return false;
+}
+
 const Search = ({ location, match }) => {
   const query = queryString.parse(location.search).query;
 
   const pathname = location.pathname;
+
   const {
     userIndexState,
     userIndexDispatch,
@@ -69,24 +81,50 @@ const Search = ({ location, match }) => {
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
 
-  useEffect(() => {
-    if (isSetPositionDuringLoading(loading, lat, lon)) {
-    }
-  }, [userLocation]);
+  const [searchData, setSearchData] = useState([]);
+
+  const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
+
+  const [pageState, setpageState] = useState({
+    page_idx: 1,
+    isLastItem: false,
+  });
+
+  function loadAdditionalItems() {
+    const { page_idx, isLastItem } = pageState;
+    if (isLastItem) return;
+
+    let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/${page_idx}/true`;
+    console.log(url);
+    axios.get(url).then(({ data }) => {
+      const additionalGroups = data;
+      const changedPageNationState = {
+        ...pageState,
+        page_idx: page_idx + 1,
+      };
+
+      if (isLastPagenation(additionalGroups))
+        changedPageNationState.isLastItems = true;
+
+      setSearchData([...searchData, ...additionalGroups]);
+      //userIndexDispatch(set_additional_groups(additionalGroups));
+      setpageState(changedPageNationState);
+    });
+    setIsFetching(false);
+  }
 
   useEffect(() => {
-    if (!isHaveCardDataWhenLoaded(loading, data)) return;
-    userIndexDispatch(set_groups(data));
+    if (data) setSearchData(data);
   }, [data]);
+
   return (
     <StyledSearch>
       <div className="study-group-list">
         {(() => {
-          if (loading) return <h3> 로딩 중... </h3>;
-          if (error) return <h3> 에러 발생 </h3>;
-          if (!data.length) return <h3> 데이터가 업소용 </h3>;
-
-          return searchList.map(groupData => {
+          // if (loading) return <h3> 로딩 중... </h3>;
+          // if (error) return <h3> 에러 발생 </h3>;
+          if (!searchData.length) return <h3> 데이터가 업소용 </h3>;
+          return searchData.map(groupData => {
             return (
               <StudyGroupCard
                 key={groupData.id}
