@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext, useRef } from "react";
 
-import infiniteScrollEventHandler from "../../lib/infiniteScrollEventHandler";
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -11,6 +10,9 @@ import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
 import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
+import { REQUEST_URL } from "../../config.json";
+import axios from "axios";
+import { set_additional_groups } from "../../reducer/users/index";
 
 const Main = styled.div`
   display: flex;
@@ -76,65 +78,44 @@ const MainPage = () => {
     userIndexState,
     userIndexDispatch,
     userInfo,
-    getApiAxiosState
+    getApiAxiosState,
+    pageNationState,
+    setPageNationState
   } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
-  const scrollStateRef = useRef({
-    loading: false,
-    pageIndex: 1,
-    isLastItems: false
-  });
-  scrollStateRef.current = {
-    loading: false,
-    pageIndex: 1,
-    isLastItems: false
-  };
+
   const lat = useRef();
   const lon = useRef();
   lat.current = userLocation.lat;
   lon.current = userLocation.lon;
   let { loading, data, error, request } = getApiAxiosState;
 
-  const [isFetching, setIsFetching] = useInfiniteScroll();
+  const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
 
-  // function fetchMoreListItems() {
-  //   let url = `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`;
-  //   if (category === String)
-  //     url = `${REQUEST_URL}/api/search/all/category/${category}location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`;
+  function loadAdditionalItems() {
+    const { page_idx, category, isLastItem } = pageNationState;
+    if (isLastItem) return;
+    let url = `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
+    if (category)
+      url = `${REQUEST_URL}/api/search/all/category/${category}/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
 
-  //   axios.get(url).then(({ data }) => {
-  //     const takenGroups = data;
+    axios.get(url).then(({ data }) => {
+      const additionalGroups = data;
 
-  //     const { pageIndex } = scrollStateRef.current;
-  //     const changedScrollState = {
-  //       isLastItems: false,
-  //       pageIndex: pageIndex + 1,
-  //       loading: false
-  //     };
+      const changedPageNationState = {
+        ...pageNationState,
+        page_idx: page_idx + 1
+      };
 
-  //     if (isLastPagenation(takenGroups)) changedScrollState.isLastItems = true;
+      if (isLastPagenation(additionalGroups))
+        changedPageNationState.isLastItems = true;
 
-  //     userIndexDispatch(set_additional_groups(takenGroups));
-  //     scrollStateRef.current = changedScrollState;
-  //   });
-  // }
-  useEffect(() => {
-    console.log(`add event`);
-    window.addEventListener(
-      "scroll",
-      infiniteScrollEventHandler.bind(
-        null,
-        lat,
-        lon,
-        userIndexDispatch,
-        scrollStateRef
-      )
-    );
-    return () => {
-      window.removeEventListener("scroll", infiniteScrollEventHandler);
-    };
-  }, []);
+      userIndexDispatch(set_additional_groups(additionalGroups));
+      setPageNationState(changedPageNationState);
+    });
+    setIsFetching(false);
+  }
 
   useEffect(() => {
     isSetPositionDuringLoading(loading, lat.current, lon.current) &&
@@ -148,18 +129,6 @@ const MainPage = () => {
     console.log("data", data);
     if (!isHaveCardDataWhenLoaded(loading, data)) return;
     userIndexDispatch(set_groups(data));
-    if (data.length < takeCardAmount) {
-      scrollStateRef.current = {
-        ...scrollStateRef,
-        pageIndex: data.length - 1,
-        isLastItems: true
-      };
-      return;
-    }
-    scrollStateRef.current = {
-      ...scrollStateRef.current,
-      pageIndex: scrollStateRef.current.pageIndex + 1
-    };
   }, [data]);
 
   return (
@@ -225,5 +194,11 @@ const isSetPositionDuringLoading = (loading, lat, lon) =>
 
 const isHaveCardDataWhenLoaded = (loading, data) =>
   !loading && data && data.length;
+
+function isLastPagenation(takenGroups) {
+  const takenLength = takenGroups.length || 0;
+  if (!takenGroups || !takenLength || takenLength < 6) return true;
+  return false;
+}
 
 export default MainPage;
