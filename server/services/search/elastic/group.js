@@ -350,7 +350,7 @@ exports.bulkStudyGroups = async (
     delete objGroup._id;
 
     return [
-      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id } },
+      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id, retry_on_conflict: 3 } },
       objGroup
     ];
   });

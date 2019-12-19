@@ -116,6 +116,7 @@ exports.updateQueriesValue = async (searchWord, contentsCount) => {
 
   const update = {
     index: SEARCH_INDEX_QUERY,
+    retry_on_conflict: 3,
     body
   };
 
