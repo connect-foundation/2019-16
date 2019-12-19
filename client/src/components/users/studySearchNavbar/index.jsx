@@ -46,7 +46,9 @@ const StudySearchNavbar = () => {
         <div id="navbarExampleTransparentExample" className="navbar-menu">
           <div className="navbar-start">
             <Link to="/">
-              <span className="navbar-item">모두 보기</span>{" "}
+              <span className="navbar-item" onClick={searchAllGroups}>
+                모두 보기
+              </span>{" "}
             </Link>
 
             {primaryCategories.map((category, idx) => (
