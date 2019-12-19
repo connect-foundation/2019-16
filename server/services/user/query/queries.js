@@ -1,6 +1,7 @@
 const Users = require("../model/user");
 
 exports.updateJoiningGroups = async ({ userId, joiningGroup }) => {
+  console.log("updateJoiningGroups" + userId + joiningGroup);
   Users.findOneAndUpdate(
     { userId: userId },
     { $push: { joiningGroups: joiningGroup } },
