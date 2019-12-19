@@ -43,6 +43,7 @@ const StudySearchNavbar = () => {
       page_idx: 1
     };
     setPageNationState(changedPageNationState);
+
     request("get", `search/all/location/${lat}/${lon}/page/0/true`);
   }, [userInfo]);
 

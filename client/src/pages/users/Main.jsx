@@ -83,7 +83,7 @@ const MainPage = () => {
     setPageNationState
   } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
-  const { userEmail, userLocation } = userInfo;
+  const { userId, userLocation } = userInfo;
 
   const lat = useRef();
   const lon = useRef();
@@ -134,7 +134,7 @@ const MainPage = () => {
   return (
     <Main>
       <div className="main-jumbotron">
-        {userEmail ? (
+        {userId ? (
           <>
             {myGroups.length ? (
               <MyStudyCarousel></MyStudyCarousel>

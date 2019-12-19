@@ -43,8 +43,8 @@ const LoginButton = () => {
                 address,
                 async (locationResult, locationStatus) => {
                   const userLocation = {
-                    lat: +locationResult[0].x,
-                    lon: +locationResult[0].y
+                    lat: +locationResult[0].y,
+                    lon: +locationResult[0].x
                   };
                   const url = `${REQUEST_URL}/auth/users/accounts`;
                   const data = {
