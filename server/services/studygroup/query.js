@@ -78,7 +78,8 @@ exports.toggleRegistration = async params => {
     changedMemberType,
     changedNowPersonnel: groupInfo.now_personnel,
     userId,
-    joiningGroup: groupInfo
+    joiningGroup: groupInfo,
+    isJoiner
   };
 };
 

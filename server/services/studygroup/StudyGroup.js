@@ -41,7 +41,8 @@ async function doJob(data, appName_) {
       replyData.params = {
         userId: replyData.body.userId,
         joiningGroup: replyData.body.joiningGroup,
-        ownGroup: replyData.body.ownGroup
+        ownGroup: replyData.body.ownGroup,
+        mode: replyData.body.isJoiner
       };
       appName = "user";
     }
