@@ -49,7 +49,7 @@ exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
       endQuery: "inspectQueue",
       params: {}
     },
-    body: { nextUrl }
+    body: { nextUrl, status: 200 }
   };
 };
 
@@ -72,11 +72,11 @@ exports.approvePayment = async ({ pg_token, userId, roomId }) => {
       headers: {
         method: "REPLY",
         curQuery: "approvePayment",
-        nextQuery: "gateway",
-        endQuery: "gateway",
+        nextQuery: "apigateway",
+        endQuery: "apigateway",
         params: {}
       },
-      body: {}
+      body: { err: true, msg: "결제 승인 에러", status: 400 }
     };
   }
 
@@ -91,5 +91,25 @@ exports.approvePayment = async ({ pg_token, userId, roomId }) => {
       params: { reservationInfo, userId }
     },
     body: {}
+  };
+};
+
+exports.removeInQueue = ({ roomId, userId }) => {
+  const idxToDelete = payQueue[roomId].findIndex(
+    element => element.userId === userId
+  );
+  const { reservationInfo, paymentInfo } = payQueue[roomId][idxToDelete];
+
+  payQueue[roomId].splice(idxToDelete, 1);
+
+  return {
+    headers: {
+      method: "REDIRECT",
+      curQuery: "removeInQueue",
+      nextQuery: "apigateway",
+      endQuery: "apigateway",
+      params: {}
+    },
+    body: { reservationInfo, paymentInfo, status: 200 }
   };
 };
