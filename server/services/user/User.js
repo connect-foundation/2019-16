@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 const App = require("../../lib/tcp/App");
 const { updateJoiningGroups, updateOwnGroups } = require("./query/queries");
