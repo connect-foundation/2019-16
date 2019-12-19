@@ -65,7 +65,7 @@ exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
   const groupInfo = JSON.parse(req.body.data);
   const userId = req.body.userId;
 
-  payload.thumbnail = req.imageLink;
+  groupInfo.thumbnail = req.imageLink;
 
   const packet = makePacket(
     "POST",
