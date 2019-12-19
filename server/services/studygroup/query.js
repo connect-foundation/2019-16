@@ -73,6 +73,8 @@ exports.toggleRegistration = async params => {
       throw new Error(err);
     });
 
+  updateStudyGroup(groupInfo);
+
   return {
     status: 200,
     changedMemberType,
