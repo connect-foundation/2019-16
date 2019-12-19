@@ -37,6 +37,7 @@ function paymentRouter(apiGateway) {
         userId,
         roomId
       },
+      {},
       req.resKey,
       apiGateway.context
     );
