@@ -44,7 +44,11 @@ const UserPage = () => {
     profileImage: "",
     userLocation: { lat: null, lon: null }
   });
-
+  const [pageNationState, setPageNationState] = useState({
+    page_idx: 1,
+    category: null,
+    isLastItem: false
+  });
   const getApiAxiosState = useAxios(apiAxios);
 
   const [userIndexState, userIndexDispatch] = useReducer(
@@ -87,7 +91,9 @@ const UserPage = () => {
         setUserInfo,
         userIndexState,
         userIndexDispatch,
-        getApiAxiosState
+        getApiAxiosState,
+        pageNationState,
+        setPageNationState
       }}
     >
       <div className="app-wrapper">
