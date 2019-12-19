@@ -90,25 +90,18 @@ const MainPage = () => {
   } = useContext(UserContext);
   const { myGroups, searchList } = userIndexState;
   const { userEmail, userLocation } = userInfo;
-  const [scrollState, setScrollState] = useState({
+  const scrollStateRef = useRef({
     loading: false,
     pageIndex: 1,
     isLastItems: false
   });
-  const scrollStateRef = useRef(scrollState);
   const lat = useRef();
   const lon = useRef();
   lat.current = userLocation.lat;
   lon.current = userLocation.lon;
   let { loading, data, error, request } = getApiAxiosState;
 
-  function updateScrollState(newState) {
-    setScrollState(scrollState => {
-      return { ...scrollState, ...newState };
-    });
-  }
-
-  const infiniteScroll = useCallback(() => {
+  const infiniteScroll = () => {
     if (scrollStateRef.current.loading) return;
     if (scrollStateRef.current.isLastItems) return;
 
@@ -122,8 +115,10 @@ const MainPage = () => {
     );
     const clientHeight = document.documentElement.clientHeight;
 
-    if (scrollTop + clientHeight + 1 >= scrollHeight) {
-      updateScrollState({ ...scrollState, loading: true });
+    if (scrollTop + clientHeight + 200 >= scrollHeight) {
+      console.log(scrollStateRef.current);
+
+      scrollStateRef.current = { ...scrollStateRef.current, loading: true };
       axios
         .get(
           `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${scrollStateRef.current.pageIndex}/true`
@@ -131,7 +126,7 @@ const MainPage = () => {
         .then(({ data }) => {
           const takenGroups = data;
 
-          const { pageIndex } = scrollState;
+          const { pageIndex } = scrollStateRef.current;
           const changedScrollState = {
             isLastItems: false,
             pageIndex: pageIndex + 1,
@@ -142,10 +137,10 @@ const MainPage = () => {
             changedScrollState.isLastItems = true;
 
           userIndexDispatch(set_additional_groups(takenGroups));
-          updateScrollState(changedScrollState);
+          scrollStateRef.current = changedScrollState;
         });
     }
-  }, [scrollState]);
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", infiniteScroll);
@@ -166,22 +161,18 @@ const MainPage = () => {
     if (!isHaveCardDataWhenLoaded(loading, data)) return;
     userIndexDispatch(set_groups(data));
     if (data.length < takeCardAmount) {
-      setScrollState({
-        ...scrollState,
+      scrollStateRef.current = {
+        ...scrollStateRef,
         pageIndex: data.length - 1,
         isLastItems: true
-      });
+      };
       return;
     }
-    setScrollState({
-      ...scrollState,
-      pageIndex: scrollState.pageIndex + 1
-    });
+    scrollStateRef.current = {
+      ...scrollStateRef.current,
+      pageIndex: scrollStateRef.current.pageIndex + 1
+    };
   }, [data]);
-
-  useEffect(() => {
-    scrollStateRef.current = scrollState;
-  }, [scrollState]);
 
   return (
     <Main>
