@@ -28,5 +28,27 @@ exports.filterStudyGroup = async ({ studyGroup, studyRooms }) => {
     room => !reservatedId.includes(room._id)
   );
 
-  return filterdRooms;
+  return {
+    headers: {
+      method: "REPLY",
+      curQuery: "filterStudyGroup",
+      nextQuery: "apigateway",
+      params: {}
+    },
+    body: filterdRooms
+  };
+};
+
+exports.addReservation = async ({ reservationInfo, userId }) => {
+  // 데이터베이스에 저장
+
+  return {
+    headers: {
+      method: "REPLY",
+      curQuery: "addReservation",
+      nextQuery: "removeInQueue",
+      params: { roomId: reservationInfo.roomId, userId }
+    },
+    body: {}
+  };
 };

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const App = require("../../lib/tcp/App");
-const { filterStudyGroup } = require("./query/queries");
+const { filterStudyGroup, addReservation } = require("./query/queries");
 
 const { RESERVATIONS_MONGO_URL } = process.env;
 
@@ -18,31 +18,40 @@ mongoose
   });
 
 const queryMap = {
-  filterStudyGroup
+  filterStudyGroup,
+  addReservation
 };
 
 async function doJob(socket, data) {
   const { params, nextQuery } = data;
-
-  let replyData;
-  let method = "REPLY";
-  let params_ = {};
-  let result;
+  let headers;
+  let body;
 
   try {
-    result = await queryMap[nextQuery](params);
+    let result = await queryMap[nextQuery](params);
+
+    headers = result.headers;
+    body = result.body;
   } catch (e) {
-    method = "ERROR";
-    result = e;
-  } finally {
-    replyData = {
-      ...data,
-      method,
+    headers = {
+      method: "ERROR",
       curQuery: nextQuery,
-      params: params_,
-      body: result
+      nextQuery: "gateway",
+      endQuery: "gateway",
+      params: {}
     };
-    const appClient = {};
+    body = e;
+  } finally {
+    const replyData = {
+      ...data,
+      ...headers,
+      body,
+      info: this.context
+    };
+    let appClient = {};
+
+    if (replyData.nextQuery === "removeInQueue")
+      appClient = this.appClients.payment;
 
     this.send(appClient, replyData);
   }
