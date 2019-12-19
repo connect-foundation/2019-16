@@ -96,7 +96,7 @@ const MainPage = () => {
     pageNationState,
     setPageNationState
   } = useContext(UserContext);
-  const { myGroups, searchList } = userIndexState;
+  const { myGroups, joinedGroups, searchList } = userIndexState;
   const { userId, userLocation } = userInfo;
 
   const lat = useRef();
@@ -151,7 +151,7 @@ const MainPage = () => {
       <div className="main-jumbotron">
         {userId ? (
           <>
-            {myGroups.length ? (
+            {myGroups.length || joinedGroups.length ? (
               <MyStudyCarousel></MyStudyCarousel>
             ) : (
               <div className="no-groups">
