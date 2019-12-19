@@ -27,9 +27,10 @@ const doAndResponse = async (params, packetData, cb) => {
   }
 };
 
-async function doJob(data, appName) {
+async function doJob(data, appName_) {
   const { params, nextQuery } = data;
   let replyData;
+  let appName = appName_;
 
   try {
     replyData = await doAndResponse(params, data, queryMap[nextQuery]);
