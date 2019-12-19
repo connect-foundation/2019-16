@@ -94,7 +94,7 @@ const Header = ({ history }) => {
 
       if (isTagSearch(keyword)) {
         request("post", "/search/tags/page/0", {
-          data: { tags: [keyword], isRecruit: true, lat, lon }
+          data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
         });
         history.push(`/search/tags?query=${keyword.slice(1)}`);
       } else {
