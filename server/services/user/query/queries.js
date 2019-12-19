@@ -1,6 +1,7 @@
 const Users = require("../model/user");
 
 exports.updateJoiningGroups = async ({ userId, joiningGroup, addMode }) => {
+  joiningGroup.group_id = joiningGroup._id;
   if (addMode) {
     Users.updateOne(
       { userId: userId },
@@ -12,7 +13,7 @@ exports.updateJoiningGroups = async ({ userId, joiningGroup, addMode }) => {
   } else {
     Users.updateOne(
       { userId: userId },
-      { $pull: { joiningGroups: joiningGroup } },
+      { $pull: { joiningGroups: { group_id: joiningGroup._id } } },
       err => {
         if (err) throw new Error(err);
       }
