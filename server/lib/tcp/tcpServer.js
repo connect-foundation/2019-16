@@ -37,7 +37,7 @@ class TcpServer {
             return;
           }
           if (packet === "") return;
-          this.onRead(socket, JSON.parse(packet));
+          this.onRead(JSON.parse(packet), null);
         });
       });
     });
@@ -48,7 +48,7 @@ class TcpServer {
   onError(socket) {}
   onCreate(socket) {}
   onClose(socket) {}
-  onRead(socket, data) {
+  onRead(data, socket) {
     console.log(data);
 
     socket.write(data);
