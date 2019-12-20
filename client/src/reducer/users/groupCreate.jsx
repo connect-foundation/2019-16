@@ -8,6 +8,7 @@ const CHANGE_DURING = "groupCreate/CHANGE_DURING";
 const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
 const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupCreate/CHANGE_PERSONNEL";
+const SET_LOCATION = "groupCreate/SET_LOCATION";
 
 export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
@@ -52,6 +53,12 @@ export const change_personnel = (min_personnel, max_personnel) => ({
   max_personnel
 });
 
+export const set_location = (lat, lon) => ({
+  type: SET_LOCATION,
+  lat,
+  lon
+});
+
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
 const daysInfo = daysStr.map(str => ({
   isSelected: false,
@@ -91,6 +98,7 @@ export const initialState = {
     title: "",
     subtitle: "",
     intro: "",
+    locatoin: { lat: null, lon: null },
     days: [],
     startTime: 1,
     during: 1,
@@ -165,6 +173,13 @@ export const groupCreateReducer = (state, action) => {
     case CHANGE_PERSONNEL:
       const { min_personnel, max_personnel } = action;
       data = { ...data, min_personnel, max_personnel };
+      return { ...state, data };
+
+    case SET_LOCATION:
+      const { lat, lon } = action;
+      const location = { lat, lon };
+      data = { ...data, location };
+      console.log(data);
       return { ...state, data };
 
     default:
