@@ -17,7 +17,7 @@ const StyledSuggestDropDown = styled.header`
   }
 `;
 
-const SuggestDropDown = ({ suggestions, history }) => {
+const SuggestDropDown = ({ suggestions, setSuggestion, history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
   const { lat, lon } = userInfo.userLocation;
   const { request } = getApiAxiosState;
@@ -27,6 +27,7 @@ const SuggestDropDown = ({ suggestions, history }) => {
       "get",
       `/search/query/${e.target.innerText}/location/${lat}/${lon}/page/0/true`
     );
+    setSuggestion([]);
     history.push(`/search?query=${e.target.innerText}`);
   });
 
