@@ -16,6 +16,7 @@ const makeOverlay = (marker, data) => {
     content,
     yAnchor: 1
   });
+  marker.overlay = overlay;
   return overlay;
 };
 
