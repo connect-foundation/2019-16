@@ -12,11 +12,14 @@ const StyledTagButtons = styled.div`
 `;
 
 const TagButtons = props => {
-  const { tags } = props;
+  const { tags, history } = props;
   const tagBtnEvent = useCallback(e => {
+    e.preventDefault();
     const tagName = e.target.textContent.trim();
-    tagName.replace("# ", "");
-    alert(tagName.replace("# ", ""));
+
+    history.push(
+      `/search/tags?query=${tagName.replace(/(\s*)/g, "").slice(1)}`
+    );
   }, []);
 
   return (

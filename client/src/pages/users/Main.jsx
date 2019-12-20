@@ -87,7 +87,7 @@ const Main = styled.div`
 
 const takeCardAmount = 6;
 
-const MainPage = () => {
+const MainPage = ({ history }) => {
   const {
     userIndexState,
     userIndexDispatch,
@@ -198,6 +198,7 @@ const MainPage = () => {
               <StudyGroupCard
                 key={groupData.id}
                 groupData={groupData}
+                history={history}
               ></StudyGroupCard>
             );
           });
