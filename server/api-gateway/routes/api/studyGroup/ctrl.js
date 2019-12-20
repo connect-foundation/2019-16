@@ -63,7 +63,6 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
 
 exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
   const groupInfo = JSON.parse(req.body.data);
-  const userId = req.body.userId;
 
   groupInfo.thumbnail = req.imageLink;
 
@@ -72,7 +71,7 @@ exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
     "apigateway",
     "addGroup",
     "addGroup",
-    { groupInfo, userId },
+    { ...groupInfo },
     {},
     req.resKey,
     apigateway.context
