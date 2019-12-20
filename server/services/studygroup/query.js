@@ -7,15 +7,15 @@ const {
 
 exports.addGroup = async params => {
   const groupInfo = params;
-  groupInfo.group_id = groupInfo.id;
   const resultAfterStore = await StudyGroups.create(groupInfo);
+  resultAfterStore.group_id = resultAfterStore.id;
 
   await pushStudyGroups(resultAfterStore);
   return {
     id: resultAfterStore._id,
     status: 200,
     userId: groupInfo.leader,
-    ownGroup: groupInfo
+    ownGroup: resultAfterStore
   };
 };
 
