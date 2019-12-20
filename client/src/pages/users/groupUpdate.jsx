@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useReducer, useContext, useEffect } from "react";
+import React, {
+  useCallback,
+  useReducer,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { REQUEST_URL } from "../../config.json";
@@ -24,7 +30,8 @@ import {
   change_during,
   add_tag,
   set_initial_data,
-  attach_image
+  attach_image,
+  set_location
 } from "../../reducer/users/groupUpdate";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
@@ -62,11 +69,21 @@ const StyledGroupUpdate = styled.div`
   .button:focus {
     background-color: white;
   }
+
+  .location-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    span {
+      margin-left: 2rem;
+    }
+  }
 `;
 
 const GroupUpdate = ({ match, history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
+  const [locationString, setLocationString] = useState("");
   const { userId } = userInfo;
   const { id } = match.params;
 
@@ -118,6 +135,33 @@ const GroupUpdate = ({ match, history }) => {
     const during = +e.target.value;
     dispatch(change_during(during));
   });
+
+  const onSetLocation = useCallback(() => {
+    const { daum, kakao } = window;
+    const geocoder = new kakao.maps.services.Geocoder();
+    let address;
+    const oncomplete = data => {
+      address = data.address;
+      setLocationString(address);
+    };
+    const onclose = state => {
+      if (state === "FORCE_CLOSE") {
+        alert("필수 입력 사항입니다. 다시 로그인 해주세요");
+        window.location.reload();
+      } else if (state === "COMPLETE_CLOSE") {
+        geocoder.addressSearch(address, (locationResult, locationStatus) => {
+          // 여기로 위치 값이 들어옴
+          const lat = +locationResult[0].y;
+          const lon = +locationResult[0].x;
+
+          dispatch(set_location(lat, lon));
+        });
+      }
+    };
+
+    alert("주소를 입력 해주세요");
+    new daum.Postcode({ oncomplete, onclose }).open();
+  }, []);
 
   const onSubmit = useCallback(
     async e => {
@@ -172,7 +216,29 @@ const GroupUpdate = ({ match, history }) => {
           alert("마감(예약) 상태에서 그룹 정보를 수정할 수 없습니다.");
           history.push(`/group/detail/${id}`);
         }
-        if (status === 200) dispatch(set_initial_data(detailInfo));
+        if (status === 200) {
+          dispatch(set_initial_data(detailInfo));
+          const { kakao } = window;
+          const geocoder = new kakao.maps.services.Geocoder();
+          const { lat, lon } = detailInfo.location;
+          const coords = new kakao.maps.LatLng(lat, lon);
+          geocoder.coord2RegionCode(
+            coords.getLng(),
+            coords.getLat(),
+            displayCenterInfo
+          );
+          function displayCenterInfo(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+              for (var i = 0; i < result.length; i++) {
+                // 행정동의 region_type 값은 'H' 이므로
+                if (result[i].region_type === "H") {
+                  setLocationString(result[i].address_name);
+                  break;
+                }
+              }
+            }
+          }
+        }
       })
       .catch(err => {
         console.error(err);
@@ -228,6 +294,16 @@ const GroupUpdate = ({ match, history }) => {
         ></textarea>
       </div>
 
+      <div className="location-block">
+        <button className="button" onClick={onSetLocation}>
+          위치 설정
+        </button>
+        <span>
+          {locationString
+            ? locationString
+            : "스터디를 진행할 위치를 선택해주세요"}
+        </span>
+      </div>
       <TagInput tags={tags} onChangeTagInput={onChangeTagInput} />
 
       <ScheduleInput

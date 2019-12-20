@@ -22,5 +22,7 @@ export const isProperGroupDataFormat = data => {
   if (!data.leader) return { isProper: false, reason: "잘못된 접근입니다." };
   if (!data.location || Object.values(data.location).length !== 2)
     return { isProper: false, reason: "위치를 선택해주세요" };
+  if (!data || !data.lat || !data.lon)
+    return { isProper: false, reason: "스터디할 지역을 선택해주세요" };
   return { isProper: true };
 };
