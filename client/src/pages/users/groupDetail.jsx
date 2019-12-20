@@ -52,7 +52,7 @@ const GroupDetail = ({ match }) => {
     } catch (err) {
       alert("요청 오류");
     }
-  }, [id]);
+  }, [id, groupData]);
 
   useEffect(() => {
     id && request("get", `/studygroup/detail/${id}`);
