@@ -6,7 +6,6 @@ module.exports = async function(req, res) {
   const result = await User.findOne({ userId });
 
   if (result === null) res.json(null);
-  console.log("fdafasfakjehfh");
   const {
     userEmail,
     userGender,
