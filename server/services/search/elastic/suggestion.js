@@ -61,7 +61,18 @@ exports.addFirstQuery = async ({ searchWord }) => {
   client.index(index);
 };
 exports.getSuggestionCount = async searchWord => {
-  const query = generateQuery(searchWord);
+  const query = {
+    bool: {
+      must: [
+        {
+          query_string: {
+            query: `${searchWord}`,
+            fields: ["query"]
+          }
+        }
+      ]
+    }
+  };
 
   const body = { query };
   const count = {
