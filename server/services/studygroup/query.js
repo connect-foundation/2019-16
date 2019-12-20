@@ -21,8 +21,8 @@ exports.addGroup = async params => {
 exports.getGroupDetail = async params => {
   const { id } = params;
   const findResult = await StudyGroups.findById(id);
-
-  return { detailInfo: findResult, status: 200 };
+  if (findResult) return { detailInfo: findResult, status: 200 };
+  if (!findResult) return { status: 400 };
 };
 
 exports.removeGroup = async params => {
