@@ -17,6 +17,7 @@ import Footer from "../../components/Footer";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
 import Search from "./search";
+import Payment from "./payment";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
 
@@ -107,6 +108,7 @@ const UserPage = () => {
           <Route path="/reservation/:id" component={Reservation} />
           <Route path="/search/tags" component={Search} />
           <Route path="/search" component={Search} />
+          <Route path="/payment" component={Payment} />
         </Switch>
       </div>
       <Footer />
