@@ -37,7 +37,7 @@ const ApplyButtons = ({
   const [isCanReserve, setIsCanReserve] = useState(false);
   const isSatisfyPersonnelAtReservation =
     min_personnel <= now_personnel && now_personnel <= max_personnel;
-  const isPersonnelHigherThanMax = now_personnel > max_personnel;
+  const isPersonnelHigherThanMax = now_personnel >= max_personnel;
 
   const onToggleRegister = useCallback(async () => {
     if (isPersonnelHigherThanMax) return alert("인원이 꽉 찼습니다");

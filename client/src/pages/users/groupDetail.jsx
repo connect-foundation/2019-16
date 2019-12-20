@@ -69,7 +69,7 @@ const GroupDetail = ({ match }) => {
     <StyledGroupDetail>
       {(() => {
         if (loading) return <h2>로딩 중... </h2>;
-        if (error) return <h2> 에러 발생 </h2>;
+        if (error || data.status === 400) return <h2> 에러 발생 </h2>;
         if (isHaveGroupData) {
           const isMyGroup = groupData.leader === userInfo.userId;
           return (
