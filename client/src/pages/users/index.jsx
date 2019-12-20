@@ -10,16 +10,16 @@ import { REQUEST_URL } from "../../config.json";
 
 import MainPage from "./Main";
 import GroupCreatePage from "./groupCreate";
-import Notice from "../../components/users/Notice";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
 import Header from "../../components/users/Header";
+import Footer from "../../components/Footer";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
 import Search from "./search";
+import Payment from "./payment";
 
 const apiAxios = axios.create({ baseURL: `${REQUEST_URL}/api` });
-const DEFAULT_PROFILE_IMAGE = "/image/logo-mini/png";
 
 export const UserContext = createContext();
 
@@ -37,6 +37,7 @@ const getCurrentPosition = new Promise((resolve, reject) => {
 const UserPage = () => {
   const [userInfo, setUserInfo] = useState({
     kakaoAccessToken: "",
+    userId: "",
     userEmail: "",
     userName: "",
     userAgeRange: null,
@@ -44,7 +45,11 @@ const UserPage = () => {
     profileImage: "",
     userLocation: { lat: null, lon: null }
   });
-
+  const [pageNationState, setPageNationState] = useState({
+    page_idx: 1,
+    category: null,
+    isLastItem: false
+  });
   const getApiAxiosState = useAxios(apiAxios);
 
   const [userIndexState, userIndexDispatch] = useReducer(
@@ -54,14 +59,17 @@ const UserPage = () => {
 
   useEffect(() => {
     const parsedUserInfo = jwtParser();
+
     if (parsedUserInfo) {
-      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.email}`;
-      const options = { method: "GET" };
+      const url = `${REQUEST_URL}/auth/users/accounts/${parsedUserInfo.id}`;
+      const options = { method: "GET", mode: "cors", credentials: "include" };
 
       fetch(url, options)
         .then(r => {
           if (r.ok) return r.json();
-          throw new Error("fetch error");
+
+          alert("로그인 오류 입니다");
+          window.location.href = "/";
         })
         .then(result => {
           setUserInfo(result);
@@ -71,6 +79,7 @@ const UserPage = () => {
       getCurrentPosition
         .then(pos => {
           const { lat, lon } = pos;
+
           setUserInfo({ ...userInfo, userLocation: { lat, lon } });
         })
         .catch(console.error);
@@ -84,22 +93,25 @@ const UserPage = () => {
         setUserInfo,
         userIndexState,
         userIndexDispatch,
-        getApiAxiosState
+        getApiAxiosState,
+        pageNationState,
+        setPageNationState
       }}
     >
-      <div>
-        <Notice />
+      <div className="app-wrapper">
         <Route path="/" component={Header} />
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
-          <Route path="/reservation" component={Reservation} />
+          <Route path="/reservation/:id" component={Reservation} />
           <Route path="/search/tags" component={Search} />
           <Route path="/search" component={Search} />
+          <Route path="/payment" component={Payment} />
         </Switch>
       </div>
+      <Footer />
     </UserContext.Provider>
   );
 };

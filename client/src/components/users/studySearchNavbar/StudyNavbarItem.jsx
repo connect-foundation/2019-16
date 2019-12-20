@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -24,16 +24,27 @@ const Category = styled.div`
 `;
 
 const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
-  const { userInfo, getApiAxiosState } = useContext(UserContext);
+  const {
+    userInfo,
+    getApiAxiosState,
+    pageNationState,
+    setPageNationState
+  } = useContext(UserContext);
   const { request } = getApiAxiosState;
 
   const searchGroups = useCallback(
     e => {
       const categoryName = e.target.textContent.trim();
       const { lat, lon } = userInfo.userLocation;
+      const changedPageNationState = {
+        ...pageNationState,
+        page_idx: 1,
+        category: categoryName
+      };
+      setPageNationState(changedPageNationState);
       request(
         "get",
-        `/search/all/category/${categoryName}/location/${lat}/${lon}/true`
+        `/search/all/category/${categoryName}/location/${lat}/${lon}/page/0/true`
       );
     },
     [userInfo]

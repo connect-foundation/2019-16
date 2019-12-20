@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style>
+      .App {
+        position: relative;
+        min-height: 100vh;
+      }
+      .app-wrapper {
+        padding-bottom: 200px;
+      }
+      footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+    </style>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link
@@ -31,8 +45,9 @@
     <!-- 카카오 지도-->
     <script
       type="text/javascript"
-      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be6cd04045a1b2865cf8888359ed0040"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=be6cd04045a1b2865cf8888359ed0040&libraries=services"
     ></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
     <!-- 전체 코드 적용-->
     <style type="text/css">
@@ -49,7 +64,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Study Combined</title>
   </head>
 
   <body>

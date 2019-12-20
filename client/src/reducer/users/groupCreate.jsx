@@ -8,6 +8,7 @@ const CHANGE_DURING = "groupCreate/CHANGE_DURING";
 const INPUT_CONTENT = "groupCreate/INPUT_CONTENT";
 const ATTACH_IMAGE = "groupCreate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupCreate/CHANGE_PERSONNEL";
+const SET_LOCATION = "groupCreate/SET_LOCATION";
 
 export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
@@ -52,6 +53,12 @@ export const change_personnel = (min_personnel, max_personnel) => ({
   max_personnel
 });
 
+export const set_location = (lat, lon) => ({
+  type: SET_LOCATION,
+  lat,
+  lon
+});
+
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
 const daysInfo = daysStr.map(str => ({
   isSelected: false,
@@ -60,12 +67,28 @@ const daysInfo = daysStr.map(str => ({
 }));
 
 export const initialState = {
-  primaryCategories: ["프로그래밍", "자격증", "외국어", "면접"],
+  // primaryCategories: ["프로그래밍", "자격증", "외국어", "면접"],
+  // secondaryCategories: {
+  //   프로그래밍: ["C++", "Java", "JavaScript"],
+  //   자격증: ["IT", "운전", "보건", "식품"],
+  //   외국어: ["영어", "중국어", "불어", "스페인어"],
+  //   면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"]
+  // },
+  primaryCategories: ["프로그래밍", "자격증", "외국어", "취업", "기타"],
   secondaryCategories: {
-    프로그래밍: ["C++", "Java", "JavaScript"],
-    자격증: ["IT", "운전", "보건", "식품"],
-    외국어: ["영어", "중국어", "불어", "스페인어"],
-    면접: ["공채", "상시채용", "특채", "기술면접", "임원면접"]
+    프로그래밍: [
+      "C++",
+      "Java",
+      "JavaScript",
+      "Python",
+      "Swift",
+      "Ruby",
+      "기타"
+    ],
+    자격증: ["강사", "병원", "아동", "IT", "인문", "산업", "기타"],
+    외국어: ["영어", "중국어", "일본어", "불어", "스페인어", "기타"],
+    취업: ["자소서", "면접", "인적성", "자격증", "기타"],
+    기타: ["기타"]
   },
   daysInfo,
   data: {
@@ -75,6 +98,7 @@ export const initialState = {
     title: "",
     subtitle: "",
     intro: "",
+    locatoin: { lat: null, lon: null },
     days: [],
     startTime: 1,
     during: 1,
@@ -149,6 +173,13 @@ export const groupCreateReducer = (state, action) => {
     case CHANGE_PERSONNEL:
       const { min_personnel, max_personnel } = action;
       data = { ...data, min_personnel, max_personnel };
+      return { ...state, data };
+
+    case SET_LOCATION:
+      const { lat, lon } = action;
+      const location = { lat, lon };
+      data = { ...data, location };
+      console.log(data);
       return { ...state, data };
 
     default:

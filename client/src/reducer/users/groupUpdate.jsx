@@ -9,6 +9,7 @@ const INPUT_CONTENT = "groupUpdate/INPUT_CONTENT";
 const ATTACH_IMAGE = "groupUpdate/ATTACH_IMAGE";
 const CHANGE_PERSONNEL = "groupUpdate/CHANGE_PERSONNEL";
 const SET_INITIAL_DATA = "groupUpdate/SET_INITIAL_DATA";
+const SET_LOCATION = "groupUpdate/SET_LOCATION";
 
 export const category_click = (categoryType, categoryName) => ({
   type: CATEGORY_CLICK,
@@ -56,6 +57,12 @@ export const change_personnel = (min_personnel, max_personnel) => ({
 export const set_initial_data = groupData => ({
   type: SET_INITIAL_DATA,
   groupData
+});
+
+export const set_location = (lat, lon) => ({
+  type: SET_LOCATION,
+  lat,
+  lon
 });
 
 const daysStr = ["일", "월", "화", "수", "목", "금", "토"];
@@ -171,6 +178,12 @@ export const groupUpdateReducer = (state, action) => {
     case CHANGE_PERSONNEL:
       const { min_personnel, max_personnel } = action;
       data = { ...data, min_personnel, max_personnel };
+      return { ...state, data };
+
+    case SET_LOCATION:
+      const { lat, lon } = action;
+      const location = { lat, lon };
+      data = { ...data, location };
       return { ...state, data };
 
     default:

@@ -33,8 +33,9 @@ width: ${props => props.carouselWidth};
 
 const MyStudyCarousel = () => {
   const { userIndexState } = useContext(UserContext);
-  const { myGroups } = userIndexState;
-  const carouselWidth = myGroups.length ? myGroups.length * 15 + "em" : "100%";
+  const { myGroups, joinedGroups } = userIndexState;
+  const carouselWidth = myGroups.length ? myGroups.length * 10 + "em" : "100%";
+  const userGroups = myGroups.concat(joinedGroups);
 
   useEffect(() => {
     if (myGroups.length > 3)
@@ -50,7 +51,7 @@ const MyStudyCarousel = () => {
       <div>
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">
-          {myGroups.map(groupData => {
+          {userGroups.map(groupData => {
             return (
               <div className="carousel-item">
                 <StudyGroupCardMini groupData={groupData} />

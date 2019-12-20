@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useContext } from "react";
-import { createBrowserHistory } from "history";
 import styled from "styled-components";
 
 import UserInfo from "./UserInfo";
 import StudySearchNavbar from "./studySearchNavbar";
+import SuggestDropDown from "./suggestDropDown";
 
 import { UserContext } from "../../pages/users/index";
+import { REQUEST_URL } from "../../config.json";
 
 const StyledHeader = styled.header`
   display: flex;
@@ -29,6 +30,9 @@ const StyledHeader = styled.header`
       height: 68px;
     }
     .search-box {
+      display: block;
+      position: relative;
+      top: auto;
       .input {
         border-color: #53d0ec;
       }
@@ -62,12 +66,30 @@ const LeftHeader = styled.div`
 const Header = ({ history }) => {
   const { userInfo, getApiAxiosState } = useContext(UserContext);
   const [keyword, setKeyword] = useState("");
-
+  const [suggestions, setSuggestion] = useState([]);
   const { lat, lon } = userInfo.userLocation;
   const { request } = getApiAxiosState;
 
-  const onChange = useCallback(e => {
-    setKeyword(e.target.value);
+  let onChangeTimer;
+
+  const onChange = useCallback(async e => {
+    const query = e.target.value;
+    setKeyword(query);
+    const url = `${REQUEST_URL}/api/search/suggest/${query}`;
+
+    if (onChangeTimer) {
+      clearTimeout(onChangeTimer);
+    }
+
+    if (!query) setSuggestion([]);
+    if (query) {
+      onChangeTimer = setTimeout(async () => {
+        const response = await fetch(url);
+        const jsonRes = await response.json();
+        const suggestions = jsonRes.map(jsonRes => jsonRes.query);
+        setSuggestion(suggestions);
+      }, 100);
+    }
   });
 
   const onKeyDown = useCallback(
@@ -75,11 +97,15 @@ const Header = ({ history }) => {
       if (e.key !== "Enter") return;
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
-      isTagSearch(keyword)
-        ? history.push(`/search/tags?query=${keyword.slice(1)}`)
-        : history.push(`/search?query=${keyword}`);
+      if (isTagSearch(keyword)) {
+        setSuggestion([]);
+        history.push(`/search/tags?query=${keyword.slice(1)}`);
+      } else {
+        setSuggestion([]);
+        history.push(`/search?query=${keyword}`);
+      }
     },
-    [lat, lon, request, keyword]
+    [keyword]
   );
 
   return (
@@ -95,14 +121,21 @@ const Header = ({ history }) => {
           </a>
 
           <div className={`search-box`}>
-            <input
-              className="input is-rounded"
-              type="text"
-              placeholder="스터디그룹 검색"
-              value={keyword}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-            />
+            <div>
+              <input
+                className="input is-rounded"
+                type="text"
+                placeholder="스터디그룹 검색"
+                value={keyword}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+              />
+              <SuggestDropDown
+                suggestions={suggestions}
+                setSuggestion={setSuggestion}
+                history={history}
+              />
+            </div>
           </div>
           <StudySearchNavbar />
         </LeftHeader>

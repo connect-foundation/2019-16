@@ -11,7 +11,7 @@ const StyledIntro = styled.div`
   }
   .description {
     font-family: "Nanum Gothic", sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 2.7rem;
     padding: 3rem;
     width: 100%;
