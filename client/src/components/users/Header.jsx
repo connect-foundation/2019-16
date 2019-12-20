@@ -76,15 +76,20 @@ const Header = ({ history }) => {
     const query = e.target.value;
     setKeyword(query);
     const url = `${REQUEST_URL}/api/search/suggest/${query}`;
+
     if (onChangeTimer) {
       clearTimeout(onChangeTimer);
     }
-    onChangeTimer = setTimeout(async () => {
-      const response = await fetch(url);
-      const jsonRes = await response.json();
-      const suggestions = jsonRes.map(jsonRes => jsonRes.query);
-      setSuggestion(suggestions);
-    }, 200);
+
+    if (!query) setSuggestion([]);
+    if (query) {
+      onChangeTimer = setTimeout(async () => {
+        const response = await fetch(url);
+        const jsonRes = await response.json();
+        const suggestions = jsonRes.map(jsonRes => jsonRes.query);
+        setSuggestion(suggestions);
+      }, 100);
+    }
   });
 
   const onKeyDown = useCallback(
@@ -93,19 +98,14 @@ const Header = ({ history }) => {
       if (!isProperInput(keyword)) return alert("올바른 검색어를 입력해주세요");
 
       if (isTagSearch(keyword)) {
-        request("post", "/search/tags/page/0", {
-          data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon },
-        });
+        setSuggestion([]);
         history.push(`/search/tags?query=${keyword.slice(1)}`);
       } else {
-        request(
-          "get",
-          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`,
-        );
+        setSuggestion([]);
         history.push(`/search?query=${keyword}`);
       }
     },
-    [keyword],
+    [keyword]
   );
 
   return (
@@ -130,7 +130,11 @@ const Header = ({ history }) => {
                 onChange={onChange}
                 onKeyDown={onKeyDown}
               />
-              <SuggestDropDown suggestions={suggestions} history={history} />
+              <SuggestDropDown
+                suggestions={suggestions}
+                setSuggestion={setSuggestion}
+                history={history}
+              />
             </div>
           </div>
           <StudySearchNavbar />
