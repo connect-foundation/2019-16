@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import infiniteScrollEventHandler from "../../../lib/infiniteScrollEventHandler";
 import { UserContext } from "../../../pages/users/index";
 
 const Category = styled.div`
