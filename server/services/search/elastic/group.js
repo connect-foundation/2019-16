@@ -42,7 +42,7 @@ async function reSearchInDistance(
   maxDistance = 20
 ) {
   let distance = 2;
-  const pageSize = 6;
+  const pageSize = 12;
 
   body.sort = {
     _script: {
@@ -244,7 +244,7 @@ exports.tagStudyGroup = async info => {
   return result;
 };
 
-exports.tagStudyGroupWithCategory = async () => { };
+exports.tagStudyGroupWithCategory = async () => {};
 
 exports.searchAllStudyGroup = async info => {
   const { lat, lon, page, isRecruit } = info;
@@ -350,7 +350,14 @@ exports.bulkStudyGroups = async (
     delete objGroup._id;
 
     return [
-      { index: { _index: SEARCH_INDEX_STUDYGROUP, _type: "_doc", _id: id, retry_on_conflict: 3 } },
+      {
+        index: {
+          _index: SEARCH_INDEX_STUDYGROUP,
+          _type: "_doc",
+          _id: id,
+          retry_on_conflict: 3
+        }
+      },
       objGroup
     ];
   });
