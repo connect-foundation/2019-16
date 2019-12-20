@@ -62,14 +62,16 @@ const GroupDetail = ({ match }) => {
   useEffect(() => {
     !loading && data && dispatch(set_detail_data(data.detailInfo));
   }, [data, loading]);
-  const isHaveGroupData = Object.keys(groupData).length;
-  const { intro } = groupData;
 
   return (
     <StyledGroupDetail>
       {(() => {
         if (loading) return <h2>로딩 중... </h2>;
         if (error || data.status === 400) return <h2> 에러 발생 </h2>;
+
+        const isHaveGroupData = Object.keys(groupData || {}).length;
+        const { intro } = groupData;
+
         if (isHaveGroupData) {
           const isMyGroup = groupData.leader === userInfo.userId;
           return (
