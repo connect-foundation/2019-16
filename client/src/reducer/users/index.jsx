@@ -5,19 +5,19 @@ const SET_JOIN_GROUPS = "userIndex/SET_JOIN_GROUPS";
 
 export const set_groups = searchList => ({
   type: SET_GROUPS,
-  searchList
+  searchList,
 });
 
 export const set_additional_groups = searchList => ({
   type: SET_ADDTIONAL_GROUPS,
-  searchList
+  searchList,
 });
 
 export const set_my_group = myGroups => ({ type: SET_MY_GROUPS, myGroups });
 
 export const set_join_group = joinedGroups => ({
   type: SET_JOIN_GROUPS,
-  joinedGroups
+  joinedGroups,
 });
 
 export const initalState = {
@@ -85,13 +85,13 @@ export const initalState = {
       "Python",
       "Swift",
       "Ruby",
-      "기타"
+      "기타",
     ],
     자격증: ["강사", "병원", "아동", "IT", "인문", "산업", "기타"],
     외국어: ["영어", "중국어", "일본어", "불어", "스페인어", "기타"],
     취업: ["자소서", "면접", "인적성", "자격증", "기타"],
-    기타: ["기타"]
-  }
+    기타: ["기타"],
+  },
 };
 
 export const userIndexReducer = (state, action) => {
@@ -100,22 +100,22 @@ export const userIndexReducer = (state, action) => {
     case SET_GROUPS:
       return {
         ...state,
-        searchList
+        searchList,
       };
     case SET_ADDTIONAL_GROUPS:
       return {
         ...state,
-        searchList: [...state.searchList, ...searchList]
+        searchList: [...state.searchList, ...searchList],
       };
     case SET_MY_GROUPS:
       return {
         ...state,
-        myGroups
+        myGroups: [...state.myGroups, ...myGroups],
       };
     case SET_JOIN_GROUPS:
       return {
         ...state,
-        joinedGroups
+        joinedGroups: [...state.joinedGroups, ...joinedGroups],
       };
     default:
       return state;
