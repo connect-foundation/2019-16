@@ -7,7 +7,7 @@ const StyledCard = styled.div`
   width: 16rem;
   margin: 1rem 0;
   margin-left: 1rem;
-  height: 17em;
+  height: 16em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +15,7 @@ const StyledCard = styled.div`
   padding-bottom: 0.5rem;
 
   .imgbox {
-    max-height: 12rem;
+    max-height: 10rem;
     overflow: hidden;
 
     img {
@@ -27,11 +27,18 @@ const StyledCard = styled.div`
     font-weight: bold;
     font-size: 1.1em;
     text-align: center;
-    margin: auto 0.7em;
+    margin: 1em 0 0.1em;
     max-height: 7rem;
     color: #1d6de4;
   }
+  .personnel {
+    font-size: 0.85em;
 
+    .now-personnel {
+      color: #00d1b2;
+      font-weight: bold;
+    }
+  }
   .group-leader-bedge {
     background-color: #e41d60;
     width: 5em;
@@ -47,21 +54,31 @@ const StyledCard = styled.div`
 const StudyGroupCardMini = ({ groupData }) => {
   const { userInfo } = useContext(UserContext);
   const { userId } = userInfo;
-  const { leader, title, img, id } = groupData;
+  const {
+    leader,
+    title,
+    thumbnail,
+    group_id,
+    location,
+    now_personnel
+  } = groupData;
 
   return (
-    <Link to={`/group/detail/${id}`}>
-      <StyledCard className={`card study-mini-card`}>
+    <Link to={`/group/detail/${group_id}`}>
+      <StyledCard className="card study-mini-card">
         <div
           className="group-leader-bedge"
           style={{ display: leader === userId ? "block" : "none" }}
         >
           그룹장
         </div>
-        <div className={`imgbox`}>
-          <img src={img}></img>
+        <div className="imgbox">
+          <img src={thumbnail}></img>
         </div>
-        <div className={`title-small`}>{title}</div>
+        <div className="title-small">{title}</div>
+        <div className="personnel">
+          <span className="now-personnel">{now_personnel}</span>명과 함께하는중
+        </div>
       </StyledCard>
     </Link>
   );

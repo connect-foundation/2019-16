@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment, useRef, useMemo } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import moment, { Moment as MomentTypes } from "moment";
 import useWindowSize from "../../lib/useWindowSize";
 import {
   markerImage,
@@ -14,6 +15,10 @@ import { REQUEST_URL } from "../../config.json";
 
 const { kakao } = window;
 let studyRoomMap;
+
+// state로 관리할 것
+let selectedMarker = null;
+let currentOverlay = null;
 
 const MapView = styled.div`
   position: absolute;
@@ -37,10 +42,10 @@ function makeOutListener(infowindow) {
   };
 }
 
-const Reservation = () => {
+const Reservation = ({ match }) => {
+  const id = useRef();
+  id.current = match.params.id;
   const mapElement = useRef();
-  let selectedMarker = null;
-  let currentOverlay = null;
 
   const [width, height] = useWindowSize();
   const [studyRooms, setStudyRooms] = useState([]);
@@ -70,9 +75,10 @@ const Reservation = () => {
           !!currentOverlay && currentOverlay.setMap(null);
         }
         marker.setImage(hoverImage);
-        const overlay = makeOverlay(marker, data);
-        overlay.setMap(studyRoomMap);
-        currentOverlay = overlay;
+        // const overlay = makeOverlay(marker, data);
+        makeOverlay(marker, data);
+        marker.overlay.setMap(studyRoomMap);
+        currentOverlay = marker.overlay;
         selectedMarker = marker;
         studyRoomMap.panTo(marker.getPosition());
         return;
@@ -117,8 +123,58 @@ const Reservation = () => {
   };
 
   useEffect(() => {
+    axios
+      .get(`${REQUEST_URL}/api/studygroup/detail/${id.current}`)
+      .then(({ data }) => {
+        const groupInfo = data.detailInfo;
+        const { location, now_personnel, startTime, endTime, days } = groupInfo;
+
+        const reservationDays = days.reduce((dates, day) => {
+          const suffix = "T00:00:00.000Z";
+          const dateFormat = {
+            start: startTime,
+            end: endTime
+          };
+          const week1 =
+            moment()
+              .add(1, "weeks")
+              .startOf("isoWeek")
+              .add(day - 1, "days")
+              .format("YYYY-MM-DD") + suffix;
+          const week2 =
+            moment()
+              .add(1, "weeks")
+              .startOf("isoWeek")
+              .add(day - 1, "days")
+              .format("YYYY-MM-DD") + suffix;
+
+          return dates.concat([
+            { ...dateFormat, date: week1 },
+            { ...dateFormat, date: week2 }
+          ]);
+        }, []);
+
+        const requestBody = {
+          geopoint: { longitude: location.lon, latitude: location.lat },
+          personnel: now_personnel,
+          startTime,
+          endTime,
+          dates: reservationDays
+        };
+        return axios.post(
+          `${REQUEST_URL}/api/studyroom/availableRooms`,
+          requestBody
+        );
+      })
+      .then(availableRooms => {
+        setStudyRooms(availableRooms.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
     studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
+      console.log(currentOverlay, selectedMarker);
       if (currentOverlay && selectedMarker) {
         currentOverlay.setMap(null);
         selectedMarker.setImage(markerImage);
@@ -126,27 +182,6 @@ const Reservation = () => {
         selectedMarker = null;
       }
     });
-
-    axios
-      .post(`${REQUEST_URL}/api/studyroom/availableRooms`, {
-        geopoint: { longitude: 127.021947, latitude: 37.503077 },
-        personnel: 5,
-        startTime: 20,
-        endTime: 23,
-        dates: [
-          {
-            date: "2019-12-17T00:00:00.000Z",
-            start: 15,
-            end: 16
-          }
-        ]
-      })
-      .then(res => {
-        setStudyRooms(res.data);
-      })
-      .catch(err => {
-        console.log("axios err", err);
-      });
   }, []);
 
   useEffect(() => {
@@ -157,13 +192,13 @@ const Reservation = () => {
 
   return (
     <Fragment>
-      <MapSidebar style={{ height: height - 146 }}>
+      <MapSidebar style={{ height: height - 89 }}>
         <StudyRoomList data={studyRooms}></StudyRoomList>
       </MapSidebar>
       <MapView
         id="map"
         ref={mapElement}
-        style={{ width: width - 408, height: height - 146 }}
+        style={{ width: width - 408, height: height - 89 }}
       ></MapView>
     </Fragment>
   );
