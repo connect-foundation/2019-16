@@ -94,18 +94,18 @@ const Header = ({ history }) => {
 
       if (isTagSearch(keyword)) {
         request("post", "/search/tags/page/0", {
-          data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon }
+          data: { tags: [keyword.slice(1)], isRecruit: true, lat, lon },
         });
         history.push(`/search/tags?query=${keyword.slice(1)}`);
       } else {
         request(
           "get",
-          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`
+          `/search/query/${keyword}/location/${lat}/${lon}/page/0/true`,
         );
         history.push(`/search?query=${keyword}`);
       }
     },
-    [lat, lon, request, keyword]
+    [keyword],
   );
 
   return (

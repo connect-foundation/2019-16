@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -26,14 +26,25 @@ const Navbar = styled.div`
 `;
 
 const StudySearchNavbar = () => {
-  const { userIndexState, userInfo, getApiAxiosState } = useContext(
-    UserContext
-  );
+  const {
+    userIndexState,
+    userInfo,
+    getApiAxiosState,
+    pageNationState,
+    setPageNationState
+  } = useContext(UserContext);
   const { primaryCategories, secondaryCategories } = userIndexState;
   const { request } = getApiAxiosState;
+
   const searchAllGroups = useCallback(() => {
     const { lat, lon } = userInfo.userLocation;
-    request("get", `search/all/location/${lat}/${lon}/true`);
+    const changedPageNationState = {
+      ...pageNationState,
+      page_idx: 1
+    };
+    setPageNationState(changedPageNationState);
+
+    request("get", `search/all/location/${lat}/${lon}/page/0/true`);
   }, [userInfo]);
 
   return (

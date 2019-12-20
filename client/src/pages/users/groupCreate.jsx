@@ -21,7 +21,8 @@ import {
   change_hour,
   change_during,
   add_tag,
-  attach_image
+  attach_image,
+  set_location
 } from "../../reducer/users/groupCreate";
 import useAxios from "../../lib/useAxios.jsx";
 
@@ -65,7 +66,7 @@ const StyledGroupCreate = styled.div`
 const GroupCreate = ({ history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
-  const { userEmail } = userInfo;
+  const { userId } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
   const { primaryCategories, secondaryCategories, daysInfo } = state;
@@ -114,6 +115,31 @@ const GroupCreate = ({ history }) => {
     dispatch(change_personnel(min, max));
   }, []);
 
+  const onSetLocation = useCallback(() => {
+    const { daum, kakao } = window;
+    const geocoder = new kakao.maps.services.Geocoder();
+    let address;
+    const oncomplete = data => {
+      address = data.address;
+    };
+    const onclose = state => {
+      if (state === "FORCE_CLOSE") {
+        alert("필수 입력 사항입니다. 다시 로그인 해주세요");
+        window.location.reload();
+      } else if (state === "COMPLETE_CLOSE") {
+        geocoder.addressSearch(address, (locationResult, locationStatus) => {
+          // 여기로 위치 값이 들어옴
+          const lat = +locationResult[0].y;
+          const lon = +locationResult[0].x;
+
+          dispatch(set_location(lat, lon));
+        });
+      }
+    };
+    alert("주소를 입력 해주세요");
+    new daum.Postcode({ oncomplete, onclose }).open();
+  });
+
   const onSubmit = useCallback(
     async e => {
       const { data } = state;
@@ -121,8 +147,7 @@ const GroupCreate = ({ history }) => {
       const image = data.thumbnail;
       const imageName = image && image.name;
 
-      data.leader = userEmail;
-      data.location = userInfo.userLocation;
+      data.leader = userId;
       data.endTime = data.startTime + data.during;
       data.endTime = data.endTime > 24 ? data.endTime - 24 : data.endTime;
 
@@ -139,6 +164,7 @@ const GroupCreate = ({ history }) => {
       delete data.thumbnail;
 
       form.append("data", JSON.stringify(data));
+      form.append("userId", userId);
 
       request("post", "/studygroup/register", {
         data: form,
@@ -155,7 +181,7 @@ const GroupCreate = ({ history }) => {
           console.error(err);
         });
     },
-    [state, userEmail]
+    [state, userId]
   );
 
   return (
@@ -203,6 +229,7 @@ const GroupCreate = ({ history }) => {
         ></textarea>
       </div>
 
+      <button onClick={onSetLocation}> 위치 설정</button>
       <TagInput tags={tags} onChangeTagInput={onChangeTagInput} />
 
       <ScheduleInput
