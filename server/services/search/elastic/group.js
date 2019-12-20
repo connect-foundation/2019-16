@@ -6,6 +6,8 @@ const {
   addFirstQuery
 } = require("./suggestion");
 
+const { saveCache, getCache } = require("../cache");
+
 async function AccumulateSuggestionData({ searchWord }) {
   const count = await getQueryCount(searchWord);
 
@@ -249,6 +251,11 @@ exports.tagStudyGroupWithCategory = async () => {};
 exports.searchAllStudyGroup = async info => {
   const { lat, lon, page, isRecruit } = info;
 
+  const cache = await getCache({ lat, lon });
+
+  if (cache !== null) {
+    return JSON.params(cache);
+  }
   const body = {
     query: {
       bool: {
@@ -280,6 +287,7 @@ exports.searchAllStudyGroup = async info => {
     return hit._source;
   });
 
+  saveCache({ lat, lon }, result);
   return result;
 };
 
