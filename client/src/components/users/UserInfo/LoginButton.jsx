@@ -30,7 +30,7 @@ const LoginButton = () => {
     const { daum, kakao } = window;
     const geocoder = new kakao.maps.services.Geocoder();
     const userId = profile.id;
-    const url = `https://localhost:8000/auth/users/accounts/${userId}`;
+    const url = `${REQUEST_URL}/auth/users/accounts/${userId}`;
     const options = { method: "GET", credentials: "include" };
     const getResponse = await fetch(url, options);
     const getResult = await getResponse.json();
