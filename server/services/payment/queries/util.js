@@ -3,24 +3,24 @@ const formurlencoded = require("form-urlencoded").default;
 const { KAKAO_PAY_CALLBACK_URL, KAKAO_ADMIN_KEY } = process.env;
 
 const avoidTimeCollision = weekTable => compareElement =>
-  compareElement.reservationInfo.day.every((d, idx) => {
-    if (!weekTable[0][d]) return true;
+  compareElement.reservationInfo.days.every((day, idx) => {
+    if (!weekTable[0][day]) return true;
 
     return (
-      weekTable[1][d] <= compareElement.reservationInfo.startTime[idx] ||
-      compareElement.reservationInfo.endTime[idx] <= weekTable[0][d]
+      weekTable[1][day] <= compareElement.reservationInfo.startTime[idx] ||
+      compareElement.reservationInfo.endTime[idx] <= weekTable[0][day]
     );
   });
 
 exports.avoidReservationCollision = (
-  { day, startTime, endTime },
+  { days, startTime, endTime },
   sameRoomIdInPayQueue
 ) => {
   const weekTable = [[], []];
 
-  day.forEach((d, idx) => {
-    weekTable[0][d] = startTime[idx];
-    weekTable[1][d] = endTime[idx];
+  days.forEach((day, idx) => {
+    weekTable[0][day] = startTime[idx];
+    weekTable[1][day] = endTime[idx];
   });
 
   return sameRoomIdInPayQueue.every(avoidTimeCollision(weekTable));

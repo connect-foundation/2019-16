@@ -1,14 +1,14 @@
-const { avoidReservationCollision } = require("../query/util");
+const { avoidReservationCollision } = require("../queries/util");
 
 const myReservation = {
-  day: [0, 4, 5],
+  days: [0, 4, 5],
   startTime: [10, 14, 18],
   endTime: [13, 17, 21]
 };
 
 const case1 = {
   reservationInfo: {
-    day: [1, 2, 3],
+    days: [1, 2, 3],
     startTime: [10, 10, 10],
     endTime: [12, 12, 12]
   }
@@ -16,7 +16,7 @@ const case1 = {
 
 const case2 = {
   reservationInfo: {
-    day: [0, 1, 2],
+    days: [0, 1, 2],
     startTime: [12, 14, 18],
     endTime: [14, 16, 20]
   }
@@ -24,7 +24,7 @@ const case2 = {
 
 const case3 = {
   reservationInfo: {
-    day: [0, 4, 5],
+    days: [0, 4, 5],
     startTime: [13, 17, 21],
     endTime: [14, 18, 22]
   }

@@ -19,13 +19,16 @@ function getElementsHaveSameRoomId(roomId) {
 }
 
 exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
-  const { roomId, day, startTime, endTime } = reservationInfo;
+  const { roomId, days, startTime, endTime } = reservationInfo;
   const sameRoomIdInPayQueue = getElementsHaveSameRoomId(roomId);
   let nextUrl = "";
 
   if (
     sameRoomIdInPayQueue.length === 0 ||
-    avoidReservationCollision({ day, startTime, endTime }, sameRoomIdInPayQueue)
+    avoidReservationCollision(
+      { days, startTime, endTime },
+      sameRoomIdInPayQueue
+    )
   ) {
     const res = await getNextUrl(roomId, userId, paymentInfo);
 

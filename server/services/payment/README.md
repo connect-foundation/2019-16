@@ -4,11 +4,11 @@
 
 ## Query
 
-| No. |     From      |         Query          |      To       |     Description      |
-| :-: | :-----------: | :--------------------: | :-----------: | :------------------: |
-|  1  |   `gateway`   |     `inspectQueue`     |   `gateway`   |    결제 큐를 확인    |
-|  2  |   `gateway`   |    `approvePayment`    | `reservation` |    결제 승인 요청    |
-|  3  | `reservation` | `removePaymentInQueue` |   `gateway`   | 예약 추가 후 결제 큐 |
+|  No.  |     From      |         Query          |      To       | Description  |
+| :---: | :-----------: | :--------------------: | :-----------: | :----------: |
+|   1   |   `gateway`   |     `inspectQueue`     |   `gateway`   |   결제 큐를 확인   |
+|   2   |   `gateway`   |    `approvePayment`    | `reservation` |   결제 승인 요청   |
+|   3   | `reservation` | `removePaymentInQueue` |   `gateway`   | 예약 추가 후 결제 큐 |
 
 ### 1. payRead
 
@@ -35,7 +35,7 @@
 		fail_url // String	결제 실패시 redirect url. 최대 255자
 	},
 	reservationInfo: {
-		day, //	Number[]	예약 요일
+		days, //	Number[]	예약 요일
 		startTime, //	Number[] 요일별 시작 시간을 저장
 		endTime, //	Number[] 요일별 끝나는 시간을 저장
 		roomId, // ObjectId	결제하려는 스터디룸의 id
