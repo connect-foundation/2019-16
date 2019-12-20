@@ -7,6 +7,7 @@ const {
 
 exports.addGroup = async params => {
   const groupInfo = params;
+  const groupInfo.group_id = groupInfo.id;
   const resultAfterStore = await StudyGroups.create(groupInfo);
 
   await pushStudyGroups(resultAfterStore);
