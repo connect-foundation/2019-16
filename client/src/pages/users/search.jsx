@@ -130,7 +130,7 @@ const Search = ({ location, match }) => {
       };
       setSearchState(initData);
     });
-  }, []);
+  }, [query]);
 
   return (
     <StyledSearch>
