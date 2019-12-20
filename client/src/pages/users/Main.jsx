@@ -85,7 +85,7 @@ const Main = styled.div`
 }
 `;
 
-const takeCardAmount = 6;
+const takeCardAmount = 12;
 
 const MainPage = () => {
   const {
