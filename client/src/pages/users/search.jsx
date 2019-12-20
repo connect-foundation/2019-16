@@ -73,7 +73,7 @@ const Search = ({ location, match }) => {
     userIndexState,
     userIndexDispatch,
     userInfo,
-    getApiAxiosState,
+    getApiAxiosState
   } = useContext(UserContext);
   const { searchList } = userIndexState;
   const { userLocation } = userInfo;
@@ -81,13 +81,16 @@ const Search = ({ location, match }) => {
   let { lat, lon } = userLocation;
   let { loading, data, error, request } = getApiAxiosState;
 
-  const [searchData, setSearchData] = useState([]);
+  const [searchState, setSearchState] = useState({
+    isLoading: true,
+    searchData: []
+  });
 
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
 
   const [pageState, setpageState] = useState({
     page_idx: 1,
-    isLastItem: false,
+    isLastItem: false
   });
 
   function loadAdditionalItems() {
@@ -95,18 +98,23 @@ const Search = ({ location, match }) => {
     if (isLastItem) return;
 
     let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/${page_idx}/true`;
-    console.log(url);
+
     axios.get(url).then(({ data }) => {
       const additionalGroups = data;
       const changedPageNationState = {
         ...pageState,
-        page_idx: page_idx + 1,
+        page_idx: page_idx + 1
       };
 
       if (isLastPagenation(additionalGroups))
         changedPageNationState.isLastItems = true;
 
-      setSearchData([...searchData, ...additionalGroups]);
+      const newData = [...searchState.searchData, ...additionalGroups];
+      const newSearchData = {
+        isLoading: false,
+        searchData: newData
+      };
+      setSearchState(newSearchData);
       //userIndexDispatch(set_additional_groups(additionalGroups));
       setpageState(changedPageNationState);
     });
@@ -114,17 +122,24 @@ const Search = ({ location, match }) => {
   }
 
   useEffect(() => {
-    if (data) setSearchData(data);
-  }, [data]);
+    let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/0/true`;
+    axios.get(url).then(({ data }) => {
+      const initData = {
+        searchData: data,
+        isLoading: 0
+      };
+      setSearchState(initData);
+    });
+  }, []);
 
   return (
     <StyledSearch>
       <div className="study-group-list">
         {(() => {
-          // if (loading) return <h3> 로딩 중... </h3>;
+          if (searchState.isLoading) return <h3> 로딩 중... </h3>;
           // if (error) return <h3> 에러 발생 </h3>;
-          if (!searchData.length) return <h3> 데이터가 업소용 </h3>;
-          return searchData.map(groupData => {
+          if (!searchState.searchData.length) return <h3> 데이터가 업소용 </h3>;
+          return searchState.searchData.map(groupData => {
             return (
               <StudyGroupCard
                 key={groupData.id}
