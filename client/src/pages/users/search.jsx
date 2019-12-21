@@ -94,7 +94,6 @@ const Search = ({ location, match, history }) => {
   const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
-  let { loading, data, error, request } = getApiAxiosState;
 
   const [searchState, setSearchState] = useState({
     isLoading: true,
@@ -181,6 +180,7 @@ const Search = ({ location, match, history }) => {
     }
 
     if (pathname === "/search/tags") {
+      if (!lat || !lon) return;
       const data = {
         tags: [query],
         lat,
@@ -196,7 +196,7 @@ const Search = ({ location, match, history }) => {
         setSearchState(initData);
       });
     }
-  }, [query]);
+  }, [query, userLocation]);
 
   return (
     <StyledSearch>
