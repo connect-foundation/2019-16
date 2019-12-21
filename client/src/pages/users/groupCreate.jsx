@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useContext } from "react";
+import React, { useCallback, useReducer, useContext, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import resizeImage from "../../lib/imageResize";
@@ -61,11 +61,21 @@ const StyledGroupCreate = styled.div`
   .button:focus {
     background-color: white;
   }
+
+  .location-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    span {
+      margin-left: 2rem;
+    }
+  }
 `;
 
 const GroupCreate = ({ history }) => {
   const { userInfo } = useContext(UserContext);
   const { request } = useAxios(apiAxios);
+  const [locationString, setLocationString] = useState("");
   const { userId } = userInfo;
 
   const [state, dispatch] = useReducer(groupCreateReducer, initialState);
@@ -121,6 +131,7 @@ const GroupCreate = ({ history }) => {
     let address;
     const oncomplete = data => {
       address = data.address;
+      setLocationString(address);
     };
     const onclose = state => {
       if (state === "FORCE_CLOSE") {
@@ -136,9 +147,10 @@ const GroupCreate = ({ history }) => {
         });
       }
     };
+
     alert("주소를 입력 해주세요");
     new daum.Postcode({ oncomplete, onclose }).open();
-  });
+  }, []);
 
   const onSubmit = useCallback(
     async e => {
@@ -164,7 +176,6 @@ const GroupCreate = ({ history }) => {
       delete data.thumbnail;
 
       form.append("data", JSON.stringify(data));
-      form.append("userId", userId);
 
       request("post", "/studygroup/register", {
         data: form,
@@ -229,7 +240,17 @@ const GroupCreate = ({ history }) => {
         ></textarea>
       </div>
 
-      <button onClick={onSetLocation}> 위치 설정</button>
+      <div className="location-block">
+        <button className="button" onClick={onSetLocation}>
+          위치 설정
+        </button>
+        <span>
+          {locationString
+            ? locationString
+            : "스터디를 진행할 위치를 선택해주세요"}
+        </span>
+      </div>
+
       <TagInput tags={tags} onChangeTagInput={onChangeTagInput} />
 
       <ScheduleInput

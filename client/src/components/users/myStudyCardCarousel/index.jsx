@@ -5,18 +5,21 @@ import { UserContext } from "../../../pages/users/index";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";
 
 const StyledMyStudyCarousel = styled.div`
-overflow: hidden;
 width: ${props => props.carouselWidth}; 
     overflow:hidden;
 
     .carousel{
-      height: 20rem;
+      height: 23rem;
       display:flex;
       justify-content:center;
 
       .carousel-item{
         padding:0 5%;
       }
+    }
+
+    & *:focus {
+      outline: none;
     }
 
     .my-group-title{
@@ -32,22 +35,23 @@ width: ${props => props.carouselWidth};
 `;
 
 const MyStudyCarousel = () => {
-  const { userIndexState } = useContext(UserContext);
-  const { myGroups, joinedGroups } = userIndexState;
-  const carouselWidth = myGroups.length ? myGroups.length * 15 + "em" : "100%";
-  const userGroups = myGroups.concat(joinedGroups);
+  const { userInfo } = useContext(UserContext);
+  const { ownGroups, joiningGroups } = userInfo;
+  const userGroups = ownGroups.concat(joiningGroups);
+  const carouselWidth = userGroups.length ? "55rem" : "100%";
 
   useEffect(() => {
-    if (myGroups.length > 3)
+    if (userGroups.length > 3) {
       bulmaCarousel.attach(".carousel", {
         slidesToScroll: 1,
         slidesToShow: 3,
         infinite: true
       });
-  });
+    }
+  }, []);
 
   return (
-    <StyledMyStudyCarousel>
+    <StyledMyStudyCarousel carouselWidth={carouselWidth}>
       <div>
         <div className="my-group-title">👨‍👨‍👧‍👦현재 함께하는 그룹이에요</div>
         <div className="carousel">

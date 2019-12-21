@@ -27,13 +27,11 @@ const Main = styled.div`
     align-items:center;
 
     .group-create-button {
-      margin-top: 2rem;
+      margin-top: 0.9rem;
+      margin-bottom: 2rem;
+      display:flex;
+      justify-content:center;
     }
-  }
-  .group-create-button {
-    margin-top: 2rem;
-    display:flex;
-    justify-content:center;
   }
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
@@ -85,7 +83,7 @@ const Main = styled.div`
 }
 `;
 
-const takeCardAmount = 6;
+const takeCardAmount = 12;
 
 const MainPage = ({ history }) => {
   const {
@@ -96,8 +94,8 @@ const MainPage = ({ history }) => {
     pageNationState,
     setPageNationState
   } = useContext(UserContext);
-  const { myGroups, joinedGroups, searchList } = userIndexState;
-  const { userId, userLocation } = userInfo;
+  const { searchList } = userIndexState;
+  const { userId, userLocation, ownGroups, joiningGroups } = userInfo;
 
   const lat = useRef();
   const lon = useRef();
@@ -141,7 +139,6 @@ const MainPage = ({ history }) => {
   }, [userLocation]);
 
   useEffect(() => {
-    console.log("data", data);
     if (!isHaveCardDataWhenLoaded(loading, data)) return;
     userIndexDispatch(set_groups(data));
   }, [data]);
@@ -151,7 +148,7 @@ const MainPage = ({ history }) => {
       <div className="main-jumbotron">
         {userId ? (
           <>
-            {myGroups.length || joinedGroups.length ? (
+            {ownGroups.length || joiningGroups.length ? (
               <MyStudyCarousel></MyStudyCarousel>
             ) : (
               <div className="no-groups">

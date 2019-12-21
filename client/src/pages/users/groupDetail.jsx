@@ -52,7 +52,7 @@ const GroupDetail = ({ match, history }) => {
     } catch (err) {
       alert("요청 오류");
     }
-  }, [id]);
+  }, [id, groupData]);
 
   useEffect(() => {
     id && request("get", `/studygroup/detail/${id}`);
@@ -62,14 +62,16 @@ const GroupDetail = ({ match, history }) => {
   useEffect(() => {
     !loading && data && dispatch(set_detail_data(data.detailInfo));
   }, [data, loading]);
-  const isHaveGroupData = Object.keys(groupData).length;
-  const { intro } = groupData;
 
   return (
     <StyledGroupDetail>
       {(() => {
         if (loading) return <h2>로딩 중... </h2>;
-        if (error) return <h2> 에러 발생 </h2>;
+        if (error || data.status === 400) return <h2> 에러 발생 </h2>;
+
+        const isHaveGroupData = Object.keys(groupData || {}).length;
+        const { intro } = groupData;
+
         if (isHaveGroupData) {
           const isMyGroup = groupData.leader === userInfo.userId;
           return (
