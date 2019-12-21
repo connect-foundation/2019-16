@@ -4,19 +4,21 @@ import styled from "styled-components";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
+import useCoord2String from "../../lib/coord2string";
 
 import { REQUEST_URL } from "../../config.json";
-import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 import axios from "axios";
 
 const StyledSearch = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 5%;
-  padding-right: 5%;
 
-  .main-page-title {
+  .main-jumbotron {
+    display: flex;
+    justify-content: center;
+
+    margin: 0 auto;
     font-family: "Black Han Sans", sans-serif;
     color: #000000;
     padding-left: 5%;
@@ -24,17 +26,26 @@ const StyledSearch = styled.div`
     align-self: start;
     display: flex;
 
-    .search-result {
-      .main-title {
-        font-size: 6em;
-        .highlight {
-          color: #e41d60;
-        }
-      }
-      .main-subtitle {
-        font-size: 4em;
+    .main-title {
+      font-size: 3.7em;
+      border-bottom: 0.2px solid black;
+
+      &.highlight {
+        color: #e41d60;
       }
     }
+  }
+
+  .location-info-block {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    align-self: center;
+    margin: 0 0 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
+
+    font-size: 0.8rem;
   }
 
   .study-group-list {
@@ -73,23 +84,17 @@ const Search = ({ location, match, history }) => {
 
   const pathname = location.pathname;
 
-  const {
-    userIndexState,
-    userIndexDispatch,
-    userInfo,
-    getApiAxiosState
-  } = useContext(UserContext);
-  const { searchList } = userIndexState;
+  const { userInfo } = useContext(UserContext);
   const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
-  let { loading, data, error, request } = getApiAxiosState;
 
   const [searchState, setSearchState] = useState({
     isLoading: true,
     searchData: []
   });
 
+  const [curLocation] = useCoord2String(window.kakao, lat, lon);
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
 
   const [pageState, setpageState] = useState({
@@ -111,7 +116,7 @@ const Search = ({ location, match, history }) => {
         };
 
         if (isLastPagenation(additionalGroups))
-          changedPageNationState.isLastItems = true;
+          changedPageNationState.isLastItem = true;
 
         const newData = [...searchState.searchData, ...additionalGroups];
         const newSearchData = {
@@ -139,7 +144,7 @@ const Search = ({ location, match, history }) => {
         };
 
         if (isLastPagenation(additionalGroups))
-          changedPageNationState.isLastItems = true;
+          changedPageNationState.isLastItem = true;
 
         const newData = [...searchState.searchData, ...additionalGroups];
         const newSearchData = {
@@ -147,12 +152,11 @@ const Search = ({ location, match, history }) => {
           searchData: newData
         };
         setSearchState(newSearchData);
-        //userIndexDispatch(set_additional_groups(additionalGroups));
         setpageState(changedPageNationState);
       });
-    }
 
-    setIsFetching(false);
+      setIsFetching(false);
+    }
   }
 
   useEffect(() => {
@@ -170,6 +174,7 @@ const Search = ({ location, match, history }) => {
     }
 
     if (pathname === "/search/tags") {
+      if (!lat || !lon) return;
       const data = {
         tags: [query],
         lat,
@@ -185,24 +190,25 @@ const Search = ({ location, match, history }) => {
         setSearchState(initData);
       });
     }
-  }, [query]);
+  }, [query, userLocation]);
 
   return (
     <StyledSearch>
       <div className="main-jumbotron">
-        <div className="main-page-title">
-          <div className="search-result">
-            <div className="main-title">
-              <span className="highlight">
-                {pathname === "/search" ? query : `#${query}`}
-              </span>
-            </div>
-            <div className="main-subtitle">
-              {pathname === "/search" ? "스터디" : `태그검색 결과`}
-            </div>
-          </div>
+        <div className="main-title highlight">
+          🔍 {pathname === "/search" ? query : `#${query}`}
         </div>
       </div>
+
+      <div className="location-info-block">
+        {curLocation && (
+          <span>
+            {" "}
+            🚩<strong className="has-text-info"> {curLocation} </strong> 근처
+          </span>
+        )}
+      </div>
+
       <div className="study-group-list">
         {(() => {
           if (searchState.isLoading) return <h3> 로딩 중... </h3>;

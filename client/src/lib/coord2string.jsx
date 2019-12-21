@@ -2,7 +2,7 @@ import { useState, useLayoutEffect, useEffect } from "react";
 
 function useCoord2String(kakao, lat, lon) {
   const geocoder = new kakao.maps.services.Geocoder();
-  const [locationString, setString] = useState(`위도: ${lat} 경도: ${lon}`);
+  const [locationString, setString] = useState("");
 
   useEffect(() => {
     const coords = new kakao.maps.LatLng(lat, lon);

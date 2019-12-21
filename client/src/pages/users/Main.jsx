@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useContext, useRef } from "react";
+import React, { useEffect, useContext } from "react";
 
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
+import useCoord2String from "../../lib/coord2string";
 import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 import { REQUEST_URL } from "../../config.json";
@@ -48,6 +49,18 @@ const Main = styled.div`
         }
       }
     }
+  }
+
+  .location-info-block {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    align-self: center;
+    margin: 0 0 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
+
+    font-size: 0.8rem;
   }
 
   .study-group-list{
@@ -97,21 +110,19 @@ const MainPage = ({ history }) => {
   const { searchList } = userIndexState;
   const { userId, userLocation, ownGroups, joiningGroups } = userInfo;
 
-  const lat = useRef();
-  const lon = useRef();
-  lat.current = userLocation.lat;
-  lon.current = userLocation.lon;
+  const { lat, lon } = userLocation;
 
   let { loading, data, error, request } = getApiAxiosState;
 
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
+  const [curLocation] = useCoord2String(window.kakao, lat, lon);
 
   function loadAdditionalItems() {
     const { page_idx, category, isLastItem } = pageNationState;
     if (isLastItem) return;
-    let url = `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
+    let url = `${REQUEST_URL}/api/search/all/location/${lat}/${lon}/page/${page_idx}/true`;
     if (category)
-      url = `${REQUEST_URL}/api/search/all/category/${category}/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
+      url = `${REQUEST_URL}/api/search/all/category/${category}/location/${lat}/${lon}/page/${page_idx}/true`;
 
     axios.get(url).then(({ data }) => {
       const additionalGroups = data;
@@ -122,20 +133,17 @@ const MainPage = ({ history }) => {
       };
 
       if (isLastPagenation(additionalGroups))
-        changedPageNationState.isLastItems = true;
+        changedPageNationState.isLastItem = true;
 
       userIndexDispatch(set_additional_groups(additionalGroups));
       setPageNationState(changedPageNationState);
+      setIsFetching(false);
     });
-    setIsFetching(false);
   }
 
   useEffect(() => {
-    isSetPositionDuringLoading(loading, lat.current, lon.current) &&
-      request(
-        "get",
-        `/search/all/location/${lat.current}/${lon.current}/page/0/true`
-      );
+    isSetPositionDuringLoading(loading, lat, lon) &&
+      request("get", `/search/all/location/${lat}/${lon}/page/0/true`);
   }, [userLocation]);
 
   useEffect(() => {
@@ -168,6 +176,15 @@ const MainPage = ({ history }) => {
               <span className="highlight">예약</span>까지 한번에-
             </div>
           </div>
+        )}
+      </div>
+
+      <div className="location-info-block">
+        {curLocation && (
+          <span>
+            {" "}
+            🚩<strong className="has-text-info"> {curLocation} </strong> 근처
+          </span>
         )}
       </div>
 
