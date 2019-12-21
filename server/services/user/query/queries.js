@@ -30,3 +30,25 @@ exports.updateOwnGroups = async ({ userId, ownGroup }) => {
     }
   );
 };
+
+exports.deleteGroupInUsers = async ({ group }) => {
+  const userIds = group.members.map(member => member.id);
+
+  userIds.forEach(userId => {
+    Users.updateOne(
+      { userId: userId },
+      { $pull: { joiningGroups: { group_id: group._id } } },
+      err => {
+        if (err) throw new Error(err);
+      }
+    );
+  });
+
+  Users.updateOne(
+    { userId: group.leader },
+    { $pull: { ownGroups: { group_id: group._id } } },
+    err => {
+      if (err) throw new Error(err);
+    }
+  );
+};
