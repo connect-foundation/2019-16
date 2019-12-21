@@ -1,18 +1,18 @@
-import React, { useEffect, useState, Fragment, useRef, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  Fragment,
+  useRef,
+  useContext
+} from "react";
 import styled from "styled-components";
 import axios from "axios";
 import moment, { Moment as MomentTypes } from "moment";
 import useWindowSize from "../../lib/useWindowSize";
-import {
-  markerImage,
-  hoverImage,
-  mapOptions,
-  setHoverImage,
-  makeOverlay
-} from "../../lib/kakaoMapUtils";
+import { markerImage, hoverImage, makeOverlay } from "../../lib/kakaoMapUtils";
 import StudyRoomList from "../../components/users/studyRoomList";
 import { REQUEST_URL } from "../../config.json";
-
+import { UserContext } from "./index";
 const { kakao } = window;
 let studyRoomMap;
 
@@ -30,17 +30,6 @@ const MapSidebar = styled.div`
   position: absolute;
   overflow-y: scroll;
 `;
-
-function makeOverListener(map, marker, infowindow) {
-  return function() {
-    infowindow.open(map, marker);
-  };
-}
-function makeOutListener(infowindow) {
-  return function() {
-    infowindow.close();
-  };
-}
 
 const Reservation = ({ match }) => {
   const { setgroupInBooking } = useContext(UserContext);
@@ -146,7 +135,7 @@ const Reservation = ({ match }) => {
               .format("YYYY-MM-DD") + suffix;
           const week2 =
             moment()
-              .add(1, "weeks")
+              .add(2, "weeks")
               .startOf("isoWeek")
               .add(day - 1, "days")
               .format("YYYY-MM-DD") + suffix;
@@ -234,3 +223,14 @@ const Reservation = ({ match }) => {
   );
 };
 export default Reservation;
+
+function makeOverListener(map, marker, infowindow) {
+  return function() {
+    infowindow.open(map, marker);
+  };
+}
+function makeOutListener(infowindow) {
+  return function() {
+    infowindow.close();
+  };
+}
