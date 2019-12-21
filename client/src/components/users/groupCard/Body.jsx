@@ -16,10 +16,10 @@ const StyledBody = styled.div`
   }
 `;
 
-const Body = ({ bodyData: { title, tags } }) => (
+const Body = ({ bodyData: { title, tags }, history }) => (
   <StyledBody>
     <Title title={title} />
-    <TagButtons tags={tags} />
+    <TagButtons tags={tags} history={history} />
   </StyledBody>
 );
 

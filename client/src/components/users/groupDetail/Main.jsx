@@ -58,7 +58,7 @@ const StyledMain = styled.div`
   padding: 1.2rem;
 `;
 
-const Main = ({ groupData, dispatch }) => {
+const Main = ({ groupData, dispatch, history }) => {
   const {
     thumbnail,
     location,
@@ -98,7 +98,7 @@ const Main = ({ groupData, dispatch }) => {
         <p> 현재 인원: {now_personnel} </p>
         <p> 최대 인원: {max_personnel} </p>
 
-        <TagButtons tags={tags} />
+        <TagButtons tags={tags} history={history} />
         <ApplyButtons
           groupData={groupData}
           onToggleReservation={onToggleReservation}

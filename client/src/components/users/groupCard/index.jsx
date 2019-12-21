@@ -24,13 +24,13 @@ const StyledCard = styled.div`
   }
 `;
 
-const StudyGroupCard = ({ groupData }) => {
+const StudyGroupCard = ({ groupData, history }) => {
   return (
     <StyledCard className="card-wrapper">
       <Link to={`/group/detail/${groupData._id}`}>
         <div className="card">
           <Thumbnail src={groupData.thumbnail} />
-          <Body bodyData={{ ...groupData }} />
+          <Body bodyData={{ ...groupData }} history={history} />
           <Footer footerData={{ ...groupData }} />
         </div>
       </Link>

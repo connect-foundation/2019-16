@@ -75,6 +75,7 @@ const Header = ({ history }) => {
   const onChange = useCallback(async e => {
     const query = e.target.value;
     setKeyword(query);
+    if (e.target.value[0] === "#") return;
     const url = `${REQUEST_URL}/api/search/suggest/${query}`;
 
     if (onChangeTimer) {

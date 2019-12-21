@@ -35,7 +35,7 @@ const StyledGroupDetail = styled.div`
   }
 `;
 
-const GroupDetail = ({ match }) => {
+const GroupDetail = ({ match, history }) => {
   const { userInfo } = useContext(UserContext);
   const [groupData, dispatch] = useReducer(groupDetailReducer, initialState);
   const { loading, error, data, request } = useAxios(apiAxios);
@@ -77,7 +77,11 @@ const GroupDetail = ({ match }) => {
           return (
             <>
               <Header groupData={groupData}></Header>
-              <Main groupData={groupData} dispatch={dispatch}></Main>
+              <Main
+                groupData={groupData}
+                dispatch={dispatch}
+                history={history}
+              ></Main>
               {isMyGroup && (
                 <div className="modify-buttons">
                   <Link to={`/group/update/${id}`}>

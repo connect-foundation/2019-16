@@ -21,38 +21,6 @@ export const set_join_group = joinedGroups => ({
 });
 
 export const initalState = {
-  joinedGroups: [
-    // {
-    //   id: 0,
-    //   days: [],
-    //   startTime: 0,
-    //   during: 0,
-    //   //location: { lat: 0, lon: 0 },
-    //   max_personnel: 0,
-    //   now_personnel: 0,
-    //   // min_personnel: 0,
-    //   title: "",
-    //   subtitle: "",
-    //   thumbnail: "",
-    //   tags: []
-    // }
-  ],
-  myGroups: [
-    // {
-    //   id: 0,
-    //   days: [],
-    //   startTime: 0,
-    //   during: 0,
-    //   //location: { lat: 0, lon: 0 },
-    //   max_personnel: 0,
-    //   now_personnel: 0,
-    //   // min_personnel: 0,
-    //   title: "",
-    //   subtitle: "",
-    //   thumbnail: "",
-    //   tags: []
-    // }
-  ],
   searchList: [
     // {
     //   id: 0,
@@ -110,12 +78,12 @@ export const userIndexReducer = (state, action) => {
     case SET_MY_GROUPS:
       return {
         ...state,
-        myGroups
+        myGroups: [...state.myGroups, ...myGroups]
       };
     case SET_JOIN_GROUPS:
       return {
         ...state,
-        joinedGroups
+        joinedGroups: [...state.joinedGroups, ...joinedGroups]
       };
     default:
       return state;

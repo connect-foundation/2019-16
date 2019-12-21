@@ -64,7 +64,7 @@ function isLastPagenation(takenGroups) {
   return false;
 }
 
-const Search = ({ location, match }) => {
+const Search = ({ location, match, history }) => {
   const query = queryString.parse(location.search).query;
 
   const pathname = location.pathname;
@@ -97,39 +97,90 @@ const Search = ({ location, match }) => {
     const { page_idx, isLastItem } = pageState;
     if (isLastItem) return;
 
-    let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/${page_idx}/true`;
+    if (pathname === "/search") {
+      let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/${page_idx}/true`;
+      axios.get(url).then(({ data }) => {
+        const additionalGroups = data;
+        const changedPageNationState = {
+          ...pageState,
+          page_idx: page_idx + 1
+        };
 
-    axios.get(url).then(({ data }) => {
-      const additionalGroups = data;
-      const changedPageNationState = {
-        ...pageState,
-        page_idx: page_idx + 1
+        if (isLastPagenation(additionalGroups))
+          changedPageNationState.isLastItems = true;
+
+        const newData = [...searchState.searchData, ...additionalGroups];
+        const newSearchData = {
+          isLoading: false,
+          searchData: newData
+        };
+        setSearchState(newSearchData);
+        //userIndexDispatch(set_additional_groups(additionalGroups));
+        setpageState(changedPageNationState);
+      });
+    }
+    if (pathname === "/search/tags") {
+      let url = `${REQUEST_URL}/api/search/tags/page/${page_idx}`;
+      const data = {
+        tags: [query],
+        lat,
+        lon,
+        isRecruit: true
       };
+      axios.post(url, data).then(({ data }) => {
+        const additionalGroups = data;
+        const changedPageNationState = {
+          ...pageState,
+          page_idx: page_idx + 1
+        };
 
-      if (isLastPagenation(additionalGroups))
-        changedPageNationState.isLastItems = true;
+        if (isLastPagenation(additionalGroups))
+          changedPageNationState.isLastItems = true;
 
-      const newData = [...searchState.searchData, ...additionalGroups];
-      const newSearchData = {
-        isLoading: false,
-        searchData: newData
-      };
-      setSearchState(newSearchData);
-      //userIndexDispatch(set_additional_groups(additionalGroups));
-      setpageState(changedPageNationState);
-    });
+        const newData = [...searchState.searchData, ...additionalGroups];
+        const newSearchData = {
+          isLoading: false,
+          searchData: newData
+        };
+        setSearchState(newSearchData);
+        //userIndexDispatch(set_additional_groups(additionalGroups));
+        setpageState(changedPageNationState);
+      });
+    }
+
     setIsFetching(false);
   }
 
   useEffect(() => {
-    let url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/0/true`;
-    axios.get(url).then(({ data }) => {
-      const initData = {
-        searchData: data,
-        isLoading: 0
+    let url;
+    if (pathname === "/search") {
+      url = `${REQUEST_URL}/api/search/query/${query}/location/${lat}/${lon}/page/0/true`;
+
+      axios.get(url).then(({ data }) => {
+        const initData = {
+          searchData: data,
+          isLoading: 0
+        };
+        setSearchState(initData);
+      });
+    }
+
+    if (pathname === "/search/tags") {
+      const data = {
+        tags: [query],
+        lat,
+        lon,
+        isRecruit: true
       };
-      setSearchState(initData);
-    });
+      url = `${REQUEST_URL}/api/search/tags/page/0`;
+      axios.post(url, data).then(({ data }) => {
+        const initData = {
+          searchData: data,
+          isLoading: 0
+        };
+        setSearchState(initData);
+      });
+    }
   }, [query]);
 
   return (
@@ -144,6 +195,7 @@ const Search = ({ location, match }) => {
               <StudyGroupCard
                 key={groupData.id}
                 groupData={groupData}
+                history={history}
               ></StudyGroupCard>
             );
           });
