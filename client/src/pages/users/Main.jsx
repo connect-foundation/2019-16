@@ -51,6 +51,14 @@ const Main = styled.div`
     }
   }
 
+  .location-info-block {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 3rem;
+    margin-left: 9.5rem;
+    margin-bottom: 2rem;
+
+  }
+
   .study-group-list{
       align-self:center;
       min-height: 200px;
@@ -168,7 +176,12 @@ const MainPage = ({ history }) => {
       </div>
 
       <div className="location-info-block">
-        <span> {curLocation} 주변에 있는 스터디입니다. </span>
+        {curLocation && (
+          <span>
+            {" "}
+            <strong className="has-text-info"> {curLocation} </strong> 근처
+          </span>
+        )}
       </div>
 
       <div className="study-group-list">
