@@ -9,7 +9,7 @@ width: ${props => props.carouselWidth};
     overflow:hidden;
 
     .carousel{
-      height: 20rem;
+      height: 23rem;
       display:flex;
       justify-content:center;
 

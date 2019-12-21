@@ -27,13 +27,11 @@ const Main = styled.div`
     align-items:center;
 
     .group-create-button {
-      margin-top: 2rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
+      display:flex;
+      justify-content:center;
     }
-  }
-  .group-create-button {
-    margin-top: 2rem;
-    display:flex;
-    justify-content:center;
   }
   .main-page-title{
     font-family: 'Black Han Sans', sans-serif;
