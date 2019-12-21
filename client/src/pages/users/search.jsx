@@ -16,39 +16,43 @@ const StyledSearch = styled.div`
   padding-left: 5%;
   padding-right: 5%;
 
-  .main-page-title{
-    font-family: 'Black Han Sans', sans-serif;
+  .main-page-title {
+    font-family: "Black Han Sans", sans-serif;
     color: #000000;
+    padding-left: 5%;
     padding: 5%;
-    align-self:start;
-    .main-title {
+    align-self: start;
+    display: flex;
+
+    .search-result {
+      .main-title {
         font-size: 6em;
-      }
-    .main-subtitle{
-        font-size: 4em;
-        .highlight{
-            color:#e41d60
+        .highlight {
+          color: #e41d60;
         }
+      }
+      .main-subtitle {
+        font-size: 4em;
       }
     }
   }
 
-  .study-group-list{
-      align-self:center;
-      min-height: 200px;
+  .study-group-list {
+    align-self: center;
+    min-height: 200px;
 
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 
-      background-color: #f8f0ee;
-      width: 68rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
-      margin:0 10%;
-      .study-group-card{
-          margin: 2em;
-      }
+    background-color: #f8f0ee;
+    width: 68rem;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+    margin: 0 10%;
+    .study-group-card {
+      margin: 2em;
+    }
   }
 `;
 
@@ -185,6 +189,17 @@ const Search = ({ location, match, history }) => {
 
   return (
     <StyledSearch>
+      <div className="main-jumbotron">
+        <div className="main-page-title">
+          <div className="search-result">
+            <div className="main-title">
+              <span className="highlight">
+                {pathname === "/search" ? query : `#${query}`}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="study-group-list">
         {(() => {
           if (searchState.isLoading) return <h3> 로딩 중... </h3>;
