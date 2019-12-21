@@ -97,8 +97,6 @@ const LoginButton = () => {
       };
       const patchResult = await fetch(url, options);
       if (patchResult.ok) {
-        userIndexDispatch(set_my_group(getResult.ownGroups));
-        userIndexDispatch(set_join_group(getResult.joiningGroups));
         setUserInfo({
           ...getResult,
           ...{ kakaoAccessToken: response.access_token }

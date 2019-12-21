@@ -32,13 +32,15 @@ width: ${props => props.carouselWidth};
 `;
 
 const MyStudyCarousel = () => {
-  const { userIndexState } = useContext(UserContext);
-  const { myGroups, joinedGroups } = userIndexState;
-  const carouselWidth = myGroups.length ? myGroups.length * 10 + "em" : "100%";
-  const userGroups = myGroups.concat(joinedGroups);
+  const { userInfo } = useContext(UserContext);
+  const { ownGroups, joiningGroups } = userInfo;
+  const carouselWidth = ownGroups.length
+    ? ownGroups.length * 10 + "em"
+    : "100%";
+  const userGroups = ownGroups.concat(joiningGroups);
 
   useEffect(() => {
-    if (myGroups.length > 3)
+    if (ownGroups.length > 3)
       bulmaCarousel.attach(".carousel", {
         slidesToScroll: 1,
         slidesToShow: 3,
