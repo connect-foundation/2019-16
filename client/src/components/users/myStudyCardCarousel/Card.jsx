@@ -6,7 +6,6 @@ import { UserContext } from "../../../pages/users";
 const StyledCard = styled.div`
   width: 16rem;
   margin: 1rem 0;
-  margin-left: 1rem;
   height: 16em;
   display: flex;
   flex-direction: column;

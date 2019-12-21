@@ -5,7 +5,6 @@ import { UserContext } from "../../../pages/users/index";
 import bulmaCarousel from "bulma-carousel/dist/js/bulma-carousel.min.js";
 
 const StyledMyStudyCarousel = styled.div`
-overflow: hidden;
 width: ${props => props.carouselWidth}; 
     overflow:hidden;
 
@@ -34,19 +33,18 @@ width: ${props => props.carouselWidth};
 const MyStudyCarousel = () => {
   const { userInfo } = useContext(UserContext);
   const { ownGroups, joiningGroups } = userInfo;
-  const carouselWidth = ownGroups.length
-    ? ownGroups.length * 10 + "em"
-    : "100%";
   const userGroups = ownGroups.concat(joiningGroups);
+  const carouselWidth = userGroups.length ? "60rem" : "100%";
 
   useEffect(() => {
-    if (ownGroups.length > 3)
+    if (userGroups.length > 3) {
       bulmaCarousel.attach(".carousel", {
         slidesToScroll: 1,
         slidesToShow: 3,
         infinite: true
       });
-  });
+    }
+  }, []);
 
   return (
     <StyledMyStudyCarousel carouselWidth={carouselWidth}>
