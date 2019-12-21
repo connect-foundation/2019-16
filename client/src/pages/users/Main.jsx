@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useContext, useRef } from "react";
+import React, { useEffect, useContext } from "react";
 
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import StudyGroupCard from "../../components/users/groupCard";
 import MyStudyCarousel from "../../components/users/myStudyCardCarousel";
 
+import useCoord2String from "../../lib/coord2string";
 import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 import { REQUEST_URL } from "../../config.json";
@@ -97,21 +98,19 @@ const MainPage = ({ history }) => {
   const { searchList } = userIndexState;
   const { userId, userLocation, ownGroups, joiningGroups } = userInfo;
 
-  const lat = useRef();
-  const lon = useRef();
-  lat.current = userLocation.lat;
-  lon.current = userLocation.lon;
+  const { lat, lon } = userLocation;
 
   let { loading, data, error, request } = getApiAxiosState;
 
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
+  const [curLocation] = useCoord2String(window.kakao, lat, lon);
 
   function loadAdditionalItems() {
     const { page_idx, category, isLastItem } = pageNationState;
     if (isLastItem) return;
-    let url = `${REQUEST_URL}/api/search/all/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
+    let url = `${REQUEST_URL}/api/search/all/location/${lat}/${lon}/page/${page_idx}/true`;
     if (category)
-      url = `${REQUEST_URL}/api/search/all/category/${category}/location/${lat.current}/${lon.current}/page/${page_idx}/true`;
+      url = `${REQUEST_URL}/api/search/all/category/${category}/location/${lat}/${lon}/page/${page_idx}/true`;
 
     axios.get(url).then(({ data }) => {
       const additionalGroups = data;
@@ -131,11 +130,8 @@ const MainPage = ({ history }) => {
   }
 
   useEffect(() => {
-    isSetPositionDuringLoading(loading, lat.current, lon.current) &&
-      request(
-        "get",
-        `/search/all/location/${lat.current}/${lon.current}/page/0/true`
-      );
+    isSetPositionDuringLoading(loading, lat, lon) &&
+      request("get", `/search/all/location/${lat}/${lon}/page/0/true`);
   }, [userLocation]);
 
   useEffect(() => {
@@ -169,6 +165,10 @@ const MainPage = ({ history }) => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="location-info-block">
+        <span> {curLocation} 주변에 있는 스터디입니다. </span>
       </div>
 
       <div className="study-group-list">
