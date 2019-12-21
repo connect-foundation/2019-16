@@ -43,6 +43,8 @@ function makeOutListener(infowindow) {
 }
 
 const Reservation = ({ match }) => {
+  const { setgroupInBooking } = useContext(UserContext);
+
   const id = useRef();
   id.current = match.params.id;
   const mapElement = useRef();
@@ -163,6 +165,15 @@ const Reservation = ({ match }) => {
           endTime,
           dates: reservationDays
         };
+        setgroupInBooking({
+          title: groupInfo.title,
+          personnel: now_personnel,
+          dates: `${moment()
+            .add(1, "weeks")
+            .format("MM-DD")} ~ ${moment()
+            .add(2, "weeks")
+            .format("MM-DD")}`
+        });
 
         return new Promise(resolve => {
           axios

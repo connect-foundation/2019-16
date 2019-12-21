@@ -57,7 +57,11 @@ const UserPage = () => {
     userIndexReducer,
     initalState
   );
-
+  const [groupInBooking, setgroupInBooking] = useState({
+    title: null,
+    personnel: null,
+    dates: []
+  });
   useEffect(() => {
     const parsedUserInfo = jwtParser();
 
@@ -96,7 +100,9 @@ const UserPage = () => {
         userIndexDispatch,
         getApiAxiosState,
         pageNationState,
-        setPageNationState
+        setPageNationState,
+        groupInBooking,
+        setgroupInBooking
       }}
     >
       <div className="app-wrapper">
