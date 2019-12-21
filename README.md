@@ -14,35 +14,6 @@
 > ✏ 스터디원을 모집하고 원하는 지역에 이용 가능한 스터디룸을 예약할 수 있도록 검색해주는 플랫폼입니다.
 ---
 
-# week6 할일 
-- [ ] validation
-- [ ] groupcreate path 접근
-- [ ] 눈에 보이는 작은 이슈들 해결 => 버그픽스
-- [ ] 임태현 개발서버에 고친거 로컬 브랜치에 적용하기
-- [ ] 리액트 빌드
-- [ ] 사진 리사이징
-- [ ] 메인 페이지 컴포넌트 크기 줄이기
-- [ ] 서치 navbar
-- [ ] 배포 자동화 전략
-     - develop/integration에 푸쉬되면 자동배포한다. 
-- [ ] 테스트코드 룰
-  - 테스트 실패시 PR Close
-- [ ] 월: 밀린 테스트 코드 짜기
-- [ ] footer 만들기
-- [ ] 이수배 서치 서비스 문서화 재검사(12/9 오후 7시)
-
-## 숙제(12/9까지)
-- 클라이언트 문서화
-
-[문서화 읽어보세요](https://engineering.linecorp.com/ko/blog/document-engineering-api-documentation/)
-- 각자 서비스 api/db 문서화
-- **테스트코드** 작성..제발
-  - **유닛 테스트** 진행 => `모듈화~~~~!!!!!`
-  - [참고1](http://www.albertgao.xyz/2017/06/10/how-to-use-jest-to-test-express-middleware-or-a-function-which-consumes-a-callback/) 
-  - [참고2](http://jeonghwan-kim.github.io/%EC%9D%B5%EC%8A%A4%ED%94%84%EB%A0%88%EC%8A%A4-api-%EC%84%9C%EB%B2%84-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1%ED%95%98%EA%B8%B0/)
-
----
-
 ![](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/92eecc76-1b3c-442a-aac8-b771f628c8cf/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAT73L2G45HQ6JVE4O%2F20191122%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20191122T051828Z&X-Amz-Expires=86400&X-Amz-Security-Token=IQoJb3JpZ2luX2VjENX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQDouLjdHYnnv%2BrX8yb%2BPCY5jo5odeBxv%2FlU1bnzZPK2EwIhANyz4km0SM%2BxBnd%2BFTuFe5booUZJ%2FeDredSjFRXPVeTuKtoCCP7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMMjc0NTY3MTQ5MzcwIgyEhEv5%2FBChBFpfjmAqrgIJllFjtc%2FkanEg4PXVSKb8lCrml%2F5mGQALm3Za3zxnqbtwhbgZlHSir4Fqqo8bMfnrBJWyx%2FyUd%2B7036yxEPFuLWR5TM8iXcNWrY22wAObWgy2S9eAtpZ1HFNeneHSpRuDxGulBT3k4l%2BWOtLkkVN8Zwetq6zhCknY0evsqqpeofDOPInutV7Pc5VEtotMZeDj%2BVhRuyliRKX1SwQWGNn5yp0rCNbhZ4jqb1Gc3CP82SDCSWxPznucbfXhmLrc2FcvWGd4Von7p2i46pDnl4PD9q8nbBe1zqjP2fEZxuRZPJLeVe4qMzwXzhHyapAbR2Ov%2BbsB7sQiKWYUg1dLrTccr1gQCBA%2FzVgDnIFLCmCyTk8dXepy0FWPb9sEQns7UunOhfEpBn5rNrUKobkdWzDK0t3uBTrNAokksMtH01ZW1ftG4RXBGKQekj3Pf6%2BmalzrgD4OLlsDPWbDpnToXmOOs72WMPhYKVhv7n6h%2FZEkBYdkWe70XWE6EJr6wxVeaFDNkFIWbJBFkoDSU1YpOi9jA0HYjZUINpVoBeKsopapMVPuhuRom6pMwELOMCaVwWhzyA1CVuSfmkzAL1v9nOd3CQ8eFVmgTYaPE%2FrfOe7lqHy9zS28suYNoOpHpJZGOo9ItQQSUnLwityr4LzOzTWxcOFtgTTCIu0Oyx13oKeNmji0nX%2F3JiTUO8IMVMVOe5QbRs302BWSQQgSbqNg%2BsDleG8iuJTGLwEGdeMQFim61AP3TeAB1E%2F6GtkOjrm%2BhCMIrqwc4Fo2z1veJtWBmiFtXccwgJj4SaTnpRvbrHsLoBowJRiah5UJ%2FqFBQjV4J9mfSRcc1Ac4KygG%2FgrXcSoJ9N60jA%3D%3D&X-Amz-Signature=0626b64f20a8d9345423c00a862e46d5a0a6561f71f932534e5cc4c590d99d26&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
 
 ### [🏠 Homepage](http://106.10.41.25.xip.io:3000/) (준비중입니다.)
