@@ -1,6 +1,5 @@
-const Payment = require("./Payment");
-
 require("dotenv").config();
+const Payment = require("./Payment");
 const { PAYMENT_NAME, PAYMENT_HOST, PAYMENT_PORT } = process.env;
 const payment = new Payment(PAYMENT_NAME, PAYMENT_HOST, PAYMENT_PORT);
 
