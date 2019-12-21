@@ -84,13 +84,7 @@ const Search = ({ location, match, history }) => {
 
   const pathname = location.pathname;
 
-  const {
-    userIndexState,
-    userIndexDispatch,
-    userInfo,
-    getApiAxiosState
-  } = useContext(UserContext);
-  const { searchList } = userIndexState;
+  const { userInfo } = useContext(UserContext);
   const { userLocation } = userInfo;
 
   let { lat, lon } = userLocation;
