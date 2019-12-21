@@ -27,7 +27,7 @@ const Main = styled.div`
     align-items:center;
 
     .group-create-button {
-      margin-top: 0;
+      margin-top: 0.9rem;
       margin-bottom: 2rem;
       display:flex;
       justify-content:center;

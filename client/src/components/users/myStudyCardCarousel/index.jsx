@@ -18,6 +18,10 @@ width: ${props => props.carouselWidth};
       }
     }
 
+    & *:focus {
+      outline: none;
+    }
+
     .my-group-title{
       text-align: center;
       font-weight:bold;
@@ -34,7 +38,7 @@ const MyStudyCarousel = () => {
   const { userInfo } = useContext(UserContext);
   const { ownGroups, joiningGroups } = userInfo;
   const userGroups = ownGroups.concat(joiningGroups);
-  const carouselWidth = userGroups.length ? "60rem" : "100%";
+  const carouselWidth = userGroups.length ? "55rem" : "100%";
 
   useEffect(() => {
     if (userGroups.length > 3) {
