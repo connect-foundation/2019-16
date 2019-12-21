@@ -8,6 +8,7 @@ const {
 exports.addGroup = async params => {
   const groupInfo = params;
   const resultAfterStore = await StudyGroups.create(groupInfo);
+
   groupInfo.group_id = resultAfterStore.id;
 
   await pushStudyGroups(resultAfterStore);
@@ -22,6 +23,7 @@ exports.addGroup = async params => {
 exports.getGroupDetail = async params => {
   const { id } = params;
   const findResult = await StudyGroups.findById(id);
+
   if (findResult) return { detailInfo: findResult, status: 200 };
   if (!findResult) return { status: 400 };
 };
@@ -32,7 +34,7 @@ exports.removeGroup = async params => {
 
   await removeStudyGroup(deletedGroupInfo);
 
-  return { status: 200 };
+  return { status: 200, group: deletedGroupInfo };
 };
 
 exports.updateGroup = async params => {

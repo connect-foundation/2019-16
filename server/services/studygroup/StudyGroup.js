@@ -14,7 +14,9 @@ const doAndResponse = async (params, packetData, cb) => {
     if (replyData.curQuery === "addGroup") {
       replyData.nextQuery = "updateOwnGroups";
     }
-
+    if (replyData.curQuery === "removeGroup") {
+      replyData.nextQuery = "deleteGroupInUsers";
+    }
     replyData.method = "REPLY";
     replyData.body = result;
 
@@ -44,6 +46,12 @@ async function doJob(data, appName_) {
         ownGroup: replyData.body.ownGroup,
         addMode: !replyData.body.isJoiner
       };
+      appName = "user";
+    }
+    if (replyData.nextQuery === "deleteGroupInUsers") {
+      const group = replyData.body.group;
+
+      replyData.params = { group };
       appName = "user";
     }
   } catch (errReplyData) {
