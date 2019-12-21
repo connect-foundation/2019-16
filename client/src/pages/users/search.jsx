@@ -4,9 +4,9 @@ import styled from "styled-components";
 
 import StudyGroupCard from "../../components/users/groupCard";
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
+import useCoord2String from "../../lib/coord2string";
 
 import { REQUEST_URL } from "../../config.json";
-import { set_groups } from "../../reducer/users";
 import { UserContext } from "./index";
 import axios from "axios";
 
@@ -31,6 +31,13 @@ const StyledSearch = styled.div`
         }
       }
     }
+  }
+
+  .location-info-block {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 3rem;
+    margin-left: 9.5rem;
+    margin-bottom: 2rem;
   }
 
   .study-group-list{
@@ -86,6 +93,7 @@ const Search = ({ location, match, history }) => {
     searchData: []
   });
 
+  const [curLocation] = useCoord2String(window.kakao, lat, lon);
   const [isFetching, setIsFetching] = useInfiniteScroll(loadAdditionalItems);
 
   const [pageState, setpageState] = useState({
@@ -143,7 +151,6 @@ const Search = ({ location, match, history }) => {
           searchData: newData
         };
         setSearchState(newSearchData);
-        //userIndexDispatch(set_additional_groups(additionalGroups));
         setpageState(changedPageNationState);
       });
 
@@ -185,6 +192,15 @@ const Search = ({ location, match, history }) => {
 
   return (
     <StyledSearch>
+      <div className="location-info-block">
+        {curLocation && (
+          <span>
+            {" "}
+            <strong className="has-text-info"> {curLocation} </strong> 근처
+          </span>
+        )}
+      </div>
+
       <div className="study-group-list">
         {(() => {
           if (searchState.isLoading) return <h3> 로딩 중... </h3>;
