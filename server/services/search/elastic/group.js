@@ -1,4 +1,5 @@
 const { SEARCH_INDEX_STUDYGROUP } = process.env;
+const crypto = require("crypto");
 const client = require("./client");
 const {
   getQueryCount,
@@ -253,9 +254,45 @@ exports.searchAllStudyGroup = async info => {
 
   const cache = await getCache({ lat, lon });
 
-  if (cache !== null) {
-    return JSON.parse(cache);
+  // page가 0이면 캐싱
+  if (page === 0) {
+    setTimeout(async () => {
+      const body = {
+        query: {
+          bool: {
+            must: [
+              {
+                match_all: {}
+              }
+            ],
+            filter: [
+              {
+                term: {
+                  isRecruiting: isRecruit
+                }
+              }
+            ]
+          }
+        }
+      };
+      const searchResult = await reSearchInDistance(
+        SEARCH_INDEX_STUDYGROUP,
+        body,
+        lat,
+        lon,
+        page,
+        20
+      );
+      const result = searchResult.map(hit => {
+        hit._source._id = hit._id;
+        return hit._source;
+      });
+
+      if (JSON.stringify(result) !== cache) saveCache({ lat, lon }, result);
+    }, 0);
+    if (cache !== null) return JSON.parse(cache);
   }
+
   const body = {
     query: {
       bool: {
@@ -287,7 +324,7 @@ exports.searchAllStudyGroup = async info => {
     return hit._source;
   });
 
-  saveCache({ lat, lon }, result);
+  // saveCache({ lat, lon }, result);
   return result;
 };
 
