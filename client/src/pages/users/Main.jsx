@@ -52,11 +52,15 @@ const Main = styled.div`
   }
 
   .location-info-block {
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 3rem;
-    margin-left: 9.5rem;
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    align-self: center;
+    margin: 0 0 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
 
+    font-size: 0.8rem;
   }
 
   .study-group-list{
@@ -179,7 +183,7 @@ const MainPage = ({ history }) => {
         {curLocation && (
           <span>
             {" "}
-            <strong className="has-text-info"> {curLocation} </strong> 근처
+            🚩<strong className="has-text-info"> {curLocation} </strong> 근처
           </span>
         )}
       </div>

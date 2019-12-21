@@ -13,49 +13,57 @@ import axios from "axios";
 const StyledSearch = styled.div`
   display: flex;
   flex-direction: column;
-  padding-left: 5%;
-  padding-right: 5%;
 
-  .main-page-title{
-    font-family: 'Black Han Sans', sans-serif;
+  .main-jumbotron {
+    display: flex;
+    justify-content: center;
+
+    margin: 0 auto;
+    font-family: "Black Han Sans", sans-serif;
     color: #000000;
+    padding-left: 5%;
     padding: 5%;
-    align-self:start;
+    align-self: start;
+    display: flex;
+
     .main-title {
-        font-size: 6em;
-      }
-    .main-subtitle{
-        font-size: 4em;
-        .highlight{
-            color:#e41d60
-        }
+      font-size: 3.7em;
+      border-bottom: 0.2px solid black;
+
+      &.highlight {
+        color: #e41d60;
       }
     }
   }
 
   .location-info-block {
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 3rem;
-    margin-left: 9.5rem;
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    align-self: center;
+    margin: 0 0 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
+
+    font-size: 0.8rem;
   }
 
-  .study-group-list{
-      align-self:center;
-      min-height: 200px;
+  .study-group-list {
+    align-self: center;
+    min-height: 200px;
 
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 
-      background-color: #f8f0ee;
-      width: 68rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
-      margin:0 10%;
-      .study-group-card{
-          margin: 2em;
-      }
+    background-color: #f8f0ee;
+    width: 68rem;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+    margin: 0 10%;
+    .study-group-card {
+      margin: 2em;
+    }
   }
 `;
 
@@ -192,11 +200,17 @@ const Search = ({ location, match, history }) => {
 
   return (
     <StyledSearch>
+      <div className="main-jumbotron">
+        <div className="main-title highlight">
+          🔍 {pathname === "/search" ? query : `#${query}`}
+        </div>
+      </div>
+
       <div className="location-info-block">
         {curLocation && (
           <span>
             {" "}
-            <strong className="has-text-info"> {curLocation} </strong> 근처
+            🚩<strong className="has-text-info"> {curLocation} </strong> 근처
           </span>
         )}
       </div>
