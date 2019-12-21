@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, Fragment } from "react";
 import styled from "styled-components";
 import TextInfo from "./TextInfo";
 
@@ -43,7 +43,7 @@ const Card = styled.div`
   }
 `;
 
-const ListCard = ({ data, index }) => {
+const ListCard = ({ data, index, error }) => {
   const { images, cafe_name } = data;
   const openInfowindow = useCallback(() => {
     data.marker.infowindow_over.call();
@@ -51,6 +51,7 @@ const ListCard = ({ data, index }) => {
   const closeInfowindow = useCallback(() => {
     data.marker.infowindow_out.call();
   }, []);
+
   return (
     <CardBackground className="card-background">
       <Card
@@ -75,4 +76,4 @@ const ListCard = ({ data, index }) => {
     </CardBackground>
   );
 };
-export default ListCard;
+export { ListCard, Card };
