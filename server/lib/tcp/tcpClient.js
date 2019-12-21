@@ -58,7 +58,7 @@ class TcpClient {
   }
 
   write(data) {
-    if (this.client.connecting) {
+    if (!this.isconnect) {
       pushMessage(this.name, data.slice(0, -1));
     } else {
       this.client.write(data);
