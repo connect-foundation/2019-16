@@ -38,6 +38,13 @@ class TcpServer {
           }
           if (packet === "") return;
           this.onRead(JSON.parse(packet), null);
+          try {
+            this.onRead(socket, JSON.parse(packet));
+          } catch (e) {
+            console.log(`PACKET PARSE ERROR\nkey: ${key}\n\n err: ${e}`);
+          } finally {
+            delete this.dataMap[key];
+          }
         });
       });
     });
