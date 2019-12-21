@@ -46,7 +46,7 @@ const Reservation = ({ match }) => {
   const id = useRef();
   id.current = match.params.id;
   const mapElement = useRef();
-  const [locaion, setLocation] = useState({ lat: null, lon: null });
+  const [location, setLocation] = useState({ lat: null, lon: null });
 
   const [width, height] = useWindowSize();
   const [studyRooms, setStudyRooms] = useState([]);
@@ -155,7 +155,7 @@ const Reservation = ({ match }) => {
           ]);
         }, []);
 
-        setLocation({ lat: locaion.lat, lon: locaion.lon });
+        setLocation({ lat: location.lat, lon: location.lon });
         const requestBody = {
           geopoint: { longitude: location.lon, latitude: location.lat },
           personnel: now_personnel,
@@ -185,8 +185,18 @@ const Reservation = ({ match }) => {
       .catch(err => {
         console.log(err);
       });
+  }, []);
+
+  useEffect(() => {
+    if (!studyRoomMap) return;
+    if (studyRooms.length <= 0) return;
+    drawMarker(studyRooms, studyRoomMap);
+  }, [studyRooms]);
+
+  useEffect(() => {
+    if (!location.lat) return;
     studyRoomMap = new kakao.maps.Map(mapElement.current, {
-      center: new kakao.maps.LatLng(37.503077, 127.021947),
+      center: new kakao.maps.LatLng(location.lat, location.lon),
       level: 3
     });
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
@@ -198,14 +208,7 @@ const Reservation = ({ match }) => {
         selectedMarker = null;
       }
     });
-  }, []);
-
-  useEffect(() => {
-    if (!studyRoomMap) return;
-    if (studyRooms.length <= 0) return;
-    drawMarker(studyRooms, studyRoomMap);
-  }, [studyRooms]);
-
+  }, [location]);
   return (
     <Fragment>
       <MapSidebar style={{ height: height - 89 }}>
