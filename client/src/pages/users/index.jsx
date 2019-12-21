@@ -12,7 +12,7 @@ import MainPage from "./Main";
 import GroupCreatePage from "./groupCreate";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
-import Header from "../../components/users/Header";
+import { Header } from "../../components/users/Header";
 import Footer from "../../components/Footer";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
