@@ -1,0 +1,36 @@
+{
+  "config": {
+    "target": "https://studycombined.shop",
+    "phases": [{ "duration": 60, "arrivalRate": 100 }],
+    "defaults": {
+      "headers": {
+        "User-Agent": "Artillery"
+      }
+    },
+    "payload": {
+      "path": "./data.csv",
+      "fields": ["id", "password"]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "Joining user",
+      "flow": [
+        { "get": { "url": "/" } },
+        {
+          "post": {
+            "url": "/users",
+            "json": { "id": "{{id}}", "password": "{{password}}" },
+            "capture": { "json": "$.id", "as": "username" }
+          }
+        },
+        {
+          "get": {
+            "url": "/users/{{username}}",
+            "match": { "json": "$.id", "value": "{{username}}" }
+          }
+        }
+      ]
+    }
+  ]
+}
