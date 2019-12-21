@@ -46,6 +46,7 @@ const Reservation = ({ match }) => {
   const id = useRef();
   id.current = match.params.id;
   const mapElement = useRef();
+  const [locaion, setLocation] = useState({ lat: null, lon: null });
 
   const [width, height] = useWindowSize();
   const [studyRooms, setStudyRooms] = useState([]);
@@ -154,6 +155,7 @@ const Reservation = ({ match }) => {
           ]);
         }, []);
 
+        setLocation({ lat: locaion.lat, lon: locaion.lon });
         const requestBody = {
           geopoint: { longitude: location.lon, latitude: location.lat },
           personnel: now_personnel,
@@ -161,18 +163,32 @@ const Reservation = ({ match }) => {
           endTime,
           dates: reservationDays
         };
-        return axios.post(
-          `${REQUEST_URL}/api/studyroom/availableRooms`,
-          requestBody
-        );
+
+        return new Promise(resolve => {
+          axios
+            .post(`${REQUEST_URL}/api/studyroom/availableRooms`, requestBody)
+            .then(result => {
+              const timeInfo = {
+                startTime,
+                endTime,
+                days,
+                dates: reservationDays
+              };
+              resolve({ timeInfo, availableRooms: result.data });
+            });
+        });
       })
-      .then(availableRooms => {
-        setStudyRooms(availableRooms.data);
+      .then(({ availableRooms, timeInfo }) => {
+        const rooms = availableRooms.map(d => ({ ...d, ...timeInfo }));
+        setStudyRooms(rooms);
       })
       .catch(err => {
         console.log(err);
       });
-    studyRoomMap = new kakao.maps.Map(mapElement.current, mapOptions);
+    studyRoomMap = new kakao.maps.Map(mapElement.current, {
+      center: new kakao.maps.LatLng(37.503077, 127.021947),
+      level: 3
+    });
     kakao.maps.event.addListener(studyRoomMap, "click", function() {
       console.log(currentOverlay, selectedMarker);
       if (currentOverlay && selectedMarker) {
@@ -186,7 +202,7 @@ const Reservation = ({ match }) => {
 
   useEffect(() => {
     if (!studyRoomMap) return;
-
+    if (studyRooms.length <= 0) return;
     drawMarker(studyRooms, studyRoomMap);
   }, [studyRooms]);
 

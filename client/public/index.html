@@ -74,5 +74,31 @@
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
+    <script>
+      function paymentReady(e) {
+        const ol = document.getElementsByClassName("reservation-btn")[0];
+        const info = ol.dataset.info;
+
+        fetchPaymentReady(info);
+      }
+
+      async function fetchPaymentReady(info) {
+        const url = "https://studycombined.shop:8000/api/payment/ready";
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8"
+          },
+          mode: "cors",
+          credentials: "include",
+          body: info
+        };
+
+        const res = await fetch(url, options);
+        if (!res.ok) return;
+        const { nextUrl } = await res.json();
+        window.location.href = nextUrl;
+      }
+    </script>
   </body>
 </html>
