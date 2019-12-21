@@ -13,6 +13,7 @@ import GroupCreatePage from "./groupCreate";
 import GroupUpdatePage from "./groupUpdate";
 import GroupDetailPage from "./groupDetail";
 import { Header } from "../../components/users/Header";
+import ReservationHeader from "../../components/users/ReservationHeader";
 import Footer from "../../components/Footer";
 import { initalState, userIndexReducer } from "../../reducer/users";
 import Reservation from "./reservation";
@@ -99,7 +100,10 @@ const UserPage = () => {
       }}
     >
       <div className="app-wrapper">
-        <Route path="/" component={Header} />
+        <Switch>
+          <Route path="/reservation" component={ReservationHeader} />
+          <Route path="/" component={Header} />
+        </Switch>
         <Switch>
           <Route exact path="/" component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
@@ -111,7 +115,10 @@ const UserPage = () => {
           <Route path="/payment" component={Payment} />
         </Switch>
       </div>
-      <Footer />
+      <Switch>
+        <Route path="/reservation" component={() => null} />
+        <Route path="/" component={Footer} />
+      </Switch>
     </UserContext.Provider>
   );
 };
