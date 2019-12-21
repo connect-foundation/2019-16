@@ -254,7 +254,7 @@ exports.searchAllStudyGroup = async info => {
   const cache = await getCache({ lat, lon });
 
   if (cache !== null) {
-    return JSON.params(cache);
+    return JSON.parse(cache);
   }
   const body = {
     query: {

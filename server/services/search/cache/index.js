@@ -16,11 +16,3 @@ exports.getCache = async ({ lat, lon }) => {
     });
   });
 };
-// const lat = 123;
-// const lon = 12;
-
-// (async function() {
-//   const a = await this.getCache({ lat, lon });
-
-//   console.log(a);
-// }.bind(this)(this));
