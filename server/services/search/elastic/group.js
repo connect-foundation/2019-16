@@ -255,7 +255,7 @@ exports.searchAllStudyGroup = async info => {
   const cache = await getCache({ lat, lon });
 
   // page가 0이면 캐싱
-  if (page === 0) {
+  if (page === "0") {
     setTimeout(async () => {
       const body = {
         query: {
