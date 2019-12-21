@@ -146,9 +146,9 @@ const Search = ({ location, match, history }) => {
         //userIndexDispatch(set_additional_groups(additionalGroups));
         setpageState(changedPageNationState);
       });
-    }
 
-    setIsFetching(false);
+      setIsFetching(false);
+    }
   }
 
   useEffect(() => {

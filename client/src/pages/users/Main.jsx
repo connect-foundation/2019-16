@@ -126,8 +126,8 @@ const MainPage = ({ history }) => {
 
       userIndexDispatch(set_additional_groups(additionalGroups));
       setPageNationState(changedPageNationState);
+      setIsFetching(false);
     });
-    setIsFetching(false);
   }
 
   useEffect(() => {
