@@ -9,9 +9,11 @@ const mapOptions = {
 };
 
 const makeOverlay = (marker, data) => {
-  const content = renderToString(<CustomOverlay data={data}></CustomOverlay>);
+  let content = renderToString(<CustomOverlay marker={marker} data={data} />);
+  content = content.replace("data-info", `onclick="paymentReady()" data-info`);
 
   const overlay = new kakao.maps.CustomOverlay({
+    clickable: true,
     position: marker.getPosition(),
     content,
     yAnchor: 1

@@ -1,8 +1,78 @@
 import React from "react";
+import { REQUEST_URL } from "../../../config.json";
 import "./overlay.scss";
 
-const CustomOverlay = ({ data }) => {
-  const { cafe_name, name, images, price, min_personnel, max_personnel } = data;
+const hrefPaymentUrl = ({ userId, paymentInfo, reservationInfo }) => () => {
+  const url = `${REQUEST_URL}/api/payment/ready`;
+  const options = {
+    method: "POST",
+    mode: "cors",
+    credentials: "include",
+    body: { userId, paymentInfo, reservationInfo }
+  };
+
+  const response = fetch(url, options);
+  if (!response.ok) return;
+
+  const result = response.json();
+  if (result) window.location.href = result.nextUrl;
+};
+
+const CustomOverlay = ({ marker, data, location }) => {
+  const {
+    partner_id,
+    cafe_name,
+    name,
+    images,
+    price,
+    min_personnel,
+    max_personnel,
+    _id,
+    days,
+    startTime,
+    endTime,
+    dates
+  } = data;
+  const overlay = marker.overlay;
+  const roomId = _id;
+  // const jwt = Cookies.get("access_token");
+  // const userId = jwtDecode(jwt).id;
+
+  function closeOverlay() {
+    overlay.setMap(null);
+  }
+
+  const userId = "1238062363";
+  const paymentInfo = {
+    cid: "TC0ONETIME",
+    partner_order_id: "f892h3fojldskjf",
+    partner_user_id: partner_id,
+    item_name: `${cafe_name} - ${name}`,
+    quantity: 1,
+    total_amount: price,
+    tax_free_amount: 0,
+    approval_url: `${REQUEST_URL}/api/payment/approval/${roomId}/${userId}`,
+    cancel_url: `${REQUEST_URL}/api/payment/cancel/${roomId}/${userId}`,
+    fail_url: `${REQUEST_URL}/api/payment/fail/${roomId}/${userId}`
+    // approval_url: `http://localhost:3000/payment/approval/${roomId}/${userId}`,
+    // cancel_url: `http://localhost:3000/payment/cancel/${roomId}/${userId}`,
+    // fail_url: `http://localhost:3000/payment/fail/${roomId}/${userId}`
+  };
+  const reservationInfo = {
+    days,
+    roomId,
+    dates
+  };
+  reservationInfo.startTime = [];
+  reservationInfo.endTime = [];
+  days.forEach(() => {
+    reservationInfo.startTime.push(startTime);
+    reservationInfo.endTime.push(endTime);
+  });
+
+  const info = { userId, paymentInfo, reservationInfo };
+  const eleInfo = JSON.stringify(info);
+
   return (
     <div className="overlay">
       <div className="body">
@@ -21,7 +91,10 @@ const CustomOverlay = ({ data }) => {
               <li>{`요금 ${price}/1인`}</li>
             </ul>
           </div>
-          <button className="reservation-btn button is-primary is-rounded is-focused">
+          <button
+            className="reservation-btn button is-primary is-rounded is-focused"
+            data-info={`${eleInfo}`}
+          >
             예약하기
           </button>
         </div>
