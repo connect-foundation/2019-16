@@ -152,4 +152,4 @@ const isProperInput = keyword =>
   keyword &&
   (keyword[0] !== "#" ? true : keyword.length > 1);
 
-export default Header;
+export { Header, StyledHeader };
