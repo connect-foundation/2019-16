@@ -123,7 +123,7 @@ const Search = ({ location, match, history }) => {
         };
 
         if (isLastPagenation(additionalGroups))
-          changedPageNationState.isLastItems = true;
+          changedPageNationState.isLastItem = true;
 
         const newData = [...searchState.searchData, ...additionalGroups];
         const newSearchData = {
@@ -151,7 +151,7 @@ const Search = ({ location, match, history }) => {
         };
 
         if (isLastPagenation(additionalGroups))
-          changedPageNationState.isLastItems = true;
+          changedPageNationState.isLastItem = true;
 
         const newData = [...searchState.searchData, ...additionalGroups];
         const newSearchData = {

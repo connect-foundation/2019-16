@@ -133,7 +133,7 @@ const MainPage = ({ history }) => {
       };
 
       if (isLastPagenation(additionalGroups))
-        changedPageNationState.isLastItems = true;
+        changedPageNationState.isLastItem = true;
 
       userIndexDispatch(set_additional_groups(additionalGroups));
       setPageNationState(changedPageNationState);
