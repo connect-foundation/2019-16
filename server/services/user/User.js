@@ -2,7 +2,11 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 const App = require("../../lib/tcp/App");
-const { updateJoiningGroups, updateOwnGroups } = require("./query/queries");
+const {
+  updateJoiningGroups,
+  updateOwnGroups,
+  deleteGroupInUsers
+} = require("./query/queries");
 
 const { ACCOUNTS_MONGO_URL } = process.env;
 
@@ -19,7 +23,7 @@ mongoose
     console.log("User mongoDB connection fail", err);
   });
 
-const queryMap = { updateJoiningGroups, updateOwnGroups };
+const queryMap = { updateJoiningGroups, updateOwnGroups, deleteGroupInUsers };
 
 async function doJob(socket, data) {
   const { params, nextQuery } = data;
