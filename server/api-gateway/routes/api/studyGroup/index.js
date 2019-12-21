@@ -8,7 +8,9 @@ const {
   sendGroupCreationPacket,
   sendGetGroupDetailPacket,
   sendDeleteGroupPacket,
-  sendUpdateGroupPacket
+  sendUpdateGroupPacket,
+  requestToggleRegistration,
+  requestToggleRecruitingState
 } = require("./ctrl");
 
 const {
@@ -26,24 +28,28 @@ const {
   bucketName
 );
 
-module.exports = function(apigateway) {
+module.exports = function(apiGateway) {
   router.post(
     "/register",
     upload.single("image"),
     registerValidation,
     uploadToImage(studyCombinedStorage, "groupImage", bucketName, bucketLink),
-    sendGroupCreationPacket(apigateway)
+    sendGroupCreationPacket(apiGateway)
   );
 
-  router.get("/detail/:id", sendGetGroupDetailPacket(apigateway));
+  router.get("/detail/:id", sendGetGroupDetailPacket(apiGateway));
   router.put(
     "/detail",
     upload.single("image"),
     registerValidation,
     uploadToImage(studyCombinedStorage, "groupImage", bucketName, bucketLink),
-    sendUpdateGroupPacket(apigateway)
+    sendUpdateGroupPacket(apiGateway)
   );
-  router.delete("/detail/:id", sendDeleteGroupPacket(apigateway));
+  router.delete("/detail/:id", sendDeleteGroupPacket(apiGateway));
+
+  router.post("/toggleRegistration", requestToggleRegistration(apiGateway));
+
+  router.patch("/recruit", requestToggleRecruitingState(apiGateway));
 
   return router;
 };

@@ -62,16 +62,16 @@ exports.uploadToImage = (storage, path, bucketName, bucketLink) => async (
 };
 
 exports.sendGroupCreationPacket = apigateway => (req, res, next) => {
-  const payload = JSON.parse(req.body.data);
+  const groupInfo = JSON.parse(req.body.data);
 
-  payload.thumbnail = req.imageLink;
+  groupInfo.thumbnail = req.imageLink;
 
   const packet = makePacket(
     "POST",
     "apigateway",
     "addGroup",
     "addGroup",
-    { ...payload },
+    { ...groupInfo },
     {},
     req.resKey,
     apigateway.context
@@ -128,6 +128,42 @@ exports.sendUpdateGroupPacket = apigateway => (req, res, next) => {
     "updateGroup",
     "updateGroup",
     { ...payload },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
+exports.requestToggleRegistration = apigateway => (req, res, next) => {
+  const { userId, groupId } = req.body;
+
+  const packet = makePacket(
+    "POST",
+    "apigateway",
+    "toggleRegistration",
+    "toggleRegistration",
+    { userId, groupId },
+    {},
+    req.resKey,
+    apigateway.context
+  );
+
+  req.packet = packet;
+  next();
+};
+
+exports.requestToggleRecruitingState = apigateway => (req, res, next) => {
+  const { groupId } = req.body;
+
+  const packet = makePacket(
+    "PATCH",
+    "apigateway",
+    "toggleRecruitment",
+    "toggleRecruitment",
+    { groupId },
     {},
     req.resKey,
     apigateway.context
