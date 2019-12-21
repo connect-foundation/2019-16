@@ -197,6 +197,9 @@ const Search = ({ location, match, history }) => {
                 {pathname === "/search" ? query : `#${query}`}
               </span>
             </div>
+            <div className="main-subtitle">
+              {pathname === "/search" ? "스터디" : `태그검색 결과`}
+            </div>
           </div>
         </div>
       </div>
