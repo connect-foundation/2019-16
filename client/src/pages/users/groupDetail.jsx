@@ -76,7 +76,7 @@ const GroupDetail = ({ match, history }) => {
           const isMyGroup = groupData.leader === userInfo.userId;
           return (
             <>
-              <Header groupData={groupData}></Header>
+              <Header groupData={groupData} history={history}></Header>
               <Main
                 groupData={groupData}
                 dispatch={dispatch}

@@ -76,18 +76,10 @@ export const initialState = {
   // },
   primaryCategories: ["프로그래밍", "자격증", "외국어", "취업", "기타"],
   secondaryCategories: {
-    프로그래밍: [
-      "C++",
-      "Java",
-      "JavaScript",
-      "Python",
-      "Swift",
-      "Ruby",
-      "기타"
-    ],
-    자격증: ["강사", "병원", "아동", "IT", "인문", "산업", "기타"],
-    외국어: ["영어", "중국어", "일본어", "불어", "스페인어", "기타"],
-    취업: ["자소서", "면접", "인적성", "자격증", "기타"],
+    프로그래밍: ["C++", "Java", "JavaScript", "Python", "Swift", "Ruby"],
+    자격증: ["강사", "병원", "아동", "IT", "인문", "산업"],
+    외국어: ["영어", "중국어", "일본어", "불어", "스페인어"],
+    취업: ["자소서", "면접", "인적성"],
     기타: ["기타"]
   },
   daysInfo,
@@ -98,7 +90,7 @@ export const initialState = {
     title: "",
     subtitle: "",
     intro: "",
-    locatoin: { lat: null, lon: null },
+    location: { lat: null, lon: null },
     days: [],
     startTime: 1,
     during: 1,
@@ -179,7 +171,6 @@ export const groupCreateReducer = (state, action) => {
       const { lat, lon } = action;
       const location = { lat, lon };
       data = { ...data, location };
-      console.log(data);
       return { ...state, data };
 
     default:

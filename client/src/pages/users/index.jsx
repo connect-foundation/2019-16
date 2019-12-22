@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useReducer, createContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useReducer,
+  createContext,
+  useRef
+} from "react";
 import { Route, Switch } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
@@ -52,7 +58,6 @@ const UserPage = () => {
     isLastItem: false
   });
   const getApiAxiosState = useAxios(apiAxios);
-
   const [userIndexState, userIndexDispatch] = useReducer(
     userIndexReducer,
     initalState
@@ -62,6 +67,8 @@ const UserPage = () => {
     personnel: null,
     dates: []
   });
+  const map = useRef();
+
   useEffect(() => {
     const parsedUserInfo = jwtParser();
 
@@ -102,7 +109,8 @@ const UserPage = () => {
         pageNationState,
         setPageNationState,
         groupInBooking,
-        setgroupInBooking
+        setgroupInBooking,
+        map
       }}
     >
       <div className="app-wrapper">
@@ -111,7 +119,7 @@ const UserPage = () => {
           <Route path="/" component={Header} />
         </Switch>
         <Switch>
-          <Route exact path="/" component={MainPage} />
+          <Route exact path={["/", "/category"]} component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />

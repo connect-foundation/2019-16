@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useRef } from "react";
+import React, { useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -51,7 +51,7 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   );
 
   const itemList = secondaryCategories.map((category, idx) => (
-    <Link to="/">
+    <Link to={`/category?query=${category}`}>
       <span key={idx} className="navbar-item" onClick={searchGroups}>
         {category}
       </span>
@@ -61,9 +61,11 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   return (
     <Category>
       <div className="navbar-item has-dropdown is-hoverable">
-        <span className="navbar-link is-arrowless" onClick={searchGroups}>
-          {primaryCategory}
-        </span>
+        <Link to={`/category?query=${primaryCategory}`}>
+          <span className="navbar-link is-arrowless" onClick={searchGroups}>
+            {primaryCategory}
+          </span>
+        </Link>
         <div className="navbar-dropdown is-boxed">{itemList}</div>
       </div>
     </Category>

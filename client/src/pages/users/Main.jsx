@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useContext } from "react";
-
 import useInfiniteScroll from "../../lib/useInfiniteScroll";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -98,7 +97,7 @@ const Main = styled.div`
 
 const takeCardAmount = 12;
 
-const MainPage = ({ history }) => {
+const MainPage = ({ history, location }) => {
   const {
     userIndexState,
     userIndexDispatch,
@@ -142,6 +141,7 @@ const MainPage = ({ history }) => {
   }
 
   useEffect(() => {
+    if (location.pathname !== "/") return;
     isSetPositionDuringLoading(loading, lat, lon) &&
       request("get", `/search/all/location/${lat}/${lon}/page/0/true`);
   }, [userLocation]);
