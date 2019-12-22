@@ -37,9 +37,8 @@ class TcpServer {
             return;
           }
           if (packet === "") return;
-          this.onRead(JSON.parse(packet), null);
           try {
-            this.onRead(socket, JSON.parse(packet));
+            this.onRead(JSON.parse(packet), null);
           } catch (e) {
             console.log(`PACKET PARSE ERROR\nkey: ${key}\n\n err: ${e}`);
           } finally {

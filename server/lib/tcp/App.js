@@ -37,10 +37,8 @@ class App extends TcpServer {
   async onRead(data, socket) {
     if (!isLogService(this.context.name) && data.hasOwnProperty("nextQuery")) {
       const spanId = await this.sendTcpLog(data.nextQuery);
-
       data.spanId = spanId;
     }
-
     this.job(data, socket);
   }
 
