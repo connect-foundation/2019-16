@@ -23,7 +23,7 @@ const makeOverlay = (marker, data) => {
 };
 
 const markerImageSrc =
-  "http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+  "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 const markerImageSize = new kakao.maps.Size(24, 35);
 const markerImage = new kakao.maps.MarkerImage(markerImageSrc, markerImageSize);
 const hoverImage = new kakao.maps.MarkerImage(
