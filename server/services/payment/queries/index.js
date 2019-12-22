@@ -21,38 +21,87 @@ function getElementsHaveSameRoomId(roomId) {
 exports.inspectQueue = async ({ userId, paymentInfo, reservationInfo }) => {
   const { roomId, days, startTime, endTime } = reservationInfo;
   const sameRoomIdInPayQueue = getElementsHaveSameRoomId(roomId);
+  const paymentInfoAlreadyExist = sameRoomIdInPayQueue.filter(
+    p => p.userId === userId
+  );
+
+  if (paymentInfoAlreadyExist.length === 1) {
+    return {
+      headers: {
+        method: "REPLY",
+        curQuery: "inspectQueue",
+        nextQuery: "apigateway",
+        params: {}
+      },
+      body: { nextUrl: paymentInfoAlreadyExist[0].nextUrl, status: 200 }
+    };
+  }
+
   let nextUrl = "";
+  const startTimes = startTime;
+  const endTimes = endTime;
 
   if (
     sameRoomIdInPayQueue.length === 0 ||
     avoidReservationCollision(
-      { days, startTime, endTime },
+      { days, startTimes, endTimes },
       sameRoomIdInPayQueue
     )
   ) {
+    // 결제 준비 가능
     const res = await getNextUrl(roomId, userId, paymentInfo);
 
     nextUrl = res.nextUrl;
     paymentInfo.tid = res.tid;
-
     if (nextUrl) {
       payQueue[roomId].push({
         reservationInfo,
         paymentInfo,
-        userId
+        userId,
+        createdAt: new Date(),
+        nextUrl
       });
-    }
-  }
 
-  return {
-    headers: {
-      method: "REPLY",
-      curQuery: "inspectQueue",
-      nextQuery: "apigateway",
-      params: {}
-    },
-    body: { nextUrl, status: 200 }
-  };
+      return {
+        headers: {
+          method: "REPLY",
+          curQuery: "inspectQueue",
+          nextQuery: "apigateway",
+          params: {}
+        },
+        body: { nextUrl, status: 200 }
+      };
+    } else {
+      return {
+        headers: {
+          method: "ERROR",
+          curQuery: "inspectQueue",
+          nextQuery: "apigateway",
+          params: {}
+        },
+        body: {
+          err: true,
+          msg: "카카오 페이 API 오류",
+          status: 404
+        }
+      };
+    }
+  } else {
+    // 결제 준비 실패,
+    return {
+      headers: {
+        method: "REPLY",
+        curQuery: "inspectQueue",
+        nextQuery: "apigateway",
+        parmas: {}
+      },
+      body: {
+        err: true,
+        msg: "동일한 스터디룸에 대해서 결제가 진행중입니다.",
+        status: 200
+      }
+    };
+  }
 };
 
 exports.approvePayment = async ({ pg_token, userId, roomId }) => {
@@ -92,7 +141,7 @@ exports.approvePayment = async ({ pg_token, userId, roomId }) => {
     };
   }
 
-  const dbResult = await Payment.create({ ...receipt, userId });
+  await Payment.create({ ...receipt, userId });
 
   return {
     headers: {
@@ -123,3 +172,25 @@ exports.removeInQueue = ({ roomId, userId }) => {
     body: { reservationInfo, paymentInfo, status: 200 }
   };
 };
+
+function timeOver({ createdAt }, now) {
+  if (now - createdAt > 10 * 60 * 1000) return true;
+  return false;
+}
+
+function garbageCollector() {
+  const now = new Date();
+
+  Object.keys(payQueue).forEach(roomId => {
+    while (true) {
+      if (payQueue[roomId].length === 0) break;
+      if (timeOver(payQueue[roomId][0], now)) {
+        payQueue[roomId].shift();
+      }
+    }
+  });
+}
+
+setInterval(() => {
+  garbageCollector();
+}, 60 * 1000);
