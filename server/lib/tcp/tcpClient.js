@@ -26,9 +26,11 @@ function registEvent() {
   });
 
   this.client.on("end", () => {
+    this.isconnect = false;
     this.onEnd();
   });
   this.client.on("error", () => {
+    this.isconnect = false;
     this.onError();
   });
 }
@@ -44,17 +46,19 @@ class TcpClient {
     this.onRead = onRead;
     this.onEnd = onEnd;
     this.onError = onError;
+    this.isconnect = false;
   }
   connect() {
     this.client = net.connect(this.options, () => {
       console.log(`connet to ${this.options.host} : ${this.options.port}`);
+      this.isconnect = true;
       this.onCreate();
     });
     registEvent.bind(this)();
   }
 
   write(data) {
-    if (this.client.connecting) {
+    if (!this.isconnect) {
       pushMessage(this.name, data.slice(0, -1));
     } else {
       this.client.write(data);
