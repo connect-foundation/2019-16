@@ -75,14 +75,75 @@
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
     <script>
-      function paymentReady(e) {
-        const ol = document.getElementsByClassName("reservation-btn")[0];
-        const info = ol.dataset.info;
+      async function getStudyGroupInfoById(id) {
+        const url = `https://studycombined.shop:8000/api/studygroup/detail/${id}`;
+        const options = {
+          method: "GET",
+          mode: "cors",
+          credentials: "include"
+        };
+        try {
+          const res = await fetch(url, options);
 
-        fetchPaymentReady(info);
+          if (res.ok) {
+            const result = await res.json();
+
+            return result.detailInfo;
+          }
+          return "";
+        } catch {
+          return "";
+        }
       }
 
-      async function fetchPaymentReady(info) {
+      async function getStudyRoomInfoById(id) {
+        const url = `https://studycombined.shop:8000/api/studyroom/${id}`;
+        const options = {
+          method: "GET",
+          mode: "cors",
+          credentials: "include"
+        };
+
+        try {
+          const res = await fetch(url, options);
+
+          if (res.ok) {
+            const result = await res.json();
+
+            return result.studyRoomInfo;
+          }
+          return "";
+        } catch {
+          return "";
+        }
+      }
+
+      function paymentReady() {
+        const ol = document.getElementsByClassName("reservation-btn")[0];
+        const info = ol.dataset.info;
+        ol.classList.add("is-loading");
+        fetchPaymentReady(info, ol);
+      }
+
+      async function fetchPaymentReady(info, ol) {
+        const parsedInfo = JSON.parse(info);
+        const studyGroupInfo = await getStudyGroupInfoById(
+          parsedInfo.reservationInfo.groupId
+        );
+        const studyRoomInfo = await getStudyRoomInfoById(
+          parsedInfo.reservationInfo.roomId
+        );
+
+        if (studyGroupInfo === "" || studyRoomInfo === "") {
+          ol.classList.remove("is-loading");
+          alert("알 수 없는 결제 요청입니다.");
+
+          return;
+        }
+        parsedInfo.reservationInfo.studyGroupInfo = studyGroupInfo;
+        parsedInfo.reservationInfo.studyRoomInfo = studyRoomInfo;
+
+        const data = JSON.stringify(parsedInfo);
         const url = "https://studycombined.shop:8000/api/payment/ready";
         const options = {
           method: "POST",
@@ -91,11 +152,14 @@
           },
           mode: "cors",
           credentials: "include",
-          body: info
+          body: data
         };
-
         const res = await fetch(url, options);
-        if (!res.ok) return;
+        ol.classList.remove("is-loading");
+        if (!res.ok) {
+          alert("같은 스터디룸에 대해서 다른 결제가 진행중입니다.");
+          return;
+        }
         const { nextUrl } = await res.json();
         window.location.href = nextUrl;
       }

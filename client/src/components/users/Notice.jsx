@@ -7,7 +7,7 @@ const closeNotice = () => {
 const Notice = () => (
   <div id="notice" className="notification is-danger">
     <button
-      class="delete is-large"
+      className="delete is-large"
       style={{ margin: "0.3rem" }}
       onClick={closeNotice}
     />

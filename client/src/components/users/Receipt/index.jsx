@@ -10,10 +10,10 @@ const Body = styled.div`
 const Receipt = ({ reservationInfo }) => {
   return (
     <div>
-      <section class="hero is-danger">
-        <div class="hero-body">
-          <div class="container">
-            <h1 class="title">예약이 완료되었습니다.</h1>
+      <section className="hero is-danger">
+        <div className="hero-body">
+          <div className="container">
+            <h1 className="title">예약이 완료되었습니다.</h1>
           </div>
         </div>
       </section>
@@ -23,7 +23,7 @@ const Receipt = ({ reservationInfo }) => {
       </Body>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <button
-          class="button is-large is-danger"
+          className="button is-large is-danger"
           onClick={() => {
             window.location.href = "/";
           }}

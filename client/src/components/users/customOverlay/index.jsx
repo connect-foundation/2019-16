@@ -1,24 +1,10 @@
 import React from "react";
+import Cookies from "js-cookie";
+import jwtDecode from "jwt-decode";
 import { REQUEST_URL } from "../../../config.json";
 import "./overlay.scss";
 
-const hrefPaymentUrl = ({ userId, paymentInfo, reservationInfo }) => () => {
-  const url = `${REQUEST_URL}/api/payment/ready`;
-  const options = {
-    method: "POST",
-    mode: "cors",
-    credentials: "include",
-    body: { userId, paymentInfo, reservationInfo }
-  };
-
-  const response = fetch(url, options);
-  if (!response.ok) return;
-
-  const result = response.json();
-  if (result) window.location.href = result.nextUrl;
-};
-
-const CustomOverlay = ({ marker, data, location }) => {
+const CustomOverlay = ({ marker, data }) => {
   const {
     partner_id,
     cafe_name,
@@ -31,21 +17,21 @@ const CustomOverlay = ({ marker, data, location }) => {
     days,
     startTime,
     endTime,
-    dates
+    dates,
+    groupId
   } = data;
   const overlay = marker.overlay;
   const roomId = _id;
-  // const jwt = Cookies.get("access_token");
-  // const userId = jwtDecode(jwt).id;
+  const jwt = Cookies.get("access_token");
+  const userId = jwtDecode(jwt).id;
 
   function closeOverlay() {
     overlay.setMap(null);
   }
 
-  const userId = "1238062363";
   const paymentInfo = {
     cid: "TC0ONETIME",
-    partner_order_id: "f892h3fojldskjf",
+    partner_order_id: partner_id + new Date().toString(),
     partner_user_id: partner_id,
     item_name: `${cafe_name} - ${name}`,
     quantity: 1,
@@ -61,7 +47,8 @@ const CustomOverlay = ({ marker, data, location }) => {
   const reservationInfo = {
     days,
     roomId,
-    dates
+    dates,
+    groupId
   };
   reservationInfo.startTime = [];
   reservationInfo.endTime = [];

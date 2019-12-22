@@ -8,13 +8,14 @@ const ReservationInfoWrapper = styled.div`
 `;
 
 const ReservationInfo = ({ info }) => {
+  debugger;
   return (
     <ReservationInfoWrapper>
-      <h3 class="subtitle is-3">예약 정보</h3>
-      <h6 class="subtitle is-6">장소: {info.location}</h6>
-      <h6 class="subtitle is-6">인원수: {info.now_personnel}</h6>
-      <div class="table-container">
-        <table class="table is-hoverable is-fullwidth">
+      <h3 className="subtitle is-3">예약 정보</h3>
+      <h6 className="subtitle is-6">장소: {info.location}</h6>
+      <h6 className="subtitle is-6">인원수: {info.now_personnel}</h6>
+      <div className="table-container">
+        <table className="table is-hoverable is-fullwidth">
           <thead>
             <tr>
               <th>No.</th>

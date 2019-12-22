@@ -21,7 +21,7 @@ const StyledReservationHeader = styled.div`
 const ReservationHeader = ({ history }) => {
   const { groupInBooking } = useContext(UserContext);
   const { title, personnel, dates } = groupInBooking;
-  debugger;
+
   return (
     <StyledReservationHeader>
       <img
@@ -29,10 +29,10 @@ const ReservationHeader = ({ history }) => {
         alt="study combined"
         className="logo"
       />
-      <div class="buttons has-addons">
-        <button class="button is-danger is-selected">{title}</button>
-        <button class="button ">{dates}</button>
-        <button class="button is-primary is-selected">{personnel}명</button>
+      <div className="buttons has-addons">
+        <button className="button is-danger is-selected">{title}</button>
+        <button className="button ">{dates}</button>
+        <button className="button is-primary is-selected">{personnel}명</button>
       </div>
     </StyledReservationHeader>
   );
