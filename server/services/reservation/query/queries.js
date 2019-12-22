@@ -41,6 +41,7 @@ exports.filterStudyGroup = async ({ studyGroup, studyRooms }) => {
 
 exports.addReservation = async ({ reservationInfo, userId }) => {
   // 데이터베이스에 저장
+  const res = await Reservations.create(reservationInfo);
 
   return {
     headers: {
