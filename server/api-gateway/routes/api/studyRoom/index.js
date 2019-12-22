@@ -20,5 +20,23 @@ module.exports = function(apiGateway) {
 
     next();
   });
+
+  router.get("/:id", (req, res, next) => {
+    const studyRoomId = req.params.id;
+
+    req.packet = makePacket(
+      "GET",
+      "apigateway",
+      "getRoomById",
+      "getRoomById",
+      { studyRoomId },
+      {},
+      req.resKey,
+      apiGateway.context
+    );
+
+    next();
+  });
+
   return router;
 };
