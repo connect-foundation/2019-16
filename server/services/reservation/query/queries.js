@@ -35,7 +35,7 @@ exports.filterStudyGroup = async ({ studyGroup, studyRooms }) => {
       nextQuery: "apigateway",
       params: {}
     },
-    body: filterdRooms
+    body: filterdRooms.slice(0, 100)
   };
 };
 
