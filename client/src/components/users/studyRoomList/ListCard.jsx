@@ -3,6 +3,8 @@ import styled from "styled-components";
 import TextInfo from "./TextInfo";
 import { UserContext } from "../../../pages/users/index";
 import { useContext } from "react";
+import { hoverImage } from "../../../lib/kakaoMapUtils";
+const { kakao } = window;
 
 const CardBackground = styled.div`
   :hover {
@@ -46,14 +48,19 @@ const Card = styled.div`
 `;
 
 const ListCard = ({ data, index, error }) => {
-  const { images, cafe_name } = data;
   const { map } = useContext(UserContext);
+  const { images, cafe_name, marker } = data;
   const openInfowindow = useCallback(() => {
     data.marker.infowindow_over.call();
-  }, []);
+  }, [marker, data]);
   const closeInfowindow = useCallback(() => {
     data.marker.infowindow_out.call();
-  }, []);
+  }, [marker, data]);
+
+  const clickMarker = useCallback(() => {
+    map.current.setLevel(3);
+    map.current.panTo(data.marker.getPosition());
+  }, [map]);
 
   return (
     <CardBackground className="card-background">
@@ -61,6 +68,7 @@ const ListCard = ({ data, index, error }) => {
         className="card-item"
         onMouseOver={openInfowindow}
         onMouseOut={closeInfowindow}
+        onClick={clickMarker}
       >
         <div className="card-head">
           <span className="item-index ">{String.fromCharCode(index)}</span>
