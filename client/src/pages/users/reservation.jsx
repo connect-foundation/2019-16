@@ -67,7 +67,6 @@ const Reservation = ({ match }) => {
           !!currentOverlay && currentOverlay.setMap(null);
         }
         marker.setImage(hoverImage);
-        // const overlay = makeOverlay(marker, data);
         makeOverlay(marker, data);
         marker.overlay.setMap(studyRoomMap);
         currentOverlay = marker.overlay;
@@ -101,7 +100,6 @@ const Reservation = ({ match }) => {
 
       bounds.extend(kakaoPosition);
       const marker = new kakao.maps.Marker({
-        // map,
         position: kakaoPosition,
         title: room.title,
         image: markerImage
@@ -123,33 +121,9 @@ const Reservation = ({ match }) => {
       .then(({ data }) => {
         const groupInfo = data.detailInfo;
         const { location, now_personnel, startTime, endTime, days } = groupInfo;
-
-        const reservationDays = days.reduce((dates, day) => {
-          const suffix = "T00:00:00.000Z";
-          const dateFormat = {
-            start: startTime,
-            end: endTime
-          };
-          const week1 =
-            moment()
-              .add(1, "weeks")
-              .startOf("isoWeek")
-              .add(day - 1, "days")
-              .format("YYYY-MM-DD") + suffix;
-          const week2 =
-            moment()
-              .add(2, "weeks")
-              .startOf("isoWeek")
-              .add(day - 1, "days")
-              .format("YYYY-MM-DD") + suffix;
-
-          return dates.concat([
-            { ...dateFormat, date: week1 },
-            { ...dateFormat, date: week2 }
-          ]);
-        }, []);
-
+        const reservationDays = convertDatesFormat(days, startTime, endTime);
         setLocation({ lat: location.lat, lon: location.lon });
+
         const requestBody = {
           geopoint: { longitude: location.lon, latitude: location.lat },
           personnel: now_personnel,
@@ -221,8 +195,7 @@ const Reservation = ({ match }) => {
     kakao.maps.event.addListener(clusterer, "clusterclick", function(cluster) {
       // 현재 지도 레벨에서 1레벨 확대한 레벨
       var level = studyRoomMap.getLevel() - 1;
-
-      // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
+      // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대
       studyRoomMap.setLevel(level, { anchor: cluster.getCenter() });
     });
   }, [location]);
@@ -250,4 +223,32 @@ function makeOutListener(infowindow) {
   return function() {
     infowindow.close();
   };
+}
+
+function convertDatesFormat(days, startTime, endTime) {
+  const formattedDates = days.reduce((dates, day) => {
+    const suffix = "T00:00:00.000Z";
+    const dateFormat = {
+      start: startTime,
+      end: endTime
+    };
+    const week1 =
+      moment()
+        .add(1, "weeks")
+        .startOf("isoWeek")
+        .add(day - 1, "days")
+        .format("YYYY-MM-DD") + suffix;
+    const week2 =
+      moment()
+        .add(2, "weeks")
+        .startOf("isoWeek")
+        .add(day - 1, "days")
+        .format("YYYY-MM-DD") + suffix;
+
+    return dates.concat([
+      { ...dateFormat, date: week1 },
+      { ...dateFormat, date: week2 }
+    ]);
+  }, []);
+  return formattedDates;
 }
