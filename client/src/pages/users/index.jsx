@@ -119,7 +119,7 @@ const UserPage = () => {
           <Route path="/" component={Header} />
         </Switch>
         <Switch>
-          <Route exact path="/" component={MainPage} />
+          <Route exact path={["/", "/category"]} component={MainPage} />
           <Route exact path="/group/create" component={GroupCreatePage} />
           <Route exact path="/group/update/:id" component={GroupUpdatePage} />
           <Route path="/group/detail/:id" component={GroupDetailPage} />
