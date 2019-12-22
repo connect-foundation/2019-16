@@ -32,7 +32,7 @@ const MapSidebar = styled.div`
 `;
 
 const Reservation = ({ match }) => {
-  const { setgroupInBooking } = useContext(UserContext);
+  const { setgroupInBooking, map } = useContext(UserContext);
 
   const id = useRef();
   id.current = match.params.id;
@@ -186,6 +186,7 @@ const Reservation = ({ match }) => {
       }
     });
 
+    map.current = studyRoomMap;
     clusterer = new kakao.maps.MarkerClusterer({
       map: studyRoomMap,
       averageCenter: true,

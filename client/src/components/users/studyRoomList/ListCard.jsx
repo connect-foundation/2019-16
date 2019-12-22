@@ -1,6 +1,8 @@
 import React, { useCallback, Fragment } from "react";
 import styled from "styled-components";
 import TextInfo from "./TextInfo";
+import { UserContext } from "../../../pages/users/index";
+import { useContext } from "react";
 
 const CardBackground = styled.div`
   :hover {
@@ -45,6 +47,7 @@ const Card = styled.div`
 
 const ListCard = ({ data, index, error }) => {
   const { images, cafe_name } = data;
+  const { map } = useContext(UserContext);
   const openInfowindow = useCallback(() => {
     data.marker.infowindow_over.call();
   }, []);
