@@ -15,7 +15,7 @@ import { REQUEST_URL } from "../../config.json";
 import { UserContext } from "./index";
 const { kakao } = window;
 let studyRoomMap;
-
+let clusterer;
 // state로 관리할 것
 let selectedMarker = null;
 let currentOverlay = null;
@@ -93,7 +93,7 @@ const Reservation = ({ match }) => {
   const drawMarker = (studyRoomData, map) => {
     const bounds = new kakao.maps.LatLngBounds();
 
-    studyRoomData.forEach(room => {
+    const markers = studyRoomData.map(room => {
       const location = room.location.coordinates;
       const studyRoomlat = location[1];
       const studyRoomlng = location[0];
@@ -101,7 +101,7 @@ const Reservation = ({ match }) => {
 
       bounds.extend(kakaoPosition);
       const marker = new kakao.maps.Marker({
-        map,
+        // map,
         position: kakaoPosition,
         title: room.title,
         image: markerImage
@@ -109,8 +109,11 @@ const Reservation = ({ match }) => {
 
       room.marker = marker;
       addMarkerEvent(marker, room);
-    });
 
+      return marker;
+    });
+    debugger;
+    clusterer.addMarkers(markers);
     map.setBounds(bounds);
   };
 
@@ -207,6 +210,20 @@ const Reservation = ({ match }) => {
         currentOverlay = null;
         selectedMarker = null;
       }
+    });
+
+    clusterer = new kakao.maps.MarkerClusterer({
+      map: studyRoomMap,
+      averageCenter: true,
+      minLevel: 5,
+      disableClickZoom: true
+    });
+    kakao.maps.event.addListener(clusterer, "clusterclick", function(cluster) {
+      // 현재 지도 레벨에서 1레벨 확대한 레벨
+      var level = studyRoomMap.getLevel() - 1;
+
+      // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
+      studyRoomMap.setLevel(level, { anchor: cluster.getCenter() });
     });
   }, [location]);
   return (
