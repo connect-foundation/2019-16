@@ -98,7 +98,7 @@ export const initialState = {
     title: "",
     subtitle: "",
     intro: "",
-    locatoin: { lat: null, lon: null },
+    location: { lat: null, lon: null },
     days: [],
     startTime: 1,
     during: 1,
@@ -179,7 +179,6 @@ export const groupCreateReducer = (state, action) => {
       const { lat, lon } = action;
       const location = { lat, lon };
       data = { ...data, location };
-      console.log(data);
       return { ...state, data };
 
     default:

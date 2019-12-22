@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import classnames from "classnames";
 import Subtitle from "../groupCard/Subtitle";
 import Location from "../common/Location";
 import Time from "../groupCard/Time";
