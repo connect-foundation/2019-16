@@ -61,9 +61,11 @@ const StudyNavbarItem = ({ primaryCategory, secondaryCategories }) => {
   return (
     <Category>
       <div className="navbar-item has-dropdown is-hoverable">
-        <span className="navbar-link is-arrowless" onClick={searchGroups}>
-          {primaryCategory}
-        </span>
+        <Link to={`/category?query=${primaryCategory}`}>
+          <span className="navbar-link is-arrowless" onClick={searchGroups}>
+            {primaryCategory}
+          </span>
+        </Link>
         <div className="navbar-dropdown is-boxed">{itemList}</div>
       </div>
     </Category>
