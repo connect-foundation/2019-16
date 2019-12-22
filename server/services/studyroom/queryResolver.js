@@ -24,6 +24,17 @@ async function searchNearbyRooms(params) {
 
   return res;
 }
+
+async function getRoomById(id) {
+  try {
+    const studyRoom = await StudyRooms.findById(id);
+
+    return studyRoom;
+  } catch {
+    return "";
+  }
+}
+
 async function queryResolver(query, params) {
   if (query === "availableRooms") {
     const studyRooms = await searchNearbyRooms(params);
@@ -37,6 +48,27 @@ async function queryResolver(query, params) {
     };
   }
 
+  if (query === "getRoomById") {
+    const studyRoom = await getRoomById(params.studyRoomId);
+
+    if (studyRoom === "") {
+      return {
+        method: "ERROR",
+        curQuery: query,
+        nextQuery: "apigateway",
+        params: {},
+        body: {}
+      };
+    }
+
+    return {
+      method: "REPLY",
+      curQuery: query,
+      nextQuery: "apigateway",
+      params: {},
+      body: { studyRoomInfo: studyRoom }
+    };
+  }
   throw Error(
     `Query is not matched with studyRoom query resolver. Your query is ${query}`
   );
