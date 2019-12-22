@@ -7,20 +7,20 @@ const avoidTimeCollision = weekTable => compareElement =>
     if (!weekTable[0][day]) return true;
 
     return (
-      weekTable[1][day] <= compareElement.reservationInfo.startTime[idx] ||
-      compareElement.reservationInfo.endTime[idx] <= weekTable[0][day]
+      weekTable[1][day] <= compareElement.reservationInfo.startTimes[idx] ||
+      compareElement.reservationInfo.endTimes[idx] <= weekTable[0][day]
     );
   });
 
 exports.avoidReservationCollision = (
-  { days, startTime, endTime },
+  { days, startTimes, endTimes },
   sameRoomIdInPayQueue
 ) => {
   const weekTable = [[], []];
 
   days.forEach((day, idx) => {
-    weekTable[0][day] = startTime[idx];
-    weekTable[1][day] = endTime[idx];
+    weekTable[0][day] = startTimes[idx];
+    weekTable[1][day] = endTimes[idx];
   });
 
   return sameRoomIdInPayQueue.every(avoidTimeCollision(weekTable));
