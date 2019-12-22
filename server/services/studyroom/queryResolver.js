@@ -6,28 +6,20 @@ const convertKntoMile = km => {
 
 async function searchNearbyRooms(params) {
   const { geopoint, personnel, startTime, endTime } = params;
-
   const res = await StudyRooms.find({
-    max_personnel: {
-      $gte: personnel
-    },
-    min_personnel: {
-      $lte: personnel
-    },
     location: {
-      $geoWithin: {
-        $centerSphere: [
-          [geopoint.longitude, geopoint.latitude],
-          convertKntoMile(1)
-        ]
+      $nearSphere: {
+        $geometry: {
+          type: "Point",
+          coordinates: [geopoint.longitude, geopoint.latitude]
+        },
+        $maxDistance: 20000
       }
     },
-    open_time: {
-      $lte: startTime
-    },
-    close_time: {
-      $gte: endTime
-    }
+    max_personnel: { $gte: personnel },
+    min_personnel: { $lte: personnel },
+    open_time: { $lte: startTime },
+    close_time: { $gte: endTime }
   });
 
   return res;
