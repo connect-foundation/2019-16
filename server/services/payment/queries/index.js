@@ -182,12 +182,17 @@ function garbageCollector() {
   const now = new Date();
 
   Object.keys(payQueue).forEach(roomId => {
+    const len = payQueue[roomId].length;
+    let i = 0;
+
     while (true) {
       if (payQueue[roomId].length === 0) break;
       if (timeOver(payQueue[roomId][0], now)) {
         payQueue[roomId].shift();
-        break;
       }
+
+      if (i === len) break;
+      i++;
     }
   });
 }
