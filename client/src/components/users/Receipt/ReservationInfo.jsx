@@ -8,12 +8,9 @@ const ReservationInfoWrapper = styled.div`
 `;
 
 const ReservationInfo = ({ info }) => {
-  debugger;
   return (
     <ReservationInfoWrapper>
       <h3 className="subtitle is-3">예약 정보</h3>
-      <h6 className="subtitle is-6">장소: {info.location}</h6>
-      <h6 className="subtitle is-6">인원수: {info.now_personnel}</h6>
       <div className="table-container">
         <table className="table is-hoverable is-fullwidth">
           <thead>
@@ -37,8 +34,8 @@ const ReservationInfo = ({ info }) => {
               <tr>
                 <td>{index + 1}</td>
                 <td>{date.date.split("T")[0]}</td>
-                <td>{date.start}시</td>
-                <td>{date.end}시</td>
+                <td>{date.start[0]}시</td>
+                <td>{date.end[0]}시</td>
               </tr>
             ))}
           </tbody>
