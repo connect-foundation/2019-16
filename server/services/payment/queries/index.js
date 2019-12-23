@@ -186,7 +186,7 @@ function garbageCollector() {
     let i = 0;
 
     while (true) {
-      if (payQueue[roomId].length === 0) break;
+      if (len === 0) break;
       if (timeOver(payQueue[roomId][0], now)) {
         payQueue[roomId].shift();
       }
