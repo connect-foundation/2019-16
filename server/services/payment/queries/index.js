@@ -186,6 +186,7 @@ function garbageCollector() {
       if (payQueue[roomId].length === 0) break;
       if (timeOver(payQueue[roomId][0], now)) {
         payQueue[roomId].shift();
+        break;
       }
     }
   });
