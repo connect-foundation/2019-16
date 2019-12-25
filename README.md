@@ -19,6 +19,8 @@
 
 ### [💾 더 많은 정보](https://www.notion.so/9f5925bc47884bf7ad0bb258a2566c9e)
 
+### [🎥 데모 영상](https://www.youtube.com/playlist?list=PLgN7SPXzVFBCx30q9n8s5Y3DbCJBRTFfX)
+
 ## 프로젝트 소개
 
 ### 주제 선정 이유
@@ -43,26 +45,37 @@
 - 엘라스틱 서치 검색
 - 내 지역 기반 스터디 그룹/스터디룸 검색
 
-### 마이크로서비스 아키텍쳐
+## 마이크로서비스 아키텍쳐
 ![서비스구성도2](https://user-images.githubusercontent.com/39212304/71319744-a1ddcd80-24e5-11ea-8305-981c3fb6f070.png)
 
-### 사이트 화면
-<img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337283-49aed600-258e-11ea-8d12-6aa81e0d3f04.png">
 
-### 검색 화면
-![image](https://user-images.githubusercontent.com/42646264/71337331-85e23680-258e-11ea-98e5-715d3feacf28.png)
-
-### 스터디 생성 화면
-![image](https://user-images.githubusercontent.com/42646264/71337389-e07b9280-258e-11ea-8047-78846a8fa988.png)
-
-### 스터디룸 예약 화면
-![image](https://user-images.githubusercontent.com/42646264/71337423-03a64200-258f-11ea-93c2-8b0065d4531e.png)
-
-### 카카오페이 결제 화면
-![image](https://user-images.githubusercontent.com/42646264/71337467-2c2e3c00-258f-11ea-95d7-12393bc9fbbf.png)
-
-### 결제 완료 화면
-![image](https://user-images.githubusercontent.com/42646264/71337505-5d0e7100-258f-11ea-8c45-35deb8a38ac1.png)
+## 화면 구성
+<table>
+  <tr>
+    <th><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337283-49aed600-258e-11ea-8d12-6aa81e0d3f04.png"></th>
+    <th><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337331-85e23680-258e-11ea-98e5-715d3feacf28.png"></th>
+  </tr>
+  <tr>
+    <td>메인 페이지</td>
+    <td>검색 페이지</td>
+  </tr>
+  <tr>
+    <td><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337389-e07b9280-258e-11ea-8047-78846a8fa988.png"></td>
+    <td><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337423-03a64200-258f-11ea-93c2-8b0065d4531e.png"></td>
+  </tr>
+  <tr>
+    <td>스터디 그룹 생성 페이지</td>
+    <td>스터디룸 예약 페이지</td>
+  </tr> 
+  <tr>
+    <td><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337467-2c2e3c00-258f-11ea-95d7-12393bc9fbbf.png"></td>
+    <td><img width="1067" alt="스크린샷 2019-12-23 오후 2 10 00" src="https://user-images.githubusercontent.com/42646264/71337505-5d0e7100-258f-11ea-8c45-35deb8a38ac1.png"></td>
+  </tr>
+   <tr>
+    <td>카카오페이 결제 페이지</td>
+    <td>결제 완료 페이지</td>
+  </tr> 
+</table>
 
 
 ## 팀원 소개
