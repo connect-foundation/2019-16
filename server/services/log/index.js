@@ -37,7 +37,7 @@ function calculateDuration(spanId, durationEndData) {
 
   console.log(`--------------------------- duration is ${duration}`);
 
-  const logPacket = { ...durationEndData, ...durationStartData, duration };
+  const logPacket = { ...durationStartData, ...durationEndData, duration };
 
   sendLog.call(this, logPacket, spanId);
 }
