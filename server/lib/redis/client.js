@@ -1,4 +1,5 @@
 const { CACHE_HOST } = process.env;
+
 let Redis = require("ioredis");
 
 const redis = require("redis");
