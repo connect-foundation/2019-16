@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { SEARCH_NAME, SEARCH_HOST, SEARCH_PORT } = process.env;
+const { SEARCH_NAME, SEARCH_HOST, SEARCH_PORT, CACHE_HOST } = process.env;
 
 const Search = require("./Search");
 

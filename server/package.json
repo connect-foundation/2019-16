@@ -7,6 +7,7 @@
     "dotenv": "^8.2.0",
     "eslint-config-naver": "^2.1.0",
     "eslint-config-prettier": "^6.7.0",
+    "ioredis": "^4.14.1",
     "jest": "^24.9.0",
     "mongoose": "^5.7.12",
     "redis": "^2.8.0"
