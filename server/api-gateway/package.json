@@ -18,7 +18,7 @@
   "homepage": "https://github.com/connect-foundation/2019-16#readme",
   "dependencies": {
     "aws-sdk": "^2.582.0",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
