@@ -6,7 +6,7 @@
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "ajv": "^6.8.1",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bulma-carousel": "^4.0.4",
     "classnames": "^2.2.6",
     "eslint-plugin-import": "^2.18.2",
